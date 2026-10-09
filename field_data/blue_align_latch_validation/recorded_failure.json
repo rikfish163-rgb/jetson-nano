@@ -1,0 +1,101 @@
+{
+  "source": "/home/hetaisheng/.codex/attachments/ed3c9e37-d51d-4143-9461-70a8634f430e/Pasted text.txt",
+  "events": [
+    {
+      "log_line": 4015,
+      "stamp": 1789895907.576679,
+      "reason": "blue_align_heading",
+      "command": [
+        16,
+        -0.1
+      ],
+      "blue_approach": {
+        "origin": [
+          0.13326549778587882,
+          0.37152854604295704,
+          0.11129527936445127
+        ],
+        "heading_error_deg": -20.255881239030806,
+        "point": [
+          1.085074304678366,
+          0.2718990745928729
+        ],
+        "started": 1789895907.514451,
+        "yaw": -0.2575198361784534,
+        "align_stamp": 1789895907.4250576,
+        "align_frames": 0,
+        "observed_stamp": 1789895907.4250576,
+        "point_local": [
+          0.929909342912204,
+          -0.19047619724366904
+        ],
+        "phase": "ALIGN",
+        "observation_age_s": 0.15162134170532227
+      },
+      "last_blue_trigger": {
+        "point_world": [
+          1.085074304678366,
+          0.2718990745928729
+        ],
+        "stamp": 1789895907.514451,
+        "source": "cached_sign",
+        "observed_stamp": 1789895907.4250576,
+        "point_local": [
+          0.9348546201020218,
+          -0.2047263435257601
+        ],
+        "action": "STRAIGHT",
+        "observation_age_s": 0.08939337730407715
+      },
+      "front_marker_age": 0.15162134170532227
+    },
+    {
+      "log_line": 4122,
+      "stamp": 1789895910.31549,
+      "reason": "blue_align_target_missing",
+      "command": [
+        0,
+        0.0
+      ],
+      "blue_approach": {
+        "origin": [
+          0.13326549778587882,
+          0.37152854604295704,
+          0.11129527936445127
+        ],
+        "heading_error_deg": -7.763255626090735,
+        "point": [
+          1.137544597193656,
+          0.26803006014784103
+        ],
+        "started": 1789895907.514451,
+        "yaw": -0.4617082014303122,
+        "align_stamp": 1789895910.0257087,
+        "align_frames": 0,
+        "observed_stamp": 1789895910.0257087,
+        "point_local": [
+          0.639625598240967,
+          0.1664674265321387
+        ],
+        "phase": "ALIGN",
+        "observation_age_s": 0.2897813320159912
+      },
+      "last_blue_trigger": {
+        "point_world": [
+          1.085074304678366,
+          0.2718990745928729
+        ],
+        "stamp": 1789895907.514451,
+        "source": "cached_sign",
+        "observed_stamp": 1789895907.4250576,
+        "point_local": [
+          0.9348546201020218,
+          -0.2047263435257601
+        ],
+        "action": "STRAIGHT",
+        "observation_age_s": 0.08939337730407715
+      },
+      "front_marker_age": 0.15751886367797852
+    }
+  ]
+}

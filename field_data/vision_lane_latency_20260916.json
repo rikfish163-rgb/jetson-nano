@@ -1,0 +1,96 @@
+{
+  "frames": 20, 
+  "all_identical": true, 
+  "mask_ms": {
+    "after": [
+      22.28105068206787, 
+      24.35082197189331
+    ], 
+    "before": [
+      36.36801242828369, 
+      38.456881046295166
+    ]
+  }, 
+  "results": [
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564558.629439592_NO_CANDIDATE_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564562.967265129_NO_CANDIDATE_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564574.299568176_NO_CANDIDATE_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564583.296146631_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564584.965960979_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564586.628693342_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564588.296545267_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564589.961266279_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564597.629604816_NO_CANDIDATE_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564605.629006863_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564607.296410561_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564608.970530033_STRAIGHT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564610.628186226_LEFT_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564619.628285170_NO_CANDIDATE_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564626.628193617_NO_CANDIDATE_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564637.294562101_UTURN_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564638.961047649_UTURN_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564640.631298542_UTURN_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564642.294451475_UTURN_frame.png"
+    }, 
+    {
+      "identical": true, 
+      "frame": "field_data/sign_capture/20260916_211558_8912/1789564643.963609695_UTURN_frame.png"
+    }
+  ]
+}

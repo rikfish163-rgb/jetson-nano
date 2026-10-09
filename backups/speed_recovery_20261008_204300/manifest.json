@@ -1,0 +1,14 @@
+{
+  "src/robot/launch/full.launch": {
+    "after_sha256": "233368f3068ca263ddeee52048aaed3f89d6d685094c65b1bb8a559f6f441b73", 
+    "before_sha256": "06e3f3c5d3640d91fa0999bca5d250be8a1c6fa5b588871eda9f7c58fdf5ccec"
+  }, 
+  "src/robot/master/controller_node.py": {
+    "after_sha256": "40840ba78bbfe98a9621a93c6601843f0255cb2aed6d3d7ea39160d7e6e5ac6d", 
+    "before_sha256": "ab835bafac719d3fa68f5463848c6c621d6b7ec41a7a8477b702d566b05dafc8"
+  }, 
+  "src/robot/parking/timed_vision_node.py": {
+    "after_sha256": "6b4d578b34eace7ea7a5e4364325e700128db2251979fd51ed7054bbfd6a063f", 
+    "before_sha256": "433e36fb61798c4a45a30fde961c190ec08a4ae46c48040a4209d3b197b65d9b"
+  }
+}

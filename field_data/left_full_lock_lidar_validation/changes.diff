@@ -1,0 +1,207 @@
+--- before/src/robot/launch/full.launch
++++ after/src/robot/launch/full.launch
+@@ -53,6 +53,8 @@
+   <arg name="turn_angle_deg" default=""/>
+   <arg name="turn_exit" default=""/>
+   <arg name="left_turn_entry" default=""/>
++  <arg name="left_turn_full_lock" default=""/>
++  <arg name="lidar_timeout" default=""/>
+   <arg name="left_turn_radius" default=""/>
+   <arg name="left_turn_angle_deg" default=""/>
+   <arg name="left_turn_exit" default=""/>
+@@ -122,6 +124,8 @@
+     <arg name="turn_angle_deg" value="$(arg turn_angle_deg)"/>
+     <arg name="turn_exit" value="$(arg turn_exit)"/>
+     <arg name="left_turn_entry" value="$(arg left_turn_entry)"/>
++    <arg name="left_turn_full_lock" value="$(arg left_turn_full_lock)"/>
++    <arg name="lidar_timeout" value="$(arg lidar_timeout)"/>
+     <arg name="left_turn_radius" value="$(arg left_turn_radius)"/>
+     <arg name="left_turn_angle_deg" value="$(arg left_turn_angle_deg)"/>
+     <arg name="left_turn_exit" value="$(arg left_turn_exit)"/>
+--- before/src/robot/launch/stack.launch
++++ after/src/robot/launch/stack.launch
+@@ -59,6 +59,8 @@
+   <arg name="turn_angle_deg" default=""/>
+   <arg name="turn_exit" default=""/>
+   <arg name="left_turn_entry" default=""/>
++  <arg name="left_turn_full_lock" default=""/>
++  <arg name="lidar_timeout" default=""/>
+   <arg name="left_turn_radius" default=""/>
+   <arg name="left_turn_angle_deg" default=""/>
+   <arg name="left_turn_exit" default=""/>
+@@ -137,6 +139,8 @@
+   <param if="$(eval arg('turn_angle_deg') != '')" name="/competition/config/turn_angle_deg" value="$(arg turn_angle_deg)" type="double"/>
+   <param if="$(eval arg('turn_exit') != '')" name="/competition/config/turn_exit" value="$(arg turn_exit)" type="double"/>
+   <param if="$(eval arg('left_turn_entry') != '')" name="/competition/config/left_turn_entry" value="$(arg left_turn_entry)" type="double"/>
++  <param if="$(eval arg('left_turn_full_lock') != '')" name="/competition/config/left_turn_full_lock" value="$(arg left_turn_full_lock)" type="bool"/>
++  <param if="$(eval arg('lidar_timeout') != '')" name="/competition/config/lidar_timeout" value="$(arg lidar_timeout)" type="double"/>
+   <param if="$(eval arg('left_turn_radius') != '')" name="/competition/config/left_turn_radius" value="$(arg left_turn_radius)" type="double"/>
+   <param if="$(eval arg('left_turn_angle_deg') != '')" name="/competition/config/left_turn_angle_deg" value="$(arg left_turn_angle_deg)" type="double"/>
+   <param if="$(eval arg('left_turn_exit') != '')" name="/competition/config/left_turn_exit" value="$(arg left_turn_exit)" type="double"/>
+--- before/src/robot/obstacle/controller.py
++++ after/src/robot/obstacle/controller.py
+@@ -84,7 +84,7 @@
+ 
+ def scan_ready(ctx, now):
+     return (ctx.scan is not None and
+-            0 <= now-getattr(ctx.scan,'completed_stamp',ctx.scan.stamp) <= ctx.cfg['sensor_timeout'] and
++            0 <= now-getattr(ctx.scan,'completed_stamp',ctx.scan.stamp) <= ctx.cfg.get('lidar_timeout',ctx.cfg['sensor_timeout']) and
+             ctx.scan.valid_rays >= ctx.cfg['lidar']['min_rays'])
+ 
+ 
+--- before/src/robot/motion/tracker.py
++++ after/src/robot/motion/tracker.py
+@@ -7,8 +7,9 @@
+ 
+ 
+ class Follower:
+-    def __init__(self, path, cfg, parking=False):
++    def __init__(self, path, cfg, parking=False, full_lock=False):
+         self.path, self.cfg, self.parking = path, cfg, parking
++        self.full_lock=full_lock
+         # A perpendicular reverse arc needs its setup point closely reached;
+         # a parallel Hybrid-A* path retains its original lattice tolerance.
+         perpendicular = math.radians(70) <= abs(wrap(path[-1][2]-path[0][2])) <= math.radians(110)
+@@ -45,6 +46,12 @@
+         # Only a small forward window; never jump across a crossing/cusp.
+         end_index = min(self.segment_end, self.index+20)
+         self.index = min(range(self.index, end_index+1), key=lambda i: distance(pose,self.path[i]))
++        if self.full_lock:
++            # Each point stores the steering for the step arriving at it.
++            # Follow entry / full-lock arc / straight exit without preview
++            # blending the arc with straight points and reducing its lock.
++            target=self.path[min(self.index+1,self.segment_end)]
++            return cfg['speed_raw']['action'],target[4]
+         ld = cfg['parking_lookahead'] if self.parking else cfg.get('action_lookahead',cfg['lookahead'])
+         j, travelled = self.index, 0.0
+         while j < self.segment_end and travelled < ld:
+--- before/src/robot/turn/planner.py
++++ after/src/robot/turn/planner.py
+@@ -11,6 +11,8 @@
+                   for key in ('turn_entry','turn_radius','turn_exit'))
+     values['turn_angle_deg'] = cfg.get(prefix+'turn_angle_deg',cfg.get('turn_angle_deg',90.0))
+     values['effective_radius'] = max(values['turn_radius'],cfg['wheelbase']/math.tan(cfg['max_steer']))
++    if action=='LEFT' and cfg.get('left_turn_full_lock',False):
++        values['effective_radius']=cfg['wheelbase']/math.tan(cfg['max_steer'])
+     return values
+ 
+ 
+--- before/src/robot/config/competition.yaml
++++ after/src/robot/config/competition.yaml
+@@ -15,6 +15,8 @@
+ raw_to_mps: {forward: 0.008, reverse: 0.007}
+ lookahead: 0.30
+ action_lookahead: 0.30
++lidar_timeout: 0.8 # independent of the 0.5 s visual timeout; final-ray timestamp
++left_turn_full_lock: false # production profile enables the full-lock model arc
+ # Right: reverse 0.45 m, then use fixed steering and align to the exit.
+ right_turn_full_lock: true
+ right_exit_on_blue: false # enable explicitly for continuous right turn until new blue
+--- before/src/robot/config/workspace_modules.yaml
++++ after/src/robot/config/workspace_modules.yaml
+@@ -34,6 +34,7 @@
+     parameters:
+     - lidar
+     - lidar_enabled
++    - lidar_timeout
+     - scan_frame
+     - scan_topic
+   signs:
+@@ -118,6 +119,7 @@
+     - exit_yaw_tolerance
+     - intersection_wait_s
+     - left_turn_entry
++    - left_turn_full_lock
+     - right_align_lookahead
+     - right_direct_left_follow
+     - right_exit_on_blue
+--- before/src/robot/config/maneuvers.yaml
++++ after/src/robot/config/maneuvers.yaml
+@@ -6,6 +6,7 @@
+ parking_mode: forward_center
+ parking_entry_speed_raw: 12
+ parking_sign_association: true
++left_turn_full_lock: true
+ timed_bypass_enabled: true
+ uturn_trial_enabled: true
+ uturn_trial_resume_lane: true
+--- before/src/robot/master/controller_node.py
++++ after/src/robot/master/controller_node.py
+@@ -214,11 +214,12 @@
+                 raise ValueError('scan size')
+             duration=number(msg.time_increment)*(len(msg.ranges)-1)
+             completed=stamp+duration
++            timeout=self.cfg.get('lidar_timeout',self.cfg['sensor_timeout'])
+             # LaserScan header is the FIRST ray. Judge delivery freshness from
+             # the final ray while retaining source stamp/pose for geometry.
+-            if (not 0<=duration<=self.cfg['sensor_timeout'] or
++            if (not 0<=duration<=timeout or
+                     msg.header.frame_id != self.cfg['scan_frame'] or
+-                    not 0<=rospy.Time.now().to_sec()-completed<=self.cfg['sensor_timeout']):
++                    not 0<=rospy.Time.now().to_sec()-completed<=timeout):
+                 raise ValueError('scan frame/stamp')
+             with self.lock:
+                 if self.core.scan is not None and stamp<=self.core.scan.stamp:return
+--- before/src/robot/master/state_machine.py
++++ after/src/robot/master/state_machine.py
+@@ -148,7 +148,8 @@
+ 
+ def start_follow(ctx, path, action, now):
+     ctx.lane_recovery = None
+-    ctx.follower = Follower(path,ctx.cfg,parking=action == 'PARKING')
++    ctx.follower = Follower(path,ctx.cfg,parking=action == 'PARKING',
++        full_lock=action=='LEFT' and ctx.cfg.get('left_turn_full_lock',False))
+     ctx.follow_left_boundary = False
+     ctx.left_reference = None
+     ctx.action, ctx.action_started = action, now
+@@ -179,6 +180,10 @@
+ 
+ 
+ def resume_lane(ctx):
++    if ctx.action=='LEFT':
++        # Reuse the existing bounded reversal transition at the visual handoff.
++        # Same-side steering remains immediate; ordinary lane tuning is intact.
++        ctx.lane_recovery=dict(stamp=ctx.pose_stamp)
+     pending, pending_at = ((ctx.pending,ctx.pending_at)
+                            if ctx.action == 'BYPASS' and ctx.pending is not None
+                            else (None,0.0))
+--- before/src/robot/test/test_ros_adapter.py
++++ after/src/robot/test/test_ros_adapter.py
+@@ -176,6 +176,25 @@
+         self.node.applied_at = -1.0
+         self.node.last_sign_event = None
+         self.node.last_state_event = None
++
++    def test_scan_callback_uses_independent_lidar_timeout(self):
++        n=self.node
++        n.source_pose=lambda stamp:(0.,0.,0.)
++        msg=type('ScanMessage',(),{})()
++        msg.header=_Header(9.3,n.cfg['scan_frame'])
++        msg.ranges=[float('inf')]*360
++        msg.time_increment=.1/359
++        msg.angle_min=-math.pi;msg.angle_increment=math.pi/180
++        msg.range_min=.05;msg.range_max=6.
++        n.scan(msg)  # Last ray 9.4, age .6 s: beyond visual timeout, within lidar.
++        self.assertIsNotNone(n.core.scan)
++        self.assertAlmostEqual(n.core.scan.completed_stamp,9.4)
++        self.assertTrue(n.core.scan_ready(10.))
++        self.clock.value=11.
++        msg.header=_Header(10.,n.cfg['scan_frame'])  # .9 s stale, reject.
++        n.scan(msg)
++        self.assertAlmostEqual(n.core.scan.stamp,9.3)
++        self.assertFalse(n.core.scan_ready(11.))
+ 
+     def test_status_and_ros_log_include_stop_evidence_and_sign_decision(self):
+         class Sink(object):
+--- before/src/robot/common/contracts.py
++++ after/src/robot/common/contracts.py
+@@ -271,6 +271,9 @@
+         raise ValueError('invalid action_lookahead')
+     if cfg['pose_mode'] not in ('command_model','odom'):
+         raise ValueError('pose_mode must be command_model or odom')
++    boolean(cfg.get('left_turn_full_lock',False))
++    if not .1 <= number(cfg.get('lidar_timeout',cfg['sensor_timeout'])) <= 2.:
++        raise ValueError('lidar_timeout must be in [0.1,2.0] s')
+     for name in ('wheelbase','track','body_width','max_steer','lookahead','parking_lookahead',
+                  'sensor_timeout','sign_timeout','odom_timeout','action_timeout','planner_step',
+                  'planner_xy_resolution','planner_yaw_resolution','planner_timeout','ground_hz','sign_hz',

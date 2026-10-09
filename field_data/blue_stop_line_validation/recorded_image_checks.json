@@ -1,0 +1,131 @@
+[
+  {
+    "state": "BLUE_APPROACH", 
+    "approach": {
+      "origin": [
+        0.0, 
+        0.0, 
+        0.0
+      ], 
+      "point": [
+        0.7275086975097657, 
+        0.17978389739990233
+      ], 
+      "started": 1.2, 
+      "lane_state": "LANE", 
+      "point_local": [
+        0.7275086975097657, 
+        0.17978389739990233
+      ], 
+      "phase": "APPROACH", 
+      "observation_age_s": 0.0, 
+      "yaw": -0.13970879298245986, 
+      "remaining_m": 0.3685998455096297, 
+      "observed_stamp": 1.2, 
+      "target_front_m": 0.33
+    }, 
+    "image": "field_data/sign_capture/20260920_014118_13200/1789839743.914282084_NO_CANDIDATE_frame.png", 
+    "measured_blue": [
+      {
+        "y": 0.17978389739990233, 
+        "x": 0.7275086975097657, 
+        "length": 0.8566106414794922, 
+        "yaw": -0.13970879298246003
+      }, 
+      {
+        "y": -0.42267822265625, 
+        "x": 1.1406371688842774, 
+        "length": 0.7312012481689453, 
+        "yaw": 1.3942500293531934
+      }
+    ]
+  }, 
+  {
+    "state": "LANE", 
+    "approach": null, 
+    "image": "field_data/sign_capture/20260920_020739_16957/1789841350.836241484_STRAIGHT_frame.png", 
+    "measured_blue": []
+  }, 
+  {
+    "state": "LANE", 
+    "approach": null, 
+    "image": "field_data/sign_capture/20260920_020739_16957/1789841350.635120869_STRAIGHT_frame.png", 
+    "measured_blue": []
+  }, 
+  {
+    "state": "BLUE_APPROACH", 
+    "approach": {
+      "origin": [
+        0.0, 
+        0.0, 
+        0.0
+      ], 
+      "point": [
+        0.8213678741455078, 
+        0.19478778839111327
+      ], 
+      "started": 1.2, 
+      "lane_state": "LANE", 
+      "point_local": [
+        0.8213678741455078, 
+        0.19478778839111327
+      ], 
+      "phase": "APPROACH", 
+      "observation_age_s": 0.0, 
+      "yaw": 0.043450948508222176, 
+      "remaining_m": 0.4993651507365463, 
+      "observed_stamp": 1.2, 
+      "target_front_m": 0.33
+    }, 
+    "image": "field_data/sign_capture/20260920_020739_16957/1789841350.035512447_STRAIGHT_frame.png", 
+    "measured_blue": [
+      {
+        "y": 0.19478778839111327, 
+        "x": 0.8213678741455078, 
+        "length": 0.8110814666748047, 
+        "yaw": 0.043450948508222016
+      }
+    ]
+  }, 
+  {
+    "state": "LANE", 
+    "approach": null, 
+    "image": "field_data/sign_capture/20260920_020739_16957/1789841350.435573578_STRAIGHT_frame.png", 
+    "measured_blue": []
+  }, 
+  {
+    "state": "BLUE_APPROACH", 
+    "approach": {
+      "origin": [
+        0.0, 
+        0.0, 
+        0.0
+      ], 
+      "point": [
+        0.7735926055908203, 
+        0.19348987579345703
+      ], 
+      "started": 1.2, 
+      "lane_state": "LANE", 
+      "point_local": [
+        0.7735926055908203, 
+        0.19348987579345703
+      ], 
+      "phase": "APPROACH", 
+      "observation_age_s": 0.0, 
+      "yaw": 0.02054506753362384, 
+      "remaining_m": 0.44747397162038227, 
+      "observed_stamp": 1.2, 
+      "target_front_m": 0.33
+    }, 
+    "image": "field_data/sign_capture/20260920_020739_16957/1789841350.235325336_STRAIGHT_frame.png", 
+    "measured_blue": [
+      {
+        "y": 0.19348987579345703, 
+        "x": 0.7735926055908203, 
+        "length": 0.8126880645751953, 
+        "yaw": 0.020545067533624027
+      }
+    ]
+  }
+]

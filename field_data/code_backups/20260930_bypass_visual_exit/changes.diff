@@ -1,0 +1,156 @@
+--- obstacle.before.py
++++ src/robot/obstacle/controller.py
+@@ -15,7 +15,7 @@
+ 
+ 
+ 
+-FIELDS = ('action', 'cfg', 'follower', 'issued_steer', 'obstacle_check', 'parallel_parking', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen',
++FIELDS = ('action', 'cfg', 'follower', 'issued_steer', 'obstacle_check', 'parallel_parking', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen', 'lane', 'lane_stamp', 'lane_confidence',
+  'parking_entry', 'pose', 'reason', 'relative_uturn', 'retry_at', 'scan', 'state', 'lane_recovery', 'exit_count', 'exit_stamp', 'lane_curve_lock', 'timed_bypass_candidate')
+ CALLS = (('mission', 'start_follow'), ('motion', 'stop'), ('obstacle', 'scan_ready'),
+  ('lane', 'forward_lane_ready'), ('lane', 'lane_valid'), ('lane', 'lane_tracking_ready'), ('lane', 'lane_command'), ('mission','resume_lane'), ('obstacle', 'checked_command'),
+@@ -93,6 +93,36 @@
+     return ctx.call('obstacle','timed_bypass_tick',now)
+ 
+ 
++def _right_lane_exit(ctx,task,now):
++    """Confirm measured return-lane geometry after passing the trigger."""
++    trigger=task.get('trigger_world')
++    passed=(trigger is not None and local(ctx.pose,trigger)[0] <
++            -ctx.cfg['rear_overhang']-ctx.cfg['obstacle_margin'])
++    points=sorted(local(ctx.pose,p) for p in ctx.lane)
++    angles=[math.atan2(b[1]-a[1],b[0]-a[0]) for a,b in zip(points,points[1:])]
++    ready=(task['elapsed_s']>=2. and passed and
++        ctx.call('obstacle','scan_ready',now) and
++        ctx.call('lane','lane_tracking_ready',now) and
++        ctx.lane_confidence>=ctx.cfg['lane_min_confidence'] and len(points)>=3 and
++        .05<points[0][0]<=1. and points[-1][0]-points[0][0]>=.20 and
++        abs(points[0][1])<=.18 and all(.05<x<=1.5 and abs(y)<=.45 for x,y in points) and
++        all(b[0]-a[0]>.015 for a,b in zip(points,points[1:])) and
++        all(abs(a)<=math.radians(30) for a in angles) and
++        all(abs(b-a)<=math.radians(20) for a,b in zip(angles,angles[1:])))
++    evidence=task.get('lane_exit')
++    if not ready:
++        task['lane_exit']=None
++        return False
++    if evidence is None or not 0<=ctx.lane_stamp-evidence['stamp']<=ctx.cfg['sensor_timeout']:
++        evidence=dict(stamp=-1.,since=ctx.lane_stamp,frames=0)
++        task['lane_exit']=evidence
++    if ctx.lane_stamp>evidence['stamp']:
++        evidence.update(stamp=ctx.lane_stamp,frames=evidence['frames']+1,
++            near_lateral_m=points[0][1],heading_deg=math.degrees(angles[0]),
++            right_elapsed_s=task['elapsed_s'])
++    return evidence['frames']>=3 and ctx.lane_stamp-evidence['since']>=.15-1e-9
++
++
+ def timed_bypass_tick(ctx,now):
+     task=ctx.timed_bypass
+     right_duration=ctx.cfg.get('timed_bypass_right_s',6.)
+@@ -109,7 +139,10 @@
+         task['elapsed_s']+=dt
+         duration_s=(ctx.cfg.get('timed_bypass_settle_s',0.) if task['phase']=='SETTLE_LEFT'
+                     else ctx.cfg.get('timed_bypass_left_s',2.) if task['phase']=='LEFT' else right_duration)
+-        if task['elapsed_s']>=duration_s-1e-9:
++        if task['phase']=='RIGHT' and _right_lane_exit(ctx,task,now):
++            task['phase']='REACQUIRE'
++            task['visual_exit']=True
++        elif task['elapsed_s']>=duration_s-1e-9:
+             if task['phase']=='LEFT':
+                 if not ctx.call('obstacle','scan_ready',now):
+                     return ctx.call('motion','stop','scan_missing_or_stale')
+@@ -151,7 +184,10 @@
+         ctx.timed_bypass_completed=True
+         ctx.timed_bypass=None
+         ctx.call('mission','resume_lane')
+-        return ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,False)
++        result=ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,False)
++        if task.get('visual_exit') and result[0]>0:
++            ctx.reason='bypass_visual_lane_handoff'
++        return result
+     steer=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     if task['phase']=='SETTLE_LEFT':
+         ctx.issued_steer=steer
+--- /dev/null
++++ src/robot/test/test_bypass_visual_exit.py
+@@ -0,0 +1,81 @@
++"""A stable measured lane can end a bypass right turn before its time cap."""
++import os
++import unittest
++from robot.common.config import load_config
++from robot.master.controller import Controller
++from test_continuous_obstacles import _SyntheticScan
++
++
++class BypassVisualExitTests(unittest.TestCase):
++    CENTER=[(.55,.03),(.70,.03),(.85,.03),(1.,.03)]
++    RECORDED=[(.654871,-.161688),(.760287,-.129812),(.858497,-.101381),
++              (.937567,-.079377),(.999604,-.062668),(1.103328,-.035819)]
++
++    def core(self):
++        cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
++        cfg.update(wait_green=False,lidar_enabled=True,timed_bypass_enabled=True,
++                   lane_curvature_preview=True,lane_curve_speed_raw=16,
++                   steering_command_scale_rad=.03,timed_bypass_right_s=6.)
++        cfg['speed_raw'].update(action=24,lane=24)
++        c=Controller(cfg);self.addCleanup(c.close)
++        c.state='TIMED_BYPASS';c.action='BYPASS';c.issued_steer=-.03
++        c.timed_bypass=dict(phase='RIGHT',last=1.,elapsed_s=3.,
++            trigger_world=(-.5,0),trigger_point=(.8,0))
++        return c
++
++    def tick(self,c,path,stamp,confidence=.8):
++        c.observe_lane(path,confidence,stamp)
++        c.scan=_SyntheticScan(stamp)
++        return c.execute('obstacle','timed_bypass_tick',stamp).value
++
++    def confirm(self,c,path):
++        for stamp in (1.1,1.2,1.3):
++            command=self.tick(c,path,stamp)
++        return command
++
++    def test_stable_current_lane_takes_over_before_six_seconds(self):
++        c=self.core();speed,steer=self.confirm(c,self.CENTER)
++        self.assertEqual(c.state,'LANE')
++        self.assertIsNone(c.timed_bypass)
++        self.assertTrue(c.timed_bypass_completed)
++        self.assertEqual(speed,16)
++        self.assertGreater(steer,-.03)
++
++    def test_recorded_four_second_view_is_eligible_for_handoff(self):
++        c=self.core()
++        for stamp in (1.1,1.2,1.3):
++            speed,steer=self.tick(c,self.RECORDED,stamp,.389641)
++        self.assertIsNone(c.timed_bypass)
++        self.assertEqual(speed,16)
++
++    def test_repeated_source_image_does_not_confirm_exit(self):
++        c=self.core()
++        c.observe_lane(self.CENTER,.8,1.1)
++        for now in (1.1,1.15,1.2,1.25,1.3):
++            c.scan=_SyntheticScan(now)
++            c.execute('obstacle','timed_bypass_tick',now)
++        self.assertIsNotNone(c.timed_bypass)
++
++    def test_obstacle_still_ahead_or_too_early_cannot_end_turn(self):
++        for elapsed,trigger in [(3.,(.2,0)),(1.,(-.5,0))]:
++            c=self.core();c.timed_bypass.update(elapsed_s=elapsed,trigger_world=trigger)
++            self.confirm(c,self.CENTER)
++            self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++
++    def test_off_axis_or_low_confidence_lane_cannot_end_turn(self):
++        for path,confidence in [([(x,.3) for x,y in self.CENTER],.8),
++                                ([(.5,0),(.6,.12),(.7,.24),(.8,.36)],.8),
++                                (self.CENTER,.2)]:
++            c=self.core()
++            for stamp in (1.1,1.2,1.3): self.tick(c,path,stamp,confidence)
++            self.assertIsNotNone(c.timed_bypass)
++
++    def test_six_second_cap_keeps_existing_partial_lane_handoff(self):
++        c=self.core();c.timed_bypass.update(elapsed_s=5.95)
++        speed,steer=self.tick(c,[(.6,.03),(.7,.02)],1.05,.329595)
++        self.assertIsNone(c.timed_bypass)
++        self.assertEqual(speed,16)
++
++
++if __name__=='__main__':
++    unittest.main()

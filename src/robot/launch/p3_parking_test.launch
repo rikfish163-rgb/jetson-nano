@@ -1,0 +1,11 @@
+<launch>
+  <arg name="start_camera" default="true"/>
+  <arg name="start_actuators" default="true"/>
+  <arg name="front_device" default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"/>
+  <!-- Actuators/camera only. Motion starts from the foreground P3 test command. -->
+  <include file="$(find robocup_competition)/launch/parking_line_stop_test.launch">
+    <arg name="start_camera" value="$(arg start_camera)"/>
+    <arg name="start_actuators" value="$(arg start_actuators)"/>
+    <arg name="front_device" value="$(arg front_device)"/>
+  </include>
+</launch>

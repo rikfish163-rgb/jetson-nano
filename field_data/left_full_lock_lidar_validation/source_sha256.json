@@ -1,0 +1,15 @@
+{
+  "src/robot/common/contracts.py": "a8242354d8c78a1c3d9d5ab4b28aae761cdfe02fc876d08cf624cc2b972e23dd",
+  "src/robot/config/competition.yaml": "98ceb81b802d0275b8714f9bd8b5a9e4784acecde996addf2f54f2f350a389e2",
+  "src/robot/config/maneuvers.yaml": "55f77ac97fd116eee33aa1035b63eb79c8029a4ee38151846c5065e1355eb978",
+  "src/robot/config/workspace_modules.yaml": "c841fdb61762a3de6ff1ac07088e08f04450fb740875c8cd7dce5558957c3680",
+  "src/robot/launch/full.launch": "f24a5fc75aa4354541a61d68bb3929a4f688769f63b09538ed17f73510ffce66",
+  "src/robot/launch/stack.launch": "6ca0aead1b84a71a6571b5bd1bbbb041d1c3b0e0ecb6144748d4e77abb922c99",
+  "src/robot/master/controller_node.py": "e281b4cc611513291bfe97b6759e294ed806199cde9023b873d761aa44bc4807",
+  "src/robot/master/state_machine.py": "dd9099888a6f312df0f34f2577c73bb2200127e9482445f3db805a7ea91fcb50",
+  "src/robot/motion/tracker.py": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a",
+  "src/robot/obstacle/controller.py": "4ce9d85e130971e79c7ccae15ac4da3f7dcd2a9eeafef934a66ff2b919961dc3",
+  "src/robot/test/test_left_full_lock_lidar.py": "68fa78eb17b294ee5ee6a81671bb04c2aa3ece07fb07001cbf0999d9ebb27a9d",
+  "src/robot/test/test_ros_adapter.py": "4919e866726ef93541bac56bd2cd800bc506e6f52a5688483882fab44d848208",
+  "src/robot/turn/planner.py": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+}

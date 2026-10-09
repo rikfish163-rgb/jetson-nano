@@ -1,0 +1,48 @@
+# Rear metric detector parameters.  The detector consumes /debug/rear_bev,
+# whose top row is far and bottom row is near according to rear_bev.yaml.
+# Figure 1 labels P4/P5 as approximately 450 mm deep and 380 mm wide.  These
+# are map priors only; verify the visible line pair and the actual field before
+# enabling motion.
+line_color: white
+white_min: 150
+white_delta_max: 65
+blue_h_min: 90
+blue_h_max: 130
+blue_s_min: 45
+blue_v_min: 35
+morph_kernel: 3
+hough_threshold: 24
+hough_min_line_length_px: 28
+hough_max_line_gap_px: 12
+side_y_min_m: 0.05
+side_y_max_m: 1.00
+stop_y_min_m: 0.08
+stop_y_max_m: 1.20
+side_max_slope: 0.55
+stop_max_slope: 0.16
+min_slot_width_m: 0.20
+max_slot_width_m: 0.50
+expected_slot_width_m: 0.38
+max_parallel_slope_delta: 0.20
+min_stop_span_m: 0.28
+stop_center_tolerance_m: 0.22
+vehicle_center_x_m: 0.0
+camera_to_rear_axle_m: 0.0
+# H maps the ground plane relative to the rear camera.  This second value is
+# a deliberate safety certificate: set it true only after measuring the
+# camera ground origin to the rear axle on the actual vehicle.
+camera_to_rear_axle_calibrated: false
+rear_reference_distance_m: 0.0
+stop_line_bias_m: 0.0
+yaw_sign: 1.0
+# The current value is a placeholder until a real P4/P5 frame confirms the
+# paint/line colour seen by the rear BEV detector.
+line_color_calibrated: false
+max_lateral_m: 0.65
+max_yaw_rad: 0.75
+# Disabled globally.  P5 enables this explicitly because its current field
+# view exposes one stable boundary and a transverse stop line; the known slot
+# width then supplies the missing boundary/centreline prior.
+single_side_mode: false
+single_side_lateral_sign: 1.0
+single_side_min_span_m: 0.20

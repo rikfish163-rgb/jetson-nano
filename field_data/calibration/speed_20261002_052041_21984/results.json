@@ -1,0 +1,245 @@
+{
+  "complete": true, 
+  "models": {
+    "forward": {
+      "20": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.0450451940000676, 
+          2.0450451940000676
+        ], 
+        "mps_per_raw": 0.008557268099180903, 
+        "speed_mps": 0.17114536198361804, 
+        "method": "effective_average"
+      }, 
+      "30": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.0137749079999594, 
+          2.0137749079999594
+        ], 
+        "mps_per_raw": 0.0094350167561033, 
+        "speed_mps": 0.283050502683099, 
+        "method": "effective_average"
+      }, 
+      "15": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.0478425820001576, 
+          2.0478425820001576
+        ], 
+        "mps_per_raw": 0.0065109171234785405, 
+        "speed_mps": 0.09766375685217811, 
+        "method": "effective_average"
+      }, 
+      "25": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.0411283710000134, 
+          2.0411283710000134
+        ], 
+        "mps_per_raw": 0.008818651612383023, 
+        "speed_mps": 0.22046629030957557, 
+        "method": "effective_average"
+      }
+    }, 
+    "reverse": {
+      "20": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.038694441000189, 
+          2.038694441000189
+        ], 
+        "mps_per_raw": 0.008829179909456737, 
+        "speed_mps": 0.17658359818913474, 
+        "method": "effective_average"
+      }, 
+      "30": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.0282016490000387, 
+          2.0282016490000387
+        ], 
+        "mps_per_raw": 0.009367904818225319, 
+        "speed_mps": 0.28103714454675954, 
+        "method": "effective_average"
+      }, 
+      "15": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.0507190030002675, 
+          2.0507190030002675
+        ], 
+        "mps_per_raw": 0.011378123135932285, 
+        "speed_mps": 0.17067184703898428, 
+        "method": "effective_average"
+      }, 
+      "25": {
+        "offset_m": 0.0, 
+        "usable": true, 
+        "sample_count": 1, 
+        "rms_error_m": 0.0, 
+        "duration_range_s": [
+          2.006816398999945, 
+          2.006816398999945
+        ], 
+        "mps_per_raw": 0.009168751067197407, 
+        "speed_mps": 0.22921877667993518, 
+        "method": "effective_average"
+      }
+    }
+  }, 
+  "trials": [
+    {
+      "status": "measured", 
+      "index": 1, 
+      "command_seconds": 2.0478425820001576, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": 20.0, 
+      "direction": "forward", 
+      "execution_record": "trial_001_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "measured", 
+      "index": 2, 
+      "command_seconds": 2.0450451940000676, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": 35.0, 
+      "direction": "forward", 
+      "execution_record": "trial_002_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "measured", 
+      "index": 3, 
+      "command_seconds": 2.0411283710000134, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": 45.0, 
+      "direction": "forward", 
+      "execution_record": "trial_003_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "measured", 
+      "index": 4, 
+      "command_seconds": 2.0137749079999594, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": 57.0, 
+      "direction": "forward", 
+      "execution_record": "trial_004_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }, 
+    {
+      "status": "measured", 
+      "index": 5, 
+      "command_seconds": 2.0507190030002675, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": 35.0, 
+      "direction": "reverse", 
+      "execution_record": "trial_005_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "measured", 
+      "index": 6, 
+      "command_seconds": 2.038694441000189, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": 36.0, 
+      "direction": "reverse", 
+      "execution_record": "trial_006_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "measured", 
+      "index": 7, 
+      "command_seconds": 2.006816398999945, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": 46.0, 
+      "direction": "reverse", 
+      "execution_record": "trial_007_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "measured", 
+      "index": 8, 
+      "command_seconds": 2.0282016490000387, 
+      "repeat": 1, 
+      "attempt": 2, 
+      "distance_cm": 57.0, 
+      "direction": "reverse", 
+      "execution_record": "trial_008_attempt_02.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }
+  ], 
+  "created_at": "2026-10-01T21:20:41Z", 
+  "version": 1, 
+  "config": {
+    "directions": [
+      "forward", 
+      "reverse"
+    ], 
+    "durations": [
+      2.0
+    ], 
+    "repeats": 1, 
+    "speeds": [
+      15, 
+      20, 
+      25, 
+      30
+    ]
+  }
+}

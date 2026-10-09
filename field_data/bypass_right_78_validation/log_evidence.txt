@@ -1,0 +1,17 @@
+Source: /home/hetaisheng/.codex/attachments/1f336e54-e6f6-47bd-b595-5bbe67b7bf1f/Pasted text.txt
+Evidence is commanded steering at chassis output, not measured wheel angle.
+1941: {"stamp": 1789919347.702828, "state": "TIMED_BYPASS", "reason": "bypass_settle_left", "command": [0, 0.1], "timed_bypass": {"phase": "SETTLE_LEFT", "trigger_point": [0.8448168783555734, -0.07815660000405072], "last": 1789919347.702828, "elapsed_s": 0.045198917388916016}, "exit_confirmation": {"frames": 0, "reason": "not_checked"}}
+1946: [ INFO] [1789919347.848647063]: chassis_output speed_raw=0.0 steering_raw=22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+1957: {"stamp": 1789919348.153974, "state": "TIMED_BYPASS", "reason": "bypass_left_2.6s", "command": [20, 0.1], "timed_bypass": {"phase": "LEFT", "trigger_point": [0.8448168783555734, -0.07815660000405072], "last": 1789919348.153974, "elapsed_s": 0.09404516220092773}, "exit_confirmation": {"frames": 0, "reason": "not_checked"}}
+1988: [ INFO] [1789919348.898684783]: chassis_output speed_raw=20.0 steering_raw=22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2033: [ INFO] [1789919349.948753338]: chassis_output speed_raw=20.0 steering_raw=22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2060: {"stamp": 1789919350.704346, "state": "TIMED_BYPASS", "reason": "bypass_right_6s", "command": [20, -0.1], "timed_bypass": {"phase": "RIGHT", "trigger_point": [0.8448168783555734, -0.07815660000405072], "last": 1789919350.704346, "elapsed_s": 0.0}, "exit_confirmation": {"frames": 0, "reason": "not_checked"}}
+2073: [ INFO] [1789919350.948880626]: chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2113: [ INFO] [1789919351.998685171]: chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2154: [ INFO] [1789919353.048808992]: chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2192: [ INFO] [1789919354.098652864]: chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2233: [ INFO] [1789919355.148807469]: chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2257: {"stamp": 1789919355.646961, "state": "TIMED_BYPASS", "reason": "bypass_right_6s", "command": [20, -0.1], "timed_bypass": {"phase": "RIGHT", "trigger_point": [0.8448168783555734, -0.07815660000405072], "last": 1789919355.646961, "elapsed_s": 4.942615032196045}, "exit_confirmation": {"frames": 0, "reason": "not_checked"}}
+2281: [ INFO] [1789919356.148875390]: chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true
+2307: {"stamp": 1789919356.747151, "state": "TIMED_BYPASS", "reason": "bypass_wait_exit_lane", "command": [0, 0.0], "timed_bypass": {"phase": "REACQUIRE", "trigger_point": [0.8448168783555734, -0.07815660000405072], "last": null, "elapsed_s": 0.0}, "exit_confirmation": {"frames": 0, "reason": "path_lateral"}}
+2326: [ INFO] [1789919357.198682287]: chassis_output speed_raw=0.0 steering_raw=0.0 serial_bytes=11 command_received=true timed_out=false serial_open=true

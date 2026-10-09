@@ -1,0 +1,1362 @@
+[
+  {
+    "received_at": 1789394717.602249, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394717.651808, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394717.701656, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394717.751996, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394717.80176, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394717.851794, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394717.901785, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394717.951984, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.00189, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.051686, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.102077, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.151851, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.201769, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.251685, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.301835, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.351661, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.401851, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.451753, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.501668, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.551716, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.601775, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.652143, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.701742, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.751928, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.802964, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.851706, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.901797, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394718.95163, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.001714, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.051771, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.101759, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.152252, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.201851, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.251865, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.30216, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.351685, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.401877, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.451794, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.501864, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.551792, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.60178, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.651746, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.702022, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.751951, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.801718, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.851923, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.901853, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394719.951846, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.001677, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.051654, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.101865, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.151745, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.201724, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.251853, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.301728, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.352073, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.401771, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.451863, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.501646, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.552022, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.601922, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.651752, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.701887, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.752023, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.80173, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.851656, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.901809, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394720.95181, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.001725, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.051744, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.101751, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.151809, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.202105, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.251884, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.302249, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.351634, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.401799, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.452112, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.501931, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.551945, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.60205, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.651702, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.701852, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.751884, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.801717, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.851805, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.901692, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394721.951602, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.001758, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.051765, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.101811, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.151769, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.201855, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.251845, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.301671, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.351656, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.401959, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.451811, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.501926, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.551866, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.602119, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.651877, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.70184, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.751933, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.80182, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.852051, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.901944, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394722.952162, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.001784, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.051665, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.101725, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.15194, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.201846, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.251736, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.301843, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.3519, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.401722, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.451912, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.501922, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.552225, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.601845, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.652126, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.702142, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.751615, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.802716, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.851902, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.902129, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394723.952495, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.001852, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.051805, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.101865, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.152162, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.203099, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.252239, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.302325, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.352193, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.402258, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.451922, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.501817, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.552531, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.602062, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.65179, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.702172, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.751879, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.801905, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.852675, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.902133, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394724.951798, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.002385, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.051617, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.102922, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.152369, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.202561, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.254118, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.302834, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.354695, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.403758, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.454796, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.505974, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.552855, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.603695, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.653652, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.704721, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.753102, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.805012, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.853787, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.905285, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394725.956226, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.003954, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.054596, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.102133, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.155392, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.205607, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.254262, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.304498, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.355227, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.402962, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.454485, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.502881, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.553816, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.602385, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.652637, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.702945, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.754504, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.805514, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.853387, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.904284, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394726.953408, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.003039, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.053376, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.102014, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.153151, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.203461, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.254242, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.303011, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.353161, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.403505, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.454071, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.506421, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.555356, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.602641, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.65301, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.70316, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.754091, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.802979, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.852945, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.902015, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394727.952864, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.00238, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.052433, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.102105, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.151912, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.202323, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.252218, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.301844, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.352464, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.402519, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.451705, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.502124, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.552178, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.601733, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.652028, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.7026, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.753077, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.802988, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.853131, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.905547, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394728.954788, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.002917, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.054782, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.103009, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.152444, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.202864, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.254649, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.301849, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.353461, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.402266, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.452726, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.501995, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.552698, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.60239, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.65209, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.701899, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.751921, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.802224, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.851606, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.901802, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394729.952199, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.002855, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.053145, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.102527, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.152031, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.202809, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.251815, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.302368, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.352161, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.401856, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.4523, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.501839, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.552391, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.601888, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.65197, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.701851, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.751878, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.801979, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.851862, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.901899, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394730.951736, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.001903, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.051836, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.101825, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.151944, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.20192, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.251877, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.302077, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.352161, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.401846, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.451802, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.50243, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.551719, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.602157, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.652171, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.701874, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.751711, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.802424, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.851906, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.901804, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394731.952169, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.002531, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.054987, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.104944, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.153065, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.202274, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.253943, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.303425, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.354965, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.406692, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":-26,\"steering_raw\":-22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.452722, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.504879, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.555502, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.602806, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.65578, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.705527, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.752714, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.805814, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.855421, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.902049, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394732.955615, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.00546, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.052279, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.105433, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.156225, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.20673, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.256092, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.306032, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.352742, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.404661, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.455778, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.502036, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.552221, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.602219, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.651707, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.701596, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.751919, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.802195, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.851695, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.901753, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394733.952664, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.001875, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.05321, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.10195, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.152288, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.201877, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.25159, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.302799, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":26,\"steering_raw\":22,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.352378, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.402551, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.452202, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.501902, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }, 
+  {
+    "received_at": 1789394734.553212, 
+    "data": "{\"schema\":\"base_controller_status_v1\",\"speed_raw\":0,\"steering_raw\":0,\"serial_bytes\":11,\"command_received\":true,\"timed_out\":false,\"serial_open\":true}"
+  }
+]

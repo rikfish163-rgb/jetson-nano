@@ -1,0 +1,128 @@
+{
+  "model": "yolo",
+  "checkpoint": "/home/hts/robodata/runs/20260916_detector_v1/yolo_fast/weights/best.pt",
+  "images": 1630,
+  "objects": 1370,
+  "common_coco_metrics": [
+    0.930504962920146,
+    1.0,
+    0.9981046676096182,
+    -1.0,
+    0.9046343172331066,
+    0.9743805092747165,
+    0.9442926482873855,
+    0.9442926482873855,
+    0.9442926482873855,
+    -1.0,
+    0.9220665942195019,
+    0.9846379844961239
+  ],
+  "per_class": {
+    "red": {
+      "map50_95": 0.9470115136345488,
+      "map50": 1.0,
+      "at_confidence_0_5": {
+        "tp": 199,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1.0,
+        "recall": 0.995
+      }
+    },
+    "green": {
+      "map50_95": 0.9897302716790913,
+      "map50": 1.0,
+      "at_confidence_0_5": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "straight": {
+      "map50_95": 0.8492832817413366,
+      "map50": 1.0,
+      "at_confidence_0_5": {
+        "tp": 200,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "left": {
+      "map50_95": 0.9961417114916369,
+      "map50": 1.0,
+      "at_confidence_0_5": {
+        "tp": 180,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "right": {
+      "map50_95": 0.8556428307806379,
+      "map50": 1.0,
+      "at_confidence_0_5": {
+        "tp": 250,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "uturn": {
+      "map50_95": 0.9443370993704271,
+      "map50": 1.0,
+      "at_confidence_0_5": {
+        "tp": 190,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "park": {
+      "map50_95": 0.9313880317433437,
+      "map50": 1.0,
+      "at_confidence_0_5": {
+        "tp": 250,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    }
+  },
+  "background_images": 260,
+  "background_false_positive_images": 0,
+  "native": {
+    "metrics": [
+      0.9992311052796409,
+      0.998702328177987,
+      0.995,
+      0.9350618934170168,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "per_class_map": [
+      0.9547545665529003,
+      0.9870772785378941,
+      0.8508640722212272,
+      0.9929497769490345,
+      0.8667581126203234,
+      0.949855383549485,
+      0.9431740634882526
+    ],
+    "server_batch_timing_ms": [
+      0.047697757650738117,
+      0.5600029705492265,
+      0.7004376569408581
+    ]
+  },
+  "elapsed_seconds": 9.53268051147461,
+  "limits": "Existing development-source test split; provisional boxes; not an independent field test. Server timings are not Nano latency."
+}

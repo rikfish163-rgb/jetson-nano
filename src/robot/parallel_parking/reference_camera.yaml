@@ -1,0 +1,8 @@
+# Parking-only trial projection, 2026-10-01. Base K/D and lane H stay unchanged.
+# Same P1 front line at measured front-axle gaps 134 cm and 107 cm, width 36 cm.
+# Assumes straight motion with the measured road-side lateral offset 29 cm.
+# These are fit samples; near-line stopping precision still requires a live run.
+front_camera:
+  H: [-0.8070521862054371, -0.9793808955708532, 418.96978078053803,
+      0.0037288292223640386, -4.037770823050909, 672.6212122714451,
+      -0.0008127994648965838, -0.005158268521900266, 1.0]

@@ -1,0 +1,17 @@
+{
+  "range_reason": "in_range", 
+  "sign_depth_m": 0.2442427736343826, 
+  "startup_only": false, 
+  "confidence": 0.6065331697463989, 
+  "label": "RED", 
+  "source": "classifier", 
+  "sign_bounds": [
+    38, 
+    222, 
+    154, 
+    37
+  ], 
+  "image_file": "/home/nano/robocup_ws/field_data/sign_evidence_20260913_163434/1789289324_273140203_RED_original.png", 
+  "image_stamp_ns": 1789289324273140203, 
+  "stamp": 1789289324.2731402
+}

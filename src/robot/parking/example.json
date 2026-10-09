@@ -1,0 +1,7 @@
+{
+  "operation": "start_parking",
+  "args": [
+    10.0
+  ],
+  "module": "parking"
+}

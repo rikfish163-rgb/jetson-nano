@@ -1,0 +1,7 @@
+{
+  "operation": "stop",
+  "args": [
+    "module_fixture"
+  ],
+  "module": "motion"
+}

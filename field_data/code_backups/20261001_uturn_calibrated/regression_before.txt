@@ -1,0 +1,98 @@
+test_default_profile_is_normal_seven_stage_mode (test_uturn_production.ProductionUturnTests) ... FAIL
+test_40cm_entry_finishes_before_seven_segments (test_uturn_production.ProductionUturnTests) ... FAIL
+test_exit_correction_is_bounded_and_stale_camera_stops (test_uturn_current_model.CurrentModelTests) ... FAIL
+test_exit_needs_new_aligned_frames_without_a_stop_pulse (test_uturn_current_model.CurrentModelTests) ... FAIL
+test_ninety_degree_turn_cannot_handoff_to_a_crossing_lane (test_uturn_current_model.CurrentModelTests) ... FAIL
+test_preview_stops_at_reverse_segment_endpoint (test_uturn_current_model.CurrentModelTests) ... FAIL
+
+======================================================================
+FAIL: test_default_profile_is_normal_seven_stage_mode (test_uturn_production.ProductionUturnTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_production.py", line 42, in test_default_profile_is_normal_seven_stage_mode
+    self.assertEqual(self.cfg['uturn_trial_sequence'], field['uturn_trial_sequence'])
+AssertionError: Lists differ: [{'seconds': 3.6000000058, 'sp... != [{'seconds': 3.6000000058, 'sp...
+
+First differing element 0:
+{'seconds': 3.6000000058, 'speed': 20, 'steering': 22}
+{'seconds': 3.6000000058, 'speed': 26, 'steering': 22}
+
+Diff is 1426 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_40cm_entry_finishes_before_seven_segments (test_uturn_production.ProductionUturnTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_production.py", line 57, in test_40cm_entry_finishes_before_seven_segments
+    self.assertEqual(task.command(0), (26, 0.))
+AssertionError: Tuples differ: (20, 0.0) != (26, 0.0)
+
+First differing element 0:
+20
+26
+
+- (20, 0.0)
+?   ^
+
++ (26, 0.0)
+?   ^
+
+
+======================================================================
+FAIL: test_exit_correction_is_bounded_and_stale_camera_stops (test_uturn_current_model.CurrentModelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_current_model.py", line 73, in test_exit_correction_is_bounded_and_stale_camera_stops
+    self.assertEqual(self.c.state, 'FAULT')
+AssertionError: 'LANE' != 'FAULT'
+
+======================================================================
+FAIL: test_exit_needs_new_aligned_frames_without_a_stop_pulse (test_uturn_current_model.CurrentModelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_current_model.py", line 48, in test_exit_needs_new_aligned_frames_without_a_stop_pulse
+    self.assertEqual(self.c.tick(10.), (26, .03))
+AssertionError: Tuples differ: (0, 0.0) != (26, 0.03)
+
+First differing element 0:
+0
+26
+
+- (0, 0.0)
+?  ^
+
++ (26, 0.03)
+?  ^^     +
+
+
+======================================================================
+FAIL: test_ninety_degree_turn_cannot_handoff_to_a_crossing_lane (test_uturn_current_model.CurrentModelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_current_model.py", line 42, in test_ninety_degree_turn_cannot_handoff_to_a_crossing_lane
+    self.assertEqual(command, (26, .03))
+AssertionError: Tuples differ: (0, 0.0) != (26, 0.03)
+
+First differing element 0:
+0
+26
+
+- (0, 0.0)
+?  ^
+
++ (26, 0.03)
+?  ^^     +
+
+
+======================================================================
+FAIL: test_preview_stops_at_reverse_segment_endpoint (test_uturn_current_model.CurrentModelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_current_model.py", line 90, in test_preview_stops_at_reverse_segment_endpoint
+    self.assertLess(distance(endpoint, expected), 1e-7)
+AssertionError: 0.15001853697389123 not less than 1e-07
+
+----------------------------------------------------------------------
+Ran 6 tests in 2.438s
+
+FAILED (failures=6)

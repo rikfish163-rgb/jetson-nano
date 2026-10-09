@@ -1,0 +1,19 @@
+{
+  "after": {
+    "frames": 463, 
+    "valid": 272, 
+    "bends": {
+      "UNKNOWN": 360, 
+      "RIGHT": 103
+    }, 
+    "last62_valid": 62
+  }, 
+  "before": {
+    "frames": 463, 
+    "valid": 272, 
+    "bends": {
+      "UNAVAILABLE": 463
+    }, 
+    "last62_valid": 62
+  }
+}

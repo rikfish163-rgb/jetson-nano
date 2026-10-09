@@ -1,0 +1,15 @@
+<launch>
+  <!-- Read-only input bring-up; reuses existing devices by default. -->
+  <arg name="start_devices" default="false"/>
+  <include file="$(find robocup_competition)/launch/stack.launch">
+    <arg name="start_actuators" value="false"/>
+    <arg name="start_cameras" value="false"/>
+    <arg name="start_controller" value="false"/>
+    <arg name="start_ground" value="false"/>
+    <arg name="start_lane" value="false"/>
+    <arg name="start_lidar" value="$(arg start_devices)"/>
+    <arg name="start_rear" value="false"/>
+    <arg name="start_sign" value="false"/>
+  </include>
+  <node pkg="robocup_competition" type="lidar_preview_node.py" name="lidar_preview" output="screen"/>
+</launch>

@@ -1,0 +1,24 @@
+{
+  "full": {
+    "max_steer": 0.2, 
+    "speed_raw/action": 20, 
+    "speed_raw/lane": 30, 
+    "steering_command_scale_rad": 0.03, 
+    "straight_distance": 1.25, 
+    "straight_speed_raw": 20, 
+    "timed_bypass_speed_raw": 26, 
+    "uturn_trial_forward_raw": 26, 
+    "uturn_trial_reverse_raw": 26
+  }, 
+  "lane_green_obstacle": {
+    "max_steer": 0.2, 
+    "speed_raw/action": 24, 
+    "speed_raw/lane": 24, 
+    "steering_command_scale_rad": 0.03, 
+    "straight_distance": 1.25, 
+    "straight_speed_raw": 12, 
+    "timed_bypass_speed_raw": 26, 
+    "uturn_trial_forward_raw": 26, 
+    "uturn_trial_reverse_raw": 26
+  }
+}

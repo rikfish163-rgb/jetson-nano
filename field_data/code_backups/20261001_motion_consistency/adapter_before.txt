@@ -1,0 +1,41 @@
+test_busy_tick_does_not_drop_distance (test_motion_feedback.MotionFeedbackTests) ... FAIL
+test_model_mapping_does_not_change_at_uturn_handoff (test_motion_feedback.MotionFeedbackTests) ... FAIL
+test_stop_feedback_keeps_motion_before_stop (test_motion_feedback.MotionFeedbackTests) ... FAIL
+test_timeout_counts_only_the_valid_held_interval (test_motion_feedback.MotionFeedbackTests) ... FAIL
+
+======================================================================
+FAIL: test_busy_tick_does_not_drop_distance (test_motion_feedback.MotionFeedbackTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_motion_feedback.py", line 35, in test_busy_tick_does_not_drop_distance
+    self.assertAlmostEqual(self.n.core.pose[0], .032)
+AssertionError: 0.016 != 0.032 within 7 places
+
+======================================================================
+FAIL: test_model_mapping_does_not_change_at_uturn_handoff (test_motion_feedback.MotionFeedbackTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_motion_feedback.py", line 59, in test_model_mapping_does_not_change_at_uturn_handoff
+    self.assertAlmostEqual(self.n.applied[1],uturn_angle)
+AssertionError: 0.2 != 0.36595613806581945 within 7 places
+
+======================================================================
+FAIL: test_stop_feedback_keeps_motion_before_stop (test_motion_feedback.MotionFeedbackTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_motion_feedback.py", line 41, in test_stop_feedback_keeps_motion_before_stop
+    self.assertAlmostEqual(self.n.core.pose[0], .016)
+AssertionError: 0.0 != 0.016 within 7 places
+
+======================================================================
+FAIL: test_timeout_counts_only_the_valid_held_interval (test_motion_feedback.MotionFeedbackTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_motion_feedback.py", line 46, in test_timeout_counts_only_the_valid_held_interval
+    self.assertAlmostEqual(self.n.core.pose[0], .04)
+AssertionError: 0.0 != 0.04 within 7 places
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.838s
+
+FAILED (failures=4)

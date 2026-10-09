@@ -1,0 +1,33 @@
+{
+  "archive": "/home/nano/refactor_backups/before-straight-distance-only-yMZZrj/before.tar.gz", 
+  "config_defaults": {
+    "gap_max_seconds": 4.0, 
+    "lookahead": 0.3, 
+    "max_steer": 0.46275, 
+    "speed_raw": {
+      "action": 20, 
+      "gap": 16, 
+      "lane": 20, 
+      "parking": 16
+    }, 
+    "steering_command_scale_rad": null, 
+    "straight_distance": 1.25, 
+    "straight_speed_raw": 26
+  }, 
+  "lane": {
+    "during_action_signs_ignored": false, 
+    "gap_hard_cap_060": false, 
+    "timed_blue_advance": false
+  }, 
+  "note": "A preserved September 20 snapshot; not identified as the user-confirmed successful lap.", 
+  "signs": {
+    "during_action_signs_ignored": true, 
+    "gap_hard_cap_060": false, 
+    "timed_blue_advance": false
+  }, 
+  "turn": {
+    "during_action_signs_ignored": false, 
+    "gap_hard_cap_060": false, 
+    "timed_blue_advance": true
+  }
+}

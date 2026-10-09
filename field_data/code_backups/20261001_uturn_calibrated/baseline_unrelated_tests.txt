@@ -1,0 +1,26 @@
+field_data/code_backups/20261001_uturn_calibrated/before/src/robot/uturn/calibration.py:2: RuntimeWarning: Parent module 'robot.uturn' not found while handling absolute import
+  import math
+test_right_seen_during_left_needs_new_votes_after_handoff (test_route_obstacle_regression.RouteObstacleRegressionTests) ... FAIL
+test_uturn_rejects_below_090_but_parking_keeps_global_threshold (test_route_obstacle_regression.RouteObstacleRegressionTests) ... FAIL
+
+======================================================================
+FAIL: test_right_seen_during_left_needs_new_votes_after_handoff (test_route_obstacle_regression.RouteObstacleRegressionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_route_obstacle_regression.py", line 44, in test_right_seen_during_left_needs_new_votes_after_handoff
+    self.assertEqual(c.pending,'RIGHT')
+AssertionError: None != 'RIGHT'
+
+======================================================================
+FAIL: test_uturn_rejects_below_090_but_parking_keeps_global_threshold (test_route_obstacle_regression.RouteObstacleRegressionTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_route_obstacle_regression.py", line 107, in test_uturn_rejects_below_090_but_parking_keeps_global_threshold
+    self.assertEqual(c.pending,'PARKING')
+AssertionError: None != 'PARKING'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.350s
+
+FAILED (failures=2)
+('BASELINE BEFORE CURRENT REPAIR; same existing failures:', 2)

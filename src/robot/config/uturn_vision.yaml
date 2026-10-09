@@ -1,0 +1,44 @@
+# Opt in together with full.launch uturn_relative_enabled:=true.
+# New maneuver only. Ordinary lane steering and chassis conversion unchanged.
+uturn_vision_enabled: true
+uturn_blue_landmarks_enabled: true
+uturn_blue_line_length_m: 1.0
+uturn_blue_end_gap_m: 0.10 # parallel blue separation = 1.0 + 2*0.10 = 1.20 m
+uturn_relative_enabled: true
+uturn_trial_enabled: false
+uturn_planner_mode: search
+uturn_max_cusps: 6 # maximum gear changes; not a prescribed number of maneuvers
+uturn_reverse_penalty: 1.1
+uturn_gear_change_penalty: 0.25
+uturn_steer_change_penalty: 0.0 # >0 expands the steering-history search state
+uturn_followed_boundary: AUTO # LEFT -> shift right; RIGHT -> shift left
+uturn_calibration:
+  reverse_steering_sign: 1 # isolated RAW +22 reverse test: north -> northeast
+  # Rear-axle radii corrected from measured wheel centers, wheelbase .26 m.
+  # Forward uses front wheel on steering side; reverse uses rear wheel.
+  # Front track measured .24 m; rear track provisionally also .24 m.
+  forward_left_radius: 0.6784646272
+  forward_right_radius: 0.9925
+  # Reverse magnitudes are provisional: earlier lateral signs conflict with yaw test.
+  reverse_left_radius: 0.5645372549
+  reverse_right_radius: 1.3608228346
+  forward_mps_per_raw: 0.0096153846
+  reverse_mps_per_raw: 0.0092692308
+uturn_lane_spacing: 0.60
+uturn_speed_raw: 26
+uturn_lookahead: 0.15
+uturn_turn_radius_m: 0.65
+uturn_goal_heading_tolerance_deg: 10.0
+uturn_goal_forward_min: 0.0
+uturn_goal_forward_max: 0.0
+uturn_tracking_error_max: 0.15
+uturn_replan_limit: 3
+uturn_replan_cooldown_s: 1.0
+# Fixed local map: x forward at trigger, y left, origin at rear axle.
+# These opening endpoints are INITIAL TUNING VALUES, not dimensions inferred
+# from the screenshot. Middle white line is forbidden outside this opening.
+uturn_opening_start_m: -0.10
+uturn_opening_end_m: 1.20
+uturn_corridor_min_x_m: -0.50
+uturn_corridor_max_x_m: 1.60
+uturn_boundary_margin_m: 0.03

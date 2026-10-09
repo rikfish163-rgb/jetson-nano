@@ -1,0 +1,12 @@
+# 寻线：只在此文件写本模块需要覆盖的参数。
+# 仅丢线重新接入时限制突然反打；同方向加大、减小、回正立即放行。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+lane_recovery_raw_rate: 88.0
+# 普通循线只降弯道速度，不减小转角；直线仍采用启动命令中的速度。
+lane_curve_speed_raw: 16
+# 弯道近点仅用于同向增强；不能替代可靠边线或突破硬件满舵。
+lane_curve_lookahead_m: 0.45
+# The vehicle wrapper enables visual feedback explicitly; false permits comparison.
+lane_path_feedback: false
+lane_path_hold_s: 0.35
+lane_path_hold_m: 0.12

@@ -1,0 +1,10 @@
+{
+  "src/robot/config/competition.yaml": true,
+  "src/robot/config/maneuvers.yaml": true,
+  "src/robot/uturn/controller.py": true,
+  "src/robot/uturn/config.yaml": true,
+  "src/robot/lane/preview.py": true,
+  "src/robot/lane/config.yaml": true,
+  "src/robot/turn/controller.py": true,
+  "tools/sign_detector_20260916/run_yolo_vehicle.sh": true
+}

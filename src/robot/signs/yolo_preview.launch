@@ -1,0 +1,12 @@
+<launch>
+  <!-- Reuse the existing camera; no controller or actuator is started. -->
+  <arg name="model" default="/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine"/>
+  <node pkg="robocup_competition" type="sign_node.py" name="sign_yolo_preview" output="screen">
+    <rosparam command="load" file="$(find robocup_competition)/config/competition.yaml" param="config"/>
+    <param name="backend" value="yolo_trt"/>
+    <param name="model" value="$(arg model)"/>
+    <param name="debug_images" value="true"/>
+    <param name="capture_dir" value=""/>
+    <remap from="/competition/sign" to="/competition/sign_preview"/>
+  </node>
+</launch>

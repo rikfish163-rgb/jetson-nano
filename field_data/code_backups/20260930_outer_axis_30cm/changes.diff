@@ -1,0 +1,90 @@
+--- before/camera/camera_yihan_web.py
++++ src/ros/camera/scripts/camera_yihan_web.py
+@@ -1203,6 +1203,22 @@
+         if side == 'left' and (preferred_side == 'left' or lane_mode == LANE_MODE_LEFT_ONLY)
+         else lane_width_est / 2.0)
+     derivative = np.polyder(coefficients)
++    # A supported bend has radial normals. A quadratic tangent fitted to an
++    # arc changes with the observed window and shifts the requested 30 cm path.
++    support = np.asarray([[p['x'],p['y']] for p in boundary if p is not None],dtype=float)
++    circle = None
++    if len(support) >= 4:
++        origin = np.mean(support,axis=0)
++        q = support-origin
++        matrix = np.column_stack((2*q[:,0],2*q[:,1],np.ones(len(q))))
++        fit,unused,rank,unused_s = np.linalg.lstsq(matrix,np.sum(q*q,axis=1),rcond=-1)
++        squared = float(fit[2]+np.dot(fit[:2],fit[:2]))
++        if rank == 3 and squared > 0:
++            radius = np.sqrt(squared)
++            circle_center = origin+fit[:2]
++            residual = np.sqrt(np.mean((np.linalg.norm(support-circle_center,axis=1)-radius)**2))
++            if 120. <= radius <= 2400. and residual <= 2.4:
++                circle = (circle_center,radius)
+     centers = []
+     for window_index, point in enumerate(boundary):
+         if not point_is_usable(point):
+@@ -1214,7 +1230,15 @@
+             offset = -offset
+         y = float(point['y']-slope*offset)
+         center = dict(point)
+-        center.update(x=float(point['x']+offset),y=y,source_y=y,lane_mode=lane_mode,
++        x = float(point['x']+offset)
++        if circle is not None:
++            origin,radius = circle
++            radial = np.asarray([point['x'],point['y']])-origin
++            radial /= np.linalg.norm(radial)
++            # Image x grows rightwards; left boundary -> inward is +image x.
++            normal_sign = (1. if side == 'left' else -1.) * (1. if radial[0] >= 0 else -1.)
++            x,y = origin+radial*(radius+normal_sign*offset_distance)
++        center.update(x=float(x),y=float(y),source_y=float(y),lane_mode=lane_mode,
+                       window_index=window_index,compensated=True,used_normal=True,
+                       geometry_agreement=True)
+         centers.append(center)
+@@ -1222,6 +1246,8 @@
+     for point in result:
+         if point is not None:
+             point.update(center_method='fitted_boundary_normal',reference_side=side)
++            point['reference_offset_m'] = float(offset_distance/(100.*PX_PER_CM))
++            point['offset_reference'] = 'vehicle_center_axis'
+     return result
+ 
+ 
+@@ -2632,6 +2658,9 @@
+         diagnostic['center_method'] = 'fitted_boundary_normal'
+         diagnostic['reference_side'] = next((p.get('reference_side')
+             for p in tracking_result['center_points'] if p), None) if tracking_result else None
++        diagnostic['offset_reference'] = 'vehicle_center_axis'
++        diagnostic['reference_offset_m'] = next((p.get('reference_offset_m')
++            for p in tracking_result['center_points'] if p), None) if tracking_result else None
+         observation = dict(
+             stamp=msg.header.stamp.to_sec(), seq=int(msg.header.seq),
+             frame=LANE_PATH_FRAME_ID, confidence=tracking_confidence,
+--- before/robot/lane/preview.py
++++ src/robot/lane/preview.py
+@@ -105,13 +105,23 @@
+             heading=math.atan2(-direction*cx,direction*cy)
+             lookahead=max(2*ctx.cfg['wheelbase'],
+                           min(ctx.cfg.get('lookahead',.8),forward[0][0]))
+-            feedback=2*error/(lookahead*lookahead)+2*math.sin(heading)/lookahead
++            position_feedback=2*error/(lookahead*lookahead)
++            feedback=position_feedback+2*math.sin(heading)/lookahead
++            desired=fit['curvature']+feedback
++            # When outside a supported bend, a distant tangent can point back
++            # across the car's heading. Do not let that extrapolated heading
++            # erase the bend and the required inward position correction.
++            guard = (abs(fit['measured_curvature']) >= .35 and
++                     error*direction > .02)
++            if guard:
++                inward=fit['measured_curvature']+.5*position_feedback
++                desired=direction*max(direction*desired,direction*inward)
+             # A supported circle supplies its radius directly. Adding the
+             # far-point chord again biases the angle with the same offset
+             # already handled by position/heading feedback.
+-            physical=math.atan(ctx.cfg['wheelbase']*(fit['curvature']+feedback))
++            physical=math.atan(ctx.cfg['wheelbase']*desired)
+             fit.update(center_error_m=error,center_heading_error_rad=heading,
+-                       center_feedback_curvature=feedback)
++                       center_feedback_curvature=feedback,outer_bend_guard=guard)
+             physical=max(-ctx.cfg['max_steer'],min(ctx.cfg['max_steer'],physical))
+             return physical/ctx.cfg['max_steer']*scale
+     near_x,near_y = forward[0]

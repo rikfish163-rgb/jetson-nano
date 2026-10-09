@@ -1,0 +1,95 @@
+complete: true
+formula: distance_m = max(0, speed_mps * command_seconds + offset_m)
+measurement: Stopped axle-to-axle displacement; includes starting and stopping effects.
+models:
+  forward:
+    '15':
+      duration_range_s:
+      - 2.0478425820001576
+      - 2.0478425820001576
+      method: effective_average
+      mps_per_raw: 0.0065109171234785405
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.09766375685217811
+      usable: true
+    '20':
+      duration_range_s:
+      - 2.0450451940000676
+      - 2.0450451940000676
+      method: effective_average
+      mps_per_raw: 0.008557268099180903
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.17114536198361804
+      usable: true
+    '25':
+      duration_range_s:
+      - 2.0411283710000134
+      - 2.0411283710000134
+      method: effective_average
+      mps_per_raw: 0.008818651612383023
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.22046629030957557
+      usable: true
+    '30':
+      duration_range_s:
+      - 2.0137749079999594
+      - 2.0137749079999594
+      method: effective_average
+      mps_per_raw: 0.0094350167561033
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.283050502683099
+      usable: true
+  reverse:
+    '15':
+      duration_range_s:
+      - 2.0507190030002675
+      - 2.0507190030002675
+      method: effective_average
+      mps_per_raw: 0.011378123135932285
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.17067184703898428
+      usable: true
+    '20':
+      duration_range_s:
+      - 2.038694441000189
+      - 2.038694441000189
+      method: effective_average
+      mps_per_raw: 0.008829179909456737
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.17658359818913474
+      usable: true
+    '25':
+      duration_range_s:
+      - 2.006816398999945
+      - 2.006816398999945
+      method: effective_average
+      mps_per_raw: 0.009168751067197407
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.22921877667993518
+      usable: true
+    '30':
+      duration_range_s:
+      - 2.0282016490000387
+      - 2.0282016490000387
+      method: effective_average
+      mps_per_raw: 0.009367904818225319
+      offset_m: 0.0
+      rms_error_m: 0.0
+      sample_count: 1
+      speed_mps: 0.28103714454675954
+      usable: true
+version: 1

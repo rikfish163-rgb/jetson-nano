@@ -1,0 +1,26 @@
+# 运动执行与手动接管：只在此文件写本模块需要覆盖的参数。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+# Straight speeds: eight measured forward/reverse RAW profiles, October 2, 2026.
+# Forward RAW 15 corrected to 26 cm using the later single-profile retest.
+# Steering radii retain the historical RAW 26 model.
+chassis_calibration:
+  reverse_steering_sign: 1
+  forward_left_radius: 0.6784646272
+  forward_right_radius: 0.9925
+  reverse_left_radius: 0.5645372549
+  reverse_right_radius: 1.3608228346
+  forward_mps_per_raw: 0.0094350167561033
+  reverse_mps_per_raw: 0.009367904818225319
+  speed_calibration_source: field_data/calibration/speed_20261002_052041_21984/results_corrected.json
+  # [logical RAW magnitude, measured average m/s]; interpolate between points.
+  speed_points:
+    forward:
+      - [15, 0.12675456657091977]
+      - [20, 0.17114536198361804]
+      - [25, 0.22046629030957557]
+      - [30, 0.283050502683099]
+    reverse:
+      - [15, 0.17067184703898428]
+      - [20, 0.17658359818913474]
+      - [25, 0.22921877667993518]
+      - [30, 0.28103714454675954]

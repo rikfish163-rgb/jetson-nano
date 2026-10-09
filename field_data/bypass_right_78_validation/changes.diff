@@ -1,0 +1,153 @@
+--- before/src/robot/obstacle/controller.py
++++ after/src/robot/obstacle/controller.py
+@@ -43,6 +43,7 @@
+ 
+ def timed_bypass_tick(ctx,now):
+     task=ctx.timed_bypass
++    right_duration=ctx.cfg.get('timed_bypass_right_s',6.)
+     if task['phase']=='SETTLE_LEFT':
+         if task['last'] is None:
+             task['elapsed_s']=0.  # A stop centers the command; settle again.
+@@ -55,14 +56,14 @@
+     if task['phase']!='REACQUIRE':
+         task['elapsed_s']+=dt
+         duration_s=(ctx.cfg.get('timed_bypass_settle_s',0.) if task['phase']=='SETTLE_LEFT'
+-                    else ctx.cfg.get('timed_bypass_left_s',2.) if task['phase']=='LEFT' else 6.)
++                    else ctx.cfg.get('timed_bypass_left_s',2.) if task['phase']=='LEFT' else right_duration)
+         if task['elapsed_s']>=duration_s-1e-9:
+             task['phase']=('LEFT' if task['phase']=='SETTLE_LEFT' else
+                            'RIGHT' if task['phase']=='LEFT' else 'REACQUIRE')
+             task['elapsed_s']=0.
+     # Observe the exit during the final 0.3 s without shortening the timed
+     # maneuver. An already confirmed exit can take over without a stop.
+-    if task['phase']=='RIGHT' and task['elapsed_s'] >= 5.7:
++    if task['phase']=='RIGHT' and task['elapsed_s'] >= max(0.,right_duration-.3):
+         ctx.call('turn','handoff_lane_confirmed',now)
+     if task['phase']=='REACQUIRE':
+         ctx.lane_recovery=None
+@@ -81,7 +82,7 @@
+     result=ctx.call('obstacle','checked_command',command,now,False)
+     if result==command:
+         ctx.reason=('bypass_left_%gs'%ctx.cfg.get('timed_bypass_left_s',2.)
+-                    if task['phase']=='LEFT' else 'bypass_right_6s')
++                    if task['phase']=='LEFT' else 'bypass_right_%gs'%right_duration)
+     return result
+ 
+ def scan_ready(ctx, now):
+--- before/src/robot/obstacle/config.yaml
++++ after/src/robot/obstacle/config.yaml
+@@ -7,3 +7,5 @@
+ timed_bypass_settle_s: 0.4
+ # RAW 20 下的初始左打时长：26 * 2 / 20 = 2.6 s；仅按指令量估计，需实车复核。
+ timed_bypass_left_s: 2.6
++# 与左打同倍率延长：6 * (2.6 / 2) = 7.8 s。
++timed_bypass_right_s: 7.8
+--- before/src/robot/common/contracts.py
++++ after/src/robot/common/contracts.py
+@@ -94,6 +94,8 @@
+         raise ValueError('timed_bypass_settle_s must be in [0,2]')
+     if not 0 < number(cfg.get('timed_bypass_left_s',2.)) <= 6:
+         raise ValueError('timed_bypass_left_s must be in (0,6]')
++    if not 0 < number(cfg.get('timed_bypass_right_s',6.)) <= 12:
++        raise ValueError('timed_bypass_right_s must be in (0,12]')
+     trigger_distance = number(cfg.get('timed_bypass_trigger_distance_m',.50))
+     if not cfg['wheelbase']+cfg['front_overhang']+cfg['obstacle_margin'] < trigger_distance <= 2.0:
+         raise ValueError('timed_bypass_trigger_distance_m must exceed the front footprint and be <= 2 m')
+--- before/src/robot/config/workspace_modules.yaml
++++ after/src/robot/config/workspace_modules.yaml
+@@ -100,6 +100,7 @@
+     - timed_bypass_trigger_distance_m
+     - timed_bypass_settle_s
+     - timed_bypass_left_s
++    - timed_bypass_right_s
+     - bypass_enabled
+     - bypass_offset
+     - bypass_pass
+--- before/src/robot/test/test_requested_maneuvers.py
++++ after/src/robot/test/test_requested_maneuvers.py
+@@ -4,6 +4,37 @@
+ 
+ 
+ class RequestedManeuversTests(unittest.TestCase):
++    def test_configured_right_duration_preserves_full_lock_and_waits_for_exit(self):
++        from robot.common.contracts import encode_command
++        c=self.core();self.addCleanup(c.close)
++        c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True,
++                     timed_bypass_settle_s=.4,timed_bypass_left_s=2.6,
++                     timed_bypass_right_s=7.8)
++        c.cfg['speed_raw']['action']=20
++        self.scan(c,1.,(.49,0))
++        self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(0,.1))
++        for i in range(1,216):
++            t=1.+i*.05;self.scan(c,t,None)
++            command=c.tick(t)
++            raw=encode_command(command[0],command[1],c.cfg,0)
++            self.assertEqual(raw['speed_raw'],0 if i<8 else 20)
++            self.assertEqual(raw['steering_raw'],22 if i<60 else -22)
++            if i>=60:self.assertEqual(c.reason,'bypass_right_7.8s')
++        self.scan(c,11.8,None)
++        self.assertEqual(c.tick(11.8),(0,0.))
++        self.assertEqual(c.reason,'bypass_wait_exit_lane')
++        for t in (11.9,12.,12.1):
++            self.scan(c,t,None)
++            c.observe_lane([(.3,0),(.6,0)],.9,t);c.tick(t)
++        self.assertEqual(c.state,'LANE')
++
++    def test_invalid_bypass_right_duration_rejected(self):
++        from robot.common.contracts import validate_config
++        c=self.core();self.addCleanup(c.close)
++        for duration in (0,-1,12.1,float('nan'),True):
++            c.cfg['timed_bypass_right_s']=duration
++            with self.assertRaises(ValueError):validate_config(c.cfg)
++
+     def test_configured_bypass_left_duration_at_speed_20(self):
+         c=self.core();self.addCleanup(c.close)
+         c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True,
+@@ -123,6 +154,7 @@
+         self.assertFalse(cfg['bypass_enabled'])
+         self.assertEqual(cfg['timed_bypass_trigger_distance_m'], .85)
+         self.assertEqual(cfg['timed_bypass_left_s'], 2.6)
++        self.assertEqual(cfg['timed_bypass_right_s'], 7.8)
+         self.assertTrue(cfg['wait_green'])
+         c = Controller(cfg);self.addCleanup(c.close)
+         self.scan(c,1.,(.80,0))
+@@ -143,14 +175,15 @@
+         c.observe_lane([(.3,0),(.6,0)],.9,2.)
+         command=c.tick(2.)
+         self.assertEqual(command,(0,.1),c.reason)
+-        for i in range(1,180):
++        for i in range(1,216):
+             t=2.+i*.05;self.scan(c,t,None)
+             c.observe_lane([(.3,0),(.6,0)],.9,t)
+             self.assertEqual(c.tick(t),(0,.1) if i<8 else (c.cfg['speed_raw']['action'],.1 if i<60 else -.1))
+             self.assertEqual(c.state,'TIMED_BYPASS')
+-        self.scan(c,11.,None)
+-        c.observe_lane([(.3,0),(.6,0)],.9,11.)
+-        self.assertGreater(c.tick(11.)[0],0)
++            if i<210:self.assertEqual(c.exit_count,0)
++        self.scan(c,12.8,None)
++        c.observe_lane([(.3,0),(.6,0)],.9,12.8)
++        self.assertGreater(c.tick(12.8)[0],0)
+         self.assertEqual(c.state,'LANE')
+         self.assertIsNone(c.action)
+ 
+--- before/src/robot/test/test_lane_loss_transition.py
++++ after/src/robot/test/test_lane_loss_transition.py
+@@ -185,12 +185,14 @@
+         self.observe(1.,-.3);self.observe(1.1,None,0)
+         self.c.state='TIMED_BYPASS';self.c.action='BYPASS'
+         self.c.timed_bypass=dict(phase='RIGHT',elapsed_s=0.,last=2.)
+-        for i in range(120):
++        duration=self.c.cfg.get('timed_bypass_right_s',6.)
++        end=2.+duration
++        for i in range(int(round(duration/.05))):
+             t=2.+i*.05
+             self.assertEqual(self.observe(t,.3),(self.c.cfg['speed_raw']['action'],-22))
+-        self.assertEqual(self.observe(8.,.3),(0,0))
++        self.assertEqual(self.observe(end,.3),(0,0))
+         self.assertEqual(self.c.reason,'bypass_wait_exit_lane')
+-        for t in (8.1,8.2,8.3):
++        for t in (end+.1,end+.2,end+.3):
+             command=self.observe(t,.1)
+         self.assertGreater(command[0],0)
+         self.assertGreater(command[1],0)

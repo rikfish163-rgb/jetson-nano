@@ -1,0 +1,161 @@
+{
+  "controller": {}, 
+  "controller_fresh": false, 
+  "sign": {
+    "confidence": 0.9438220858573914, 
+    "detections": [
+      {
+        "bounds": [
+          434, 
+          88, 
+          48, 
+          51
+        ], 
+        "confidence": 0.9438220858573914, 
+        "label": "straight", 
+        "scores": {
+          "green": 4.358564910944551e-05, 
+          "left": 0.0003619762137532234, 
+          "park": 0.00010054497397504747, 
+          "red": 4.6396544348681346e-05, 
+          "right": 0.00021449729683808982, 
+          "straight": 0.9438220858573914, 
+          "uturn": 2.2612439352087677e-05
+        }
+      }, 
+      {
+        "bounds": [
+          149, 
+          113, 
+          17, 
+          21
+        ], 
+        "confidence": 0.7942378520965576, 
+        "label": "right", 
+        "scores": {
+          "green": 0.00015506059571634978, 
+          "left": 0.0016966568073257804, 
+          "park": 0.0009269610163755715, 
+          "red": 0.0010219304822385311, 
+          "right": 0.7942378520965576, 
+          "straight": 0.0012038537533953786, 
+          "uturn": 0.0017166136531159282
+        }
+      }
+    ], 
+    "inference_ms": 90.18301963806152, 
+    "input_mode": "full_frame_yolo", 
+    "label": "STRAIGHT", 
+    "range_reason": "full_frame_yolo", 
+    "roi_diagnostics": {
+      "candidate_count": 2, 
+      "regions": [
+        {
+          "bounds": [
+            434, 
+            88, 
+            48, 
+            51
+          ], 
+          "reason": "#1 straight 0.94"
+        }, 
+        {
+          "bounds": [
+            149, 
+            113, 
+            17, 
+            21
+          ], 
+          "reason": "#2 right 0.79"
+        }
+      ], 
+      "selection": "largest_detected_area"
+    }, 
+    "roi_ms": 0.0, 
+    "scores": {
+      "GREEN": 4.358564910944551e-05, 
+      "LEFT": 0.0003619762137532234, 
+      "PARKING": 0.00010054497397504747, 
+      "RED": 4.6396544348681346e-05, 
+      "RIGHT": 0.00021449729683808982, 
+      "STRAIGHT": 0.9438220858573914, 
+      "UTURN": 2.2612439352087677e-05
+    }, 
+    "sign_bounds": [
+      434, 
+      88, 
+      48, 
+      51
+    ], 
+    "sign_depth_m": null, 
+    "source": "yolov5s", 
+    "source_age_s": 0.10609197616577148, 
+    "stamp": 1791258607.3714, 
+    "startup_only": false, 
+    "threshold": 0.8, 
+    "top_label": "STRAIGHT"
+  }, 
+  "sign_fresh": true, 
+  "streams": {
+    "blue_mask": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/competition/debug/blue"
+    }, 
+    "blue_warped": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/competition/debug/front_bev"
+    }, 
+    "front_camera": {
+      "age_s": 0.18445730209350586, 
+      "fresh": true, 
+      "topic": "/front/usb_cam/image_raw"
+    }, 
+    "front_raw": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/front_raw"
+    }, 
+    "lane_tracking": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/lane_tracking"
+    }, 
+    "metric_bev": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/metric_bev"
+    }, 
+    "rear": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/rear_bev"
+    }, 
+    "sign_board_crop": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/sign_board_crop"
+    }, 
+    "sign_board_frame": {
+      "age_s": 0.11942791938781738, 
+      "fresh": true, 
+      "topic": "/debug/sign_board_frame"
+    }, 
+    "sign_capture_frame": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/sign_capture_frame"
+    }, 
+    "sign_capture_roi": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/sign_capture_roi"
+    }, 
+    "warped_image": {
+      "age_s": null, 
+      "fresh": false, 
+      "topic": "/debug/warped_image"
+    }
+  }
+}

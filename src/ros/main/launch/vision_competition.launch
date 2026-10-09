@@ -1,0 +1,85 @@
+<launch>
+  <!-- Lightweight green-start + white-line competition bring-up.
+       Parking-specific metric nodes are intentionally outside this test
+       composition so they cannot compete with the lane loop for CPU. -->
+  <arg name="front_device"
+       default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"/>
+  <arg name="front_image_topic" default="/front/usb_cam/image_raw"/>
+  <arg name="front_calibration"
+       default="$(find yihan_ros_pkg)/calibration/front_640x360.yaml"/>
+  <arg name="start_actuators" default="true"/>
+  <arg name="competition_mode" default="true"/>
+  <arg name="timed_obstacle_enabled" default="false"/>
+  <arg name="green_start_speed_raw" default="40"/>
+  <arg name="lane_speed_raw" default="40"/>
+  <arg name="lane_max_steering_raw" default="22"/>
+  <arg name="sign_hz" default="2.0"/>
+  <arg name="green_start_only" default="false"/>
+  <arg name="sign_debug" default="false"/>
+  <arg name="sign_post_green_hz" default="1.0"/>
+  <arg name="sign_confidence_threshold" default="0.60"/>
+  <arg name="sign_window_size" default="5"/>
+  <arg name="sign_required_votes" default="4"/>
+
+  <!-- Main controller, bridge, 20 Hz lane adapter, and optional actuator
+       bridge.  The lane adapter owns the white-line command channel. -->
+  <include file="$(find main)/launch/start_all.launch">
+    <arg name="parking_only" value="false"/>
+    <arg name="parking_observation_topic" value="/image/receive"/>
+    <arg name="require_calibrated_parking" value="false"/>
+    <arg name="allow_experimental_motion" value="false"/>
+    <arg name="allow_preparking_approach" value="false"/>
+    <arg name="allow_legacy_parking_trigger" value="false"/>
+    <arg name="green_start_speed_raw" value="$(arg green_start_speed_raw)"/>
+    <arg name="competition_mode" value="$(arg competition_mode)"/>
+    <arg name="timed_obstacle_enabled" value="$(arg timed_obstacle_enabled)"/>
+    <arg name="start_lane_controller" value="true"/>
+    <arg name="lane_normal_state" value="LANE_FOLLOWING"/>
+    <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+    <arg name="lane_max_steering_raw" value="$(arg lane_max_steering_raw)"/>
+    <arg name="lane_path_topic" value="/vision/lane_path"/>
+    <arg name="lane_confidence_topic" value="/vision/lane_confidence"/>
+    <arg name="lane_command_topic" value="/camera_yihan/receive"/>
+    <arg name="start_actuators" value="$(arg start_actuators)"/>
+  </include>
+
+  <node pkg="usb_cam" type="usb_cam_node" name="front_camera"
+        ns="front" output="screen">
+    <remap from="/front/front_camera/image_raw" to="$(arg front_image_topic)"/>
+    <param name="video_device" value="$(arg front_device)"/>
+    <param name="image_width" value="640"/>
+    <param name="image_height" value="360"/>
+    <param name="pixel_format" value="mjpeg"/>
+    <param name="framerate" value="30"/>
+    <param name="camera_frame_id" value="front_camera"/>
+    <param name="camera_name" value="front_camera"/>
+    <param name="camera_info_url" value="file://$(arg front_calibration)"/>
+  </node>
+
+  <!-- Keep lane vision on the first three cores; sign inference is isolated
+       on core 3 by the node below. -->
+  <node pkg="yihan_ros_pkg" type="camera_yihan_web.py"
+        name="front_lane_metric" output="screen"
+        launch-prefix="taskset -c 0-2">
+    <param name="image_topic" value="$(arg front_image_topic)"/>
+    <param name="lane_path_topic" value="/vision/lane_path"/>
+    <param name="lane_confidence_topic" value="/vision/lane_confidence"/>
+  </node>
+
+  <node pkg="hts_ros_pkg" type="sign_string_node.py"
+        name="sign_string_node" output="screen"
+        launch-prefix="nice -n 15 taskset -c 3"
+        args="--image-topic $(arg front_image_topic)
+              --publish-topic /camera_hts/send
+              --model $(find hts_ros_pkg)/scripts/resnet18.onnx
+              --hz $(arg sign_hz)
+              --post-green-hz $(arg sign_post_green_hz)">
+    <param name="sign_confidence_threshold"
+           value="$(arg sign_confidence_threshold)"/>
+    <param name="sign_window_size" value="$(arg sign_window_size)"/>
+    <param name="sign_required_votes" value="$(arg sign_required_votes)"/>
+    <param name="post_green_hz" value="$(arg sign_post_green_hz)"/>
+    <param name="green_start_only" value="$(arg green_start_only)"/>
+    <param name="debug" value="$(arg sign_debug)"/>
+  </node>
+</launch>

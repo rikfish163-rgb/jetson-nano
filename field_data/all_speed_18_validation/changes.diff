@@ -1,0 +1,324 @@
+--- before/src/robot/config/competition.yaml
++++ after/src/robot/config/competition.yaml
+@@ -10,7 +10,7 @@
+ steering_sign: 1
+ speed_sign: 1
+ speed_raw_limit: 60
+-speed_raw: {lane: 20, action: 20, parking: 16, gap: 16}
++speed_raw: {lane: 18, action: 18, parking: 18, gap: 18}
+ # Placeholder empirical mapping. Measure separately forward/reverse on YOUR chassis.
+ raw_to_mps: {forward: 0.008, reverse: 0.007}
+ lookahead: 0.30
+@@ -26,7 +26,7 @@
+ left_reference_heading_deg: 8
+ left_reference_lateral_m: 0.08
+ left_reference_stable_s: 0.5
+-left_reference_speed_raw: 12
++left_reference_speed_raw: 18
+ left_reference_raw_rate: 40.0
+ right_lock_command_rad: 0.10
+ right_turn_entry: 0.0
+@@ -79,7 +79,7 @@
+ blue_align_duration_s: 1.0 # fixed correction window; proceed even if not aligned
+ blue_aligned_advance_m: 0.36 # separate forward travel after the alignment window
+ straight_wait_s: 1.0
+-straight_speed_raw: 26 # same command as the proven startup setting; verify wheel motion
++straight_speed_raw: 18
+ straight_right_blue_offset_m: 0.30 # vehicle center stays this far left of right tape
+ straight_search_max_distance: 2.20 # legacy fixed-UTURN blue search only; unused by STRAIGHT
+ straight_search_timeout: 20.0
+@@ -102,8 +102,8 @@
+ uturn_alignment_max_distance: 0.50
+ uturn_blue_blind_entry_m: 0.60
+ uturn_blue_blind_max_m: 0.35
+-uturn_align_speed_raw: 12
+-uturn_reverse_speed_raw: 12
++uturn_align_speed_raw: 18
++uturn_reverse_speed_raw: 18
+ uturn_reverse_max_distance: 1.0
+ uturn_reverse_yaw_rad: 0.15
+ uturn_rear_blind_entry_m: 0.20
+@@ -127,8 +127,8 @@
+ parking_blue_required: true
+ # Explicit opt-in for forward P4/P5 white-line entry; existing parking is retained.
+ parking_mode: reverse_plan
+-parking_entry_speed_raw: 12
+-parking_final_speed_raw: 8
++parking_entry_speed_raw: 18
++parking_final_speed_raw: 18
+ parking_bottom_clearance_m: 0.04 # measured line to front bumper, not rear axle
+ parking_divider_trigger_x: 0.33 # divider aligned with front bumper (0.26 + 0.07)
+ parking_align_heading_deg: 6
+--- before/src/robot/config/maneuvers.yaml
++++ after/src/robot/config/maneuvers.yaml
+@@ -4,8 +4,8 @@
+ # This is NOT course-test mode: other signs still work and completion resumes lane.
+ # Vehicle motion still requires the normal live/enabled/actuator gates.
+ parking_mode: forward_center
+-parking_entry_speed_raw: 16
+-parking_final_speed_raw: 16
++parking_entry_speed_raw: 18
++parking_final_speed_raw: 18
+ parking_sign_association: true
+ left_turn_full_lock: true
+ timed_bypass_enabled: true
+@@ -18,16 +18,17 @@
+ uturn_trial_side: left
+ uturn_trial_entry_m: 0.40
+ uturn_trial_forward_mps: 0.250
+-uturn_trial_forward_raw: 26
++uturn_trial_forward_raw: 18
++uturn_trial_reverse_raw: 18
+ uturn_trial_pause_s: 0.7
+ uturn_trial_sequence:
+-  - {speed: 26, steering: 22, seconds: 3.6000000058}
+-  - {speed: -26, steering: 0, seconds: 1.2448132739}
+-  - {speed: -26, steering: -22, seconds: 0.8298755159}
+-  - {speed: -26, steering: 0, seconds: 1.4149377580}
+-  - {speed: 26, steering: 22, seconds: 4.0000000064}
+-  - {speed: -26, steering: -22, seconds: 0.8298755159}
+-  - {speed: 26, steering: 22, seconds: 1.2000000013}
++  - {speed: 18, steering: 22, seconds: 3.6000000058}
++  - {speed: -18, steering: 0, seconds: 1.2448132739}
++  - {speed: -18, steering: -22, seconds: 0.8298755159}
++  - {speed: -18, steering: 0, seconds: 1.4149377580}
++  - {speed: 18, steering: 22, seconds: 4.0000000064}
++  - {speed: -18, steering: -22, seconds: 0.8298755159}
++  - {speed: 18, steering: 22, seconds: 1.2000000013}
+ 
+ # Alternative relative U-turn requires a profile disabling uturn_trial_enabled.
+ # Parallel parking remains opt-in via parking_mode:=parallel_reverse.
+@@ -46,7 +47,7 @@
+ # Separate side-parking settings, without changing ordinary parking or lane.
+ parallel_parking_turn_radius_m: 0.65
+ parallel_parking_max_setup_m: 2.0
+-parallel_parking_speed_raw: 12
++parallel_parking_speed_raw: 18
+ parallel_parking_sample_step_m: 0.025
+ parallel_parking_double_arc_yaw_tolerance_deg: 3.0
+ parallel_parking_goal_position_tolerance_m: 0.03
+--- before/src/robot/lane/config.yaml
++++ after/src/robot/lane/config.yaml
+@@ -2,7 +2,7 @@
+ # 仅丢线重新接入时限制突然反打；同方向加大、减小、回正立即放行。
+ # 用 python2 tools/module_workspace.py check 检查参数归属。
+ lane_recovery_raw_rate: 88.0
+-# 普通循线只降弯道速度，不减小转角；直线仍采用启动命令中的速度。
+-lane_curve_speed_raw: 16
++# 弯道与当前直线速度统一为 18；转角控制不变。
++lane_curve_speed_raw: 18
+ # 弯道近点仅用于同向增强；不能替代可靠边线或突破硬件满舵。
+ lane_curve_lookahead_m: 0.45
+--- before/src/robot/obstacle/controller.py
++++ after/src/robot/obstacle/controller.py
+@@ -77,7 +77,7 @@
+         ctx.issued_steer=steer
+         ctx.reason='bypass_settle_left'
+         return 0,steer
+-    command=(26,steer if task['phase']=='LEFT' else -steer)
++    command=(ctx.cfg['speed_raw']['action'],steer if task['phase']=='LEFT' else -steer)
+     result=ctx.call('obstacle','checked_command',command,now,False)
+     if result==command:ctx.reason='bypass_left_2s' if task['phase']=='LEFT' else 'bypass_right_6s'
+     return result
+--- before/src/robot/test/test_requested_maneuvers.py
++++ after/src/robot/test/test_requested_maneuvers.py
+@@ -4,6 +4,18 @@
+ 
+ 
+ class RequestedManeuversTests(unittest.TestCase):
++    def test_bypass_uses_requested_action_speed_in_both_arcs(self):
++        c=self.core();self.addCleanup(c.close)
++        c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True)
++        c.cfg['speed_raw']['action']=18
++        self.scan(c,1.,(.49,0))
++        self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(18,.1))
++        for i in range(1,161):
++            t=1.+i*.05;self.scan(c,t,None)
++            command=c.tick(t)
++            if c.timed_bypass['phase'] in ('LEFT','RIGHT'):
++                self.assertEqual(command,(18,.1 if c.timed_bypass['phase']=='LEFT' else -.1))
++
+     def test_left_settle_is_stationary_and_not_part_of_two_second_drive(self):
+         c=self.core();self.addCleanup(c.close)
+         c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True,
+@@ -13,7 +25,7 @@
+         for i in range(1,49):
+             t=1.+i*.05;self.scan(c,t,None)
+             command=c.tick(t)
+-            self.assertEqual(command,(0,.1) if i<8 else (26,.1) if i<48 else (26,-.1))
++            self.assertEqual(command,(0,.1) if i<8 else (c.cfg['speed_raw']['action'],.1) if i<48 else (c.cfg['speed_raw']['action'],-.1))
+         self.assertEqual(c.timed_bypass['phase'],'RIGHT')
+ 
+     def test_stale_scan_restarts_settle_without_advancing_drive(self):
+@@ -52,7 +64,7 @@
+         for i in range(1,160):
+             t=1.+i*.05;self.scan(c,t,None);c.observe_lane([],0.,t)
+             if i in (60,64):c.observe_sign('STRAIGHT',.99,t,t)
+-            self.assertEqual(c.tick(t),(26,.1 if i<40 else -.1))
++            self.assertEqual(c.tick(t),(c.cfg['speed_raw']['action'],.1 if i<40 else -.1))
+         for t in (9.,9.1,9.2):
+             self.scan(c,t,None);c.observe_lane([(.3,0),(.6,0)],.9,t);c.tick(t)
+         self.assertEqual(c.state,'LANE')
+@@ -110,7 +122,7 @@
+         for i in range(1,168):
+             t=2.+i*.05;self.scan(c,t,None)
+             c.observe_lane([(.3,0),(.6,0)],.9,t)
+-            self.assertEqual(c.tick(t),(0,.1) if i<8 else (26,.1 if i<48 else -.1))
++            self.assertEqual(c.tick(t),(0,.1) if i<8 else (c.cfg['speed_raw']['action'],.1 if i<48 else -.1))
+             self.assertEqual(c.state,'TIMED_BYPASS')
+         self.scan(c,10.4,None)
+         c.observe_lane([(.3,0),(.6,0)],.9,10.4)
+@@ -216,10 +228,10 @@
+         c.tick(1.2)
+         self.assertEqual(c.action,'PARKING')
+         c.observe_ground(dict(source='front',part='parking_lines',slots=[],markers=[],lines=[]),1.3)
+-        self.assertEqual(c.tick(1.3),(12,0.))
++        self.assertEqual(c.tick(1.3),(c.cfg['parking_entry_speed_raw'],0.))
+         c.observe_ground(dict(source='front',part='parking_lines',slots=[],markers=[],
+             lines=[[(.4,.19),(1.,.19)],[(.4,-.19),(1.,-.19)],[(1.,-.19),(1.,.19)]]),1.4)
+-        self.assertEqual(c.tick(1.4),(12,0.))
++        self.assertEqual(c.tick(1.4),(c.cfg['parking_entry_speed_raw'],0.))
+         c.set_pose((.64,0,0),1.5)
+         self.assertEqual(c.tick(1.5),(0,0.))
+         self.assertEqual(c.state,'FINISHED')
+@@ -230,13 +242,13 @@
+         from robot.parking.forward import ForwardParking
+         c = self.core(); p = ForwardParking(c.cfg,c.pose,1.)
+         p.observe([],1.,c.pose)
+-        self.assertEqual(p.command(1.,c.pose),(12,0.))
++        self.assertEqual(p.command(1.,c.pose),(c.cfg['parking_entry_speed_raw'],0.))
+         lines = [[(.4,.24),(1.,.24)],[(.4,-.14),(1.,-.14)]]
+         p.observe(lines,1.1,c.pose)
+         speed,steer=p.command(1.1,c.pose)
+         self.assertGreater(speed,0);self.assertGreater(steer,0)
+         p.observe([],1.2,c.pose)
+-        self.assertEqual(p.command(1.2,c.pose),(12,0.))
++        self.assertEqual(p.command(1.2,c.pose),(c.cfg['parking_entry_speed_raw'],0.))
+         p.observe(lines+[[(1.,-.14),(1.,.24)]],1.3,c.pose)
+         self.assertGreater(p.command(1.3,c.pose)[0],0)
+         p.observe([],1.4,(.64,0.,0.))
+@@ -261,13 +273,13 @@
+             self.assertEqual(c.reason,'parking_follow_single_line')
+         c.observe_lane([],0.,3.1,{})
+         c.observe_ground(dict(source='front',part='parking_lines',slots=[],markers=[],lines=[]),3.1)
+-        self.assertEqual(c.tick(3.1),(12,0.))
++        self.assertEqual(c.tick(3.1),(c.cfg['parking_entry_speed_raw'],0.))
+         c.observe_ground(dict(source='front',part='parking_lines',slots=[],markers=[],lines=pair),3.2)
+         self.assertGreater(c.tick(3.2)[0],0)
+         self.assertEqual(c.parking_entry.phase,'CENTER')
+         c.observe_lane([],0.,3.3,{'LEFT':single})
+         c.observe_ground(dict(source='front',part='parking_lines',slots=[],markers=[],lines=[]),3.3)
+-        self.assertEqual(c.tick(3.3),(12,0.))
++        self.assertEqual(c.tick(3.3),(c.cfg['parking_entry_speed_raw'],0.))
+         self.assertEqual(c.reason,'parking_missing_white_straight')
+ 
+     def test_center_loss_does_not_chase_other_side_and_bottom_still_stops(self):
+@@ -283,7 +295,7 @@
+         right=[(.3,-.18),(.5,-.18),(.7,-.18)]
+         c.observe_lane([],0.,3.,{'RIGHT':right})
+         c.observe_ground(dict(source='front',part='parking_lines',lines=[]),3.)
+-        self.assertEqual(c.tick(3.),(12,0.))
++        self.assertEqual(c.tick(3.),(c.cfg['parking_entry_speed_raw'],0.))
+         self.assertEqual(c.reason,'parking_missing_white_straight')
+         c.observe_ground(dict(source='front',part='parking_lines',
+             lines=pair+[[(1.,-.19),(1.,.19)]]),3.1)
+@@ -301,7 +313,7 @@
+         c.observe_ground(dict(source='front',part='parking_lines',lines=pair),1.3)
+         c.tick(1.3)
+         c.observe_lane([],0.,1.4,{'LEFT':[(.3,.18),(.5,.18),(.7,.18)]})
+-        self.assertEqual(c.tick(1.4),(12,0.))
++        self.assertEqual(c.tick(1.4),(c.cfg['parking_entry_speed_raw'],0.))
+         self.assertEqual(c.parking_entry.reason,'parking_center_between_sides')
+ 
+     def test_parking_speed_16_for_side_and_pair_then_stop_at_bottom_clearance(self):
+@@ -370,17 +382,17 @@
+         self.scan(c,1.,(.51,0))
+         self.assertIsNone(c.execute('obstacle','begin_timed_bypass',1.).value)
+         self.scan(c,1.,(.49,0))
+-        self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(26,.1))
++        self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(c.cfg['speed_raw']['action'],.1))
+         for i in range(1,40):
+             t=1.+i*.05;self.scan(c,t,None)
+             cmd=c.tick(t)
+-            self.assertEqual(cmd,(26,.1))
++            self.assertEqual(cmd,(c.cfg['speed_raw']['action'],.1))
+         self.scan(c,3.,None);cmd=c.tick(3.)
+-        self.assertEqual(cmd,(26,-.1))
++        self.assertEqual(cmd,(c.cfg['speed_raw']['action'],-.1))
+         for i in range(41,160):
+             t=1.+i*.05;self.scan(c,t,None)
+             c.observe_lane([],0.,t);cmd=c.tick(t)
+-            self.assertEqual(cmd,(26,-.1))
++            self.assertEqual(cmd,(c.cfg['speed_raw']['action'],-.1))
+         self.scan(c,9.,None)
+         self.assertEqual(c.tick(9.),(0,0.))
+         self.assertEqual(c.reason,'bypass_wait_exit_lane')
+@@ -403,7 +415,7 @@
+         for i in range(41,160):
+             t=1.+i*.05;self.scan(c,t,None)
+             c.observe_lane([(.3,0),(.6,0)],.9,t)
+-            self.assertEqual(c.tick(t),(26,-.1))
++            self.assertEqual(c.tick(t),(c.cfg['speed_raw']['action'],-.1))
+             self.assertEqual(c.state,'TIMED_BYPASS')
+         self.scan(c,9.,None)
+         c.observe_lane([(.3,0),(.6,0)],.9,9.)
+@@ -417,7 +429,7 @@
+         self.scan(c,1.,(.49,0));c.execute('obstacle','begin_timed_bypass',1.)
+         c.red=True;self.assertEqual(c.tick(1.1),(0,0.))
+         c.red=False;self.scan(c,10.,None)
+-        self.assertEqual(c.tick(10.),(26,.1))
++        self.assertEqual(c.tick(10.),(c.cfg['speed_raw']['action'],.1))
+         self.assertEqual(c.timed_bypass['phase'],'LEFT')
+ 
+     def test_bypass_ignores_sweep_obstacle_but_stale_scan_stops(self):
+@@ -426,11 +438,11 @@
+         self.assertEqual(c.tick(2.),(0,0.))
+         self.assertEqual(c.reason,'scan_missing_or_stale')
+         self.scan(c,2.1,(.35,0))
+-        self.assertEqual(c.tick(2.1),(26,.1))
++        self.assertEqual(c.tick(2.1),(c.cfg['speed_raw']['action'],.1))
+         self.assertEqual(c.obstacle_check['reason'],'timed_bypass_sweep_disabled')
+         for i in range(1,41):
+             t=2.1+i*.05;self.scan(c,t,(.20,0));command=c.tick(t)
+-        self.assertEqual(command,(26,-.1))
++        self.assertEqual(command,(c.cfg['speed_raw']['action'],-.1))
+         c.estop=True
+         self.assertEqual(c.tick(4.2),(0,0.))
+         self.assertEqual(c.reason,'emergency_stop')
+--- before/src/robot/test/test_uturn_production.py
++++ after/src/robot/test/test_uturn_production.py
+@@ -38,8 +38,10 @@
+         root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+         with open(os.path.join(root, 'config/uturn_course_test.yaml')) as stream:
+             field = yaml.safe_load(stream)
+-        # Keep the saved field profile intact; only segment 4 was extended.
++        # Preserve the saved timing/steering profile; production uses RAW 18.
+         field['uturn_trial_sequence'][3]['seconds'] += 1.0
++        for row in field['uturn_trial_sequence']:
++            row['speed'] = 18 if row['speed'] > 0 else -18
+         self.assertEqual(self.cfg['uturn_trial_sequence'], field['uturn_trial_sequence'])
+         task = TimedUturn(self.cfg)
+         self.assertEqual(self.cfg['uturn_trial_entry_m'], .40)
+@@ -55,9 +57,9 @@
+ 
+     def test_40cm_entry_finishes_before_seven_segments(self):
+         task = TimedUturn(self.cfg)
+-        self.assertEqual(task.command(0), (26, 0.))
++        self.assertEqual(task.command(0), (18, 0.))
+         for i in range(1, 16):
+-            self.assertEqual(task.command(i*.1), (26, 0.))
++            self.assertEqual(task.command(i*.1), (18, 0.))
+             self.assertEqual(task.status()['phase'], 'ENTRY')
+         task.command(1.6)
+         self.assertEqual(task.status()['phase'], 'GEAR_PAUSE_1')
+--- before/tools/sign_detector_20260916/run_yolo_vehicle.sh
++++ after/tools/sign_detector_20260916/run_yolo_vehicle.sh
+@@ -18,7 +18,7 @@
+   live:=true enabled:=true start_actuators:=true start_rear:=false \
+   lidar_enabled:=true parking_enabled:=true parking_mode:=forward_center wait_green:=true \
+   lane_hz:=12 lane_window_height:=40 lane_min_span:=0.15 \
+-  lane_speed_raw:=20 action_speed_raw:=20 straight_speed_raw:=20 \
++  lane_speed_raw:=18 action_speed_raw:=18 straight_speed_raw:=18 \
+   lookahead:=0.55 action_lookahead:=0.30 steering_command_scale_rad:=0.1 \
+   sign_backend:=yolo_trt \
+   sign_model:=/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine \

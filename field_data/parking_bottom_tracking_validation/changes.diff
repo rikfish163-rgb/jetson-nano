@@ -1,0 +1,222 @@
+--- before/src/robot/config/maneuvers.yaml
++++ after/src/robot/config/maneuvers.yaml
+@@ -4,7 +4,8 @@
+ # This is NOT course-test mode: other signs still work and completion resumes lane.
+ # Vehicle motion still requires the normal live/enabled/actuator gates.
+ parking_mode: forward_center
+-parking_entry_speed_raw: 12
++parking_entry_speed_raw: 16
++parking_final_speed_raw: 16
+ parking_sign_association: true
+ left_turn_full_lock: true
+ timed_bypass_enabled: true
+--- before/src/robot/parking/entry.py
++++ after/src/robot/parking/entry.py
+@@ -177,10 +177,10 @@
+         lateral = -(pose[0]-center[0])*math.sin(theta)+(pose[1]-center[1])*math.cos(theta)
+         return wrap(theta-pose[2]),lateral
+ 
+-    def remaining(self):
++    def remaining(self, pose=None):
+         if self.bottom is None:
+             return None
+-        a,b = [local(self.pose,p) for p in self.bottom]
++        a,b = [local(self.pose if pose is None else pose,p) for p in self.bottom]
+         dx,dy = b[0]-a[0],b[1]-a[1]
+         if abs(dy)<.05 or abs(dx/dy)>.35:
+             return None
+--- before/src/robot/parking/forward.py
++++ after/src/robot/parking/forward.py
+@@ -15,6 +15,42 @@
+         self.associate=cfg.get('parking_sign_association',False)
+         self.sides_behind_sign_rejected=0
+         self.bottom_target_aligned=True
++        self.bottom_pose=None;self.motion_sample=None;self.motion_ratios=[]
++        self.motion_scale=1.;self.motion_speed=None
++
++    def remember_bottom(self,line,stamp,source):
++        if source!='tracked_bottom':
++            # A newly associated line cannot calibrate travel against another.
++            self.motion_sample=None;self.motion_ratios=[];self.motion_scale=1.
++        self.bottom,self.bottom_stamp,self.bottom_source=line,stamp,source
++        self.bottom_pose=tuple(self.pose)
++        remaining=WhiteParking.remaining(self)
++        if remaining is None:return
++        sample=self.motion_sample
++        if sample is not None:
++            origin,previous,previous_stamp=sample
++            heading=(self.pose[2]-origin[2]+math.pi)%(2*math.pi)-math.pi
++            progress=local(origin,self.pose)[0]
++            if abs(heading)>.08 or stamp-previous_stamp>3.:
++                self.motion_sample=None
++            elif progress>=.08:
++                ratio=(previous-remaining)/progress
++                if 0<=ratio<=1.5:
++                    self.motion_ratios=(self.motion_ratios+[ratio])[-3:]
++                    self.motion_scale=sorted(self.motion_ratios)[len(self.motion_ratios)//2]
++                self.motion_sample=None
++        if self.motion_sample is None:
++            self.motion_sample=(tuple(self.pose),remaining,stamp)
++
++    def remaining(self):
++        # Only extrapolation after the last measured line uses the locally
++        # observed travel ratio. Do not alter global odometry or other actions.
++        pose=self.pose
++        if self.bottom_pose is not None:
++            origin=self.bottom_pose
++            pose=(origin[0]+(pose[0]-origin[0])*self.motion_scale,
++                  origin[1]+(pose[1]-origin[1])*self.motion_scale,pose[2])
++        return WhiteParking.remaining(self,pose=pose)
+ 
+     def observe(self,lines,stamp,pose=None):
+         if stamp<=self.stamp:return
+@@ -45,7 +81,24 @@
+                     b=(end,slope*end+intercept)
+                 sides.append((a,b,slope,intercept))
+             elif abs(dy)>.18 and abs(dx/dy)<.35:cross.append((a,b,line))
+-        if self.associate and self.bottom_target_aligned:
++        if self.bottom is not None:
++            # P initializes identity. Thereafter track the same measured stripe
++            # even when dead-reckoned P has drifted behind the visible bottom.
++            a,b=[local(self.pose,p) for p in self.bottom]
++            dx,dy=b[0]-a[0],b[1]-a[1]
++            matches=[]
++            if abs(dy)>.18 and abs(dx/dy)<.5:
++                slope=dx/dy;expected=a[0]-a[1]*slope
++                for a,b,line in cross:
++                    low,high=sorted((a[1],b[1]))
++                    if high-low<.30 or not low<=-.12<.12<=high:continue
++                    k=(b[0]-a[0])/(b[1]-a[1]);x=a[0]-a[1]*k
++                    error=abs(x-expected)
++                    if .05<x<1.8 and error<=.12 and abs(math.atan(k)-math.atan(slope))<=.15:
++                        matches.append((error,line))
++            if matches:
++                self.remember_bottom(min(matches,key=lambda row:row[0])[1],stamp,'tracked_bottom')
++        if self.associate and self.bottom_target_aligned and self.bottom_stamp!=stamp:
+             # Near the bottom the side rails can leave the image or fragment.
+             # The retained P position still identifies the target corridor;
+             # do not require a complete side pair to retain the bottom target.
+@@ -60,8 +113,7 @@
+                 if not .05<bx<=1.2 or not 0<=ax-bx<=.25:continue
+                 bottoms.append((abs(ax-bx),line))
+             if bottoms:
+-                self.bottom=min(bottoms,key=lambda row:row[0])[1]
+-                self.bottom_stamp=stamp;self.bottom_source='p_near_cross'
++                self.remember_bottom(min(bottoms,key=lambda row:row[0])[1],stamp,'p_near_cross')
+                 # Keep extracting visible sides for centering on the approach.
+         candidates=[]
+         for i,left in enumerate(sides):
+@@ -113,8 +165,7 @@
+             if max(abs(ends[j]-ys[j]) for j in (0,1))>.08:continue
+             bottoms.append((bx,line))
+         if bottoms and self.bottom_stamp!=stamp:
+-            self.bottom=min(bottoms,key=lambda p:p[0])[1];self.bottom_stamp=stamp
+-            self.bottom_source='paired_far_end'
++            self.remember_bottom(min(bottoms,key=lambda p:p[0])[1],stamp,'paired_far_end')
+ 
+     def command(self,now,pose):
+         self.pose=tuple(pose);self.reason=None
+@@ -138,6 +189,7 @@
+             self.debug.update(remaining_m=remaining,target_clearance_m=clearance,
+                 bumper_clearance_m=None if remaining is None else remaining+clearance,
+                 bottom_age_s=now-self.bottom_stamp,
++                visual_motion_scale=self.motion_scale,visual_motion_samples=len(self.motion_ratios),
+                 distance_source='live_bottom' if self.bottom_stamp==self.stamp else 'measured_bottom_plus_pose')
+             if remaining is None:
+                 self.reason='parking_bottom_geometry_invalid';return (0,0.)
+@@ -149,6 +201,11 @@
+             # blind region; require fresh image callbacks above throughout.
+             if remaining<=self.cfg.get('parking_final_max_m',.30):
+                 speed=min(speed,self.cfg.get('parking_final_speed_raw',8))
++        if self.motion_speed!=speed:
++            # A different raw speed can have a different deadband/gain. Wait
++            # for new visual travel evidence rather than transferring its ratio.
++            self.motion_speed=speed;self.motion_sample=None;self.motion_ratios=[]
++            self.motion_scale=1.
+         if self.view is None:
+             if self.single is not None and self.phase=='APPROACH':
+                 self.reason='parking_follow_sign_side'
+--- before/src/robot/test/test_parking_bottom_tracking.py
++++ after/src/robot/test/test_parking_bottom_tracking.py
+@@ -0,0 +1,81 @@
++"""Keep measuring the selected bottom after the cached P anchor drifts."""
++import unittest
++import test_parking_sign_anchor as fixtures
++from robot.common.geometry import world
++
++
++class ParkingBottomTrackingTests(unittest.TestCase):
++    def parking(self):
++        c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
++        p.cfg.update(parking_entry_speed_raw=16,parking_final_speed_raw=16)
++        p.observe([[ (.85,-.3),(.85,.3)]],1.,c.pose)
++        self.assertIsNotNone(p.bottom)
++        p.command(1.,c.pose)
++        return c,p
++
++    def test_visible_bottom_updates_despite_speed_model_overestimating_travel(self):
++        c,p=self.parking()
++        # Model advances 0.6 m, real image only 0.3 m. Cached P falls behind
++        # the visible bottom; it must no longer veto an established line track.
++        for i in range(1,11):
++            pose=(.06*i,0.,0.)
++            line=[(.85-.03*i,-.3),(.85-.03*i,.3)]
++            p.observe([[world(pose,q) for q in line]],1.+i*.2,pose)
++            self.assertGreater(p.command(1.+i*.2,pose)[0],0)
++            self.assertIsNone(p.status)
++            self.assertAlmostEqual(p.bottom_stamp,1.+i*.2)
++        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.22)
++        self.assertEqual(p.bottom_source,'tracked_bottom')
++        self.assertEqual(p.debug['distance_source'],'live_bottom')
++        self.assertAlmostEqual(p.motion_scale,.5)
++        # No paint in the near blind region: consume visually calibrated travel,
++        # not the model's exaggerated displacement.
++        p.observe([],3.2,(.9,0.,0.))
++        self.assertGreater(p.command(3.2,(.9,0.,0.))[0],0)
++        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.07)
++        p.observe([],3.4,(.97,0.,0.))
++        self.assertEqual(p.command(3.4,(.97,0.,0.)),(0,0.))
++
++    def test_tracking_does_not_switch_to_background_line_or_adjacent_bay(self):
++        c,p=self.parking()
++        for lines in ([[ (1.3,-.4),(1.3,.4)]],
++                      [[(.85,.2),(.85,.7)]],
++                      [[(.7,-.3),(1.,.3)]]):
++            p.observe(lines,p.stamp+.1,c.pose)
++            self.assertEqual(p.bottom_stamp,1.)
++
++    def test_tracking_accepts_reversed_endpoints_and_keeps_centering(self):
++        c,p=self.parking()
++        p.sign_anchor=(.7,0.)  # stale P is already behind the measured bottom
++        p.observe([[ (.82,.3),(.82,-.3)]],1.2,c.pose)
++        self.assertEqual(p.bottom_stamp,1.2)
++        self.assertGreater(p.command(1.2,c.pose)[0],0)
++
++    def test_finish_requires_arrival_even_after_p_anchor_drifts(self):
++        c,p=self.parking()
++        for i in range(1,8):
++            pose=(i*.1,0.,0.)
++            x=.85-i*.07
++            p.observe([[world(pose,q) for q in ((x,-.3),(x,.3))]],1.+i*.2,pose)
++            command=p.command(1.+i*.2,pose)
++            if i<7:self.assertGreater(command[0],0)
++        self.assertEqual(command,(0,0.))
++        self.assertEqual(p.status,'FINISHED')
++
++    def test_yaw_change_cannot_calibrate_translation_scale(self):
++        c,p=self.parking()
++        p.remember_bottom([(.85,-.3),(.85,.3)],1.1,'tracked_bottom')
++        p.pose=(.1,0.,.2)
++        p.remember_bottom([world(p.pose,q) for q in ((.8,-.3),(.8,.3))],1.3,'tracked_bottom')
++        self.assertEqual(p.motion_scale,1.)
++        self.assertEqual(p.motion_ratios,[])
++
++    def test_new_association_resets_previous_motion_calibration(self):
++        c,p=self.parking()
++        p.motion_scale=.4;p.motion_ratios=[.4]
++        p.remember_bottom([(.8,-.3),(.8,.3)],1.2,'p_near_cross')
++        self.assertEqual(p.motion_scale,1.)
++        self.assertEqual(p.motion_ratios,[])
++
++
++if __name__=='__main__':unittest.main()

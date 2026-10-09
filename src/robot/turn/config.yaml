@@ -1,0 +1,35 @@
+# 左右转与路口直行：只在此文件写本模块需要覆盖的参数。
+# 当前 max_steer 的左转满舵，以连续新车道图像确认出口。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+left_turn_full_lock: true
+left_lock_min_angle_deg: 30
+left_lock_heading_deg: 20
+
+# 直行牌：蓝线停车后的直行段保持固定舵量，不叠加蓝线纠偏。
+# RAW负数向右、正数向左、0回正；不影响绿牌启动和普通巡线。
+straight_steering_raw: -5
+
+# 正式 LEFT：前轴到蓝线、停车等待后执行。单位 raw / 秒。
+# Production LEFT: straight 2.2 s, then left turn 3.6 s.
+blue_timed_enabled: true
+left_timed_enabled: true
+left_timed_entry_speed_raw: 30
+left_timed_entry_steering_raw: 0
+left_timed_entry_s: 2.2
+left_timed_turn_speed_raw: 30
+left_timed_turn_steering_raw: 22
+left_timed_turn_s: 3.6
+
+# Production RIGHT after shared blue stop. Signed RAW commands, seconds.
+# Three motion stages, a stationary pause, then confirmed lane handoff.
+right_timed_enabled: true
+right_timed_reverse_speed_raw: -30
+right_timed_reverse_steering_raw: 0
+right_timed_reverse_s: 1.1
+right_timed_turn_speed_raw: 30
+right_timed_turn_steering_raw: -22
+right_timed_turn_s: 4.7
+right_timed_exit_reverse_speed_raw: -30
+right_timed_exit_reverse_steering_raw: 0
+right_timed_exit_reverse_s: 2.5
+right_timed_exit_stop_s: 2.0

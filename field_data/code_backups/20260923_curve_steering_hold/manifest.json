@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "435809aa3f972990f221536b8a6885ddfd053672bd634fd6f7cde8425ee67ac7",
+    "after": "63927613117a4cc0d535350d15a1f26ecd134151a8d1ef41dd18f53a02017de6"
+  },
+  {
+    "path": "src/robot/master/state_machine.py",
+    "before": "b1f123f25a1d855d92c3d189e965ec29a22eb88bc00a918e83a3cee64b1ae54c",
+    "after": "c9637c81502571db9332d14fcb4bfc42695896458ba872e5e78948495858f07a"
+  },
+  {
+    "path": "src/robot/master/telemetry.py",
+    "before": "ca1b877b976fc0e98633bada1df33ff3ac056bf646697d789174cba2e522ba5d",
+    "after": "ce8aa6c022fd388f11e9f462e0a2074075901360d72d51db1cae7a6e7a2dbc97"
+  },
+  {
+    "path": "src/robot/test/test_curve_entry_control.py",
+    "before": "d9cf11c1891969826c4c9e15ecc0d9ec889f548d5aa7b4a7aafcf428b4cdf93d",
+    "after": "6fc847c66b7f9e9ec0ebb7cd64427700cbef181d9b32d086f407ee5d58be781b"
+  },
+  {
+    "path": "src/robot/test/test_curve_steering_hold.py",
+    "before": null,
+    "after": "1bda9de37c3edc683ba6c847f715b6092d60065f2eb2b9940614ac5d50c75774"
+  },
+  {
+    "path": "src/robot/test/test_ros_adapter.py",
+    "before": "bda7832eddc564f0e432f05253b57917d1ced0e1ddeb452ee0cdf72057eb3637",
+    "after": "48c6bbd22c929463b82dca7ef44c6f7d0012d0c4157cd7c16a6256e5173934d7"
+  }
+]

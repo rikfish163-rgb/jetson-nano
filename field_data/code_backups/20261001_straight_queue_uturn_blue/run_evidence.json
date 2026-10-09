@@ -1,0 +1,928 @@
+[
+  {
+    "stamp": 1790882866.080426,
+    "event": "competition_control_event",
+    "state": "BLUE_APPROACH",
+    "reason": "straight_approach_stop_line",
+    "command": [
+      20,
+      -0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882868.905517,
+    "event": "competition_control_event",
+    "state": "BLUE_STOP",
+    "reason": "blue_stop_wait_straight",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882869.376033,
+    "event": "competition_state",
+    "state": "BLUE_STOP",
+    "reason": "blue_stop_wait_straight",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882869.1184866,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.7157419919967651,
+      "label": "",
+      "source": "yolov5s"
+    },
+    "blue_approach": {
+      "origin": [
+        4.252805058027982,
+        -2.2328742904615564,
+        -1.3349428829481458
+      ],
+      "heading_error_deg": -9.714155241515316,
+      "point": [
+        4.60841540245854,
+        -2.9958034821603707
+      ],
+      "started": 1790882866.080426,
+      "yaw": -1.587031182410499,
+      "stop_until": 1790882869.905517,
+      "align_stamp": -1.0,
+      "remaining_m": -0.011018216676362973,
+      "align_frames": 0,
+      "observed_stamp": 1790882867.5881917,
+      "point_local": [
+        0.3983294949329602,
+        0.22591944561670949
+      ],
+      "phase": "STOP",
+      "observation_age_s": 1.3173253536224365,
+      "right_blue": {
+        "lateral_error_m": 0.042856093258389016,
+        "target": [
+          1.0,
+          0.001866627852748713
+        ],
+        "point": [
+          1.0065935745239254,
+          -0.29865623474121195
+        ],
+        "stamp": 1790882868.5861392,
+        "distance_m": 0.257143906741611,
+        "heading_deg": -2.349271475305984,
+        "target_offset_m": 0.3,
+        "heading": -0.04100252226727408
+      },
+      "stop_line_distance_m": 0.3544981292913665,
+      "stop_pose": [
+        4.324317117847235,
+        -2.6366459302110594,
+        -1.417487189396192
+      ]
+    },
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.12287592887878418,
+      "scan_completed": 0.19213175773620605,
+      "scan": 0.2922556400299072,
+      "front_ground": 0.12287592887878418,
+      "rear_ground": 1790882870.376033
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882869.937312,
+    "event": "competition_control_event",
+    "state": "MANEUVER",
+    "reason": "straight_align_right_blue",
+    "command": [
+      20,
+      0.000445209934418348
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882873.669828,
+    "event": "competition_control_event",
+    "state": "MANEUVER",
+    "reason": "straight_continue",
+    "command": [
+      20,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882877.977355,
+    "event": "competition_state",
+    "state": "MANEUVER",
+    "reason": "straight_continue",
+    "command": [
+      20,
+      0.0
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882877.785628,
+      "decision": "action_sign_ignored",
+      "confidence": 0.9305515289306641,
+      "label": "STRAIGHT",
+      "source": "yolov5s"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.44345535779087875,
+    "source_ages": {
+      "lane": 0.1917269229888916,
+      "scan_completed": 0.39632487297058105,
+      "scan": 0.49628210067749023,
+      "front_ground": 0.2586784362792969,
+      "rear_ground": 1790882878.977355
+    },
+    "straight_search": {
+      "origin": [
+        4.325084788666588,
+        -2.6416139772634377,
+        -1.417487189396192
+      ],
+      "started": 1790882869.937312,
+      "elapsed_s": 8.005808115005493,
+      "minimum_distance_m": 1.25,
+      "phase": "STRAIGHT_DISTANCE",
+      "travelled_m": 1.1012506089290057,
+      "right_blue": null,
+      "timeout_s": 20.0,
+      "speed_raw": 20
+    }
+  },
+  {
+    "stamp": 1790882879.010922,
+    "event": "competition_control_event",
+    "state": "MANEUVER",
+    "reason": "straight_wait_exit_lane",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882879.052808,
+    "event": "competition_control_event",
+    "state": "LANE",
+    "reason": "tracking_lane",
+    "command": [
+      30,
+      -0.006136363636363637
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882883.170613,
+    "event": "competition_control_event",
+    "state": "LANE",
+    "reason": "lane_stream_stale",
+    "command": [
+      0,
+      -0.027664150829534873
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882883.235361,
+    "event": "competition_control_event",
+    "state": "LANE",
+    "reason": "tracking_lane",
+    "command": [
+      30,
+      -0.028085241187053422
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882886.029933,
+    "event": "competition_control_event",
+    "state": "GAP",
+    "reason": "tracking_gap",
+    "command": [
+      16,
+      -0.00409090909090909
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882886.278614,
+    "event": "competition_control_event",
+    "state": "GAP",
+    "reason": "gap_limit_wait_for_lane",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882886.575583,
+    "event": "competition_state",
+    "state": "GAP",
+    "reason": "gap_limit_wait_for_lane",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882886.451598,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.18409323692321777,
+      "scan_completed": 0.19762897491455078,
+      "scan": 0.29821324348449707,
+      "front_ground": 0.18409323692321777,
+      "rear_ground": 1790882887.575583
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882911.310726,
+    "event": "competition_control_event",
+    "state": "LANE",
+    "reason": "tracking_lane",
+    "command": [
+      30,
+      0.008372264182088574
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882918.308736,
+    "event": "competition_control_event",
+    "state": "BLUE_APPROACH",
+    "reason": "blue_align_heading",
+    "command": [
+      16,
+      -0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882919.349216,
+    "event": "competition_control_event",
+    "state": "BLUE_APPROACH",
+    "reason": "blue_advance_distance",
+    "command": [
+      20,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882922.005829,
+    "event": "competition_control_event",
+    "state": "BLUE_STOP",
+    "reason": "blue_stop_wait_uturn",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882922.376864,
+    "event": "competition_state",
+    "state": "BLUE_STOP",
+    "reason": "blue_stop_wait_uturn",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882922.118424,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": {
+      "origin": [
+        3.250147175350222,
+        -6.404749706366955,
+        -2.7029227375792244
+      ],
+      "point": [
+        2.5835943538513337,
+        -6.873976983197984
+      ],
+      "heading_within_tolerance": false,
+      "observation_age_s": 2.887378454208374,
+      "alignment_completion": "timed",
+      "heading_error_deg": 0.5185843892045192,
+      "alignment_elapsed_s": 1.0404798984527588,
+      "yaw": -2.906459373235313,
+      "align_stamp": 1790882919.1184506,
+      "alignment_source": "visual",
+      "observed_stamp": 1790882919.1184506,
+      "stop_pose": [
+        2.782572155920805,
+        -6.577933877389014,
+        -2.8029484489861654
+      ],
+      "aligned_at": 1790882919.349216,
+      "alignment_duration_s": 1.0,
+      "started": 1790882918.308736,
+      "point_local": [
+        0.28602511146025955,
+        0.21312747788017666
+      ],
+      "advance_travelled_m": 0.3653218919706454,
+      "phase": "STOP",
+      "advance_distance_m": 0.36,
+      "advance_origin": [
+        3.127140310428338,
+        -6.4565113685485915,
+        -2.7938974439451028
+      ],
+      "remaining_m": -0.00532189197064542,
+      "align_frames": 0,
+      "stop_until": 1790882923.005829
+    },
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.12056207656860352,
+      "scan_completed": 0.3142516613006592,
+      "scan": 0.414902925491333,
+      "front_ground": 0.12056207656860352,
+      "rear_ground": 1790882923.376864
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882923.034017,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_wait_start",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882923.084451,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_entry",
+    "command": [
+      26,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882924.741093,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_1",
+    "command": [
+      0,
+      0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882924.80485,
+    "event": "competition_state",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_1",
+    "command": [
+      0,
+      0.03
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882924.4535422,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.1527690887451172,
+      "scan_completed": 0.34134674072265625,
+      "scan": 0.44187211990356445,
+      "front_ground": 0.2184441089630127,
+      "rear_ground": 1790882925.80485
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882925.475222,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_1",
+    "command": [
+      26,
+      0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882929.13455,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_2",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882929.375563,
+    "event": "competition_state",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_2",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882929.1205447,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.12364554405212402,
+      "scan_completed": 0.21633672714233398,
+      "scan": 0.3163468837738037,
+      "front_ground": 0.12364554405212402,
+      "rear_ground": 1790882930.375563
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882929.863158,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_2",
+    "command": [
+      -26,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882930.785569,
+    "event": "competition_state",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_2",
+    "command": [
+      -26,
+      0.0
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882930.4520772,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.12484049797058105,
+      "scan_completed": 0.22630715370178223,
+      "scan": 0.32618260383605957,
+      "front_ground": 0.20055246353149414,
+      "rear_ground": 1790882931.785569
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882931.126302,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_3",
+    "command": [
+      -26,
+      -0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882931.986519,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_4",
+    "command": [
+      -26,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882932.427234,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_5",
+    "command": [
+      0,
+      0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882932.975239,
+    "event": "competition_state",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_5",
+    "command": [
+      0,
+      0.03
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882932.7871528,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.12227296829223633,
+      "scan_completed": 0.21682357788085938,
+      "scan": 0.31668686866760254,
+      "front_ground": 0.2537975311279297,
+      "rear_ground": 1790882933.975239
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882933.164998,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_5",
+    "command": [
+      26,
+      0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882937.171998,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_6",
+    "command": [
+      0,
+      -0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882937.928444,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_6",
+    "command": [
+      -26,
+      -0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882938.855231,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_7",
+    "command": [
+      0,
+      0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882939.001819,
+    "event": "competition_state",
+    "state": "UTURN",
+    "reason": "uturn_trial_gear_pause_7",
+    "command": [
+      0,
+      0.03
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882938.786463,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.4008737209468466,
+    "source_ages": {
+      "lane": 0.14935755729675293,
+      "scan_completed": 0.44615793228149414,
+      "scan": 0.5456831455230713,
+      "front_ground": 0.14935755729675293,
+      "rear_ground": 1790882940.001819
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882939.559245,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_7",
+    "command": [
+      26,
+      0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882939.981557,
+    "event": "competition_state",
+    "state": "UTURN",
+    "reason": "uturn_trial_segment_7",
+    "command": [
+      26,
+      0.03
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882939.7852979,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.6013074874634933,
+    "source_ages": {
+      "lane": 0.262920618057251,
+      "scan_completed": 0.4256405830383301,
+      "scan": 0.5236482620239258,
+      "front_ground": 0.262920618057251,
+      "rear_ground": 1790882940.981557
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882940.763641,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_settle",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882941.175551,
+    "event": "competition_state",
+    "state": "UTURN",
+    "reason": "uturn_trial_settle",
+    "command": [
+      0,
+      0.0
+    ],
+    "pending": null,
+    "sign": {
+      "votes": 0,
+      "stamp": 1790882940.7864385,
+      "decision": "low_confidence_or_unknown",
+      "confidence": 0.0,
+      "label": "",
+      "source": "yolov5s",
+      "range_reason": "no_candidate"
+    },
+    "blue_approach": null,
+    "lane_confidence": 0.1146234375,
+    "source_ages": {
+      "lane": 0.18987774848937988,
+      "scan_completed": 0.22076106071472168,
+      "scan": 0.3204483985900879,
+      "front_ground": 0.18987774848937988,
+      "rear_ground": 1790882942.175551
+    },
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882941.479078,
+    "event": "competition_control_event",
+    "state": "UTURN",
+    "reason": "uturn_trial_exit_align",
+    "command": [
+      26,
+      0.03
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  },
+  {
+    "stamp": 1790882941.930765,
+    "event": "competition_control_event",
+    "state": "LANE",
+    "reason": "tracking_lane",
+    "command": [
+      30,
+      -0.0023463169425772365
+    ],
+    "pending": null,
+    "sign": {},
+    "blue_approach": null,
+    "lane_confidence": null,
+    "source_ages": null,
+    "straight_search": null
+  }
+]

@@ -1,0 +1,6 @@
+bash syntax: OK
+launch XML: OK
+pure run: recorder absent; sign capture_dir empty
+recording override: recorder present; sign default capture enabled
+max_steer: 0.2; UTURN forward/reverse RAW: 20/20; timed mode: true
+No nodes or actuators started.

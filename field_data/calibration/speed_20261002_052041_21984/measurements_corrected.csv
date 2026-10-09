@@ -1,0 +1,9 @@
+index,direction,speed_raw,requested_seconds,command_seconds,distance_cm,status
+1,forward,15,2.0,2.051208150000093,26.0,measured
+2,forward,20,2.0,2.0450451940000676,35.0,measured
+3,forward,25,2.0,2.0411283710000134,45.0,measured
+4,forward,30,2.0,2.0137749079999594,57.0,measured
+5,reverse,15,2.0,2.0507190030002675,35.0,measured
+6,reverse,20,2.0,2.038694441000189,36.0,measured
+7,reverse,25,2.0,2.006816398999945,46.0,measured
+8,reverse,30,2.0,2.0282016490000387,57.0,measured

@@ -1,0 +1,35 @@
+test_cancelled_left_heading_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_heading_endpoint_with_missing_lane_continues_right_until_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_no_lane_stops_only_after_completing_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_obstacle_still_ahead_or_too_early_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_off_axis_or_low_confidence_lane_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_recorded_aligned_lane_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_recorded_four_second_view_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_repeated_source_image_does_not_confirm_exit (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_safety_stop_pauses_timer_and_resumes_remaining_right_time (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_six_second_cap_keeps_existing_partial_lane_handoff (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_stable_current_lane_cannot_take_over_before_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_extended_left_arc_still_requires_six_seconds_of_right_motion (test_bypass_heading_geometry.BypassHeadingGeometryTests) ... ok
+test_blocked_right_entry_has_bounded_left_extension (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_clear_imminent_right_sweep_is_not_enough_to_end_left (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_clear_right_entry_preserves_nominal_two_second_switch (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_left_extension_releases_right_when_measured_obstacle_clears (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_left_extension_still_checks_imminent_obstacle_and_coverage (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_actual_body_collision_or_unknown_space_still_stops (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_new_clear_scan_resumes_original_right_phase (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_recorded_point_clears_while_vehicle_advances (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_recorded_side_return_uses_safe_sweep_at_action_speed (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_safe_clearance_cannot_extend_motion_without_bound (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_completed_bypass_allows_a_distinct_later_obstacle_to_trigger (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_bypass_does_not_disable_lidar_for_later_near_obstacle (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_entity_is_not_triggered_again_after_protection_reopens (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_lidar_disabled_remains_an_explicit_bypass (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_non_target_raw_obstacle_still_stops_collision_sweep (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_shape_filter_does_not_authorize_unknown_ordinary_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_keeps_near_field_collision_guard (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_stops_on_unknown_near_field_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 15.450s
+
+OK

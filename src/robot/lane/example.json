@@ -1,0 +1,22 @@
+{
+  "state": {
+    "state": "LANE",
+    "lane": [
+      [
+        0.3,
+        0
+      ],
+      [
+        0.6,
+        0
+      ]
+    ],
+    "lane_stamp": 10.0,
+    "lane_confidence": 1.0
+  },
+  "operation": "lane_command",
+  "args": [
+    10.0
+  ],
+  "module": "lane"
+}

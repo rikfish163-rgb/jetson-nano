@@ -1,0 +1,30 @@
+<launch>
+  <!-- Dedicated lidar avoidance + lane following, using the existing policy. -->
+  <arg name="live" default="false"/>
+  <arg name="enabled" default="false"/>
+  <arg name="start_actuators" default="false"/>
+  <arg name="lane_speed_raw" default=""/>
+  <arg name="front_device" default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"/>
+  <arg name="lidar_shape_filter" default="true"/>
+  <include file="$(find robocup_competition)/launch/stack.launch">
+    <arg name="live" value="$(arg live)"/>
+    <arg name="enabled" value="$(arg enabled)"/>
+    <arg name="start_actuators" value="$(arg start_actuators)"/>
+    <arg name="start_cameras" value="true"/>
+    <arg name="start_lane" value="true"/>
+    <arg name="start_lidar" value="true"/>
+    <arg name="lidar_enabled" value="true"/>
+    <arg name="lidar_shape_filter" value="$(arg lidar_shape_filter)"/>
+    <arg name="front_device" value="$(arg front_device)"/>
+    <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+    <arg name="start_rear" value="false"/>
+    <arg name="start_sign" value="false"/>
+    <arg name="start_ground" value="false"/>
+    <arg name="parking_enabled" value="false"/>
+    <arg name="wait_green" value="false"/>
+    <arg name="blue_default_straight" value="false"/>
+  </include>
+  <!-- Applied after all shared/module configuration loads. -->
+  <param name="/competition/config/timed_bypass_enabled" value="true" type="bool"/>
+  <param name="/competition/config/bypass_enabled" value="false" type="bool"/>
+</launch>

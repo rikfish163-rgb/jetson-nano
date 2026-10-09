@@ -1,0 +1,59 @@
+{
+  "motion_seconds": 8.874688800673564, 
+  "feedback": false, 
+  "calibration": {
+    "reverse_left_radius": 0.5645372549, 
+    "reverse_right_radius": 1.3608228346, 
+    "forward_mps_per_raw": 0.0096153846, 
+    "reverse_mps_per_raw": 0.0092692308, 
+    "reverse_steering_sign": -1, 
+    "forward_left_radius": 0.6784646272, 
+    "forward_right_radius": 0.9925
+  }, 
+  "shift": "left", 
+  "segments": [
+    {
+      "seconds": 2.8000000044799997, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 1.6597510318348516, 
+      "speed": -26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.80000000128, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.8000000012799999, 
+      "speed": 26, 
+      "steering": 0
+    }, 
+    {
+      "seconds": 1.6000000025599996, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.4149377579587129, 
+      "speed": -26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.8000000012799999, 
+      "speed": 26, 
+      "steering": 22
+    }
+  ], 
+  "pause_seconds": 0.7, 
+  "version": 2, 
+  "full_plan_predicted_endpoint": [
+    -0.017440054188015846, 
+    0.5959927296733338, 
+    3.0965554294977515
+  ], 
+  "stop_after": null
+}

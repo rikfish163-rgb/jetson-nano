@@ -1,0 +1,46 @@
+--- before/src/robot/turn/controller.py
++++ src/robot/turn/controller.py
+@@ -95,28 +95,35 @@
+         return ctx.call('motion','stop','blue_approach_timeout')
+     if s['phase'] == 'ALIGN':
+         reference=ctx.call('turn','front_straight_reference',now,s['point'])
+-        if reference is None or reference['stamp'] != s['observed_stamp']:
+-            s['align_frames']=0
+-            return ctx.call('motion','stop','blue_align_target_missing')
+-        heading=reference['heading']
++        measured=(reference is not None and reference['stamp'] == s['observed_stamp'])
++        # Dispatch already confirmed this blue event and its normal. Once the
++        # stripe leaves the image, finish against the retained normal using
++        # pose feedback; an empty image must not cancel an accepted action.
++        # Rejected/new stripes cannot replace the accepted target here.
++        target_yaw=reference['yaw'] if measured else s['yaw']
++        heading=wrap(target_yaw-ctx.pose[2])
++        s['alignment_source']='visual' if measured else 'latched_pose'
+         s['heading_error_deg']=math.degrees(heading)
+         aligned=abs(heading) <= math.radians(ctx.cfg['straight_align_tolerance_deg'])
+-        if reference['stamp'] > s['align_stamp']:
++        if measured and reference['stamp'] > s['align_stamp']:
+             if reference['stamp']-s['align_stamp'] > ctx.cfg['sensor_timeout']:
+                 s['align_frames']=0
+             s['align_stamp']=reference['stamp']
+             s['align_frames']=s['align_frames']+1 if aligned else 0
+-        if s['align_frames'] < ctx.cfg['exit_frames']:
++        complete=(s['align_frames'] >= ctx.cfg['exit_frames']) if measured else aligned
++        if not complete:
+             ctx.lane_source='blue_normal_alignment'
+             command=(ctx.cfg['speed_raw']['gap'],
+                      0. if aligned else steering_for_heading(heading,ctx.cfg))
+             result=ctx.call('obstacle','checked_command',command,now,False)
+-            if result[0]:ctx.reason='blue_align_heading'
++            if result[0]:
++                ctx.reason='blue_align_heading' if measured else 'blue_align_latched_heading'
+             return result
+         # Freeze the measured heading and reset distance here. Neither the
+         # travel used to align nor the later stationary wait counts as entry.
+-        origin=(ctx.pose[0],ctx.pose[1],reference['yaw'])
++        origin=(ctx.pose[0],ctx.pose[1],target_yaw)
+         s.update(phase='ADVANCE',advance_origin=origin,aligned_at=now,
++                 alignment_completion=s['alignment_source'],
+                  advance_distance_m=ctx.cfg['blue_aligned_advance_m'],
+                  advance_travelled_m=0.)
+     travelled=local(s['advance_origin'],ctx.pose)[0]

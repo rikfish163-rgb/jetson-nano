@@ -1,0 +1,231 @@
+# SI geometry, rear axle origin, x forward, y left, yaw CCW. Raw is NOT m/s.
+wheelbase: 0.26
+track: 0.20
+tire_radius: 0.025
+front_overhang: 0.07
+rear_overhang: 0.07
+body_width: 0.24
+max_steer: 0.46275
+steering_raw_limit: 22
+steering_sign: 1
+speed_sign: 1
+speed_raw_limit: 60
+speed_raw: {lane: 20, action: 20, parking: 16, gap: 16}
+# Placeholder empirical mapping. Measure separately forward/reverse on YOUR chassis.
+raw_to_mps: {forward: 0.008, reverse: 0.007}
+lookahead: 1.0
+lane_lateral_full_scale_m: 0.075 # ordinary lane: lateral offset at raw +/-22
+lane_curvature_preview: false # full vehicle script enables measured-curve feedforward
+lane_curve_speed_raw: 12
+action_lookahead: 0.30
+lidar_timeout: 0.8 # independent of the 0.5 s visual timeout; final-ray timestamp
+left_turn_full_lock: false # true overrides the configured radius with the full-lock model arc
+# Right: reverse 0.45 m, then use fixed steering and align to the exit.
+right_turn_full_lock: true
+right_exit_on_blue: false # enable explicitly for continuous right turn until new blue
+right_direct_left_follow: true
+right_align_lookahead: 0.30
+right_left_capture_max_m: 0.80
+left_reference_heading_deg: 8
+left_reference_lateral_m: 0.08
+left_reference_stable_s: 0.5
+left_reference_speed_raw: 12
+left_reference_raw_rate: 40.0
+right_lock_command_rad: 0.10
+right_turn_entry: 0.0
+right_reverse_entry_m: 0.45
+right_lock_min_angle_deg: 30
+right_lock_max_angle_deg: 120
+right_lock_heading_deg: 15
+parking_lookahead: 0.15
+parking_goal_tolerance: 0.01 # perpendicular parking model tolerance; requires field calibration
+pose_mode: command_model # or odom; command_model is estimated, not encoder feedback
+uturn_relative_enabled: false # requires measured /competition/uturn_scene
+uturn_vision_enabled: false # opt-in ground-image pose + configured corridor
+uturn_blue_landmarks_enabled: false # only the visual U-turn profile enables it
+uturn_trial_enabled: false # explicit config/uturn_trial.yaml opt-in
+uturn_trial_resume_lane: false
+uturn_course_test: false # reset a previous course-test launch on the same ROS master
+odom_topic: /odom
+odom_timeout: 0.30
+sensor_timeout: 0.50
+sign_timeout: 1.50
+sign_votes: 1 # GREEN startup: fresh consecutive frames at sign_confidence or above
+direction_sign_votes: 2 # LEFT/RIGHT/STRAIGHT/UTURN: fresh consecutive frames
+parking_sign_votes: 3 # PARKING requires this many fresh consecutive accepted frames
+# All seven labels use this confidence threshold.
+sign_confidence: 0.80
+red_sign_confidence: 0.80
+sign_width_m: 0.195
+sign_max_distance_m: 0.60 # approximate camera optical depth, not rear-axle distance
+sign_ttl: 5.0
+# Launch sign_ttl:=0 stores a direction until its blue-line action is consumed.
+latch_direction_sign: true
+sign_rearm_distance: 1.0
+wait_green: false
+lane_min_confidence: 0.35
+gap_max_distance: 0.80
+gap_max_seconds: 4.0
+marker_trigger_x: 0.36
+# An unassigned blue line does not invent a straight instruction.
+blue_default_straight: false
+marker_rearm_distance: 0.70
+marker_memory_s: 8.0
+lane_width: 0.60
+turn_radius: 0.65
+turn_entry: 0.45
+left_turn_entry: 0.12 # advance after blue wait before beginning the left arc
+turn_exit: 0.55
+intersection_wait_s: 0.0 # set explicitly in full.launch for stop/wait/turn tests
+turn_angle_deg: 90.0
+straight_distance: 1.25 # independent straight segment, then return to lane; floor 1.25 m
+blue_align_duration_s: 1.0 # fixed correction window; proceed even if not aligned
+blue_aligned_advance_m: 0.36 # separate forward travel after the alignment window
+straight_wait_s: 1.0
+straight_speed_raw: 20
+startup_steering_raw: 0 # green-start straight steering command
+straight_right_blue_offset_m: 0.30 # vehicle center stays this far left of right tape
+straight_search_max_distance: 2.20 # legacy fixed-UTURN blue search only; unused by STRAIGHT
+straight_search_timeout: 20.0
+straight_align_distance: 1.60 # use the nearest measured blue transverse line
+straight_align_tolerance_deg: 5.0 # center steering inside this error during the timed window
+straight_blue_clearance: 0.10 # rear axle passes the exit line before lane takeover
+straight_search_heading_deg: 20 # maximum local path heading for straight/startup lane handoff
+exit_yaw_tolerance: 0.22
+exit_lane_heading_tolerance: 1.0471975512 # new lane tangent relative to vehicle, 60 deg
+exit_lateral_tolerance: 0.18
+exit_frames: 3
+exit_search_distance: 0.50
+path_goal_tolerance: 0.045
+path_yaw_tolerance: 0.13
+action_timeout: 40.0
+cusp_pause: 0.40
+# U-turn reuses the current LEFT profile; rear blue stops the front axle.
+uturn_align_heading_deg: 8
+uturn_align_stable_s: 0.5
+uturn_alignment_max_distance: 0.50
+uturn_blue_blind_entry_m: 0.60
+uturn_blue_blind_max_m: 0.35
+uturn_align_speed_raw: 12
+uturn_reverse_speed_raw: 12
+uturn_reverse_max_distance: 1.0
+uturn_reverse_yaw_rad: 0.15
+uturn_rear_blind_entry_m: 0.20
+uturn_rear_blind_max_m: 0.60
+uturn_brake_lead_m: 0.02
+uturn_axle_tolerance_m: 0.06
+parking_settle_frames: 3
+slot_memory_s: 8.0
+slot_match_distance: 0.18
+parking_visual_pose_gain: 0.35
+parking_visual_max_shift: 0.035
+parking_visual_max_yaw_shift: 0.04
+slot_min_coverage: 0.80
+# P1-P5 retain manual selection; AUTO requires one designated observed target ID.
+parking_slot: P4
+# Forward-plan AUTO never infers a nearest empty bay from geometry alone.
+# Enable with parking_slot:=AUTO only when the camera producer supplies identity.
+parking_observe_s: 0.8
+parking_sync_s: 0.5
+parking_prep_offset: 0.0
+parking_blue_required: true
+# Measured front-camera forward plan covers all designated P1-P5 bays.
+parking_mode: forward_plan
+parking_entry_speed_raw: 12
+parking_final_speed_raw: 8
+parking_bottom_clearance_m: 0.04 # measured line to front bumper, not rear axle
+parking_divider_trigger_x: 0.33 # divider aligned with front bumper (0.26 + 0.07)
+parking_align_heading_deg: 6
+parking_align_lateral_m: 0.035
+parking_align_stable_s: 0.5
+parking_final_max_m: 0.30
+parking_entry_timeout_s: 35
+parking_visible_side_m: 0.18 # partial side anchored to a measured terminating line
+parking_capture_yaw_deg: 45 # vehicle may approach obliquely; bay-pair check uses bay axes
+parking_near_start_tolerance_m: 0.12 # single observed bay must match near turning start
+slots:
+  P1: {kind: parallel, length: 0.70, width: 0.36, rank: 0, min_candidates: 3, yaw: 0.0}
+  P2: {kind: parallel, length: 0.70, width: 0.36, rank: 1, min_candidates: 3, yaw: 0.0}
+  P3: {kind: parallel, length: 0.70, width: 0.36, rank: 2, min_candidates: 3, yaw: 0.0}
+  P4: {kind: perpendicular, length: 0.45, width: 0.38, rank: -1, min_candidates: 2, yaw: 1.57079632679}
+  # Forward-plan association raises this floor to two same-kind candidates.
+  P5: {kind: perpendicular, length: 0.45, width: 0.38, rank: 0, min_candidates: 1, yaw: 1.57079632679}
+parking_yaw_match_tolerance: 0.35
+parking_mouth_side: right # initial road-relative slot side; tune for approach direction
+parking_road_half_width: 0.60
+parking_search_x_margin: 1.10
+parking_max_cusps: 4
+planner_step: 0.10
+planner_require_initial_forward: false
+planner_xy_resolution: 0.045
+planner_yaw_resolution: 0.15
+planner_max_expansions: 18000
+planner_timeout: 6.0 # Nano Python2 CPU budget; vehicle remains stopped during search
+lidar:
+  x: 0.0
+  y: 0.0
+  yaw: 0.0
+  range_cap: 6.0
+  min_rays: 30
+  unknown_is_obstacle: true
+  shape_filter: false # full.launch overrides true when explicitly re-enabled
+  shape_mode: line_reject # straight / curved-or-irregular / unresolved, no 8cm board cutoff
+  line_max_ratio: 0.025 # perpendicular RMS / cluster span (orientation independent)
+  line_inlier_ratio: 0.90 # fraction within twice flat_line_error of the fitted line
+  line_max_bend_deg: 10.0 # two resolved segments must agree to confirm a straight shape
+  obstacle_min_ratio: 0.05 # positive irregularity evidence; between thresholds => unknown
+  obstacle_min_bend_deg: 25.0 # reliable segment change confirms a curve above noise floor
+  compact_min_span: 0.015 # m; reject tiny/degenerate clusters
+  compact_max_span: 0.50 # m; driving target size, not parking occupancy
+  cluster_gap: 0.045
+  cluster_min_points: 6
+  shape_max_clusters: 128
+  round_radius_min: 0.025
+  round_radius_max: 0.25
+  round_fit_error: 0.008
+  round_min_arc_deg: 40
+  flat_line_error: 0.0025
+  flat_min_width: 0.04
+  wall_min_width: 0.55
+# Low-level legacy default; full.launch temporarily overrides enabled=false.
+lidar_enabled: true
+# Driving filter is geometric, not semantic. Parking retains raw occupancy.
+obstacle_stop_distance: 0.35
+obstacle_preview_distance: 1.10
+obstacle_margin: 0.035
+# Turn this on only where borrowing the left lane crosses DASHED paint.
+# Legal zones are relative to the initial vehicle/odom frame, NOT PDF pixels.
+bypass_enabled: false
+bypass_zones: [] # e.g. [ [xmin,xmax,ymin,ymax] ], covering entire outward/pass/return sweep
+bypass_offset: 0.55
+bypass_transition: 1.25
+bypass_pass: 0.65
+bypass_retry_s: 1.0
+front_image_topic: /front/usb_cam/image_raw
+lane_path_topic: /vision/lane_path
+lane_confidence_topic: /vision/lane_confidence
+lane_observation_topic: /vision/lane_observation
+lane_min_path_span: 0.15
+scan_topic: /scan
+lane_frame: base_link
+scan_frame: laser_link
+ground_hz: 8.0
+ground_timeout: 1.25 # source-image budget only; lidar/lane still use sensor_timeout
+slot_hz: 2.0 # total bay-search budget, shared between front and rear
+parking_enabled: true
+sign_hz: 3.0
+rear_bev: {pixels_per_m: 400.0, origin_u: 240.0, origin_v: 400.0, axle_x: -0.07, y_sign: 1.0}
+front_camera:
+  width: 640
+  height: 360
+  K: [338.724360, 0, 342.299347, 0, 338.759483, 169.956657, 0, 0, 1]
+  D: [-0.313909, 0.080347, 0.001009, -0.000759, 0]
+  H: [-0.455307634051, -1.851847127629, 416.759846959926, 0.072741868805, -3.467660494260, 575.376931923200, 0.000124867696, -0.007523542869, 1.0]
+  bev_width: 480
+  bev_height: 400
+  pixels_per_m: 400.0
+  origin_u: 240.0
+  origin_v: 600.0
+  # Recalibrated after the camera impact; valid for this camera pose/crop only.
+blue: {h_min: 90, h_max: 135, s_min: 45, v_min: 25, thickness_min: 0.010, thickness_max: 0.065, length_min: 0.08, length_max: 1.60, long_min: 0.35, angle_tolerance: 0.30}
+white: {s_max: 75, v_min: 165, dimension_tolerance: 0.08, edge_coverage: 0.60}

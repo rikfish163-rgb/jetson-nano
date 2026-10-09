@@ -1,0 +1,194 @@
+{
+  "confidence": 0.7717722058296204, 
+  "detections": [
+    {
+      "bounds": [
+        319, 
+        100, 
+        47, 
+        33
+      ], 
+      "confidence": 0.7717722058296204, 
+      "label": "park", 
+      "scores": {
+        "green": 2.4603014026070014e-06, 
+        "left": 3.4767381293931976e-05, 
+        "park": 0.7717722058296204, 
+        "red": 8.53748424560763e-05, 
+        "right": 4.7520581574644893e-05, 
+        "straight": 6.546084478031844e-05, 
+        "uturn": 6.444605969591066e-05
+      }
+    }, 
+    {
+      "bounds": [
+        341, 
+        99, 
+        33, 
+        33
+      ], 
+      "confidence": 0.9359227418899536, 
+      "label": "park", 
+      "scores": {
+        "green": 6.231310544535518e-05, 
+        "left": 4.667113898904063e-05, 
+        "park": 0.9359227418899536, 
+        "red": 2.9899192668381147e-05, 
+        "right": 1.6129641153384e-05, 
+        "straight": 0.00036269763950258493, 
+        "uturn": 0.00014715053839609027
+      }
+    }, 
+    {
+      "bounds": [
+        293, 
+        102, 
+        29, 
+        28
+      ], 
+      "confidence": 0.9476068019866943, 
+      "label": "park", 
+      "scores": {
+        "green": 2.016669350268785e-05, 
+        "left": 4.799950329470448e-05, 
+        "park": 0.9476068019866943, 
+        "red": 3.797113095060922e-05, 
+        "right": 5.313031215337105e-05, 
+        "straight": 0.00011513666686369106, 
+        "uturn": 0.00027400313410907984
+      }
+    }
+  ], 
+  "inference_ms": 101.65286064147949, 
+  "input_mode": "full_frame_yolo", 
+  "label": "", 
+  "range_reason": "low_confidence", 
+  "roi_diagnostics": {
+    "candidate_count": 3, 
+    "regions": [
+      {
+        "bounds": [
+          319, 
+          100, 
+          47, 
+          33
+        ], 
+        "reason": "#1 park 0.77"
+      }, 
+      {
+        "bounds": [
+          341, 
+          99, 
+          33, 
+          33
+        ], 
+        "reason": "#2 park 0.94"
+      }, 
+      {
+        "bounds": [
+          293, 
+          102, 
+          29, 
+          28
+        ], 
+        "reason": "#3 park 0.95"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        319, 
+        100, 
+        47, 
+        33
+      ], 
+      "confidence": 0.7717722058296204, 
+      "label": "park", 
+      "scores": {
+        "green": 2.4603014026070014e-06, 
+        "left": 3.4767381293931976e-05, 
+        "park": 0.7717722058296204, 
+        "red": 8.53748424560763e-05, 
+        "right": 4.7520581574644893e-05, 
+        "straight": 6.546084478031844e-05, 
+        "uturn": 6.444605969591066e-05
+      }
+    }, 
+    {
+      "bounds": [
+        341, 
+        99, 
+        33, 
+        33
+      ], 
+      "confidence": 0.9359227418899536, 
+      "label": "park", 
+      "scores": {
+        "green": 6.231310544535518e-05, 
+        "left": 4.667113898904063e-05, 
+        "park": 0.9359227418899536, 
+        "red": 2.9899192668381147e-05, 
+        "right": 1.6129641153384e-05, 
+        "straight": 0.00036269763950258493, 
+        "uturn": 0.00014715053839609027
+      }
+    }, 
+    {
+      "bounds": [
+        293, 
+        102, 
+        29, 
+        28
+      ], 
+      "confidence": 0.9476068019866943, 
+      "label": "park", 
+      "scores": {
+        "green": 2.016669350268785e-05, 
+        "left": 4.799950329470448e-05, 
+        "park": 0.9476068019866943, 
+        "red": 3.797113095060922e-05, 
+        "right": 5.313031215337105e-05, 
+        "straight": 0.00011513666686369106, 
+        "uturn": 0.00027400313410907984
+      }
+    }
+  ], 
+  "route_gate": {
+    "center_ratio": 0.53515625, 
+    "confidence_threshold": 0.9, 
+    "enabled": true, 
+    "frames": 0, 
+    "left_center_ratio": 0.3, 
+    "min_height_ratio": 0.04, 
+    "required_frames": 3, 
+    "small_target": true, 
+    "track_id": null
+  }, 
+  "scores": {
+    "GREEN": 2.4603014026070014e-06, 
+    "LEFT": 3.4767381293931976e-05, 
+    "PARKING": 0.7717722058296204, 
+    "RED": 8.53748424560763e-05, 
+    "RIGHT": 4.7520581574644893e-05, 
+    "STRAIGHT": 6.546084478031844e-05, 
+    "UTURN": 6.444605969591066e-05
+  }, 
+  "sign_bounds": [
+    319, 
+    100, 
+    47, 
+    33
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.09166666666666666, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.12612581253051758, 
+  "stamp": 1791545806.5824013, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "PARKING"
+}

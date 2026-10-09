@@ -1,0 +1,68 @@
+{
+  "confidence": 0.6746026277542114, 
+  "detections": [
+    {
+      "bounds": [
+        82, 
+        113, 
+        16, 
+        26
+      ], 
+      "confidence": 0.6746026277542114, 
+      "label": "left", 
+      "scores": {
+        "green": 1.443348537577549e-05, 
+        "left": 0.6746026277542114, 
+        "park": 0.00053698371630162, 
+        "red": 0.00012862260336987674, 
+        "right": 0.0011491557816043496, 
+        "straight": 0.0036104193422943354, 
+        "uturn": 0.0009566841763444245
+      }
+    }
+  ], 
+  "inference_ms": 88.67001533508301, 
+  "input_mode": "full_frame_yolo", 
+  "label": "", 
+  "range_reason": "too_small", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          82, 
+          113, 
+          16, 
+          26
+        ], 
+        "reason": "#1 left 0.67"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "scores": {
+    "GREEN": 1.443348537577549e-05, 
+    "LEFT": 0.6746026277542114, 
+    "PARKING": 0.00053698371630162, 
+    "RED": 0.00012862260336987674, 
+    "RIGHT": 0.0011491557816043496, 
+    "STRAIGHT": 0.0036104193422943354, 
+    "UTURN": 0.0009566841763444245
+  }, 
+  "sign_bounds": [
+    82, 
+    113, 
+    16, 
+    26
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.07222222222222222, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.10262250900268555, 
+  "stamp": 1791527890.6126184, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "LEFT"
+}

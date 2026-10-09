@@ -1,0 +1,43 @@
+test_detected_uturn_is_queued_before_075_and_survives_blank_frames (test_straight_uturn_handoff.StraightUturnHandoffTests) ... FAIL
+test_mixed_direction_votes_cannot_confirm_the_wrong_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests) ... FAIL
+test_new_blue_takes_over_before_straight_can_overshoot_front_axle (test_straight_uturn_handoff.StraightUturnHandoffTests) ... FAIL
+test_queued_uturn_survives_completed_straight_lane_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... FAIL
+test_red_blocks_uturn_blue_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_uturn_without_confirmed_new_transverse_blue_cannot_interrupt_straight (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+
+======================================================================
+FAIL: test_detected_uturn_is_queued_before_075_and_survives_blank_frames (test_straight_uturn_handoff.StraightUturnHandoffTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_uturn_handoff.py", line 36, in test_detected_uturn_is_queued_before_075_and_survives_blank_frames
+    self.assertEqual(core.next_direction, 'UTURN')
+AssertionError: None != 'UTURN'
+
+======================================================================
+FAIL: test_mixed_direction_votes_cannot_confirm_the_wrong_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_uturn_handoff.py", line 101, in test_mixed_direction_votes_cannot_confirm_the_wrong_next_action
+    self.assertEqual(core.next_direction, 'UTURN')
+AssertionError: None != 'UTURN'
+
+======================================================================
+FAIL: test_new_blue_takes_over_before_straight_can_overshoot_front_axle (test_straight_uturn_handoff.StraightUturnHandoffTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_uturn_handoff.py", line 51, in test_new_blue_takes_over_before_straight_can_overshoot_front_axle
+    self.assertEqual(core.action, 'UTURN')
+AssertionError: 'STRAIGHT' != 'UTURN'
+
+======================================================================
+FAIL: test_queued_uturn_survives_completed_straight_lane_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_uturn_handoff.py", line 88, in test_queued_uturn_survives_completed_straight_lane_handoff
+    self.assertEqual(core.pending, 'UTURN')
+AssertionError: None != 'UTURN'
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.665s
+
+FAILED (failures=4)

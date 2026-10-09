@@ -1,0 +1,51 @@
+{
+  "applied": false, 
+  "user_mouth_lateral_m": 0.29, 
+  "bay_length_m": 0.7, 
+  "assumed_parallel_to_bay": true, 
+  "ground_points_m": [
+    [
+      1.600000023841858, 
+      -0.28999999165534973
+    ], 
+    [
+      1.600000023841858, 
+      -0.6499999761581421
+    ], 
+    [
+      0.8999999761581421, 
+      -0.28999999165534973
+    ], 
+    [
+      0.8999999761581421, 
+      -0.6499999761581421
+    ]
+  ], 
+  "validation_gap_m": 0.9931398289710016, 
+  "bay_width_m": 0.36, 
+  "validation_width_m": 0.45078496447123106, 
+  "validation_passed": false, 
+  "validation_expected_gap_m": 0.88, 
+  "user_front_axle_gap_m": 1.34, 
+  "source_rectified_points_px": [
+    [
+      395.1447448730469, 
+      165.22877502441406
+    ], 
+    [
+      455.84765625, 
+      164.8170928955078
+    ], 
+    [
+      456.90887451171875, 
+      197.42599487304688
+    ], 
+    [
+      585.5094604492188, 
+      197.8982391357422
+    ]
+  ], 
+  "validation_image": "current/frame05.png", 
+  "source_image": "second_position/clear_front.png", 
+  "note": "The 88 cm measurement must correspond to this saved validation image; pose correspondence has not been rechecked."
+}

@@ -1,0 +1,584 @@
+{
+  "source": "/home/hetaisheng/.codex/attachments/f4440f68-5c5c-4876-bcdf-436588939df0/Pasted text.txt",
+  "records": [
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887027.898746,
+      "state": "TIMED_BYPASS",
+      "reason": "bypass_settle_left",
+      "command": [
+        0,
+        0.03
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887028.329591,
+      "state": "TIMED_BYPASS",
+      "reason": "bypass_left_2s",
+      "command": [
+        20,
+        0.03
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887029.494175,
+      "state": "TIMED_BYPASS",
+      "reason": "lidar_obstacle_in_sweep",
+      "command": [
+        0,
+        0.0
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887029.984911,
+      "state": "TIMED_BYPASS",
+      "reason": "bypass_left_2s",
+      "command": [
+        20,
+        0.03
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887030.871523,
+      "state": "TIMED_BYPASS",
+      "reason": "bypass_extend_left_for_clearance",
+      "command": [
+        20,
+        0.03
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887030.983357,
+      "state": "TIMED_BYPASS",
+      "reason": "bypass_right_6s",
+      "command": [
+        20,
+        -0.03
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887065.890469,
+      "state": "BLUE_APPROACH",
+      "reason": "straight_approach_stop_line",
+      "command": [
+        20,
+        -0.00818181818181818
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": {
+        "origin": [
+          4.569719339405464,
+          -4.95250901174746,
+          -2.0048603784301733
+        ],
+        "stop_reference": "front_bumper",
+        "point": [
+          4.319193364480989,
+          -5.8663196475778445
+        ],
+        "started": 1790887065.890469,
+        "yaw": -2.1742795288354895,
+        "align_stamp": -1.0,
+        "remaining_m": 0.5290670746024793,
+        "phase": "STOP_LINE",
+        "observed_stamp": 1790887065.589164,
+        "heading_error_deg": -9.707002286916728,
+        "align_frames": 0,
+        "observation_age_s": 0.30130505561828613,
+        "right_blue": {
+          "lateral_error_m": 0.030202098555276835,
+          "target": [
+            1.0,
+            -0.15087931962716528
+          ],
+          "point": [
+            1.1617006476719276,
+            -0.485145488342294
+          ],
+          "stamp": 1790887065.589164,
+          "distance_m": 0.26979790144472315,
+          "heading_deg": -10.291372661495657,
+          "target_offset_m": 0.3,
+          "heading": -0.17961833749283107
+        },
+        "stop_line_distance_m": 0.8945756030348184,
+        "point_local": [
+          0.9344291137629948,
+          0.15702029684309812
+        ]
+      },
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887068.022566,
+      "state": "BLUE_STOP",
+      "reason": "blue_stop_wait_straight",
+      "command": [
+        0,
+        0.0
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": {
+        "origin": [
+          4.569719339405464,
+          -4.95250901174746,
+          -2.0048603784301733
+        ],
+        "stop_reference": "front_bumper",
+        "point_local": [
+          0.40158659097136873,
+          0.22444773091269307
+        ],
+        "point": [
+          4.448096025781693,
+          -5.700126416091728
+        ],
+        "started": 1790887065.890469,
+        "yaw": -2.20452213853992,
+        "align_stamp": -1.0,
+        "heading_error_deg": -9.53346615159962,
+        "remaining_m": -0.006450783755114247,
+        "align_frames": 0,
+        "observed_stamp": 1790887066.8669734,
+        "stop_pose": [
+          4.428633796682367,
+          -5.2404854740528934,
+          -2.0381317650670736
+        ],
+        "phase": "STOP",
+        "observation_age_s": 1.155592679977417,
+        "right_blue": {
+          "lateral_error_m": 0.028618400799768573,
+          "target": [
+            1.0,
+            -0.013792995314166664
+          ],
+          "point": [
+            1.0011425558250693,
+            -0.31411149742570044
+          ],
+          "stamp": 1790887067.723117,
+          "distance_m": 0.2713815992002314,
+          "heading_deg": -2.4300117804615495,
+          "target_offset_m": 0.3,
+          "heading": -0.04241170643130365
+        },
+        "stop_line_distance_m": 0.3588664355143247,
+        "stop_until": 1790887069.022566
+      },
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887069.050516,
+      "state": "MANEUVER",
+      "reason": "straight_align_right_blue",
+      "command": [
+        20,
+        5.1827891104897733e-05
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887072.910299,
+      "state": "MANEUVER",
+      "reason": "straight_continue",
+      "command": [
+        20,
+        0.0
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_sign_decision",
+      "stamp": 1790887073.6550806,
+      "state": null,
+      "reason": null,
+      "command": null,
+      "sign": {
+        "source": "yolov5s",
+        "votes": 0,
+        "stamp": 1790887073.6550806,
+        "decision": "action_sign_ignored",
+        "confidence": 0.8637653589248657,
+        "label": "UTURN"
+      },
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_state",
+      "stamp": 1790887074.43462,
+      "state": "MANEUVER",
+      "reason": "straight_continue",
+      "command": [
+        20,
+        0.0
+      ],
+      "sign": {
+        "votes": 0,
+        "stamp": 1790887073.9947617,
+        "decision": "action_sign_ignored",
+        "confidence": 0.8109707832336426,
+        "label": "UTURN",
+        "source": "yolov5s"
+      },
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": 0.6369407680627696,
+      "straight_search": {
+        "origin": [
+          4.424098735252624,
+          -5.249468656346999,
+          -2.038483628564491
+        ],
+        "started": 1790887069.050516,
+        "elapsed_s": 5.313545227050781,
+        "minimum_distance_m": 1.25,
+        "phase": "STRAIGHT_DISTANCE",
+        "travelled_m": 0.6985268707275487,
+        "right_blue": null,
+        "timeout_s": 20.0,
+        "speed_raw": 20
+      },
+      "blue_approach": null,
+      "front_blue_lines_local": [
+        {
+          "length": 0.5800000000000001,
+          "heading_deg": 0.0,
+          "point": [
+            0.6130240097045894,
+            0.12000000000000022
+          ]
+        }
+      ],
+      "source_ages": {
+        "lane": 0.2461683750152588,
+        "scan_completed": 0.22866606712341309,
+        "scan": 0.328432559967041,
+        "front_ground": 0.2461683750152588,
+        "rear_ground": 1790887075.43462
+      }
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887078.489864,
+      "state": "MANEUVER",
+      "reason": "straight_wait_exit_lane",
+      "command": [
+        0,
+        0.0
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_state",
+      "stamp": 1790887078.652015,
+      "state": "MANEUVER",
+      "reason": "straight_wait_exit_lane",
+      "command": [
+        0,
+        0.0
+      ],
+      "sign": {
+        "votes": 0,
+        "stamp": 1790887078.32958,
+        "decision": "action_sign_ignored",
+        "confidence": 0.8735889196395874,
+        "label": "UTURN",
+        "source": "yolov5s"
+      },
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": 0.6192581510413754,
+      "straight_search": {
+        "origin": [
+          4.424098735252624,
+          -5.249468656346999,
+          -2.038483628564491
+        ],
+        "started": 1790887069.050516,
+        "elapsed_s": 9.552893161773682,
+        "minimum_distance_m": 1.25,
+        "phase": "WAIT_EXIT",
+        "travelled_m": 1.2677705383300915,
+        "right_blue": null,
+        "timeout_s": 20.0,
+        "speed_raw": 20
+      },
+      "blue_approach": null,
+      "front_blue_lines_local": [],
+      "source_ages": {
+        "lane": 0.19128108024597168,
+        "scan_completed": 0.24797844886779785,
+        "scan": 0.34742307662963867,
+        "front_ground": 0.19128108024597168,
+        "rear_ground": 1790887079.652015
+      }
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887078.672954,
+      "state": "LANE",
+      "reason": "tracking_lane",
+      "command": [
+        30,
+        -0.0035322267319512096
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_state",
+      "stamp": 1790887079.640938,
+      "state": "LANE",
+      "reason": "tracking_lane",
+      "command": [
+        30,
+        -0.007834726742448206
+      ],
+      "sign": {
+        "votes": 0,
+        "stamp": 1790887079.3237991,
+        "decision": "low_confidence_or_unknown",
+        "confidence": 0.0,
+        "label": "",
+        "source": "yolov5s",
+        "range_reason": "no_candidate"
+      },
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": 0.7156864906829778,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": [],
+      "source_ages": {
+        "lane": 0.38591837882995605,
+        "scan_completed": 0.43692874908447266,
+        "scan": 0.5368709564208984,
+        "front_ground": 0.18574190139770508,
+        "rear_ground": 1790887080.640938
+      }
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887083.947598,
+      "state": "LANE",
+      "reason": "scan_missing_or_stale",
+      "command": [
+        0,
+        -0.021555534270458847
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887083.993741,
+      "state": "LANE",
+      "reason": "tracking_lane",
+      "command": [
+        30,
+        -0.014905376262896676
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887085.546565,
+      "state": "GAP",
+      "reason": "tracking_gap",
+      "command": [
+        16,
+        0.0
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_control_event",
+      "stamp": 1790887085.663705,
+      "state": "GAP",
+      "reason": "gap_limit_wait_for_lane",
+      "command": [
+        0,
+        0.0
+      ],
+      "sign": null,
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": null,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": null,
+      "source_ages": null
+    },
+    {
+      "kind": "competition_state",
+      "stamp": 1790887086.633822,
+      "state": "GAP",
+      "reason": "gap_limit_wait_for_lane",
+      "command": [
+        0,
+        0.0
+      ],
+      "sign": {
+        "votes": 0,
+        "stamp": 1790887086.322624,
+        "decision": "low_confidence_or_unknown",
+        "confidence": 0.0,
+        "label": "",
+        "source": "yolov5s",
+        "range_reason": "no_candidate"
+      },
+      "pending": null,
+      "next_direction": null,
+      "lane_confidence": 0.1146234375,
+      "straight_search": null,
+      "blue_approach": null,
+      "front_blue_lines_local": [
+        {
+          "length": 0.7454381861592113,
+          "heading_deg": 83.42542742140417,
+          "point": [
+            0.9862077306642596,
+            -0.37371233688363
+          ]
+        }
+      ],
+      "source_ages": {
+        "lane": 0.1758887767791748,
+        "scan_completed": 0.33267998695373535,
+        "scan": 0.4300816059112549,
+        "front_ground": 0.1758887767791748,
+        "rear_ground": 1790887087.633822
+      }
+    }
+  ],
+  "geometry": {
+    "straight_progress_m": 0.6985268707275487,
+    "line_forward_m": 0.6130240097045894,
+    "wheelbase_m": 0.26,
+    "axle_remaining_m": 0.35302400970458936,
+    "nominal_progress_remaining_m": 0.5514731292724513,
+    "estimated_stop_progress_m": 1.051550880432138,
+    "note": "Blue center and command-integrated progress are asynchronous estimates; values identify an entry conflict, not measured vehicle stop accuracy."
+  }
+}

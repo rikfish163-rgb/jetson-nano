@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>vehicle_control</name>
+  <version>0.1.0</version>
+  <description>Safe trial controller for lane-path Pure Pursuit integration.</description>
+
+  <maintainer email="nano@example.com">nano</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>nav_msgs</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+
+  <export/>
+</package>

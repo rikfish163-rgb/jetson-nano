@@ -1,0 +1,26 @@
+<launch>
+  <!-- Separate experiment: do not run alongside full.launch or avoid. -->
+  <arg name="live" default="false"/>
+  <arg name="enabled" default="false"/>
+  <arg name="start_lidar" default="true"/>
+  <arg name="start_actuators" default="false"/>
+  <arg name="clearance_m" default="0.20"/>
+  <arg name="speed_raw" default="8"/>
+  <arg name="max_steer_raw" default="12"/>
+  <arg name="preview_port" default="8091"/>
+  <group if="$(arg start_lidar)">
+    <include file="$(find ls01b_v2)/launch/ls01b_v2.launch"/>
+  </group>
+  <node pkg="robocup_competition" type="lidar_left_pass_node.py"
+        name="lidar_left_pass" output="screen" required="true">
+    <param name="live" value="$(arg live)" type="bool"/>
+    <param name="enabled" value="$(arg enabled)" type="bool"/>
+    <param name="clearance_m" value="$(arg clearance_m)" type="double"/>
+    <param name="speed_raw" value="$(arg speed_raw)" type="int"/>
+    <param name="max_steer_raw" value="$(arg max_steer_raw)" type="int"/>
+    <param name="preview_port" value="$(arg preview_port)" type="int"/>
+  </node>
+  <group if="$(arg start_actuators)">
+    <include file="$(find robocup_competition)/launch/actuators.launch"/>
+  </group>
+</launch>

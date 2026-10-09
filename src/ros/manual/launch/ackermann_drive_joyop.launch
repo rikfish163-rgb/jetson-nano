@@ -1,0 +1,14 @@
+<launch>
+  <arg name="speed_raw" default="12"/>
+  <arg name="steer_raw" default="22"/>
+  <!-- Launch joy_node that publishes Joy messages -->
+  <node name="joy" type="joy_node" pkg="joy">
+    <param name="autorepeat_rate" value="20.0"/>
+  </node>
+
+  <!-- Launch ackermann_drive_joyop to teleoperate robots with ackermann steering -->
+  <node name="ackermann_drive_joyop" type="joyop.py" pkg="ackermann_drive_teleop" output="screen">
+    <param name="speed_raw" value="$(arg speed_raw)" type="int"/>
+    <param name="steer_raw" value="$(arg steer_raw)" type="int"/>
+  </node>
+</launch>

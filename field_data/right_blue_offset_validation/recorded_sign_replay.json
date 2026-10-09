@@ -1,0 +1,29 @@
+[
+  {
+    "source": "field_data/sign_capture/20260920_174228_19512/1789897438.282694101_RIGHT.json", 
+    "votes": 1, 
+    "stamp": 1789897438.282694, 
+    "decision": "direction_voting", 
+    "confidence": 0.8114395141601562, 
+    "pending": null, 
+    "label": "RIGHT"
+  }, 
+  {
+    "source": "field_data/sign_capture/20260920_174228_19512/1789897438.482940197_STRAIGHT.json", 
+    "votes": 1, 
+    "stamp": 1789897438.4829402, 
+    "decision": "direction_voting", 
+    "confidence": 0.942237913608551, 
+    "pending": null, 
+    "label": "STRAIGHT"
+  }, 
+  {
+    "source": "field_data/sign_capture/20260920_174228_19512/1789897438.686470747_STRAIGHT.json", 
+    "votes": 2, 
+    "stamp": 1789897438.6864707, 
+    "decision": "stored_pending", 
+    "confidence": 0.9477329254150391, 
+    "pending": "STRAIGHT", 
+    "label": "STRAIGHT"
+  }
+]

@@ -1,0 +1,19 @@
+<launch>
+  <arg name="live" default="false"/>
+  <include file="$(find robocup_competition)/launch/stack.launch">
+    <arg name="controller_type" value="left_two_stage_test.py"/>
+    <arg name="live" value="$(arg live)"/>
+    <arg name="enabled" value="false"/>
+    <arg name="start_actuators" value="$(arg live)"/>
+    <arg name="start_cameras" value="false"/>
+    <arg name="start_lane" value="false"/>
+    <arg name="start_lidar" value="true"/>
+    <arg name="lidar_enabled" value="true"/>
+    <arg name="start_sign" value="false"/>
+    <arg name="start_ground" value="false"/>
+    <arg name="start_rear" value="false"/>
+    <arg name="parking_enabled" value="false"/>
+    <arg name="wait_green" value="false"/>
+    <arg name="steering_command_scale_rad" value="0.03"/>
+  </include>
+</launch>

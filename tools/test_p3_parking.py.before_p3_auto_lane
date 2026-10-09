@@ -1,0 +1,126 @@
+#!/usr/bin/env python2
+from __future__ import division
+import unittest
+from p3_parking_test import P3Run, arguments
+from parking_line_stop_core import StopRun
+
+class P3Tests(unittest.TestCase):
+    def approach(self):
+        core = StopRun(steering=-3)
+        task = P3Run(core)
+        task.start(0.)
+        task.observe(1, 100., 0.)
+        task.observe(2, 100.1, .1)
+        return task
+
+    def stopped(self, task):
+        task.observe(0, 100.2, .2, True)
+        self.assertEqual((0, 0), task.tick(.2, 100.2))
+        self.assertEqual('P3_STOP_HOLD', task.reason)
+
+    def test_full_motion_order_durations_and_final_stop(self):
+        task = self.approach()
+        self.assertEqual((30, -3), task.tick(.1, 100.1))
+        self.stopped(task)
+        self.assertEqual((0, 0), task.tick(.69, 100.69))
+        self.assertEqual((-30, 0), task.tick(.71, 100.71))
+        self.assertEqual('P3_STEP1_REVERSE_STRAIGHT', task.reason)
+        self.assertEqual((-30, 0), task.tick(2.40, 102.40))
+        self.assertEqual((-30, 22), task.tick(2.42, 102.42))
+        self.assertEqual('P3_STEP2_REVERSE_LEFT', task.reason)
+        self.assertEqual((-30, 22), task.tick(2.71, 102.71))
+        self.assertEqual((-30, -22), task.tick(2.73, 102.73))
+        self.assertEqual('P3_STEP3_REVERSE_RIGHT', task.reason)
+        self.assertEqual((-30, -22), task.tick(5.82, 105.82))
+        self.assertEqual((-30, 0), task.tick(5.84, 105.84))
+        self.assertEqual('P3_STEP4_REVERSE_STRAIGHT', task.reason)
+        self.assertEqual((-30, 0), task.tick(6.03, 106.03))
+        self.assertEqual((-30, 22), task.tick(6.05, 106.05))
+        self.assertEqual('P3_STEP5_REVERSE_LEFT', task.reason)
+        self.assertEqual((-30, 22), task.tick(8.14, 108.14))
+        self.assertEqual((0, 0), task.tick(8.16, 108.16))
+        self.assertTrue(task.finished)
+        self.assertEqual('P3_COMPLETE', task.reason)
+        self.assertEqual((0, 0), task.tick(10., 110.))
+
+    def test_zero_lines_without_both_curves_does_not_enter_reverse(self):
+        task = self.approach()
+        task.observe(0, 100.2, .2, False)
+        self.assertEqual((30, -3), task.tick(.2, 100.2))
+        self.assertEqual('APPROACH', task.phase)
+
+    def test_no_lines_seen_fails_without_reverse(self):
+        task = P3Run(StopRun())
+        task.start(0.)
+        task.observe(0, 105.1, 5.1, True)
+        self.assertEqual((0, 0), task.tick(5.1, 105.1))
+        self.assertTrue(task.finished)
+        self.assertEqual('NO_LINES_SEEN', task.reason)
+
+    def test_camera_fault_does_not_start_parking(self):
+        task = self.approach()
+        self.assertEqual((0, 0), task.tick(.8, 100.8))
+        self.assertTrue(task.finished)
+        self.assertEqual('CAMERA_TIMEOUT', task.reason)
+
+    def test_visual_changes_do_not_modify_timed_reverse(self):
+        task = self.approach()
+        self.stopped(task)
+        task.observe(9, 100.6, .6, False)
+        self.assertEqual((-30, 0), task.tick(.71, 100.71))
+        task.observe(0, 101., 1., True)
+        self.assertEqual((-30, 0), task.tick(1., 101.))
+
+    def test_operator_stop_in_each_reverse_stage_latches_zero(self):
+        for stage in range(5):
+            task = self.approach()
+            self.stopped(task)
+            task.tick(.71, 100.71)
+            for i in range(stage):
+                now = task.deadline+.01
+                task.tick(now, 100+now)
+            self.assertEqual((0, 0), task.abort('operator stop'))
+            self.assertEqual((0, 0), task.tick(9., 109.))
+            self.assertEqual('operator stop', task.reason)
+
+    def test_custom_durations_are_independent(self):
+        task = P3Run(StopRun(steering=-3), seconds=(.6, .15, 1.25, .25, .8))
+        task.start(0.)
+        task.observe(1, 100., 0.)
+        task.observe(1, 100.1, .1)
+        self.stopped(task)
+        now = .71
+        for seconds, steering in zip((.6, .15, 1.25, .25, .8), (0, 22, -22, 0, 22)):
+            self.assertEqual((-30, steering), task.tick(now, 100+now))
+            self.assertAlmostEqual(now+seconds, task.deadline)
+            now = task.deadline+.01
+        self.assertEqual((0, 0), task.tick(now, 100+now))
+        self.assertEqual('P3_COMPLETE', task.reason)
+
+    def test_late_loop_does_not_skip_stages(self):
+        task = self.approach()
+        self.stopped(task)
+        self.assertEqual((-30, 0), task.tick(4., 104.))
+        self.assertAlmostEqual(5.7, task.deadline)
+        self.assertEqual((-30, 22), task.tick(7., 107.))
+        self.assertAlmostEqual(7.3, task.deadline)
+
+    def test_cli_defaults_and_saved_approach(self):
+        args = arguments([])
+        self.assertEqual((30, -3, 'right'), (args.speed, args.steering, args.side))
+        self.assertEqual((1.7, .3, 3.1, .2, 2.1), (args.step1_seconds, args.step2_seconds, args.step3_seconds, args.step4_seconds, args.step5_seconds))
+        self.assertFalse(args.execute)
+        tuned = arguments(['--step1-seconds', '1.2', '--step2-seconds', '.4',
+                           '--step3-seconds', '2.4', '--step4-seconds', '.25',
+                           '--step5-seconds', '.9', '--steering', '-4'])
+        self.assertEqual((1.2, .4, 2.4, .25, .9), (tuned.step1_seconds, tuned.step2_seconds, tuned.step3_seconds, tuned.step4_seconds, tuned.step5_seconds))
+        self.assertEqual(-4, tuned.steering)
+
+    def test_invalid_motion_parameters_rejected(self):
+        for argv in (['--step1-seconds', '0'], ['--step2-seconds', 'nan'],
+                     ['--step3-seconds', '11'], ['--step4-seconds', 'nan'], ['--step5-seconds', '0'], ['--reverse-speed', '31'],
+                     ['--parking-pause-seconds', '0']):
+            self.assertRaises(ValueError, arguments, argv)
+
+if __name__ == '__main__':
+    unittest.main()

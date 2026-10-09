@@ -1,0 +1,11 @@
+{
+  "new_failing_tests": [
+    "test_blue_edge_trigger.BlueEdgeTests.test_continuously_visible_line_has_only_one_chance"
+  ], 
+  "baseline_tests": 133, 
+  "baseline_errors": 2, 
+  "baseline_failures": 50, 
+  "final_failures": 47, 
+  "final_tests": 141, 
+  "final_errors": 1
+}

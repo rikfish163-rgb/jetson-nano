@@ -1,0 +1,95 @@
+{
+  "confidence": 0.8951559066772461, 
+  "detections": [
+    {
+      "bounds": [
+        20, 
+        0, 
+        620, 
+        360
+      ], 
+      "confidence": 0.8951559066772461, 
+      "label": "green", 
+      "scores": {
+        "green": 0.8951559066772461, 
+        "left": 3.140309490845539e-05, 
+        "park": 8.014556129865014e-09, 
+        "red": 2.261902227473911e-05, 
+        "right": 3.434602433571854e-07, 
+        "straight": 4.3757967205237946e-07, 
+        "uturn": 1.3826867871102877e-05
+      }
+    }
+  ], 
+  "inference_ms": 106.12916946411133, 
+  "input_mode": "full_frame_yolo", 
+  "label": "GREEN", 
+  "range_reason": "signal_passthrough", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          20, 
+          0, 
+          620, 
+          360
+        ], 
+        "reason": "#1 green 0.90"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        20, 
+        0, 
+        620, 
+        360
+      ], 
+      "confidence": 0.8951559066772461, 
+      "label": "green", 
+      "scores": {
+        "green": 0.8951559066772461, 
+        "left": 3.140309490845539e-05, 
+        "park": 8.014556129865014e-09, 
+        "red": 2.261902227473911e-05, 
+        "right": 3.434602433571854e-07, 
+        "straight": 4.3757967205237946e-07, 
+        "uturn": 1.3826867871102877e-05
+      }
+    }
+  ], 
+  "route_gate": {
+    "enabled": true, 
+    "frames": 0, 
+    "left_center_ratio": 0.3, 
+    "track_id": null
+  }, 
+  "scores": {
+    "GREEN": 0.8951559066772461, 
+    "LEFT": 3.140309490845539e-05, 
+    "PARKING": 8.014556129865014e-09, 
+    "RED": 2.261902227473911e-05, 
+    "RIGHT": 3.434602433571854e-07, 
+    "STRAIGHT": 4.3757967205237946e-07, 
+    "UTURN": 1.3826867871102877e-05
+  }, 
+  "sign_bounds": [
+    20, 
+    0, 
+    620, 
+    360
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 1.0, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.18776297569274902, 
+  "stamp": 1791546263.705492, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "GREEN"
+}

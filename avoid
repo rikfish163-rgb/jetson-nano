@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Run on the Nano. This entry enables vehicle motion unless overridden.
+set -eo pipefail
+RADAR_WORKSPACE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source /opt/ros/melodic/setup.bash
+source "$RADAR_WORKSPACE/devel/setup.bash"
+set -u
+exec roslaunch robocup_competition radar_avoidance.launch \
+  live:=true enabled:=true start_actuators:=true "$@"

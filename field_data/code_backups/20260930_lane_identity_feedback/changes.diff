@@ -1,0 +1,453 @@
+--- before/src/robot/lane/controller.py
++++ after/src/robot/lane/controller.py
+@@ -174,8 +174,9 @@
+         lock['stamp'] = ctx.lane_stamp
+     elif ctx.state != 'GAP':
+         ctx.gap_steer = ctx.call('motion', 'current_steering', now)
++    budget = min(.25,ctx.cfg['gap_max_seconds']) if ctx.cfg.get('lane_curvature_preview',False) else ctx.cfg['gap_max_seconds']
+     if (distance(ctx.pose,ctx.gap_origin) > ctx.cfg['gap_max_distance'] or
+-            now-ctx.gap_start > ctx.cfg['gap_max_seconds']):
++            now-ctx.gap_start > budget):
+         return ctx.call('motion', 'stop', 'gap_limit_wait_for_lane')
+     ctx.state = 'GAP'
+     return lane_speed(ctx, ctx.cfg['speed_raw']['gap']), ctx.gap_steer
+@@ -203,17 +204,10 @@
+     if ctx.cfg.get('lane_curvature_preview',False) and not lane_tracking_ready(ctx,now):
+         points = sorted(local(ctx.pose,p) for p in ctx.lane)
+         points = [p for p in points if p[0] > .05]
+-        # Bridge a minor confidence dip using only the previous trusted angle.
+-        # Bad frames cannot extend this interval or supply new steering.
+-        span = points[-1][0]-points[0][0] if len(points) >= 2 else 0.
+-        minor_confidence_dip = (
+-            ctx.cfg['lane_min_confidence']*.7 <= ctx.lane_confidence < ctx.cfg['lane_min_confidence'] and
+-            span >= ctx.cfg.get('lane_min_path_span',.15)-1e-9)
+-        minor_span_dip = (ctx.lane_confidence >= ctx.cfg['lane_min_confidence'] and
+-                         len(points) >= 2 and span >= .10-1e-9)
+-        if (ctx.gap_origin is not None and 0 <= now-ctx.gap_start <= .25 and
+-                (minor_confidence_dip or minor_span_dip)):
+-            grace = 'confidence_grace' if minor_confidence_dip else 'path_span_grace'
++        # One bad fresh image must not pulse the motor to zero. Hold only the
++        # last accepted angle for 250 ms; rejected frames never renew this clock.
++        if ctx.gap_origin is not None and 0 <= now-ctx.gap_start <= .25:
++            grace = 'visual_frame_grace'
+             ctx.lane_target = dict(stamp=now,source_stamp=ctx.lane_stamp,path=points,
+                 target=None,valid=False,reason=grace,selection=grace)
+             speed,steer = lane_gap_command(ctx,now)
+@@ -231,6 +225,11 @@
+     fraction = max(-1.,min(1.,offset/ctx.cfg.get('lane_lateral_full_scale_m',.075)))
+     steer = fraction*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     steer = preview_steering(ctx, candidates, steer)
++    if ctx.cfg.get('lane_curvature_preview',False):
++        # Telemetry marks the near observed reference used by the geometric
++        # controller, rather than suggesting it steers to the far endpoint.
++        target_index,target = min(forward,key=lambda item:item[1][0])
++        offset = target[1]
+     desired_steer = steer
+     if ctx.cfg.get('lane_curvature_preview',False):
+         # One measured-center controller owns the angle in preview mode.
+--- before/src/robot/lane/preview.py
++++ after/src/robot/lane/preview.py
+@@ -21,7 +21,12 @@
+     residual = float(np.sqrt(np.mean((xy[:,1]-(a*x*x+b*x+c))**2)))
+     if residual > .02:
+         return None
+-    measured = max(-3., min(3., float(2*a/(1+b*b)**1.5)))
++    # The near paint determines the curve the rear axle is about to follow.
++    # A far straight exit must not dilute a still-curved near segment.
++    near = xy[:3]
++    near_a,near_b,near_c = np.polyfit(near[:,0]-middle,near[:,1],2)
++    near_slope = 2*near_a*(near[0,0]-middle)+near_b
++    measured = max(-3., min(3., float(2*near_a/(1+near_slope*near_slope)**1.5)))
+     xs = np.linspace(points[0][0],points[-1][0],64)
+     reference = [(float(v),float(a*(v-middle)**2+b*(v-middle)+c)) for v in xs]
+     model, radius, circle_center = 'quadratic', None, None
+@@ -59,96 +64,82 @@
+                 reference_curve=reference,model=model,radius_m=radius,circle_center=circle_center)
+ 
+ 
++def reference_geometry(points, preview, pose):
++    """Signed distance and tangent at the rear axle for one reference curve.
++
++    A sparse or noncircular path uses its local osculating circle (or line),
++    giving the same error convention and feedback as a supported full arc.
++    Only current measured points determine geometry; no far-point gain switch.
++    """
++    if preview is not None and preview['model'] == 'circle':
++        center = local(pose,world(preview.get('reference_pose',pose),preview['circle_center']))
++        radius = preview['radius_m']
++        curvature = preview['curvature']
++        direction = 1. if preview['measured_curvature'] > 0 else -1.
++    else:
++        xy = np.asarray(points[:3],dtype=float)
++        if len(set(x for x,y in points)) < 2:
++            x,y = points[0]
++            return 0., y, 0.
++        middle = float(np.mean(xy[:,0]))
++        # Three isolated samples cannot validate curvature against residuals;
++        # use their tangent until the full fit has independent support.
++        degree = 2 if preview is not None and len(xy) >= 3 else 1
++        coefficients = np.polyfit(xy[:,0]-middle,xy[:,1],degree)
++        # Evaluate derivatives inside the observed span, then project along
++        # that local circle instead of extrapolating a quadratic to x=0.
++        x = points[0][0]
++        y = float(np.polyval(coefficients,x-middle))
++        slope = float(np.polyval(np.polyder(coefficients),x-middle))
++        second = float(np.polyval(np.polyder(coefficients,2),x-middle)) if degree==2 else 0.
++        measured = max(-3.,min(3.,second/(1+slope*slope)**1.5))
++        curvature = preview['curvature'] if preview is not None else measured
++        if abs(measured) < .05:
++            heading = math.atan(slope)
++            return curvature,(y-slope*x)/math.hypot(1.,slope),heading
++        radius = abs(1./measured)
++        direction = 1. if measured > 0 else -1.
++        center = (x-slope/math.hypot(1.,slope)/measured,
++                  y+1./math.hypot(1.,slope)/measured)
++    cx,cy = center
++    return (curvature,direction*(math.hypot(cx,cy)-radius),
++            math.atan2(-direction*cx,direction*cy))
++
++
+ def preview_steering(ctx, points, steer):
+     if not ctx.cfg.get('lane_curvature_preview', False) or ctx.action is not None:
+         ctx.lane_preview = None
+         return steer
+-    previous=ctx.lane_preview
+-    pose=getattr(ctx,'pose',(0.,0.,0.))
+-    ctx.lane_preview = curvature_preview(points, ctx.lane_stamp, previous,
+-                                         ctx.cfg['sensor_timeout'])
++    forward = sorted(p for p in points if .05 < p[0] <= 1.5)
++    if not forward or not np.all(np.isfinite(np.asarray(forward))):
++        return steer
++    previous = ctx.lane_preview
++    pose = getattr(ctx,'pose',(0.,0.,0.))
++    ctx.lane_preview = curvature_preview(forward,ctx.lane_stamp,previous,
++                                        ctx.cfg['sensor_timeout'])
+     if ctx.lane_preview is not None and ctx.lane_preview is not previous:
+-        ctx.lane_preview['reference_pose']=tuple(pose)
+-    forward = sorted(p for p in points if p[0] > .05)
+-    if not forward:
+-        return steer
++        ctx.lane_preview['reference_pose'] = tuple(pose)
++    curvature,error,heading = reference_geometry(forward,ctx.lane_preview,pose)
++    # Use the near measured reference with a bounded feedback horizon (~0.51 m
++    # for this wheelbase). Distant exit paint cannot dilute the bend command.
++    lookahead = max(1.95*ctx.cfg['wheelbase'],
++                    min(ctx.cfg.get('lookahead',.8),forward[0][0]))
++    feedback = 2*error/(lookahead*lookahead)+2*math.sin(heading)/lookahead
++    desired = curvature+feedback
++    physical = math.atan(ctx.cfg['wheelbase']*desired)
++    # Heading correction must be allowed to unwind a bypass or an inward
++    # drift. A direction lock can command the opposite of the measured lane.
++    if ctx.lane_preview is not None:
++        ctx.lane_preview.update(center_error_m=error,center_heading_error_rad=heading,
++                                center_feedback_curvature=feedback,
++                                desired_curvature=desired)
++    physical = max(-ctx.cfg['max_steer'],min(ctx.cfg['max_steer'],physical))
+     scale = ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+-    x,y = forward[-1]
+-    if ctx.lane_preview is not None:
+-        # Target the fitted curve rather than a noisy last paint sample.
+-        x,y = local(pose,world(ctx.lane_preview.get('reference_pose',pose),
+-                              ctx.lane_preview['reference_curve'][-1]))
+-    # The arc through the measured far center already includes the bend.
+-    # Adding its lateral displacement again as a proportional error caused
+-    # full-lock saturation even when the vehicle was centered on that arc.
+-    curvature = 2*y/(x*x+y*y)
+-    desired_curvature = curvature
+-    turn_progress = 0.
+-    if ctx.lane_preview is not None:
+-        shape = ctx.lane_preview['curvature']
+-        # Once the measured center continues into the bend, its fitted
+-        # curvature owns feedforward. A far exit point must not halve it.
+-        turn_progress = max(0.,min(1.,shape*y/.02)) if abs(shape) >= .35 else 0.
+-        shape_weight = .5+.5*turn_progress
+-        desired_curvature = shape_weight*shape+(1-shape_weight)*curvature
+-    physical = math.atan(ctx.cfg['wheelbase']*desired_curvature)
+-    if ctx.lane_preview is not None and ctx.lane_preview['model']=='circle':
+-        fit=ctx.lane_preview
+-        cx,cy=local(pose,world(fit.get('reference_pose',pose),fit['circle_center']))
+-        center_distance=math.hypot(cx,cy)
+-        if center_distance > .05:
+-            direction=1. if fit['measured_curvature']>0 else -1.
+-            # True signed error to the center circle. Arc displacement at a
+-            # near point mixes heading with lateral error and can suppress
+-            # precisely the inward drift correction we need.
+-            error=direction*(center_distance-fit['radius_m'])
+-            heading=math.atan2(-direction*cx,direction*cy)
+-            lookahead=max(2*ctx.cfg['wheelbase'],
+-                          min(ctx.cfg.get('lookahead',.8),forward[0][0]))
+-            position_feedback=2*error/(lookahead*lookahead)
+-            feedback=position_feedback+2*math.sin(heading)/lookahead
+-            desired=fit['curvature']+feedback
+-            # When outside a supported bend, a distant tangent can point back
+-            # across the car's heading. Do not let that extrapolated heading
+-            # erase the bend and the required inward position correction.
+-            guard = (abs(fit['measured_curvature']) >= .35 and
+-                     error*direction > .02)
+-            if guard:
+-                inward=fit['measured_curvature']+.5*position_feedback
+-                desired=direction*max(direction*desired,direction*inward)
+-            # A supported circle supplies its radius directly. Adding the
+-            # far-point chord again biases the angle with the same offset
+-            # already handled by position/heading feedback.
+-            physical=math.atan(ctx.cfg['wheelbase']*desired)
+-            fit.update(center_error_m=error,center_heading_error_rad=heading,
+-                       center_feedback_curvature=feedback,outer_bend_guard=guard)
+-            physical=max(-ctx.cfg['max_steer'],min(ctx.cfg['max_steer'],physical))
+-            return physical/ctx.cfg['max_steer']*scale
+-    near_x,near_y = forward[0]
+-    reference_curvature = ctx.lane_preview['curvature'] if ctx.lane_preview is not None else curvature
+-    if abs(reference_curvature*near_x) < 1:
+-        expected_y = reference_curvature*near_x*near_x/(1+math.sqrt(1-(reference_curvature*near_x)**2))
+-        # Correct proximity to the center relative to the same arc, not to a
+-        # straight line. A centered model circle therefore has zero error.
+-        error = near_y-expected_y
+-        if ctx.lane_preview is not None:
+-            # An inward error can have the opposite sign to near_y while all
+-            # centers remain on the bend side. Do not discard that feedback
+-            # or cap it to 20% of the bend angle. Bound the correction range
+-            # below by two wheelbases to avoid excessive near-point gain.
+-            lookahead=max(2*ctx.cfg['wheelbase'],
+-                          min(ctx.cfg.get('lookahead',.8),forward[0][0]))
+-            correction_curvature=2*error/(lookahead*lookahead)
+-            physical=math.atan(ctx.cfg['wheelbase']*(desired_curvature+correction_curvature))
+-            ctx.lane_preview.update(center_error_m=error,center_feedback_curvature=correction_curvature)
+-        elif abs(near_y) >= .04 and near_y*error > 0:
+-            # Convert the measured offset to a near-target arc angle. The
+-            # previous full-lock-per-10cm gain could cancel an approaching
+-            # bend, or reverse it, even with only 6cm of lateral offset.
+-            correction_curvature = 2*error/(near_x*near_x+error*error)
+-            correction = 1.25*math.atan(ctx.cfg['wheelbase']*correction_curvature)
+-            physical += correction
+-    physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
++    # Preserve a small real bend command across the integer chassis protocol.
++    # Rounding it to zero kept the wheels straight at the startup handoff.
++    quantum = ctx.cfg['max_steer']/ctx.cfg.get('steering_raw_limit',22)
++    if abs(curvature) >= .35 and physical*curvature > 0 and abs(physical) < quantum:
++        physical = math.copysign(quantum,physical)
+     return physical/ctx.cfg['max_steer']*scale
+ 
+ 
+--- before/src/robot/test/test_curve_exit_geometry.py
++++ after/src/robot/test/test_curve_exit_geometry.py
+@@ -25,11 +25,15 @@
+         self.assertEqual(speed,16)
+         return encode_command(speed,steer,c.cfg,0)['steering_raw']
+ 
+-    def test_recorded_outward_exit_does_not_cancel_measured_right_bend(self):
++    def test_recorded_exit_balances_curve_with_heading_and_position(self):
+         c=self.core()
+-        # The car is outside this still-curved reference. Heading feedback
+-        # must not erase the radius and outward position correction.
+-        self.assertLessEqual(self.raw(c,self.EXIT),-14)
++        # The tangent points left: forcing right lock discards this heading
++        # correction. Check the complete geometric command, not a turn lock.
++        raw=self.raw(c,self.EXIT)
++        fit=c.lane_preview
++        required=math.atan(c.cfg['wheelbase']*fit['desired_curvature'])/c.cfg['max_steer']*22
++        self.assertAlmostEqual(raw,required,delta=1.)
++        self.assertGreater(raw,-4)
+         self.assertLess(c.lane_preview['curvature'],-.5)
+         self.assertGreater(c.lane_preview['center_heading_error_rad'],.4)
+         self.assertIsNone(c.lane_curve_lock)
+@@ -54,7 +58,7 @@
+         path=[(x,math.sqrt(r*r-x*x)-r-.08) for x in (.2,.3,.4,.45,.5)]
+         for i in range(20):
+             self.assertEqual(self.raw(c,path,1.+i*.1),-22)
+-            self.assertTrue(c.lane_preview['outer_bend_guard'])
++            self.assertLess(c.lane_preview['center_error_m'],0.)
+ 
+     def test_straight_current_path_can_release_bend_and_countersteer(self):
+         c=self.core();self.raw(c,self.EXIT)
+--- before/src/robot/test/test_lane_message_stability.py
++++ after/src/robot/test/test_lane_message_stability.py
+@@ -54,13 +54,14 @@
+     def test_severe_confidence_drop_and_camera_loss_still_stop(self):
+         path = [(.5,0),(.7,0),(.9,0),(1.1,0)]
+         self.command(path, 1.)
+-        self.assertEqual(self.command(path, 1.1, .1)[0], 0)
++        self.assertGreater(self.command(path, 1.1, .1)[0], 0)
++        self.assertEqual(self.command(path, 1.3, .1)[0], 0)
+         self.assertEqual(self.command(path, 1.1, now=1.7)[0], 0)
+ 
+-    def test_gap_uses_original_configured_time_budget(self):
++    def test_preview_gap_uses_bounded_visual_grace_budget(self):
+         self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)], 1.)
+         self.assertGreater(self.command([], 1.1)[0], 0)
+-        self.assertGreater(self.command([], 1.4)[0], 0)
++        self.assertEqual(self.command([], 1.4)[0], 0)
+         self.assertEqual(self.command([], 1.+self.c.cfg['gap_max_seconds']+.1)[0], 0)
+ 
+     def test_original_bend_control_reaches_raw_limit_and_mirrors(self):
+--- before/src/robot/test/test_lane_preview.py
++++ after/src/robot/test/test_lane_preview.py
+@@ -55,18 +55,20 @@
+     def test_unreliable_and_single_point_do_not_refresh_gap(self):
+         self.command(self.ENTRY)
+         origin = self.c.gap_start
+-        self.assertEqual(self.command(self.ENTRY, 1.1, .1)[0], 0)
++        self.assertGreater(self.command(self.ENTRY, 1.1, .1)[0], 0)
+         self.assertEqual(self.c.gap_start, origin)
+-        self.assertEqual(self.command([(.7,0)], 1.2)[0], 0)
++        self.assertGreater(self.command([(.7,0)], 1.2)[0], 0)
++        self.assertEqual(self.command([(.7,0)], 1.3)[0], 0)
+ 
+     def test_stale_frame_stops_speed(self):
+         self.command(self.ENTRY)
+         self.assertEqual(self.command(self.ENTRY, 1., now=1.6)[0], 0)
+ 
+-    def test_low_confidence_stop_keeps_bend_wheel_angle(self):
++    def test_low_confidence_grace_then_stop_keeps_bend_wheel_angle(self):
+         path = [(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)]
+         raw = self.command(path)[1]
+-        self.assertEqual(self.command(path, 1.1, .1), (0,raw))
++        self.assertEqual(self.command(path, 1.1, .1), (12,raw))
++        self.assertEqual(self.command(path, 1.3, .1), (0,raw))
+ 
+     def test_filter_does_not_count_control_ticks_as_observations(self):
+         self.command(self.ENTRY)
+--- before/src/robot/test/test_partial_lane_continuity.py
++++ after/src/robot/test/test_partial_lane_continuity.py
+@@ -30,7 +30,7 @@
+ 
+     def test_usable_short_path_resumes_after_unreliable_stop(self):
+         self.command([(.5,0),(.7,0),(.9,0)], 1., .9)
+-        self.assertEqual(self.command([(.5,0)], 1.1, .1)[0],0)
++        self.assertEqual(self.command([(.5,0)], 1.3, .1)[0],0)
+         self.assertEqual(self.command([(.6,.04),(.7,.03)], 2., .329595)[0],16)
+ 
+     def test_recorded_three_point_low_coverage_path_can_correct(self):
+--- before/src/ros/camera/scripts/camera_yihan_web.py
++++ after/src/ros/camera/scripts/camera_yihan_web.py
+@@ -295,6 +295,8 @@
+ lane_width_est_px = float(LANE_WIDTH_NOMINAL_PX)
+ previous_tracking_confidence = 0.0
+ previous_tracking_time = None
++left_reference_history = None
++left_reference_candidate = None
+ last_confidence_components = {}
+ 
+ profile_frame_count = 0
+@@ -1787,6 +1789,44 @@
+     return result
+ 
+ 
++def associate_left_reference(left_points, right_points, lane_width, temporal_comparable,
++                             reference=None):
++    """Associate current paint with the previous reference, never reuse pixels.
++
++    Image-side initialization may call the same divider RIGHT after drifting
++    across it. Compare overlapping observed rows before choosing the 30 cm
++    normal. An expired or unmatched reference cannot relabel a new boundary.
++    """
++    previous = sorted((p for p in (previous_left_points if reference is None else reference)
++        if boundary_point_is_reliable(p, True)), key=lambda p:p['y'])
++    if (not temporal_comparable or len(previous) < 2 or
++            (reference is None and not any(p and p.get('reference_side') == 'left'
++                    for p in previous_center_points))):
++        return left_points, right_points, None
++    ys = np.asarray([p['y'] for p in previous])
++    xs = np.asarray([p['x'] for p in previous])
++    def match(points):
++        errors = []
++        for p in points:
++            if not boundary_point_is_reliable(p, True) or not ys[0] <= p['y'] <= ys[-1]:
++                continue
++            index = max(0, min(len(ys)-2, int(np.searchsorted(ys,p['y'])-1)))
++            slope = (xs[index+1]-xs[index])/max(1.,ys[index+1]-ys[index])
++            errors.append(abs(p['x']-np.interp(p['y'],ys,xs))/np.hypot(1.,slope))
++        return (len(errors) >= 2 and np.median(errors) <= 32. and
++                sum(e <= 40. for e in errors) >= .6*len(errors))
++    if match(left_points):
++        return left_points, right_points, 'left'
++    if match(right_points):
++        support = [p for p in right_points if boundary_point_is_reliable(p,True)]
++        coefficients = np.polyfit([p['y'] for p in support],
++                                 [p['x'] for p in support],2 if len(support)>=5 else 1)
++        left, right = apply_dashed_left_boundary((right_points,coefficients),
++                                                left_points,lane_width)
++        return left, right, 'right_to_left'
++    return left_points, right_points, None
++
++
+ def track_metric_lane(metric_bev_mask, frame_profile=None, source_stamp=None):
+     """
+     返回仅用于调试绘制的左右边界点、中心路径、车道宽和置信度。
+@@ -1796,6 +1836,7 @@
+     global previous_center_points
+     global previous_tracking_confidence
+     global previous_tracking_time
++    global left_reference_history, left_reference_candidate
+ 
+     current_tracking_time = time.time() if source_stamp is None else float(source_stamp)
+     temporal_comparable = (
+@@ -1845,6 +1886,37 @@
+         # The previous center may belong to the adjacent lane. Never blend it
+         # into a path whose divider identity is established by this frame.
+         reinitialized = True
++    reference_association = 'dashed_left' if dashed is not None else None
++    if dashed is None and left_reference_history is not None:
++        age = current_tracking_time-left_reference_history['stamp']
++        fresh = 0. <= age <= MAX_TEMPORAL_GAP_SECONDS
++        left_points, right_points, reference_association = associate_left_reference(
++            left_points,right_points,lane_width_est,fresh,left_reference_history['points'])
++        if reference_association is None:
++            # A different line cannot immediately replace a briefly hidden
++            # reference. After expiry require three consistent new images.
++            candidate = left_reference_candidate
++            if not fresh and count_observed(left_points) >= MIN_MODE_BOUNDARY_POINTS:
++                same = (candidate is not None and
++                    0. < current_tracking_time-candidate['stamp'] <= MAX_TEMPORAL_GAP_SECONDS and
++                    associate_left_reference(left_points,[],lane_width_est,True,
++                                             candidate['points'])[2] == 'left')
++                candidate = dict(points=left_points,stamp=current_tracking_time,
++                    count=candidate['count']+1 if same else 1,
++                    since=candidate['since'] if same else current_tracking_time)
++                left_reference_candidate = candidate
++            else:
++                left_reference_candidate = None
++                candidate = None
++            if (candidate is None or candidate['count'] < 3 or
++                    current_tracking_time-candidate['since'] < .1):
++                left_points, right_points = [None]*NUM_WINDOWS, [None]*NUM_WINDOWS
++                reference_association = 'pending_reference'
++            else:
++                reference_association = 'confirmed_new_left'
++    if count_observed(left_points) >= MIN_MODE_BOUNDARY_POINTS:
++        left_reference_history = dict(points=left_points,stamp=current_tracking_time)
++        left_reference_candidate = None
+     (
+         lane_width_est,
+         accepted_width_count,
+@@ -1893,6 +1965,7 @@
+     previous_tracking_time = current_tracking_time
+ 
+     return {
++        "reference_association": reference_association,
+         "dashed_left": dashed is not None,
+         "left_points": left_points,
+         "right_points": right_points,
+@@ -2532,6 +2605,7 @@
+     global WINDOW_HEIGHT, NUM_WINDOWS, MIN_LANE_PATH_FORWARD_SPAN_M
+     global MAX_EMPTY_WINDOWS
+     global previous_left_points, previous_right_points, previous_center_points
++    global left_reference_history, left_reference_candidate
+     if height not in (20, 40) or not .05 <= min_span <= .30:
+         raise ValueError('lane windows must be 20/40 px; min span 0.05..0.30 m')
+     WINDOW_HEIGHT = int(height)
+@@ -2543,6 +2617,7 @@
+     previous_left_points = [None] * NUM_WINDOWS
+     previous_right_points = [None] * NUM_WINDOWS
+     previous_center_points = [None] * NUM_WINDOWS
++    left_reference_history = left_reference_candidate = None
+ 
+ 
+ 
+@@ -2655,6 +2730,7 @@
+         diagnostic = {}
+         select_nearest_lane_path_segment(center_segments, diagnostic)
+         diagnostic['dashed_left'] = bool(tracking_result and tracking_result.get('dashed_left'))
++        diagnostic['reference_association'] = tracking_result.get('reference_association') if tracking_result else None
+         diagnostic['center_method'] = 'fitted_boundary_normal'
+         diagnostic['reference_side'] = next((p.get('reference_side')
+             for p in tracking_result['center_points'] if p), None) if tracking_result else None

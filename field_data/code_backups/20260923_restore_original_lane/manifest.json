@@ -1,0 +1,62 @@
+[
+  {
+    "path": "src/robot/camera/observations.py",
+    "before": "a6f762849dd238197cde41d35885a8465f45610f9e5bbe7791db1d3f9e802022",
+    "after": "285446985fc077bde98b4a70efb7c91130020c73bb80c108374eec78becbf47e"
+  },
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "b018775077c4b189e12139ecf55af50d9b9f96fe141b107e39cac87d016b6041",
+    "after": "1c406a6e65fbd1b9a2ebb7552819e0d5a2aaa0204bf871168e0a5d63beb0b53d"
+  },
+  {
+    "path": "src/robot/launch/full.launch",
+    "before": "662ecca55e92d5a7db87372887798a1247c9f7dbf27f6701321a9bacb876303f",
+    "after": "f24a5fc75aa4354541a61d68bb3929a4f688769f63b09538ed17f73510ffce66"
+  },
+  {
+    "path": "src/robot/launch/stack.launch",
+    "before": "c1545a51ed975a78ce78801e08d98a30ac5afd1fc4bed27393e05ea1ff0ecf88",
+    "after": "6ca0aead1b84a71a6571b5bd1bbbb041d1c3b0e0ecb6144748d4e77abb922c99"
+  },
+  {
+    "path": "src/robot/master/controller_node.py",
+    "before": "e0097a8ad770c32a501d30489ea95f8d7c08f75c349dd6134d5adbdc87c8edfa",
+    "after": "e281b4cc611513291bfe97b6759e294ed806199cde9023b873d761aa44bc4807"
+  },
+  {
+    "path": "src/robot/master/state_machine.py",
+    "before": "032e956243b6c57143bb010bdd859d44603eb973a93f5f77ef83467c1d4609b8",
+    "after": "dd9099888a6f312df0f34f2577c73bb2200127e9482445f3db805a7ea91fcb50"
+  },
+  {
+    "path": "src/robot/master/telemetry.py",
+    "before": "6c3750ed5e9c6b6a1d8a11ad0593b2e69b9a007612f14d026096964aed464e4e",
+    "after": "7bba32a97b8900bdf27eb7bd3562d9a65ba25860468fd1181d289fd49580c0d4"
+  },
+  {
+    "path": "src/robot/test/test_lane_loss_transition.py",
+    "before": "2a05983315e6f0d3cf19efd25d0fad70938a460ac9d1f1f5fb7691c8b31041e8",
+    "after": "737e50000c4c981d4835295a9bfa12f7702270e411b03b7701aea254cbbcc060"
+  },
+  {
+    "path": "src/robot/test/test_ros_adapter.py",
+    "before": "8f7d322dbb037085c279d86cf659deb179aab9c371bbaa940c9ebd5473ea5cb0",
+    "after": "4919e866726ef93541bac56bd2cd800bc506e6f52a5688483882fab44d848208"
+  },
+  {
+    "path": "src/ros/camera/scripts/camera_yihan_web.py",
+    "before": "a18dd9315b5724601b9ffdf9796461e38545cb9cc9b281cb3be37d9ae2861460",
+    "after": "9e84f49b23f5173969874d2a6cbe188b953c77ea6c5c9ef2f03acddc7aad06c4"
+  },
+  {
+    "path": "src/ros/camera/test/test_lane_transport.py",
+    "before": "c63c2a581e2f15a20a46495cf918e95b7bbbfbad0ecbdfde622095b9d521938a",
+    "after": "ddcf64d6c7fa38986746f8c7b25fe3fed1fe9531a51a71e0c446543fe7162e07"
+  },
+  {
+    "path": "src/ros/camera/test/test_right_of_divider.py",
+    "before": "1a2b464d5e97429aef62091ce872a18abdb0f2a8e163b07827dd20e61ac721a5",
+    "after": null
+  }
+]

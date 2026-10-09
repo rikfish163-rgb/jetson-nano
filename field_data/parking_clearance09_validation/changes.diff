@@ -1,0 +1,123 @@
+--- before/src/robot/parking/forward.py
++++ after/src/robot/parking/forward.py
+@@ -17,6 +17,7 @@
+         self.bottom_target_aligned=True
+         self.bottom_pose=None;self.motion_sample=None;self.motion_ratios=[]
+         self.motion_scale=1.;self.motion_speed=None
++        self.tracked_view=None;self.tracked_view_stamp=-1.
+ 
+     def remember_bottom(self,line,stamp,source):
+         if source!='tracked_bottom':
+@@ -59,6 +60,8 @@
+         self.sides_behind_sign_rejected=0
+         anchor=local(self.pose,self.sign_anchor) if self.sign_anchor is not None else None
+         if self.associate and anchor is None:return
++        tracking=(self.associate and self.phase=='CENTER' and self.tracked_view is not None
++                  and 0<=stamp-self.tracked_view_stamp<=self.cfg.get('ground_timeout',1.25))
+         # A bottom stripe may be shared by several adjacent bays. Seeing the
+         # stripe below P is not our target while still aimed at its neighbour.
+         width=self.cfg.get('slots',{}).get('P4',{}).get('width',.38)
+@@ -70,7 +73,7 @@
+             if math.hypot(dx,dy)<.18:continue
+             if dx>.18 and abs(dy/dx)<math.tan(math.radians(35)):
+                 slope,intercept=dy/dx,a[1]-a[0]*dy/dx
+-                if self.associate:
++                if self.associate and not tracking:
+                     # Only observed paint BEFORE P can bound its approach bay.
+                     # A background segment cannot be extended backwards to
+                     # invent a missing side in front of the board.
+@@ -126,7 +129,22 @@
+                 width=abs(yl-yr);center=(yl+yr)/2
+                 if not .30<=width<=.50 or abs(center)>(1.0 if self.associate else .30):continue
+                 score=lo
+-                if self.associate:
++                if tracking:
++                    # After P identifies the bay, follow fresh measurements of
++                    # that pair. A drifting command-estimated P must not veto
++                    # its visible rails. Never switch to a neighbouring pair.
++                    previous=self.tracked_view
++                    theta=previous['theta']-self.pose[2]
++                    rx,ry=local(self.pose,previous['center'])
++                    slope=(left[2]+right[2])/2.
++                    heading=(math.atan(slope)-theta+math.pi)%(2*math.pi)-math.pi
++                    lateral=-(x-rx)*math.sin(theta)+(center-ry)*math.cos(theta)
++                    if (abs(heading)>math.radians(10) or abs(lateral)>.08
++                            or abs(width-previous['width'])>.06):continue
++                    if self.bottom is not None:
++                        if lo>=max(local(self.pose,q)[0] for q in self.bottom):continue
++                    score=abs(lateral)+abs(width-previous['width'])
++                elif self.associate:
+                     ax,ay=anchor
+                     edges=sorted((left[2]*ax+left[3],right[2]*ax+right[3]))
+                     # Board stands between the sides, close to their far end.
+@@ -156,6 +174,7 @@
+         x=(lo+hi)/2;y=((left[2]+right[2])*x+left[3]+right[3])/2
+         self.view=dict(theta=self.pose[2]+math.atan(slope),center=world(self.pose,(x,y)),width=width,
+             sides=[[world(self.pose,p) for p in side[:2]] for side in (left,right)])
++        self.tracked_view=self.view;self.tracked_view_stamp=stamp
+         # Bottom must join both far endpoints, never the near mouth.
+         bottoms=[]
+         for a,b,line in (cross if self.bottom_target_aligned else []):
+--- before/src/robot/config/maneuvers.yaml
++++ after/src/robot/config/maneuvers.yaml
+@@ -5,7 +5,8 @@
+ # Vehicle motion still requires the normal live/enabled/actuator gates.
+ parking_mode: forward_center
+ parking_entry_speed_raw: 16
+-parking_final_speed_raw: 16
++parking_final_speed_raw: 12
++parking_bottom_clearance_m: 0.09
+ parking_sign_association: true
+ left_turn_full_lock: false # follow the configured 0.65 m arc instead of the tighter full-lock arc
+ timed_bypass_enabled: true
+--- before/src/robot/test/test_parking_bottom_tracking.py
++++ after/src/robot/test/test_parking_bottom_tracking.py
+@@ -5,6 +5,48 @@
+ 
+ 
+ class ParkingBottomTrackingTests(unittest.TestCase):
++    def test_confirmed_pair_keeps_centering_when_cached_p_drifts(self):
++        c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
++        rails=[[(.4,-.19),(1.,-.19)],[(.4,.19),(1.,.19)]]
++        p.observe(rails,1.,c.pose);p.command(1.,c.pose)
++        p.sign_anchor=(.7,-.3)
++        pose=(0.,-.06,0.)  # Car is right of its confirmed bay center.
++        p.observe(rails,1.2,pose)
++        speed,steer=p.command(1.2,pose)
++        self.assertIsNotNone(p.view)
++        self.assertEqual(p.reason,'parking_center_between_sides')
++        self.assertGreater(steer,0.)
++
++    def test_confirmed_pair_rejects_adjacent_bay_and_lines_past_bottom(self):
++        c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
++        rails=[[(.4,-.19),(1.,-.19)],[(.4,.19),(1.,.19)]]
++        p.observe(rails+[[(1.,-.19),(1.,.19)]],1.,c.pose)
++        p.command(1.,c.pose)
++        for lines in ([[ (.4,.21),(1.,.21)],[(.4,.59),(1.,.59)]],
++                      [[(1.2,-.19),(1.5,-.19)],[(1.2,.19),(1.5,.19)]]):
++            p.observe(lines,p.stamp+.1,c.pose)
++            self.assertIsNone(p.view)
++            self.assertEqual(p.command(p.stamp,c.pose)[1],0.)
++
++    def test_production_parking_slows_then_stops_five_cm_earlier(self):
++        import os
++        from robot.common.config import load_config
++        from robot.parking.forward import ForwardParking
++        cfg=load_config(os.path.join(os.path.dirname(os.path.dirname(__file__)),'config'))
++        self.assertEqual(cfg['parking_entry_speed_raw'],16)
++        self.assertEqual(cfg['parking_final_speed_raw'],12)
++        self.assertAlmostEqual(cfg['parking_bottom_clearance_m'],.09)
++        p=ForwardParking(cfg,(0.,0.,0.),1.);p.sign_anchor=(1.,0.)
++        p.observe([[ (.85,-.3),(.85,.3)]],1.,(0.,0.,0.))
++        self.assertEqual(p.command(1.,(0.,0.,0.))[0],16)
++        p.observe([],1.2,(.20,0.,0.))
++        self.assertEqual(p.command(1.2,(.20,0.,0.))[0],12)
++        p.observe([],1.4,(.42,0.,0.))
++        self.assertGreater(p.command(1.4,(.42,0.,0.))[0],0)
++        p.observe([],1.6,(.431,0.,0.))
++        self.assertEqual(p.command(1.6,(.431,0.,0.)),(0,0.))
++        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.089)
++
+     def parking(self):
+         c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
+         p.cfg.update(parking_entry_speed_raw=16,parking_final_speed_raw=16)

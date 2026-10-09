@@ -1,0 +1,234 @@
+{
+  "runs": [
+    {
+      "guarded": 9, 
+      "run": "20260929_205741_524", 
+      "releases": 1, 
+      "ticks": 360, 
+      "stops": 5, 
+      "locks": 2, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 3, 
+      "run": "20260929_205852_2178", 
+      "releases": 0, 
+      "ticks": 397, 
+      "stops": 0, 
+      "locks": 1, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 0, 
+      "run": "20260929_214444_15843", 
+      "releases": 0, 
+      "ticks": 314, 
+      "stops": 0, 
+      "locks": 1, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 2, 
+      "run": "20260929_215839_18817", 
+      "releases": 0, 
+      "ticks": 374, 
+      "stops": 16, 
+      "locks": 1, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 3, 
+      "run": "20260929_221301_22814", 
+      "releases": 0, 
+      "ticks": 264, 
+      "stops": 19, 
+      "locks": 1, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 16, 
+      "run": "20260929_224456_26686", 
+      "releases": 1, 
+      "ticks": 790, 
+      "stops": 56, 
+      "locks": 2, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 28, 
+      "run": "20260929_224831_28947", 
+      "releases": 1, 
+      "ticks": 727, 
+      "stops": 17, 
+      "locks": 2, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 0, 
+      "run": "20260929_225212_31193", 
+      "releases": 0, 
+      "ticks": 224, 
+      "stops": 6, 
+      "locks": 1, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 2, 
+      "run": "20260929_230116_1410", 
+      "releases": 1, 
+      "ticks": 739, 
+      "stops": 0, 
+      "locks": 2, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 54, 
+      "run": "20260929_232406_4508", 
+      "releases": 1, 
+      "ticks": 862, 
+      "stops": 25, 
+      "locks": 2, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 88, 
+      "run": "20260930_004144_15514", 
+      "releases": 1, 
+      "ticks": 959, 
+      "stops": 0, 
+      "locks": 2, 
+      "false_stop_window_ticks": 0, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }, 
+    {
+      "guarded": 82, 
+      "run": "20260930_011909_18373", 
+      "releases": 1, 
+      "ticks": 1087, 
+      "stops": 0, 
+      "locks": 2, 
+      "false_stop_window_ticks": 238, 
+      "false_stop_window_stops": 0, 
+      "positive_while_locked": 0
+    }
+  ], 
+  "known_cases": [
+    {
+      "guarded": true, 
+      "run": "20260929_230116_1410", 
+      "stamp": 1790694132.616312, 
+      "lock": {
+        "direction": "RIGHT", 
+        "exit_frames": 0, 
+        "started": 1790694121.839488, 
+        "stamp": 1790694132.4520724, 
+        "exit_since": null, 
+        "steer": -0.03
+      }, 
+      "raw": -22, 
+      "state": "GAP", 
+      "source_stamp": 1790694132.4520724, 
+      "original_speed": 20, 
+      "speed": 16, 
+      "original_raw": 22
+    }, 
+    {
+      "guarded": true, 
+      "run": "20260929_232406_4508", 
+      "stamp": 1790695510.105253, 
+      "lock": {
+        "direction": "RIGHT", 
+        "exit_frames": 0, 
+        "started": 1790695501.452895, 
+        "stamp": 1790695509.9184332, 
+        "exit_since": null, 
+        "steer": -0.03
+      }, 
+      "raw": -22, 
+      "state": "GAP", 
+      "source_stamp": 1790695509.9184332, 
+      "original_speed": 20, 
+      "speed": 16, 
+      "original_raw": 22
+    }, 
+    {
+      "guarded": true, 
+      "run": "20260929_232406_4508", 
+      "stamp": 1790695510.368362, 
+      "lock": {
+        "direction": "RIGHT", 
+        "exit_frames": 0, 
+        "started": 1790695501.452895, 
+        "stamp": 1790695510.1848896, 
+        "exit_since": null, 
+        "steer": -0.03
+      }, 
+      "raw": -22, 
+      "state": "GAP", 
+      "source_stamp": 1790695510.1848896, 
+      "original_speed": 20, 
+      "speed": 16, 
+      "original_raw": 18
+    }, 
+    {
+      "guarded": true, 
+      "run": "20260929_232406_4508", 
+      "stamp": 1790695537.57373, 
+      "lock": {
+        "direction": "RIGHT", 
+        "exit_frames": 0, 
+        "started": 1790695526.2506819, 
+        "stamp": 1790695537.3839903, 
+        "exit_since": null, 
+        "steer": -0.03
+      }, 
+      "raw": -22, 
+      "state": "GAP", 
+      "source_stamp": 1790695537.3839903, 
+      "original_speed": 20, 
+      "speed": 16, 
+      "original_raw": 22
+    }, 
+    {
+      "guarded": false, 
+      "run": "20260929_232406_4508", 
+      "stamp": 1790695537.65522, 
+      "lock": {
+        "direction": "RIGHT", 
+        "exit_frames": 0, 
+        "started": 1790695526.2506819, 
+        "stamp": 1790695537.451351, 
+        "exit_since": null, 
+        "steer": -0.03
+      }, 
+      "raw": -22, 
+      "state": "GAP", 
+      "source_stamp": 1790695537.451351, 
+      "original_speed": 16, 
+      "speed": 16, 
+      "original_raw": 22
+    }
+  ], 
+  "method": "Fixed recorded vehicle-frame observations, replay pose zero; no simulated new vehicle trajectory."
+}

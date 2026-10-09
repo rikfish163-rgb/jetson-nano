@@ -1,0 +1,83 @@
+--- before/src/robot/config/maneuvers.yaml
++++ after/src/robot/config/maneuvers.yaml
+@@ -7,7 +7,7 @@
+ parking_entry_speed_raw: 16
+ parking_final_speed_raw: 16
+ parking_sign_association: true
+-left_turn_full_lock: true
++left_turn_full_lock: false # follow the configured 0.65 m arc instead of the tighter full-lock arc
+ timed_bypass_enabled: true
+ uturn_trial_enabled: true
+ uturn_trial_resume_lane: true
+--- before/src/robot/config/competition.yaml
++++ after/src/robot/config/competition.yaml
+@@ -16,7 +16,7 @@
+ lookahead: 0.30
+ action_lookahead: 0.30
+ lidar_timeout: 0.8 # independent of the 0.5 s visual timeout; final-ray timestamp
+-left_turn_full_lock: false # production profile enables the full-lock model arc
++left_turn_full_lock: false # true overrides the configured radius with the full-lock model arc
+ # Right: reverse 0.45 m, then use fixed steering and align to the exit.
+ right_turn_full_lock: true
+ right_exit_on_blue: false # enable explicitly for continuous right turn until new blue
+--- before/src/robot/test/test_left_full_lock_lidar.py
++++ after/src/robot/test/test_left_full_lock_lidar.py
+@@ -11,14 +11,27 @@
+ 
+ 
+ class LeftFullLockLidarTests(unittest.TestCase):
+-    def config(self):
++    def config(self, full_lock=None):
+         cfg=load_config(os.path.join(os.path.dirname(os.path.dirname(__file__)),'config'))
+         cfg.update(wait_green=False,lidar_enabled=False,steering_command_scale_rad=.1,
+                    right_turn_radius=.55)
++        if full_lock is not None:cfg['left_turn_full_lock']=full_lock
+         return cfg
+ 
+-    def test_production_left_arc_plans_full_lock_radius(self):
++    def test_production_left_uses_configured_radius_and_path_tracking(self):
+         cfg=self.config()
++        self.assertFalse(cfg['left_turn_full_lock'])
++        self.assertAlmostEqual(turn_parameters(cfg,'LEFT')['effective_radius'],.65)
++        c=Controller(cfg);self.addCleanup(c.close)
++        c.start_follow(intersection_path(c.pose,'LEFT',cfg),'LEFT',1.)
++        self.assertFalse(c.follower.full_lock)
++        arc=[q for q in c.follower.path if q[4]>0]
++        self.assertTrue(arc)
++        for q in arc:
++            self.assertAlmostEqual(cfg['wheelbase']/math.tan(q[4]),.65)
++
++    def test_opt_in_left_arc_plans_full_lock_radius(self):
++        cfg=self.config(True)
+         self.assertTrue(cfg.get('left_turn_full_lock',False))
+         p=turn_parameters(cfg,'LEFT')
+         self.assertAlmostEqual(p['effective_radius'],cfg['wheelbase']/math.tan(cfg['max_steer']))
+@@ -29,7 +42,7 @@
+             self.assertEqual(raw['steering_raw'],22)
+ 
+     def test_controller_wires_full_lock_only_for_left(self):
+-        cfg=self.config();c=Controller(cfg);self.addCleanup(c.close)
++        cfg=self.config(True);c=Controller(cfg);self.addCleanup(c.close)
+         c.start_follow(intersection_path(c.pose,'LEFT',cfg),'LEFT',1.)
+         arc=next(q for q in c.follower.path if q[4]>0)
+         c.set_pose(arc[:3],1.1)
+@@ -43,7 +56,7 @@
+         self.assertAlmostEqual(turn_parameters(cfg,'RIGHT')['effective_radius'],.55)
+ 
+     def test_full_lock_entry_arc_exit_model_finishes_without_reverse_steering(self):
+-        cfg=self.config();path=intersection_path((0,0,0),'LEFT',cfg)
++        cfg=self.config(True);path=intersection_path((0,0,0),'LEFT',cfg)
+         follower=Follower(path,cfg,full_lock=True)
+         pose=(0.,0.,0.);arc_count=0;tail=False
+         for i in range(1000):
+--- before/tools/sign_detector_20260916/run_yolo_vehicle.sh
++++ after/tools/sign_detector_20260916/run_yolo_vehicle.sh
+@@ -24,7 +24,7 @@
+   sign_model:=/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine \
+   sign_ttl:=0 blue_default_straight:=false marker_trigger_x:=0.36 \
+   blue_align_duration_s:=1.0 blue_aligned_advance_m:=0.36 intersection_wait_s:=1.0 straight_distance:=1.25 \
+-  left_turn_entry:=0.12 left_turn_radius:=0.65 left_turn_exit:=0.30 \
++  left_turn_full_lock:=false left_turn_entry:=0.12 left_turn_radius:=0.65 left_turn_exit:=0.30 \
+   right_turn_full_lock:=true right_exit_on_blue:=true right_lock_min_angle_deg:=30 \
+   right_turn_entry:=0.0 right_reverse_entry_m:=0.25 \
+   right_turn_radius:=0.55 right_turn_exit:=0.25 "$@"

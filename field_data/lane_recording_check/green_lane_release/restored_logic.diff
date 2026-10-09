@@ -1,0 +1,206 @@
+--- before/src/robot/lane/controller.py
++++ after/src/robot/lane/controller.py
+@@ -6,7 +6,7 @@
+ from robot.common.geometry import local
+ from robot.common.contracts import model_to_command_steering
+ from vehicle_control.pure_pursuit import PurePursuit
+-from robot.lane.preview import preview_steering, preview_target, lane_speed
++from robot.lane.preview import preview_steering, lane_speed
+ 
+ 
+ 
+@@ -53,7 +53,7 @@
+     This is ordinary-lane intent, separate from signed intersection maneuvers.
+     Never count repeated control ticks as new visual evidence.
+     """
+-    if ctx.action is not None or ctx.cfg.get('lane_curvature_preview',False):
++    if ctx.action is not None:
+         ctx.lane_curve_lock = None
+         return steer, False
+     points = sorted(p for p in points if p[0] > 0.)
+@@ -123,9 +123,8 @@
+         lock['stamp'] = ctx.lane_stamp
+     elif ctx.state != 'GAP':
+         ctx.gap_steer = ctx.call('motion', 'current_steering', now)
+-    gap_seconds = min(ctx.cfg['gap_max_seconds'],.35) if ctx.cfg.get('lane_curvature_preview',False) else ctx.cfg['gap_max_seconds']
+     if (distance(ctx.pose,ctx.gap_origin) > ctx.cfg['gap_max_distance'] or
+-            now-ctx.gap_start > gap_seconds):
++            now-ctx.gap_start > ctx.cfg['gap_max_seconds']):
+         return ctx.call('motion', 'stop', 'gap_limit_wait_for_lane')
+     ctx.state = 'GAP'
+     return lane_speed(ctx, ctx.cfg['speed_raw']['gap']), ctx.gap_steer
+@@ -164,9 +163,6 @@
+     if not forward:
+         return ctx.call('motion', 'stop', 'lane_behind_vehicle')
+     target_index,target = max(forward,key=lambda item:item[1][0])
+-    if ctx.cfg.get('lane_curvature_preview',False):
+-        target = preview_target(candidates,ctx.cfg['lookahead'])
+-        target_index = min(forward,key=lambda item:abs(item[1][0]-target[0]))[0]
+     offset = target[1]  # y-left = (BEV midpoint u - target u) / 400.
+     fraction = max(-1.,min(1.,offset/ctx.cfg.get('lane_lateral_full_scale_m',.075)))
+     steer = fraction*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+@@ -177,9 +173,8 @@
+         intersection=None, line_x=None, lateral_offset_m=offset,
+         angle=steer, valid=True, reason='ok',curvature_preview=ctx.lane_preview,
+         selection='right_curve_full_lock' if ctx.lane_curve_lock else 'topmost_lateral_offset')
+-    if ctx.cfg.get('lane_curvature_preview',False):
+-        ctx.lane_target.update(selection='center_path_pursuit',line_x=ctx.cfg['lookahead'],
+-            intersection=target)
++    if ctx.lane_preview is not None and ctx.lane_curve_lock is None:
++        ctx.lane_target['selection'] = 'topmost_with_curvature_preview'
+     if rejected:
+         ctx.lane_source = 'right_curve_hold'
+         ctx.lane_target.update(target=None,rejected_target=target,valid=False,
+--- before/src/robot/lane/preview.py
++++ after/src/robot/lane/preview.py
+@@ -1,18 +1,7 @@
+-"""Metric path feedback and frame-based curvature filtering for speed selection."""
++"""Measured-path curvature feedforward with a scalar, frame-based Kalman filter."""
+ from __future__ import division
++import math
+ import numpy as np
+-from robot.common.contracts import model_to_command_steering
+-from vehicle_control.pure_pursuit import PurePursuit
+-
+-
+-def preview_target(points, lookahead):
+-    """Interpolate within measured points; never extrapolate an unseen exit."""
+-    points = sorted(p for p in points if p[0] > .05)
+-    for a,b in zip(points,points[1:]):
+-        if a[0] <= lookahead <= b[0]:
+-            fraction = (lookahead-a[0])/(b[0]-a[0])
+-            return (lookahead,a[1]+fraction*(b[1]-a[1]))
+-    return min(points,key=lambda p:abs(p[0]-lookahead))
+ 
+ 
+ def curvature_preview(points, stamp, previous, timeout):
+@@ -52,17 +41,18 @@
+         return steer
+     ctx.lane_preview = curvature_preview(points, ctx.lane_stamp, ctx.lane_preview,
+                                          ctx.cfg['sensor_timeout'])
+-    target = preview_target(points,ctx.cfg['lookahead'])
+-    result = PurePursuit(ctx.cfg['wheelbase'],ctx.cfg['lookahead']).compute([target])
+-    # Pursuit already includes path curvature. Adding curvature again and
+-    # holding full right steering double-counted the bend and prevented recovery.
+-    return model_to_command_steering(result.steering_angle,ctx.cfg)
++    if ctx.lane_preview is None:
++        return steer
++    scale = ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
++    physical = steer/scale*ctx.cfg['max_steer']
++    physical += math.atan(ctx.cfg['wheelbase']*ctx.lane_preview['curvature'])
++    physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
++    return physical/ctx.cfg['max_steer']*scale
+ 
+ 
+ def lane_speed(ctx, speed):
+     if ctx.cfg.get('lane_curvature_preview',False) and (
+             ctx.lane_curve_lock is not None or
+-            abs(ctx.gap_steer) >= .4*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer']) or
+             ctx.lane_preview is not None and abs(ctx.lane_preview['curvature']) >= .4):
+         return min(speed, ctx.cfg.get('lane_curve_speed_raw',12))
+     return speed
+--- before/src/robot/lane/README.md
++++ after/src/robot/lane/README.md
+@@ -1,6 +1,18 @@
+ # 寻线
+ 
+-## 2026-09-30 持续满右舵与消息停顿修复
++## 当前：按用户要求恢复原巡线转向
++
++已恢复加绿牌、避障之前的最远点横偏控制、卡尔曼曲率预判、右弯锁舵和
++原 GAP 时间/距离预算。普通巡线再次使用最远实测中心点；右弯按原判据进入
++满右舵，按原连续出口帧判据解除。具体实现恢复自
++`field_data/code_backups/20260930_lane_green_obstacle/src/robot/lane/`。
++轻微置信度波动的 0.25 秒可信角度过渡继续保留。
++消息参数缓存、独立遥测计时器和发布时释放控制锁的修复继续保留。
++绿牌后仍先零舵直行 1.25 m，再交给巡线；雷达避障继续开启。
++Nano 完整入口：`bash tools/sign_detector_20260916/run_lane_green_obstacle.sh`。
++以下 Pure Pursuit 版本说明保留为历史记录。
++
++## 历史：持续满右舵与消息停顿修复
+ 
+ 本次实测日志显示：关闭雷达时仍出现中央指令 0.25 秒超时；右弯锁持续覆盖
+ 有效中心路径的反向纠偏，使车偏内。当前 `lane_curvature_preview:=true` 使用
+--- before/src/robot/test/test_lane_preview.py
++++ after/src/robot/test/test_lane_preview.py
+@@ -25,10 +25,9 @@
+         speed, steer = self.c.lane_command(stamp if now is None else now)
+         return speed, encode_command(speed, steer, self.c.cfg, 0)['steering_raw']
+ 
+-    def test_recorded_entry_slows_without_forcing_a_turn_away_from_center(self):
++    def test_recorded_entry_turns_right_before_far_offset_grows(self):
+         speed, raw = self.command(self.ENTRY)
+-        self.assertGreaterEqual(raw, 0)
+-        self.assertLessEqual(abs(raw), 2)
++        self.assertLessEqual(raw, -4)
+         self.assertEqual(speed, 12)
+ 
+     def test_mirrored_left_curve_is_symmetric(self):
+@@ -37,9 +36,7 @@
+ 
+     def test_bend_lock_and_gap_slow_down(self):
+         command = self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)])
+-        self.assertEqual(command[0], 12)
+-        self.assertLess(command[1], 0)
+-        self.assertGreater(command[1], -22)
++        self.assertEqual(command, (12,-22))
+         self.assertEqual(self.command([], 1.1), command)
+ 
+     def test_straight_retains_lane_speed(self):
+--- before/src/robot/test/test_lane_message_stability.py
++++ after/src/robot/test/test_lane_message_stability.py
+@@ -20,20 +20,23 @@
+         command = self.c.tick(stamp if now is None else now)
+         return command[0], encode_command(command[0], command[1], self.c.cfg, 0)['steering_raw']
+ 
+-    def test_inside_bend_accepts_countersteer_instead_of_full_right(self):
++    def test_confirmed_bend_retains_previous_full_right_hold(self):
+         self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)], 1.)
+         # Fresh measured path is now to the left of the car in the same bend.
+         speed, raw = self.command([(.6,.09),(.7,.08),(.8,.06),(.9,.03)], 1.1)
+         self.assertGreater(speed, 0)
+-        self.assertGreater(raw, 0)
+-        self.assertEqual(self.c.state, 'LANE')
++        self.assertEqual(raw, -22)
++        self.assertEqual(self.c.state, 'GAP')
+ 
+-    def test_exit_reduces_angle_on_first_fresh_centered_path(self):
++    def test_exit_reduces_angle_after_original_confirmation(self):
+         self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)], 1.)
+-        self.assertEqual(self.command([(.5,0),(.7,0),(.9,0),(1.1,0)], 1.1)[1], 0)
++        for i in range(5):
++            raw = self.command([(.5,0),(.7,0),(.9,0),(1.1,0)], 1.1+i*.11)[1]
++            self.assertEqual(raw, 0 if i==4 else -22)
+ 
+-    def test_near_error_is_corrected_even_when_farthest_point_is_centered(self):
+-        self.assertLess(self.command([(.5,-.15),(.65,-.105),(.8,-.06),(1.,0)], 1.)[1], 0)
++    def test_original_farthest_point_selection_is_retained(self):
++        self.assertEqual(self.command([(.5,-.15),(.65,-.105),(.8,-.06),(1.,0)], 1.)[1], 0)
++        self.assertEqual(self.c.lane_target['target'], (1.,0.))
+ 
+     def test_small_confidence_dip_has_bounded_grace_without_refreshing_it(self):
+         path = [(.5,.02),(.7,.02),(.9,.02),(1.1,.02)]
+@@ -50,18 +53,18 @@
+         self.assertEqual(self.command(path, 1.1, .1)[0], 0)
+         self.assertEqual(self.command(path, 1.1, now=1.7)[0], 0)
+ 
+-    def test_gap_cannot_hold_an_old_turn_for_seconds(self):
++    def test_gap_uses_original_configured_time_budget(self):
+         self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)], 1.)
+         self.assertGreater(self.command([], 1.1)[0], 0)
+-        self.assertEqual(self.command([], 1.4)[0], 0)
++        self.assertGreater(self.command([], 1.4)[0], 0)
++        self.assertEqual(self.command([], 1.+self.c.cfg['gap_max_seconds']+.1)[0], 0)
+ 
+-    def test_centered_circle_uses_bicycle_angle_and_mirrors(self):
++    def test_original_bend_control_reaches_raw_limit_and_mirrors(self):
+         import math
+         radius = .65
+         points = [(x,math.sqrt(radius*radius-x*x)-radius) for x in (.25,.35,.45,.5,.55)]
+         right = self.command(points, 1.)[1]
+-        expected = int(round(-math.atan(self.c.cfg['wheelbase']/radius)/self.c.cfg['max_steer']*22))
+-        self.assertEqual(right, expected)
++        self.assertEqual(right, -22)
+         self.assertEqual(self.command([(x,-y) for x,y in points], 1.1)[1], -right)
+ 
+     def test_obstacle_and_stale_scan_override_confidence_grace(self):

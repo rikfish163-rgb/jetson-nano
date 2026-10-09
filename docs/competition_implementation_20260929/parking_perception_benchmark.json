@@ -1,0 +1,20 @@
+{
+  "input": "synthetic blank camera and three measured-size painted boxes; not real-frame accuracy evidence", 
+  "iterations": [
+    {
+      "slot_ms": 851.0630130767822, 
+      "wide_bev_ms": 59.33094024658203, 
+      "slots": 3
+    }, 
+    {
+      "slot_ms": 848.7849235534668, 
+      "wide_bev_ms": 60.246944427490234, 
+      "slots": 3
+    }, 
+    {
+      "slot_ms": 848.5181331634521, 
+      "wide_bev_ms": 59.40079689025879, 
+      "slots": 3
+    }
+  ]
+}

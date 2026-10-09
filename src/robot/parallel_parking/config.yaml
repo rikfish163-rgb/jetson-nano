@@ -1,0 +1,15 @@
+# Loaded by the default measured forward_plan and by explicit parallel_reverse
+# parking profiles.
+parallel_parking_turn_radius_m: 0.65
+parallel_parking_max_setup_m: 2.0
+parallel_parking_speed_raw: 12
+parallel_parking_sample_step_m: 0.025
+parallel_parking_double_arc_yaw_tolerance_deg: 3.0
+parallel_parking_goal_position_tolerance_m: 0.03
+parallel_parking_goal_yaw_tolerance_deg: 10.0
+parallel_parking_tracking_error_m: 0.15
+parallel_parking_slot_drift_m: 0.12
+parallel_parking_slot_size_tolerance_m: 0.05
+parallel_parking_slot_body_margin_m: 0.01
+parallel_parking_confirm_frames: 3
+parallel_parking_timeout_s: 60.0

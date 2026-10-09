@@ -1,0 +1,21 @@
+# Front parking metric adapter.
+#
+# The front metric consumes the selected white bay target and the independent
+# blue start-line trigger forwarded by the target selector.  The white bay
+# candidate only describes slot identity/geometry; it does not trigger the
+# FSM.  It only becomes a pose source after the mapping has been measured on
+# the P4/P5 map.  Keep this false during bring-up: the FSM will stop at the
+# forward-turn phase with yaw_error_missing instead of steering from an
+# unverified image angle.
+derive_pose_from_candidate: false
+candidate_yaw_gain: 1.0
+candidate_yaw_bias_rad: 0.0
+candidate_lateral_gain: 1.0
+candidate_lateral_bias_m: 0.0
+candidate_max_yaw_rad: 1.50
+candidate_max_lateral_m: 0.80
+reverse_ready_yaw_tolerance_rad: 0.10
+reverse_ready_lateral_tolerance_m: 0.10
+input_timeout_s: 0.50
+candidate_confidence: 0.75
+trigger_offset_m: 0.0

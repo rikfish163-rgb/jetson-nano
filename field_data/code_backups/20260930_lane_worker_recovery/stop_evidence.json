@@ -1,0 +1,86 @@
+[
+  {
+    "command": [
+      0,
+      0.0
+    ],
+    "pose": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "reason": "waiting_green",
+    "source_ages": {
+      "front_ground": 0.29292821884155273,
+      "lane": 0.14930272102355957,
+      "rear_ground": 1790768465.834972,
+      "scan": null,
+      "scan_completed": null
+    },
+    "stamp": 1790768464.834972,
+    "state": "WAIT_GREEN"
+  },
+  {
+    "command": [
+      0,
+      0.0
+    ],
+    "pose": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "reason": "lidar_obstacle_in_sweep",
+    "source_ages": {
+      "front_ground": 0.3270604610443115,
+      "lane": 8.727162837982178,
+      "rear_ground": 1790768493.811115,
+      "scan": 0.3337850570678711,
+      "scan_completed": 0.2339167594909668
+    },
+    "stamp": 1790768492.811115,
+    "state": "STARTUP_STRAIGHT"
+  },
+  {
+    "command": [
+      12,
+      0.0
+    ],
+    "pose": [
+      0.4734454101562501,
+      0.0,
+      0.0
+    ],
+    "reason": "startup_straight_distance",
+    "source_ages": {
+      "front_ground": 0.12698793411254883,
+      "lane": 14.328013896942139,
+      "rear_ground": 1790768499.411966,
+      "scan": 0.43589210510253906,
+      "scan_completed": 0.33588457107543945
+    },
+    "stamp": 1790768498.411966,
+    "state": "STARTUP_STRAIGHT"
+  },
+  {
+    "command": [
+      0,
+      0.0
+    ],
+    "pose": [
+      1.2524236679077152,
+      0.0,
+      0.0
+    ],
+    "reason": "lane_stream_stale",
+    "source_ages": {
+      "front_ground": 0.3252382278442383,
+      "lane": 22.727628707885742,
+      "rear_ground": 1790768507.811581,
+      "scan": 0.3372480869293213,
+      "scan_completed": 0.23731565475463867
+    },
+    "stamp": 1790768506.811581,
+    "state": "LANE"
+  }
+]

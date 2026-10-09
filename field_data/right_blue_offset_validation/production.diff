@@ -1,0 +1,184 @@
+--- before/src/robot/turn/controller.py
++++ src/robot/turn/controller.py
+@@ -9,6 +9,7 @@
+ from robot.turn.geometry import arc_exit_reached
+ from robot.turn.geometry import exit_candidate
+ from robot.camera.alignment import steering_for_heading
++from robot.common.contracts import model_to_command_steering
+ 
+ 
+ 
+@@ -58,7 +59,7 @@
+ 
+ 
+ def right_blue_reference(ctx, now):
+-    """Use the right longitudinal stripe's tangent, not a junction's normal."""
++    """Build a parallel target to the left of the right longitudinal stripe."""
+     if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg['sensor_timeout']:
+         return None
+     candidates = []
+@@ -72,8 +73,18 @@
+                 abs(heading) > math.radians(35) or
+                 line['length'] < ctx.cfg['blue']['long_min']):
+             continue
+-        candidates.append((abs(y), x, dict(point=[x,y], heading_deg=math.degrees(heading),
+-            heading=heading, stamp=ctx.front_marker_stamp)))
++        # Signed normal distance is invariant when the visible segment center
++        # moves along the same stripe. y alone is not the car-to-line distance.
++        signed_distance=-x*math.sin(heading)+y*math.cos(heading)
++        if signed_distance >= 0:
++            continue
++        offset=ctx.cfg.get('straight_right_blue_offset_m',.30)
++        lookahead=ctx.cfg['lookahead']
++        error=signed_distance+offset
++        target_y=(error+lookahead*math.sin(heading))/math.cos(heading)
++        candidates.append((-signed_distance, x, dict(point=[x,y], heading_deg=math.degrees(heading),
++            heading=heading, stamp=ctx.front_marker_stamp,distance_m=-signed_distance,
++            target_offset_m=offset,lateral_error_m=error,target=[lookahead,target_y])))
+     return min(candidates,key=lambda item:item[:2])[2] if candidates else None
+ 
+ 
+@@ -163,12 +174,14 @@
+     if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25) and not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']:
+         return ctx.call('motion','stop','straight_front_stale')
+     # A missing side stripe means zero steering, not a stop or an old correction.
+-    reference = right_blue_reference(ctx,now) if ctx.action_source == 'sign' else None
++    reference = right_blue_reference(ctx,now)
+     s['right_blue'] = reference
+     steer = 0.0
+-    if reference is not None and abs(reference['heading']) > math.radians(2):
++    if reference is not None:
++        x,y=reference['target']
++        physical=math.atan2(2*ctx.cfg['wheelbase']*y,max(.0025,x*x+y*y))
+         limit = 6.0/ctx.cfg['steering_raw_limit']*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+-        steer = max(-limit,min(limit,steering_for_heading(reference['heading'],ctx.cfg)))
++        steer = max(-limit,min(limit,model_to_command_steering(physical,ctx.cfg)))
+     ctx.lane_source = 'straight_zero_steer'
+     if reference is not None:
+         ctx.lane_source = 'straight_right_blue'
+--- before/src/robot/master/state_machine.py
++++ src/robot/master/state_machine.py
+@@ -23,7 +23,7 @@
+  'marker', 'blue_consumed', 'marker_candidate', 'last_blue_trigger', 'next_direction', 'next_direction_at', 'obstacle_check', 'park_line_side', 'lane_stamp', 'parallel_future',
+  'parallel_parking', 'parking_candidates', 'parking_entry', 'parking_sign', 'parking_front_frames',
+  'parking_marker', 'parking_trigger_at', 'parking_trigger_pose', 'pending', 'pending_at',
+- 'pose', 'pose_stamp', 'reason', 'red', 'right_lock', 'right_tail_origin', 'sign_count',
++ 'pose', 'pose_stamp', 'reason', 'red', 'right_lock', 'right_tail_origin', 'sign_count', 'sign_info',
+  'sign_label', 'startup_started', 'startup_origin', 'startup_blue_point', 'state', 'straight_search', 'timed_uturn', 'uturn',
+  'uturn_sign_window', 'wait_until', 'timed_bypass', 'timed_bypass_completed', 'lane_recovery',
+  'blue_approach', 'blue_clear_since', 'blue_clear_frames', 'front_blue_lines')
+@@ -157,6 +157,15 @@
+         ctx.action_source = 'obstacle'
+     else:
+         ctx.pending = None
++    if action == 'STRAIGHT':
++        # Consume sign state at entry, not at the later lane handoff. Keep the
++        # running action itself intact and retain sign_stamp for stale rejection.
++        ctx.pending_at=0.0
++        ctx.sign_label,ctx.sign_count='',0
++        ctx.direction_window,ctx.uturn_sign_window=[],[]
++        ctx.next_direction,ctx.next_direction_at=None,0.0
++        ctx.sign_info=dict(label='',confidence=0.,stamp=now,votes=0,
++                           decision='consumed_by_straight')
+     ctx.exit_pose = path[-1][:3]
+     ctx.exit_count, ctx.exit_stamp = 0, -1.0
+     ctx.right_tail_origin = None
+--- before/src/robot/signs/decisions.py
++++ src/robot/signs/decisions.py
+@@ -36,6 +36,28 @@
+         ctx.green_start_window = []
+     bypass_straight = (label == 'STRAIGHT' and ctx.state == 'TIMED_BYPASS'
+                        and ctx.action == 'BYPASS' and ctx.pending is None)
++    directions=('LEFT','RIGHT','STRAIGHT','UTURN')
++    if ctx.action is None and ctx.pending in directions:
++        # Before blue commits an action, fresh consecutive observations may
++        # correct the cached direction; an active action remains locked.
++        if label in directions and ctx.cfg['sign_confidence'] <= confidence <= 1.0:
++            if label == ctx.pending:
++                ctx.direction_window=[]
++                ctx.sign_info.update(votes=0,decision='pending_latched')
++                return
++            if ctx.direction_window and ctx.direction_window[-1][0] != label:
++                ctx.direction_window=[]
++            ctx.direction_window.append((label,stamp))
++            required=int(ctx.cfg.get('direction_sign_votes',2))
++            ctx.direction_window=ctx.direction_window[-required:]
++            ctx.sign_info.update(votes=len(ctx.direction_window),decision='direction_correction_voting')
++            if len(ctx.direction_window)==required:
++                ctx.pending,ctx.pending_at=label,now
++                ctx.direction_window=[]
++                ctx.sign_label,ctx.sign_count='',0
++                ctx.sign_info['decision']='corrected_pending'
++            return
++        ctx.direction_window=[]
+     if (label in ('LEFT','RIGHT','STRAIGHT','UTURN','PARKING') and
+             (ctx.pending is not None or ctx.action is not None) and not bypass_straight):
+         # Do not carry observations made during one action into the next.
+@@ -78,6 +100,11 @@
+         if label == 'PARKING' and not ctx.cfg.get('parking_enabled',True):
+             ctx.sign_info['decision'] = 'parking_disabled'
+             return
++        if label in directions:
++            ctx.sign_count=previous_count+1 if previous_label==label else 1
++            ctx.sign_info.update(votes=ctx.sign_count,decision='direction_voting')
++            if ctx.sign_count < ctx.cfg.get('direction_sign_votes',2):
++                return
+         if label == 'PARKING':
+             ctx.sign_count = previous_count+1 if previous_label == label else 1
+             ctx.sign_info.update(votes=ctx.sign_count,decision='parking_voting')
+--- before/src/robot/config/competition.yaml
++++ src/robot/config/competition.yaml
+@@ -46,6 +46,7 @@
+ sensor_timeout: 0.50
+ sign_timeout: 1.50
+ sign_votes: 1 # GREEN startup: fresh consecutive frames at sign_confidence or above
++direction_sign_votes: 2 # LEFT/RIGHT/STRAIGHT/UTURN: fresh consecutive frames
+ parking_sign_votes: 3 # PARKING requires this many fresh consecutive accepted frames
+ # All seven labels use this confidence threshold.
+ sign_confidence: 0.80
+@@ -77,6 +78,7 @@
+ blue_aligned_advance_m: 0.36 # separate forward travel after the alignment window
+ straight_wait_s: 1.0
+ straight_speed_raw: 26 # same command as the proven startup setting; verify wheel motion
++straight_right_blue_offset_m: 0.30 # vehicle center stays this far left of right tape
+ straight_search_max_distance: 2.20 # legacy fixed-UTURN blue search only; unused by STRAIGHT
+ straight_search_timeout: 20.0
+ straight_align_distance: 1.60 # use the nearest measured blue transverse line
+--- before/src/robot/config/workspace_modules.yaml
++++ src/robot/config/workspace_modules.yaml
+@@ -49,6 +49,7 @@
+     - sign_timeout
+     - sign_ttl
+     - sign_votes
++    - direction_sign_votes
+     - sign_width_m
+   motion:
+     title: 运动执行与手动接管
+@@ -135,6 +136,7 @@
+     - straight_align_tolerance_deg
+     - straight_blue_clearance
+     - straight_distance
++    - straight_right_blue_offset_m
+     - straight_search_heading_deg
+     - straight_search_max_distance
+     - straight_search_timeout
+--- before/src/robot/common/contracts.py
++++ src/robot/common/contracts.py
+@@ -64,6 +64,9 @@
+     if frames != int(frames) or not 2 <= frames <= 30:
+         raise ValueError('exit_frames must be an integer in [2,30]')
+     parking_votes = number(cfg.get('parking_sign_votes',3))
++    direction_votes = number(cfg.get('direction_sign_votes',2))
++    if direction_votes != int(direction_votes) or not 1 <= direction_votes <= 10:
++        raise ValueError('direction_sign_votes must be an integer in [1,10]')
+     if parking_votes != int(parking_votes) or not 1 <= parking_votes <= 10:
+         raise ValueError('parking_sign_votes must be an integer in [1,10]')
+     for key,default,low,high in (('parking_visible_side_m',.18,.12,.35),
+@@ -178,6 +181,7 @@
+         raise ValueError('uturn_reverse_distance_m must be in [0,3]')
+     for key,default,upper in (('straight_wait_s',1.0,60),
+                               ('blue_align_duration_s',1.0,5),
++                              ('straight_right_blue_offset_m',.30,1),
+                               ('blue_aligned_advance_m',.36,2),
+                               ('straight_search_max_distance',.8,3),
+                               ('straight_search_timeout',10.0,60),

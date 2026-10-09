@@ -1,0 +1,4 @@
+# 路牌识别：只在此文件写本模块需要覆盖的参数。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+# 方向/P牌高度至少占原图12.5%（360高时45px）；红绿灯不受此门槛影响。
+sign_min_height_ratio: 0.125

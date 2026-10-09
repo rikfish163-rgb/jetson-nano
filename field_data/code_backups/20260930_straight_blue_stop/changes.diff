@@ -1,0 +1,528 @@
+--- before/robot/camera/observations.py
++++ src/robot/camera/observations.py
+@@ -202,7 +202,7 @@
+         markers.append(p)
+     if channel[0] == 'front' and channel[1] in ('all','markers'):
+         approach = ctx.blue_approach
+-        if approach is not None and approach['phase'] == 'ALIGN':
++        if approach is not None and approach['phase'] in ('ALIGN','STOP_LINE'):
+             nx,ny = math.cos(approach['yaw']),math.sin(approach['yaw'])
+             matches = [p for p in markers if
+                 abs((p[0]-approach['point'][0])*nx+(p[1]-approach['point'][1])*ny) < .15
+--- before/robot/camera/vision.py
++++ src/robot/camera/vision.py
+@@ -4,6 +4,7 @@
+ import cv2
+ import numpy as np
+ from robot.parking.detection import detect_bays
++from robot.camera.landmarks import image_segments
+ 
+ 
+ _COVERAGE_STEPS = np.arange(31,dtype=np.float64)[:,None]
+@@ -74,6 +75,49 @@
+                 continue
+             x,y = self.metric(rect[0][0],rect[0][1],rear)
+             markers.append(dict(x=x,y=y,length=length,kind='junction' if length >= b['long_min'] else 'tick'))
++        if not rear:
++            # Connected corners and shadow fragments have misleading contour
++            # boxes. Recover straight segments while retaining paint-width
++            # and length gates, including the short scoring-tick rejection.
++            segments=image_segments(blue,lambda pts:np.array(
++                [self.metric(u,v) for u,v in pts]),ppm,b['length_max'])
++            for a,z in segments:
++                delta=z-a
++                length=float(np.linalg.norm(delta))
++                if length < b['long_min']:continue
++                normal=np.array([-delta[1],delta[0]])/length
++                centers=a+np.linspace(.05,.95,41)[:,None]*delta
++                offsets=np.arange(-int(ppm*.08),int(ppm*.08)+1)/ppm
++                samples=centers[:,None,:]+offsets[None,:,None]*normal
++                u=np.rint(self.c['origin_u']-samples[:,:,1]*ppm).astype(int)
++                v=np.rint(self.c['origin_v']-samples[:,:,0]*ppm).astype(int)
++                valid=(u>=0)&(u<blue.shape[1])&(v>=0)&(v<blue.shape[0])
++                paint=np.zeros(u.shape,dtype=bool)
++                paint[valid]=blue[v[valid],u[valid]]>0
++                widths=np.count_nonzero(paint,axis=1)/ppm
++                if (np.mean(widths>=b['thickness_min']) < .50 or
++                        not b['thickness_min'] <= np.median(widths) <= b['thickness_max']):
++                    continue
++                dx,dy=delta
++                if dy<0:dx,dy=-dx,-dy
++                center=(a+z)/2
++                blue_lines.append(dict(x=float(center[0]),y=float(center[1]),
++                                       yaw=math.atan2(-dx,dy),length=length))
++            merged=[]
++            for line in sorted(blue_lines,key=lambda row:row['length'],reverse=True):
++                duplicate=False
++                for old in merged:
++                    angle=(line['yaw']-old['yaw']+math.pi/2)%math.pi-math.pi/2
++                    dx,dy=line['x']-old['x'],line['y']-old['y']
++                    normal_distance=abs(dx*math.cos(old['yaw'])+dy*math.sin(old['yaw']))
++                    along=abs(-dx*math.sin(old['yaw'])+dy*math.cos(old['yaw']))
++                    if (abs(angle)<math.radians(5) and normal_distance<.035 and
++                            along <= (line['length']+old['length'])/2+.04):
++                        duplicate=True;break
++                if not duplicate:merged.append(line)
++            blue_lines=merged
++            markers=[m for m in markers if m['kind']=='tick']+[
++                dict(x=m['x'],y=m['y'],length=m['length'],kind='junction') for m in merged]
+         slots = self.detect_slots(white,rear) if include_slots else []
+         return dict(markers=markers,slots=slots,blue_lines=blue_lines),blue,white
+ 
+--- before/robot/lane/preview.py
++++ src/robot/lane/preview.py
+@@ -2,7 +2,7 @@
+ from __future__ import division
+ import math
+ import numpy as np
+-from robot.common.geometry import local
++from robot.common.geometry import local, world
+ 
+ 
+ def curvature_preview(points, stamp, previous, timeout):
+@@ -24,7 +24,7 @@
+     measured = max(-3., min(3., float(2*a/(1+b*b)**1.5)))
+     xs = np.linspace(points[0][0],points[-1][0],64)
+     reference = [(float(v),float(a*(v-middle)**2+b*(v-middle)+c)) for v in xs]
+-    model, radius = 'quadratic', None
++    model, radius, circle_center = 'quadratic', None, None
+     # Fit an actual circular arc when supported by the paint. A quadratic's
+     # curvature evaluated at its midpoint varies with slope even on a circle.
+     origin = np.mean(xy,axis=0)
+@@ -41,6 +41,7 @@
+             direction = 1. if center[1] > origin[1] else -1.
+             measured = direction/candidate_radius
+             radius,model = candidate_radius,'circle'
++            circle_center=[float(v) for v in center]
+             reference = [(float(v),float(center[1]-direction*math.sqrt(
+                 squared-(v-center[0])**2))) for v in xs]
+     measurement_variance = .04+(4*residual/(points[-1][0]-points[0][0])**2)**2
+@@ -55,15 +56,19 @@
+         variance = (1-gain)*predicted_variance
+     return dict(stamp=stamp, curvature=estimate, variance=variance,
+                 measured_curvature=measured, residual_m=residual,
+-                reference_curve=reference,model=model,radius_m=radius)
++                reference_curve=reference,model=model,radius_m=radius,circle_center=circle_center)
+ 
+ 
+ def preview_steering(ctx, points, steer):
+     if not ctx.cfg.get('lane_curvature_preview', False) or ctx.action is not None:
+         ctx.lane_preview = None
+         return steer
+-    ctx.lane_preview = curvature_preview(points, ctx.lane_stamp, ctx.lane_preview,
++    previous=ctx.lane_preview
++    pose=getattr(ctx,'pose',(0.,0.,0.))
++    ctx.lane_preview = curvature_preview(points, ctx.lane_stamp, previous,
+                                          ctx.cfg['sensor_timeout'])
++    if ctx.lane_preview is not None and ctx.lane_preview is not previous:
++        ctx.lane_preview['reference_pose']=tuple(pose)
+     forward = sorted(p for p in points if p[0] > .05)
+     if not forward:
+         return steer
+@@ -71,7 +76,8 @@
+     x,y = forward[-1]
+     if ctx.lane_preview is not None:
+         # Target the fitted curve rather than a noisy last paint sample.
+-        x,y = ctx.lane_preview['reference_curve'][-1]
++        x,y = local(pose,world(ctx.lane_preview.get('reference_pose',pose),
++                              ctx.lane_preview['reference_curve'][-1]))
+     # The arc through the measured far center already includes the bend.
+     # Adding its lateral displacement again as a proportional error caused
+     # full-lock saturation even when the vehicle was centered on that arc.
+@@ -86,24 +92,51 @@
+         shape_weight = .5+.5*turn_progress
+         desired_curvature = shape_weight*shape+(1-shape_weight)*curvature
+     physical = math.atan(ctx.cfg['wheelbase']*desired_curvature)
++    if ctx.lane_preview is not None and ctx.lane_preview['model']=='circle':
++        fit=ctx.lane_preview
++        cx,cy=local(pose,world(fit.get('reference_pose',pose),fit['circle_center']))
++        center_distance=math.hypot(cx,cy)
++        if center_distance > .05:
++            direction=1. if fit['measured_curvature']>0 else -1.
++            # True signed error to the center circle. Arc displacement at a
++            # near point mixes heading with lateral error and can suppress
++            # precisely the inward drift correction we need.
++            error=direction*(center_distance-fit['radius_m'])
++            heading=math.atan2(-direction*cx,direction*cy)
++            lookahead=max(2*ctx.cfg['wheelbase'],
++                          min(ctx.cfg.get('lookahead',.8),forward[0][0]))
++            feedback=2*error/(lookahead*lookahead)+2*math.sin(heading)/lookahead
++            # A supported circle supplies its radius directly. Adding the
++            # far-point chord again biases the angle with the same offset
++            # already handled by position/heading feedback.
++            physical=math.atan(ctx.cfg['wheelbase']*(fit['curvature']+feedback))
++            fit.update(center_error_m=error,center_heading_error_rad=heading,
++                       center_feedback_curvature=feedback)
++            physical=max(-ctx.cfg['max_steer'],min(ctx.cfg['max_steer'],physical))
++            return physical/ctx.cfg['max_steer']*scale
+     near_x,near_y = forward[0]
+-    if abs(curvature*near_x) < 1:
+-        expected_y = curvature*near_x*near_x/(1+math.sqrt(1-(curvature*near_x)**2))
++    reference_curvature = ctx.lane_preview['curvature'] if ctx.lane_preview is not None else curvature
++    if abs(reference_curvature*near_x) < 1:
++        expected_y = reference_curvature*near_x*near_x/(1+math.sqrt(1-(reference_curvature*near_x)**2))
+         # Correct proximity to the center relative to the same arc, not to a
+         # straight line. A centered model circle therefore has zero error.
+         error = near_y-expected_y
+-        if abs(near_y) >= .04 and near_y*error > 0:
++        if ctx.lane_preview is not None:
++            # An inward error can have the opposite sign to near_y while all
++            # centers remain on the bend side. Do not discard that feedback
++            # or cap it to 20% of the bend angle. Bound the correction range
++            # below by two wheelbases to avoid excessive near-point gain.
++            lookahead=max(2*ctx.cfg['wheelbase'],
++                          min(ctx.cfg.get('lookahead',.8),forward[0][0]))
++            correction_curvature=2*error/(lookahead*lookahead)
++            physical=math.atan(ctx.cfg['wheelbase']*(desired_curvature+correction_curvature))
++            ctx.lane_preview.update(center_error_m=error,center_feedback_curvature=correction_curvature)
++        elif abs(near_y) >= .04 and near_y*error > 0:
+             # Convert the measured offset to a near-target arc angle. The
+             # previous full-lock-per-10cm gain could cancel an approaching
+             # bend, or reverse it, even with only 6cm of lateral offset.
+             correction_curvature = 2*error/(near_x*near_x+error*error)
+             correction = 1.25*math.atan(ctx.cfg['wheelbase']*correction_curvature)
+-            if turn_progress > 0:
+-                # Do not cancel a well-supported bend using one near offset.
+-                # A new straight fit or opposite-side center still admits
+-                # full countersteer; this is not a persistent direction lock.
+-                limit = abs(physical)*(1-.8*turn_progress)
+-                correction = max(-limit,min(limit,correction))
+             physical += correction
+     physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
+     return physical/ctx.cfg['max_steer']*scale
+@@ -123,7 +156,7 @@
+         preview is not None and len(points) >= 4 and
+         points[-1][0]-points[0][0] >= .30 and
+         abs(preview['curvature']) < .25 and abs(preview['measured_curvature']) < .25 and
+-        abs(points[0][1]) <= .06 and abs(points[-1][1]) <= .10 and
++        abs(points[0][1]) <= .04 and abs(points[-1][1]) <= .10 and
+         abs(ctx.gap_steer) <= .15*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer']) and
+         all(abs(math.atan2(b[1]-a[1],b[0]-a[0])) <= math.radians(8)
+             for a,b in zip(points,points[1:])))
+--- before/robot/master/controller_node.py
++++ src/robot/master/controller_node.py
+@@ -503,6 +503,9 @@
+                     'enabled','lane_confidence','source_ages','lidar_processing_ms','sign')}
+                 console['timed_bypass'] = status['timed_bypass']
+                 console['lane_curve_lock'] = status['lane_curve_lock']
++                for key in ('pending','last_blue_trigger','blue_approach','straight_search',
++                            'front_blue_lines_local','blue_consumed'):
++                    console[key]=status[key]
+                 check = status['obstacle_check']
+                 console['obstacle_check'] = {key:check[key] for key in
+                     ('kind','reason','point_local','support_points','evidence_type') if key in check}
+--- before/robot/master/state_machine.py
++++ src/robot/master/state_machine.py
+@@ -297,7 +297,8 @@
+         yaw = wrap(yaw+math.pi)
+     ctx.blue_approach = dict(point=ctx.consumed_marker,yaw=yaw,
+         observed_stamp=ctx.last_blue_trigger['observed_stamp'],started=now,
+-        origin=ctx.pose,phase='ALIGN',align_frames=0,align_stamp=-1.)
++        origin=ctx.pose,phase='STOP_LINE' if action=='STRAIGHT' else 'ALIGN',
++        align_frames=0,align_stamp=-1.)
+     if (action == 'PARKING' and ctx.parking_sign is not None and
+             ctx.pending_at-ctx.cfg['sign_timeout'] <= ctx.parking_sign['stamp'] <= now):
+         ctx.blue_approach['parking_anchor'] = ctx.parking_sign['point']
+--- before/robot/test/blue_test_helpers.py
++++ src/robot/test/blue_test_helpers.py
+@@ -23,13 +23,15 @@
+     advance=c.cfg['blue_aligned_advance_m']
+     c.pose=tuple(world(endpoint,(-advance,0)))+(endpoint[2],)
+     c.pose_stamp=now-.5
++    line_x=(advance+c.cfg['wheelbase']+c.cfg['front_overhang']+.02
++            if action=='STRAIGHT' else .9)
+     for t in (now-.39,now-.29,now-.19,now-.14,now-.09):
+         c.set_pose(c.pose,t)
+         c.observe_ground(dict(source='front',part='markers',slots=[],
+-            markers=[dict(kind='junction',x=.9,y=0.,length=.6)],
+-            blue_lines=[dict(x=.9,y=0.,yaw=0.,length=.6)]),t)
++            markers=[dict(kind='junction',x=line_x,y=0.,length=.6)],
++            blue_lines=[dict(x=line_x,y=0.,yaw=0.,length=.6)]),t)
+         c.tick(t)
+-    assert c.blue_approach['phase']=='ADVANCE', c.blue_approach
++    assert c.blue_approach['phase']==('STOP_LINE' if action=='STRAIGHT' else 'ADVANCE'), c.blue_approach
+     c.set_pose(endpoint,now-.05)
+     c.tick(now-.05)
+     assert c.state=='BLUE_STOP', c.state
+--- before/robot/test/test_blue_edge_trigger.py
++++ src/robot/test/test_blue_edge_trigger.py
+@@ -53,8 +53,8 @@
+         self.confirmed(1.4,1.2)
+         self.frame(2.)
+         self.assertGreater(self.c.tick(2.)[0],0)
+-        self.assertEqual(self.c.reason,'blue_advance_distance')
+-        self.assertEqual(self.c.blue_approach['phase'],'ADVANCE')
++        self.assertEqual(self.c.reason,'straight_approach_stop_line')
++        self.assertEqual(self.c.blue_approach['phase'],'STOP_LINE')
+         self.assertEqual(self.c.action,'STRAIGHT')
+ 
+     def test_continuously_visible_line_has_only_one_chance(self):
+--- before/robot/test/test_curve_exit_geometry.py
++++ src/robot/test/test_curve_exit_geometry.py
+@@ -25,9 +25,13 @@
+         self.assertEqual(speed,16)
+         return encode_command(speed,steer,c.cfg,0)['steering_raw']
+ 
+-    def test_recorded_exit_does_not_cancel_measured_right_bend(self):
++    def test_off_axis_exit_tracks_center_without_forcing_minimum_right_lock(self):
+         c=self.core()
+-        self.assertLessEqual(self.raw(c,self.EXIT),-8)
++        # This observed arc has a large heading mismatch at the car. A
++        # minimum raw -8 overrides center feedback and can cut the bend.
++        self.assertLessEqual(abs(self.raw(c,self.EXIT)),8)
++        self.assertLess(c.lane_preview['curvature'],-.5)
++        self.assertGreater(c.lane_preview['center_heading_error_rad'],.4)
+         self.assertIsNone(c.lane_curve_lock)
+ 
+     def test_mirrored_exit_retains_same_geometric_angle(self):
+--- before/robot/turn/controller.py
++++ src/robot/turn/controller.py
+@@ -89,7 +89,7 @@
+ 
+ 
+ def blue_approach_tick(ctx, now):
+-    """Use a fixed blue alignment window, advance separately, then wait."""
++    """Stop STRAIGHT at the measured line; other actions retain timed entry."""
+     s = ctx.blue_approach
+     if s['phase'] == 'STOP':
+         if now < s['stop_until']:
+@@ -104,6 +104,28 @@
+         return ctx.call('motion','stop','blue_approach_front_stale')
+     if now-s['started'] > ctx.cfg['action_timeout']:
+         return ctx.call('motion','stop','blue_approach_timeout')
++    if s['phase']=='STOP_LINE':
++        # Stop the front of the body at the measured transverse plane. A
++        # fixed entry distance cannot place the car at different line ranges.
++        x,y=local(ctx.pose,s['point'])
++        heading=wrap(s['yaw']-ctx.pose[2])
++        plane_distance=x*math.cos(heading)+y*math.sin(heading)
++        front=ctx.cfg['wheelbase']+ctx.cfg['front_overhang']
++        body_extent=front*math.cos(heading)+ctx.cfg['body_width']/2*abs(math.sin(heading))
++        remaining=plane_distance-body_extent-.02
++        s.update(remaining_m=remaining,heading_error_deg=math.degrees(heading),
++                 stop_line_distance_m=plane_distance)
++        if remaining<=1e-9:
++            s.update(phase='STOP',stop_until=now+ctx.cfg.get('intersection_wait_s',1.),stop_pose=ctx.pose)
++            ctx.state='BLUE_STOP'
++            return ctx.call('motion','stop','blue_stop_wait_straight')
++        reference=right_blue_reference(ctx,now)
++        s['right_blue']=reference
++        steer=right_blue_steering(ctx,reference) if reference else steering_for_heading(heading,ctx.cfg)
++        ctx.lane_source='straight_right_blue' if reference else 'blue_stop_normal'
++        result=ctx.call('obstacle','checked_command',(ctx.cfg['straight_speed_raw'],steer),now,False)
++        if result[0]:ctx.reason='straight_approach_stop_line'
++        return result
+     if s['phase'] == 'ALIGN':
+         reference=ctx.call('turn','front_straight_reference',now,s['point'])
+         measured=(reference is not None and reference['stamp'] == s['observed_stamp'])
+@@ -184,12 +206,7 @@
+     # A missing side stripe means zero steering, not a stop or an old correction.
+     reference = right_blue_reference(ctx,now)
+     s['right_blue'] = reference
+-    steer = 0.0
+-    if reference is not None:
+-        x,y=reference['target']
+-        physical=math.atan2(2*ctx.cfg['wheelbase']*y,max(.0025,x*x+y*y))
+-        limit = 6.0/ctx.cfg['steering_raw_limit']*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+-        steer = max(-limit,min(limit,model_to_command_steering(physical,ctx.cfg)))
++    steer = right_blue_steering(ctx,reference) if reference is not None else 0.
+     ctx.lane_source = 'straight_zero_steer'
+     if reference is not None:
+         ctx.lane_source = 'straight_right_blue'
+@@ -198,6 +215,13 @@
+     if command[0]:
+         ctx.reason = 'straight_align_right_blue' if reference is not None else 'straight_continue'
+     return command
++
++
++def right_blue_steering(ctx, reference):
++    x,y=reference['target']
++    physical=math.atan2(2*ctx.cfg['wheelbase']*y,max(.0025,x*x+y*y))
++    limit=6.0/ctx.cfg['steering_raw_limit']*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
++    return max(-limit,min(limit,model_to_command_steering(physical,ctx.cfg)))
+ 
+ 
+ def right_center_exit(ctx, now, progress):
+--- /dev/null
++++ src/robot/test/test_straight_stop_geometry.py
+@@ -0,0 +1,87 @@
++"""Measured transverse stop, then a separate blue-guided straight segment."""
++import math
++import os
++import unittest
++import cv2
++import numpy as np
++from robot.common.config import load_config
++from robot.master.controller import Controller
++from robot.camera.vision import GroundDetector
++
++
++class StraightStopGeometryTests(unittest.TestCase):
++    def setUp(self):
++        self.cfg=load_config(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config'))
++        self.cfg.update(wait_green=False,lidar_enabled=False,sign_ttl=0,
++                        intersection_wait_s=1.,straight_speed_raw=12)
++        self.c=Controller(self.cfg)
++        self.addCleanup(self.c.close)
++        self.c.pending='STRAIGHT'
++
++    def frame(self,t,x=.9,side=None):
++        self.c.observe_lane([(.5,-.3),(.8,-.3)],.9,t)
++        lines=[dict(x=x,y=0.,yaw=0.,length=.6)] if x is not None else []
++        if side is not None:
++            lines.append(dict(x=.7,y=side,yaw=math.pi/2,length=.7))
++        self.c.observe_ground(dict(source='front',part='markers',slots=[],
++            markers=[dict(kind='junction',x=x,y=0.,length=.6)] if x is not None else [],
++            blue_lines=lines),t)
++        return self.c.tick(t)
++
++    def arm(self,x):
++        for t in (1.,1.25,1.5):self.frame(t,x)
++
++    def test_stop_position_depends_on_measured_stripe_not_fixed_entry(self):
++        for x in (.65,1.10):
++            self.c.close();self.c=Controller(self.cfg);self.addCleanup(self.c.close)
++            self.c.pending='STRAIGHT';self.arm(x)
++            self.assertEqual(self.c.blue_approach['phase'],'STOP_LINE')
++            # Rear axle is 0.33 m behind the front bumper, with 0.02 m clearance.
++            stop_x=x-self.cfg['wheelbase']-self.cfg['front_overhang']-.02
++            self.c.set_pose((stop_x-.03,0,0),1.6)
++            self.assertEqual(self.frame(1.6,None),(12,0.))
++            self.c.set_pose((stop_x,0,0),1.7)
++            self.assertEqual(self.frame(1.7,None),(0,0.))
++            self.assertEqual(self.c.state,'BLUE_STOP')
++            self.assertEqual(self.frame(2.6,None),(0,0.))
++            self.frame(2.71,None)
++            self.assertEqual(self.c.action,'STRAIGHT')
++            self.assertAlmostEqual(self.c.straight_search['origin'][0],stop_x)
++            self.c.set_pose((stop_x+1.24,0,0),2.8)
++            speed,steer=self.frame(2.8,None,-.45)
++            self.assertEqual(speed,12)
++            self.assertLess(steer,0)
++            self.assertEqual(self.c.reason,'straight_align_right_blue')
++
++    def test_longitudinal_blue_never_dispatches_straight(self):
++        for t in (1.,1.25,1.5):self.frame(t,None,-.3)
++        self.assertIsNone(self.c.action)
++
++    def test_connected_or_fragmented_blue_retains_measured_long_lines(self):
++        detector=GroundDetector(self.cfg)
++        for connected in (True,False):
++            bev=np.zeros((400,480,3),np.uint8)
++            # Crossing and side paint share a contour, whose bounding box is
++            # much thicker than the physical tape. Dark gaps also split it.
++            color=(255,80,0)
++            if connected:
++                cv2.line(bev,(30,180),(400,180),color,8)
++                cv2.line(bev,(400,180),(400,380),color,8)
++            else:
++                for u in (30,115,200,285):
++                    cv2.line(bev,(u,180),(u+75,180),color,8)
++            data,unused,unused2=detector.detect(bev,include_slots=False)
++            transverse=[a for a in data['blue_lines'] if abs(a['yaw'])<.1]
++            self.assertTrue(transverse,data)
++            self.assertGreaterEqual(max(a['length'] for a in transverse),.7)
++            if connected:
++                self.assertTrue(any(abs(abs(a['yaw'])-math.pi/2)<.1 for a in data['blue_lines']),data)
++
++    def test_wide_blue_patch_is_not_a_tape_line(self):
++        bev=np.zeros((400,480,3),np.uint8)
++        cv2.rectangle(bev,(40,120),(400,220),(255,80,0),-1)
++        data,unused,unused2=GroundDetector(self.cfg).detect(bev,include_slots=False)
++        self.assertEqual(data['blue_lines'],[])
++
++
++if __name__=='__main__':unittest.main()
+--- /dev/null
++++ src/robot/test/test_curve_center_feedback.py
+@@ -0,0 +1,90 @@
++"""Center tracking must correct inward and outward drift on the same bend."""
++import math
++import unittest
++from robot.lane.preview import preview_steering
++
++
++class Context(object):
++    cfg=dict(wheelbase=.26,max_steer=.46275,sensor_timeout=.5,
++             lane_curvature_preview=True,steering_command_scale_rad=.03,lookahead=.8)
++    action=None
++    lane_preview=None
++    lane_stamp=1.
++
++
++class CurveCenterFeedbackTests(unittest.TestCase):
++    def command(self,offset,side=-1):
++        r=.8
++        points=[(r*math.sin(t),side*(r-r*math.cos(t))+offset)
++                for t in (.5,.65,.8,.95,1.1)]
++        return preview_steering(Context(),points,0.)
++
++    def test_eight_centimeters_inward_must_reduce_right_angle(self):
++        self.assertGreater(self.command(.08),self.command(0.)+.003)
++
++    def test_outward_offset_must_increase_right_angle(self):
++        self.assertLess(self.command(-.08),self.command(0.)-.003)
++
++    def test_mirrored_bends_correct_equally(self):
++        for offset in (-.08,0.,.08):
++            self.assertAlmostEqual(self.command(offset),-self.command(-offset,1),places=8)
++
++    def test_small_offsets_do_not_have_a_four_centimeter_dead_zone(self):
++        self.assertGreater(self.command(.02),self.command(0.)+.0005)
++
++    def test_reused_camera_frame_tracks_current_vehicle_pose(self):
++        from robot.common.geometry import local
++        radius=.8
++        world_points=[(radius*math.sin(t),radius*math.cos(t)-radius)
++                      for t in (.5,.65,.8,.95,1.1)]
++        ctx=Context();ctx.pose=(0.,0.,0.)
++        preview_steering(ctx,world_points,0.)
++        curvature=ctx.lane_preview['curvature']
++        ctx.pose=(0.,-.08,.05)
++        current=[local(ctx.pose,p) for p in world_points]
++        cached_command=preview_steering(ctx,current,0.)
++        fresh=Context();fresh.pose=ctx.pose
++        fresh_command=preview_steering(fresh,current,0.)
++        self.assertAlmostEqual(cached_command,fresh_command,places=8)
++        self.assertEqual(ctx.lane_preview['curvature'],curvature)
++
++    def test_closed_loop_circle_corrects_both_offsets_without_growing_oscillation(self):
++        from robot.common.geometry import local,bicycle
++        for offset in (-.08,.08):
++            ctx=Context();pose=(0.,offset,0.);radius=.8;errors=[]
++            for i in range(301):
++                angle=math.atan2(pose[1]+radius,pose[0])
++                path=[local(pose,(radius*math.cos(angle-t),
++                    -radius+radius*math.sin(angle-t))) for t in (.5,.65,.8,.95,1.1)]
++                ctx.lane_stamp=1.+i*.05
++                command=preview_steering(ctx,path,0.)
++                errors.append(math.hypot(pose[0],pose[1]+radius)-radius)
++                pose=bicycle(pose,.128*.05,command/.03*.46275,.26)
++            self.assertLess(abs(errors[-1]),.03)
++            self.assertLessEqual(max(abs(e) for e in errors),.09)
++
++    def test_quarter_bend_to_straight_does_not_swing_far_outside(self):
++        import numpy as np
++        from robot.common.geometry import local,bicycle
++        radius=.8;end=math.pi*radius/2
++        def path(s):
++            if s<end:return radius*math.sin(s/radius),-radius*(1-math.cos(s/radius))
++            return radius,-radius-(s-end)
++        samples=np.arange(0,4,.005)
++        road=np.array([path(s) for s in samples])
++        for offset in (-.08,.08):
++            ctx=Context();pose=(0.,offset,0.);exit_errors=[]
++            for i in range(500):
++                index=np.argmin(np.sum((road-np.array(pose[:2]))**2,axis=1))
++                s=samples[index]
++                points=[local(pose,path(s+d)) for d in np.arange(.4,1.01,.1)]
++                ctx.lane_stamp=1.+i*.05
++                command=preview_steering(ctx,points,0.)
++                if s>end:exit_errors.append(math.hypot(*(road[index]-np.array(pose[:2]))))
++                pose=bicycle(pose,.128*.05,command/.03*.46275,.26)
++            self.assertTrue(exit_errors)
++            self.assertLess(max(exit_errors),.04)
++            self.assertLess(exit_errors[-1],.01)
++
++
++if __name__=='__main__':unittest.main()

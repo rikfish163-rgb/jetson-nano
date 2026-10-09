@@ -1,0 +1,610 @@
+{
+  "images": {
+    "front": {
+      "stamp": 1789308133.9128587, 
+      "file": "/home/nano/robocup_ws/field_data/stop_frames/1789308133962_UTURN/front.jpg", 
+      "delta_from_stop_s": 0.005520820617675781
+    }, 
+    "uturn_blue": {
+      "stamp": 1789308133.7129643, 
+      "file": "/home/nano/robocup_ws/field_data/stop_frames/1789308133962_UTURN/uturn_blue.jpg", 
+      "delta_from_stop_s": -0.19437360763549805
+    }, 
+    "front_bev": {
+      "stamp": 1789308133.7129643, 
+      "file": "/home/nano/robocup_ws/field_data/stop_frames/1789308133962_UTURN/front_bev.jpg", 
+      "delta_from_stop_s": -0.19437360763549805
+    }
+  }, 
+  "control": {
+    "lane_path_fresh": true, 
+    "right_turn_debug": {
+      "aligned_lateral_m": 0.18, 
+      "exit_on_blue": true, 
+      "lane_lookahead_m": 0.55, 
+      "reference_lateral_m": 0.08, 
+      "sensor_timeout": 0.5, 
+      "direct_left_follow": true, 
+      "lane_min_confidence": 0.35, 
+      "aligned_heading_deg": 15, 
+      "left_entry_m": 0.12, 
+      "align_lookahead_m": 0.3, 
+      "left_capture_max_m": 0.8, 
+      "encoded_command": {
+        "version": 1, 
+        "seq": 232, 
+        "steering_raw": 0, 
+        "speed_raw": 0
+      }, 
+      "command_scale": 0.1, 
+      "following_left": false, 
+      "capture_heading_deg": 50, 
+      "reverse_entry_m": 0.25, 
+      "required_frames": 3, 
+      "reference_heading_deg": 8, 
+      "left_reference": null, 
+      "min_turn_deg": 30.0, 
+      "reference_stable_s": 0.5, 
+      "max_turn_deg": 120, 
+      "lock_command": -0.1, 
+      "left_fit": null
+    }, 
+    "lidar_clusters": [
+      {
+        "line_error_m": 0.0026893477656403544, 
+        "semantic_verified": false, 
+        "line_ratio": 0.05279685885413609, 
+        "point_count": 23, 
+        "kind": "obstacle_candidate", 
+        "segment_bend_deg": 40.036369294888665, 
+        "line_inlier_fraction": 0.9565217391304348, 
+        "reason": "supported_irregular_shape", 
+        "motion_target": true, 
+        "span_m": 0.05093764712537764, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -0.3255906399327851, 
+          0.19722761878198913
+        ]
+      }, 
+      {
+        "line_error_m": 0.0008726033428790054, 
+        "semantic_verified": false, 
+        "line_ratio": 0.006235098110224267, 
+        "point_count": 9, 
+        "kind": "flat_board_candidate", 
+        "segment_bend_deg": 1.7516617474232024, 
+        "line_inlier_fraction": 1.0, 
+        "reason": "supported_straight_shape", 
+        "motion_target": false, 
+        "span_m": 0.13995021849746309, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -0.6732191862747777, 
+          -0.4676819013582919
+        ]
+      }, 
+      {
+        "line_error_m": 0.0048243568647225, 
+        "semantic_verified": false, 
+        "line_ratio": 0.02553199824391728, 
+        "point_count": 40, 
+        "kind": "unknown", 
+        "segment_bend_deg": 8.10185383472154, 
+        "line_inlier_fraction": 0.975, 
+        "reason": "ambiguous_shape", 
+        "motion_target": false, 
+        "span_m": 0.18895336035329122, 
+        "segment_directions_reliable": true, 
+        "center": [
+          0.5224565916346844, 
+          0.9571837296668273
+        ]
+      }, 
+      {
+        "line_error_m": 0.015123068182161963, 
+        "semantic_verified": false, 
+        "line_ratio": 0.0028329497895708657, 
+        "point_count": 494, 
+        "kind": "other", 
+        "segment_bend_deg": 1.3082147262100068, 
+        "line_inlier_fraction": 0.21862348178137653, 
+        "reason": "oversize_non_line", 
+        "motion_target": false, 
+        "span_m": 5.338276109882202, 
+        "segment_directions_reliable": true, 
+        "center": [
+          1.28408338696219, 
+          -0.6814901367066266
+        ]
+      }, 
+      {
+        "line_error_m": 0.003450411113510935, 
+        "semantic_verified": false, 
+        "line_ratio": 0.02452108545525597, 
+        "point_count": 17, 
+        "kind": "unknown", 
+        "segment_bend_deg": 14.651433949458474, 
+        "line_inlier_fraction": 0.9411764705882353, 
+        "reason": "ambiguous_shape", 
+        "motion_target": false, 
+        "span_m": 0.1407120055842127, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -1.5425450450751312, 
+          -0.64622943664881
+        ]
+      }, 
+      {
+        "line_error_m": 0.011311446277500288, 
+        "semantic_verified": false, 
+        "line_ratio": 0.02461839214580354, 
+        "point_count": 12, 
+        "kind": "unknown", 
+        "segment_bend_deg": 4.00114757731735, 
+        "line_inlier_fraction": 0.5833333333333334, 
+        "reason": "ambiguous_shape", 
+        "motion_target": false, 
+        "span_m": 0.4594713663876884, 
+        "segment_directions_reliable": true, 
+        "center": [
+          2.5317251265692144, 
+          2.312576878113681
+        ]
+      }, 
+      {
+        "line_error_m": 0.004237421738110452, 
+        "semantic_verified": false, 
+        "line_ratio": 0.001883426414030317, 
+        "point_count": 146, 
+        "kind": "other", 
+        "segment_bend_deg": 0.8376481864673364, 
+        "line_inlier_fraction": 0.8424657534246576, 
+        "reason": "oversize_non_line", 
+        "motion_target": false, 
+        "span_m": 2.249847249961231, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -1.2135559397784863, 
+          -3.214167367923926
+        ]
+      }, 
+      {
+        "line_error_m": 0.0026052977854854062, 
+        "semantic_verified": false, 
+        "line_ratio": 0.004585540517913895, 
+        "point_count": 14, 
+        "kind": "other", 
+        "segment_bend_deg": 1.5939020408330085, 
+        "line_inlier_fraction": 1.0, 
+        "reason": "oversize_non_line", 
+        "motion_target": false, 
+        "span_m": 0.5681550027325104, 
+        "segment_directions_reliable": true, 
+        "center": [
+          0.5130044794659735, 
+          3.5727276980596465
+        ]
+      }, 
+      {
+        "line_error_m": 0.012780889153163484, 
+        "semantic_verified": false, 
+        "line_ratio": 0.11484450397228678, 
+        "point_count": 8, 
+        "kind": "obstacle_candidate", 
+        "segment_bend_deg": 68.79296081091464, 
+        "line_inlier_fraction": 0.0, 
+        "reason": "supported_irregular_shape", 
+        "motion_target": true, 
+        "span_m": 0.1112886443068068, 
+        "segment_directions_reliable": true, 
+        "center": [
+          2.499338802628443, 
+          2.6222714224511288
+        ]
+      }, 
+      {
+        "line_error_m": 0.006697887215467228, 
+        "semantic_verified": false, 
+        "line_ratio": 0.020517452691909025, 
+        "point_count": 19, 
+        "kind": "unknown", 
+        "segment_bend_deg": 4.289352264844862, 
+        "line_inlier_fraction": 0.631578947368421, 
+        "reason": "ambiguous_shape", 
+        "motion_target": false, 
+        "span_m": 0.3264482836170258, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -2.8650256440561948, 
+          -2.3604428959708215
+        ]
+      }, 
+      {
+        "line_error_m": 0.00936618845375881, 
+        "semantic_verified": false, 
+        "line_ratio": 0.008388357354188983, 
+        "point_count": 44, 
+        "kind": "other", 
+        "segment_bend_deg": 0.005416268887995919, 
+        "line_inlier_fraction": 0.5454545454545454, 
+        "reason": "oversize_non_line", 
+        "motion_target": false, 
+        "span_m": 1.1165700337124427, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -1.1697369589174227, 
+          4.603848458005288
+        ]
+      }, 
+      {
+        "line_error_m": 0.02270711267735993, 
+        "semantic_verified": false, 
+        "line_ratio": 0.17117118421198416, 
+        "point_count": 7, 
+        "kind": "obstacle_candidate", 
+        "segment_bend_deg": 88.64960311623601, 
+        "line_inlier_fraction": 0.0, 
+        "reason": "supported_irregular_shape", 
+        "motion_target": true, 
+        "span_m": 0.1326573323769185, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -0.12904799104896786, 
+          4.92912257329058
+        ]
+      }, 
+      {
+        "line_error_m": 0.009689585306633126, 
+        "semantic_verified": false, 
+        "line_ratio": 0.006533303576361253, 
+        "point_count": 39, 
+        "kind": "other", 
+        "segment_bend_deg": 1.7997751692549975, 
+        "line_inlier_fraction": 0.46153846153846156, 
+        "reason": "oversize_non_line", 
+        "motion_target": false, 
+        "span_m": 1.483106546845903, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -5.147819240995403, 
+          -1.3138034617529664
+        ]
+      }, 
+      {
+        "line_error_m": 0.01496396144419641, 
+        "semantic_verified": false, 
+        "line_ratio": 0.005322695754695101, 
+        "point_count": 113, 
+        "kind": "other", 
+        "segment_bend_deg": 1.3956998578217163, 
+        "line_inlier_fraction": 0.40707964601769914, 
+        "reason": "oversize_non_line", 
+        "motion_target": false, 
+        "span_m": 2.811350137944074, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -5.372897641944433, 
+          0.6018265219431405
+        ]
+      }, 
+      {
+        "line_error_m": 0.006526861350247661, 
+        "semantic_verified": false, 
+        "line_ratio": 0.017891500413712187, 
+        "point_count": 10, 
+        "kind": "unknown", 
+        "segment_bend_deg": 3.973712520306255, 
+        "line_inlier_fraction": 0.6, 
+        "reason": "ambiguous_shape", 
+        "motion_target": false, 
+        "span_m": 0.3648023474456856, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -2.295084293013968, 
+          5.182390234186668
+        ]
+      }, 
+      {
+        "line_error_m": 0.011610059475429261, 
+        "semantic_verified": false, 
+        "line_ratio": 0.010214538263291885, 
+        "point_count": 42, 
+        "kind": "other", 
+        "segment_bend_deg": 0.5620087256527012, 
+        "line_inlier_fraction": 0.38095238095238093, 
+        "reason": "oversize_non_line", 
+        "motion_target": false, 
+        "span_m": 1.1366210763684226, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -3.646148677901824, 
+          4.376929966994048
+        ]
+      }, 
+      {
+        "line_error_m": 0.011806514503277113, 
+        "semantic_verified": false, 
+        "line_ratio": 0.06411422823297683, 
+        "point_count": 6, 
+        "kind": "obstacle_candidate", 
+        "segment_bend_deg": 40.391470557134, 
+        "line_inlier_fraction": 0.3333333333333333, 
+        "reason": "supported_irregular_shape", 
+        "motion_target": true, 
+        "span_m": 0.18414811857946523, 
+        "segment_directions_reliable": true, 
+        "center": [
+          -3.280833284015671, 
+          4.9327389406028095
+        ]
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 2
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 3
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 5
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 5
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 5
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 3
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 1
+      }, 
+      {
+        "reason": "too_few_points", 
+        "motion_target": false, 
+        "semantic_verified": false, 
+        "kind": "unknown", 
+        "point_count": 4
+      }
+    ], 
+    "lane_points": 0, 
+    "source_ages": {
+      "lane": 0.13077306747436523, 
+      "scan": 0.2237839698791504, 
+      "front_ground": 0.19437360763549805, 
+      "rear_ground": 1789308134.907338
+    }, 
+    "rear_markers_local": [], 
+    "sign": {
+      "votes": 0, 
+      "stamp": 1789308133.6490147, 
+      "decision": "low_confidence_or_unknown", 
+      "confidence": 0.0, 
+      "label": "", 
+      "source": "none", 
+      "range_reason": "no_candidate"
+    }, 
+    "pose_evidence": "command_estimate", 
+    "rear_marker_age": null, 
+    "blue_default_straight": false, 
+    "parking_approach_m": null, 
+    "estop": false, 
+    "next_direction_age": null, 
+    "parking_front_age": 1789308134.907338, 
+    "pending_age": null, 
+    "slot": null, 
+    "lidar_shape_mode": "line_reject", 
+    "action_source": "sign", 
+    "stamp": 1789308133.907338, 
+    "lidar_cluster_total": 32, 
+    "front_marker_age": 0.19437360763549805, 
+    "turn_profiles": {
+      "right": {
+        "turn_radius": 0.55, 
+        "effective_radius": 0.55, 
+        "turn_entry": 0.0, 
+        "turn_angle_deg": 90.0, 
+        "turn_exit": 0.25
+      }, 
+      "left": {
+        "turn_radius": 0.65, 
+        "effective_radius": 0.65, 
+        "turn_entry": 0.12, 
+        "turn_angle_deg": 90.0, 
+        "turn_exit": 0.3
+      }
+    }, 
+    "lane_source": "startup_zero_steer", 
+    "live": true, 
+    "front_blue_lines_local": [
+      {
+        "length": 0.7228779602050781, 
+        "heading_deg": 60.89015296841582, 
+        "point": [
+          0.9200123214721678, 
+          0.15027717590332032
+        ]
+      }
+    ], 
+    "command": [
+      0, 
+      0.0
+    ], 
+    "right_lock": null, 
+    "pending": null, 
+    "turn_action": "UTURN", 
+    "slot_age": 1789308134.907338, 
+    "obstacle_check": {
+      "kind": "not_checked"
+    }, 
+    "parking_candidates": [], 
+    "parking_entry": null, 
+    "planned_path_local": [], 
+    "state": "UTURN", 
+    "scene_maneuver": null, 
+    "pose": [
+      1.5709220848083496, 
+      0.0, 
+      0.0
+    ], 
+    "lane_confidence": 0.0, 
+    "gap_steer": 0.0, 
+    "lidar_cluster_frame": "laser_link", 
+    "last_completed_action": null, 
+    "straight_search": null, 
+    "pose_mode": "command_model", 
+    "lane_path_local": [], 
+    "lane_observation": {
+      "stamp": 1789308133.7765648, 
+      "receive_age_s": 0.12829017639160156, 
+      "path_reason": "no_trusted_centers"
+    }, 
+    "uturn": {
+      "phase": "WAIT_START", 
+      "reverse_origin": null, 
+      "phase_started": 1789308132.863229, 
+      "start_line": [
+        1.9193854637146, 
+        0.13985809326171875
+      ], 
+      "target_yaw": -3.141592653589793
+    }, 
+    "wait_remaining": 0, 
+    "front_markers_local": [], 
+    "exit_confirmation": {
+      "frames": 0, 
+      "reason": "not_checked"
+    }, 
+    "marker_age": null, 
+    "enabled": true, 
+    "reason": "relative_uturn_scene_missing", 
+    "sign_age": 0.25832319259643555, 
+    "parking_detection": {}, 
+    "turn": {
+      "intersection_wait_s": 1.0, 
+      "turn_angle_deg": 90.0, 
+      "turn_entry": 0.12, 
+      "turn_radius": 0.65, 
+      "turn_exit": 0.3, 
+      "effective_radius": 0.65
+    }, 
+    "parking_mode": "reverse_plan", 
+    "next_direction": null, 
+    "left_boundary_points": 0, 
+    "marker_local": null, 
+    "action": "UTURN", 
+    "lidar_cluster_stamp": 1789308133.683554, 
+    "lidar_shape_filter": true, 
+    "left_boundary_age": 0.13077306747436523, 
+    "lidar_enabled": true
+  }, 
+  "diagnostics": {
+    "base": {
+      "received_at": 1789308133.955005, 
+      "data": {
+        "command_received": true, 
+        "serial_bytes": 11, 
+        "timed_out": false, 
+        "serial_open": true, 
+        "schema": "base_controller_status_v1", 
+        "steering_raw": 0, 
+        "speed_raw": 0
+      }
+    }, 
+    "perception": {
+      "received_at": 1789308132.928585, 
+      "data": {
+        "blue_age": 0.1715373992919922, 
+        "slot_frames": 0, 
+        "uturn_blue_reason": "blue_wait_triplet", 
+        "stale_rear": 0, 
+        "blue_ms": 91.69983863830566, 
+        "uturn_vision_inliers": 0, 
+        "uturn_blue_correction_stamp": -1.0, 
+        "uturn_blue_locked": false, 
+        "stale_front": 0, 
+        "slot_ms": 0.0, 
+        "front_frames": 76, 
+        "uturn_vision_reason": "vision_followed_boundary_unknown"
+      }
+    }
+  }
+}

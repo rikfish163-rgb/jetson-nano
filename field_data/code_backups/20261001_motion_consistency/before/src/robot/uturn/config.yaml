@@ -1,0 +1,16 @@
+# 掉头：只在此文件写本模块需要覆盖的参数。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+# Reuse the recorded RAW 26 model only during timed UTURN. Lane limits stay separate.
+uturn_calibration:
+  reverse_steering_sign: 1
+  forward_left_radius: 0.6784646272
+  forward_right_radius: 0.9925
+  # Historical reverse radii are provisional; no new measurement is implied.
+  reverse_left_radius: 0.5645372549
+  reverse_right_radius: 1.3608228346
+  forward_mps_per_raw: 0.0096153846
+  reverse_mps_per_raw: 0.0092692308
+# Seven timed segments first; bounded correction with fresh visual exit evidence.
+uturn_trial_exit_max_s: 4.0
+uturn_trial_exit_min_turn_deg: 150.0
+uturn_trial_exit_heading_deg: 20.0

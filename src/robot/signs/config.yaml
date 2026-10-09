@@ -1,0 +1,12 @@
+# 路牌筛选：前方/右侧候选 + 同一目标多帧确认。
+# 45px 对应普通目标；更小目标使用更严格置信度和连续帧数，不直接丢弃。
+sign_min_height_ratio: 0.125
+sign_route_gate:
+  enabled: true
+  # 图像中线左侧留前方余量：640px 图中检测框中心 >= 192px。
+  left_center_ratio: 0.30
+  min_height_ratio: 0.04
+  normal_frames: 2
+  small_frames: 3
+  small_confidence: 0.90
+  max_gap_s: 0.75

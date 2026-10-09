@@ -1,0 +1,23 @@
+{
+  "runs": 13,
+  "ticks": 7550,
+  "moving_locked_not_full": 0,
+  "known_false_left_raw": [
+    -22,
+    -22,
+    -22,
+    -22,
+    -22
+  ],
+  "summary_changes": [
+    {
+      "run": "20260929_225212_31193",
+      "changes": {
+        "guarded": [
+          0,
+          1
+        ]
+      }
+    }
+  ]
+}

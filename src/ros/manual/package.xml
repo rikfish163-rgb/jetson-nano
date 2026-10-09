@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ackermann_drive_teleop</name>
+  <version>0.0.0</version>
+  <description>The ackermann_drive_teleop package</description>
+
+  <maintainer email="gkourosg@yahoo.gr">George Kouros</maintainer>
+
+  <license>GPLv3</license>
+
+  <author email="gkourosg@yahoo.gr">George Kouros</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <exec_depend>rosgraph</exec_depend>
+  <exec_depend>joy</exec_depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>ackermann_msgs</depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,31 @@
+{
+  "state": {
+    "state": "MANEUVER",
+    "action": "STRAIGHT",
+    "straight_search": {
+      "started": 10.0,
+      "speed_raw": 14
+    },
+    "consumed_marker": [
+      0,
+      0
+    ],
+    "lane": [
+      [
+        0.3,
+        0
+      ],
+      [
+        0.6,
+        0
+      ]
+    ],
+    "lane_stamp": 10.0,
+    "lane_confidence": 1.0
+  },
+  "operation": "straight_search_tick",
+  "args": [
+    10.2
+  ],
+  "module": "turn"
+}

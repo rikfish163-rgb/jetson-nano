@@ -1,0 +1,60 @@
+test_40cm_entry_finishes_before_seven_segments (test_uturn_production.ProductionUturnTests) ... ok
+test_default_profile_is_normal_seven_stage_mode (test_uturn_production.ProductionUturnTests) ... ok
+test_sign_blue_seven_segments_then_resume_normal_mission (test_uturn_production.ProductionUturnTests) ... ok
+test_blocked_exit_pauses_time_and_keeps_collision_protection (test_uturn_current_model.CurrentModelTests) ... ok
+test_calibration_is_independent_of_lane_limit_and_raw_roundtrips (test_uturn_current_model.CurrentModelTests) ... ok
+test_exit_correction_is_bounded_and_stale_camera_stops (test_uturn_current_model.CurrentModelTests) ... ok
+test_exit_needs_new_aligned_frames_without_a_stop_pulse (test_uturn_current_model.CurrentModelTests) ... ok
+test_invalid_exit_limits_are_rejected (test_uturn_current_model.CurrentModelTests) ... ok
+test_ninety_degree_turn_cannot_handoff_to_a_crossing_lane (test_uturn_current_model.CurrentModelTests) ... ok
+test_preview_stops_at_reverse_segment_endpoint (test_uturn_current_model.CurrentModelTests) ... ok
+test_clock_gap_rejected (test_timed_uturn.TrialTests) ... ok
+test_finishes_zero (test_timed_uturn.TrialTests) ... ok
+test_invalid_parameters (test_timed_uturn.TrialTests) ... ok
+test_model_endpoint_is_reversed_and_shifted (test_timed_uturn.TrialTests) ... ok
+test_pause_does_not_count_stopped_time (test_timed_uturn.TrialTests) ... ok
+test_raw_commands_and_reversal_pauses (test_timed_uturn.TrialTests) ... ok
+test_red_pause_freezes_trial_progress (test_timed_uturn.TrialTests) ... ok
+test_reduced_raw_steering_keeps_fraction_under_python2 (test_timed_uturn.TrialTests) ... ok
+test_right_is_mirrored (test_timed_uturn.TrialTests) ... ok
+test_sign_blue_dispatch_and_stop_at_finish (test_timed_uturn.TrialTests) ... ok
+test_applied_raw_over_contract_clears_command (test_ros_adapter.RosAdapterTests) ... ok
+test_changing_odom_parent_frame_is_rejected (test_ros_adapter.RosAdapterTests) ... ok
+test_control_stop_event_is_logged_even_when_status_lock_is_busy (test_ros_adapter.RosAdapterTests) ... ok
+test_control_tick_uses_subscribed_param_cache_and_defers_telemetry (test_ros_adapter.RosAdapterTests) ... ok
+test_delayed_blue_uses_capture_pose_without_relaxing_lane_scan_timeout (test_ros_adapter.RosAdapterTests) ... ok
+test_empty_lane_observation_clears_previous_path (test_ros_adapter.RosAdapterTests) ... ok
+test_estop_false_cannot_clear_while_enabled_but_clears_disabled (test_ros_adapter.RosAdapterTests) ... ok
+test_future_odom_stamp_is_rejected_before_origin_mutation (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_accepts_direct_points_without_minimum_span (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_rejects_bad_inputs_without_overwriting_good_frame (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_rejects_deep_json_and_oversized_message (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_uses_own_confidence_even_if_legacy_arrives_first (test_ros_adapter.RosAdapterTests) ... ok
+test_observed_boundaries_are_atomic_validated_and_cleared (test_ros_adapter.RosAdapterTests) ... ok
+test_parking_retains_unclipped_p_anchor_through_confirmation (test_ros_adapter.RosAdapterTests) ... ok
+test_scan_callback_uses_independent_lidar_timeout (test_ros_adapter.RosAdapterTests) ... ok
+test_startup_green_cannot_release_red_later (test_ros_adapter.RosAdapterTests) ... ok
+test_startup_tag_is_only_for_green (test_ros_adapter.RosAdapterTests) ... ok
+test_status_and_ros_log_include_stop_evidence_and_sign_decision (test_ros_adapter.RosAdapterTests) ... ok
+test_telemetry_publish_does_not_hold_controller_lock (test_ros_adapter.RosAdapterTests) ... ok
+test_timed_uturn_feedback_uses_own_radius_and_speed_gain (test_ros_adapter.RosAdapterTests) ... ok
+test_visual_direction_caches_without_scan (test_ros_adapter.RosAdapterTests) ... ok
+test_completed_bypass_allows_a_distinct_later_obstacle_to_trigger (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_bypass_does_not_disable_lidar_for_later_near_obstacle (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_entity_is_not_triggered_again_after_protection_reopens (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_lidar_disabled_remains_an_explicit_bypass (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_non_target_raw_obstacle_still_stops_collision_sweep (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_shape_filter_does_not_authorize_unknown_ordinary_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_keeps_near_field_collision_guard (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_stops_on_unknown_near_field_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_forward_wheel_endpoints_and_command_mapping (test_uturn_calibration.CalibrationTests) ... ok
+test_reverse_left_turns_nose_right (test_uturn_calibration.CalibrationTests) ... ok
+test_bad_radius_rejected (test_uturn_calibration.CalibrationTests) ... ok
+test_bad_table_rejected (test_uturn_calibration.CalibrationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 53 tests in 16.234s
+
+OK
+('PREEXISTING FAILURE VERIFIED WITH BEFORE BACKUP:', 'test_ros_adapter.RosAdapterTests.test_repeated_short_paths_refresh_stream_but_true_timeout_still_stops')
+('PREEXISTING FAILURE VERIFIED WITH BEFORE BACKUP:', 'test_ros_adapter.RosAdapterTests.test_short_optional_boundary_does_not_discard_fresh_center_path')

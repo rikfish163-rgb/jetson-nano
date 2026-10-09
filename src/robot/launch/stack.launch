@@ -1,0 +1,254 @@
+<launch>
+  <!-- Shadow: does not register a publisher on /control/cmd. -->
+  <arg name="config" default="$(find robocup_competition)/config/competition.yaml"/>
+  <arg name="maneuver_config" default="$(find robocup_competition)/config/maneuvers.yaml"/>
+  <arg name="live" default="false"/>
+  <arg name="enabled" default="false"/>
+  <arg name="controller_type" default="main.py"/>
+  <arg name="start_controller" default="true"/>
+  <arg name="module_config_dir" default="$(find robocup_competition)"/>
+  <arg name="start_actuators" default="false"/>
+  <arg name="start_cameras" default="false"/>
+  <arg name="start_lane" default="false"/>
+  <arg name="start_lidar" default="false"/>
+  <arg name="lidar_enabled" default=""/>
+  <arg name="straight_lidar_once" default=""/>
+  <arg name="lidar_shape_filter" default="true"/>
+  <arg name="start_sign" default="true"/>
+  <arg name="sign_backend" default="yolo_trt"/>
+  <arg name="sign_model" default="/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine"/>
+  <arg name="sign_labels" default="/home/nano/robodata/models/20260915_10000/labels.json"/>
+  <arg name="sign_roi_mode" default="board"/>
+  <arg name="sign_capture" default="true"/>
+  <arg name="start_ground" default="true"/>
+  <arg name="start_rear" default="true"/>
+  <arg name="front_fps" default="15"/>
+  <arg name="rear_fps" default="8"/>
+  <arg name="lane_hz" default="12"/>
+  <arg name="lane_window_height" default="40"/>
+  <arg name="lane_min_span" default="0.15"/>
+  <arg name="right_turn_full_lock" default=""/>
+  <arg name="right_exit_on_blue" default=""/>
+  <arg name="right_lock_min_angle_deg" default=""/>
+  <arg name="right_lock_max_angle_deg" default=""/>
+  <arg name="right_lock_heading_deg" default=""/>
+  <arg name="parking_enabled" default=""/>
+  <arg name="parking_lidar_enabled" default=""/>
+  <arg name="parking_slot" default=""/>
+  <arg name="parking_mode" default="$(eval 'timed_sequence' if arg('parking_slot') in ('P1','P2','P3') else 'forward_center' if arg('parking_slot') in ('P4','P5') else '')"/>
+  <arg name="parking_entry_style" default="$(eval 'S' if arg('parking_slot') in ('P4','P5') else '')"/>
+  <arg name="parking_entry_speed_raw" default=""/>
+  <arg name="parking_final_speed_raw" default=""/>
+  <arg name="parking_bottom_clearance_m" default=""/>
+  <arg name="parking_blue_max_travel_m" default=""/>
+  <arg name="parking_divider_trigger_x" default=""/>
+  <arg name="parking_speed_raw" default=""/>
+  <arg name="parking_lookahead" default=""/>
+  <arg name="parking_observe_s" default=""/>
+  <arg name="parking_prep_offset" default=""/>
+  <arg name="parking_road_half_width" default=""/>
+  <arg name="ground_hz" default=""/>
+  <arg name="ground_timeout" default=""/>
+  <arg name="sign_hz" default=""/>
+  <arg name="sign_ttl" default=""/>
+  <arg name="wait_green" default=""/>
+  <arg name="blue_default_straight" default=""/>
+  <arg name="marker_trigger_x" default=""/>
+  <arg name="marker_memory_s" default=""/>
+  <arg name="intersection_wait_s" default=""/>
+  <arg name="uturn_reverse_speed_raw" default=""/>
+  <arg name="uturn_brake_lead_m" default=""/>
+  <arg name="uturn_reverse_max_distance" default=""/>
+  <arg name="turn_entry" default=""/>
+  <arg name="turn_radius" default=""/>
+  <arg name="turn_angle_deg" default=""/>
+  <arg name="turn_exit" default=""/>
+  <arg name="left_turn_entry" default=""/>
+  <arg name="left_turn_full_lock" default=""/>
+  <arg name="lidar_timeout" default=""/>
+  <arg name="left_turn_radius" default=""/>
+  <arg name="left_turn_angle_deg" default=""/>
+  <arg name="left_turn_exit" default=""/>
+  <arg name="right_turn_entry" default=""/>
+  <arg name="right_reverse_entry_m" default=""/>
+  <arg name="right_turn_radius" default=""/>
+  <arg name="right_turn_angle_deg" default=""/>
+  <arg name="right_turn_exit" default=""/>
+  <arg name="straight_distance" default=""/>
+  <arg name="blue_aligned_advance_m" default=""/>
+  <arg name="blue_align_duration_s" default=""/>
+  <arg name="lane_speed_raw" default=""/>
+  <arg name="lane_curvature_preview" default="false"/>
+  <arg name="lane_curve_speed_raw" default="12"/>
+  <arg name="action_speed_raw" default=""/>
+  <arg name="straight_speed_raw" default=""/>
+  <arg name="startup_steering_raw" default=""/>
+  <arg name="startup_follow_lane" default="false"/>
+  <arg name="uturn_reverse_distance_m" default="0"/>
+  <arg name="uturn_relative_enabled" default="false"/>
+  <arg name="lookahead" default=""/>
+  <arg name="right_align_lookahead" default=""/>
+  <arg name="right_left_capture_max_m" default=""/>
+  <arg name="steering_command_scale_rad" default="0.03"/>
+  <arg name="action_lookahead" default=""/>
+  <arg name="exit_yaw_tolerance" default=""/>
+  <arg name="exit_lane_heading_tolerance" default=""/>
+  <arg name="exit_lateral_tolerance" default=""/>
+  <arg name="front_device" default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"/>
+  <arg name="rear_device" default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.4:1.0-video-index0"/>
+  <rosparam command="load" file="$(arg config)" param="/competition/config"/>
+  <rosparam if="$(eval arg('maneuver_config') != '')" command="load" file="$(arg maneuver_config)" param="/competition/config"/>
+  <!-- Team overrides are applied before explicit launch arguments. -->
+  <rosparam command="load" file="$(arg module_config_dir)/camera/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/lane/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/lidar/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/master/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/motion/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/obstacle/config.yaml" param="/competition/config"/>
+  <!-- Both measured-scene profiles share the bounded parking planner. -->
+  <rosparam if="$(eval arg('parking_mode') in ('parallel_reverse', 'forward_plan') or arg('parking_mode') == '')" command="load" file="$(arg module_config_dir)/parallel_parking/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/parking/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/signs/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/turn/config.yaml" param="/competition/config"/>
+  <rosparam command="load" file="$(arg module_config_dir)/uturn/config.yaml" param="/competition/config"/>
+  <param name="/competition/config/lane_min_path_span" value="$(arg lane_min_span)" type="double"/>
+  <!-- Shared calibrated pixel/time approach; also used by blue_stop_test.launch. -->
+  <rosparam command="load" file="$(arg module_config_dir)/turn/blue_stop_test.yaml" param="/competition/config/blue_stop_test"/>
+  <!-- Optional command-line overrides; blank values preserve the user's YAML. -->
+  <param if="$(eval arg('lidar_enabled') != '')" name="/competition/config/lidar_enabled" value="$(arg lidar_enabled)" type="bool"/>
+  <param if="$(eval arg('straight_lidar_once') != '')" name="/competition/config/straight_lidar_once" value="$(arg straight_lidar_once)" type="bool"/>
+  <param if="$(eval arg('lidar_shape_filter') != '')" name="/competition/config/lidar/shape_filter" value="$(arg lidar_shape_filter)" type="bool"/>
+  <param if="$(eval arg('right_turn_full_lock') != '')" name="/competition/config/right_turn_full_lock" value="$(arg right_turn_full_lock)" type="bool"/>
+  <param if="$(eval arg('right_exit_on_blue') != '')" name="/competition/config/right_exit_on_blue" value="$(arg right_exit_on_blue)" type="bool"/>
+  <param if="$(eval arg('right_lock_min_angle_deg') != '')" name="/competition/config/right_lock_min_angle_deg" value="$(arg right_lock_min_angle_deg)" type="double"/>
+  <param if="$(eval arg('right_lock_max_angle_deg') != '')" name="/competition/config/right_lock_max_angle_deg" value="$(arg right_lock_max_angle_deg)" type="double"/>
+  <param if="$(eval arg('right_lock_heading_deg') != '')" name="/competition/config/right_lock_heading_deg" value="$(arg right_lock_heading_deg)" type="double"/>
+  <param if="$(eval arg('parking_enabled') != '')" name="/competition/config/parking_enabled" value="$(arg parking_enabled)" type="bool"/>
+  <param if="$(eval arg('parking_lidar_enabled') != '')" name="/competition/config/parking_lidar_enabled" value="$(arg parking_lidar_enabled)" type="bool"/>
+  <param if="$(eval arg('parking_slot') != '')" name="/competition/config/parking_slot" value="$(arg parking_slot)" type="str"/>
+  <param if="$(eval arg('parking_mode') != '')" name="/competition/config/parking_mode" value="$(arg parking_mode)" type="str"/>
+  <param if="$(eval arg('parking_entry_style') != '')" name="/competition/config/parking_entry_style" value="$(arg parking_entry_style)" type="str"/>
+  <param if="$(eval arg('parking_entry_speed_raw') != '')" name="/competition/config/parking_entry_speed_raw" value="$(arg parking_entry_speed_raw)" type="int"/>
+  <param if="$(eval arg('parking_final_speed_raw') != '')" name="/competition/config/parking_final_speed_raw" value="$(arg parking_final_speed_raw)" type="int"/>
+  <param if="$(eval arg('parking_bottom_clearance_m') != '')" name="/competition/config/parking_bottom_clearance_m" value="$(arg parking_bottom_clearance_m)" type="double"/>
+  <param if="$(eval arg('parking_blue_max_travel_m') != '')" name="/competition/config/parking_blue_max_travel_m" value="$(arg parking_blue_max_travel_m)" type="double"/>
+  <param if="$(eval arg('parking_divider_trigger_x') != '')" name="/competition/config/parking_divider_trigger_x" value="$(arg parking_divider_trigger_x)" type="double"/>
+  <param if="$(eval arg('parking_speed_raw') != '')" name="/competition/config/speed_raw/parking" value="$(arg parking_speed_raw)" type="int"/>
+  <param if="$(eval arg('parking_lookahead') != '')" name="/competition/config/parking_lookahead" value="$(arg parking_lookahead)" type="double"/>
+  <param if="$(eval arg('parking_observe_s') != '')" name="/competition/config/parking_observe_s" value="$(arg parking_observe_s)" type="double"/>
+  <param if="$(eval arg('parking_prep_offset') != '')" name="/competition/config/parking_prep_offset" value="$(arg parking_prep_offset)" type="double"/>
+  <param if="$(eval arg('parking_road_half_width') != '')" name="/competition/config/parking_road_half_width" value="$(arg parking_road_half_width)" type="double"/>
+  <param if="$(eval arg('wait_green') != '')" name="/competition/config/wait_green" value="$(arg wait_green)" type="bool"/>
+  <param if="$(eval arg('blue_default_straight') != '')" name="/competition/config/blue_default_straight" value="$(arg blue_default_straight)" type="bool"/>
+  <param if="$(eval arg('ground_hz') != '')" name="/competition/config/ground_hz" value="$(arg ground_hz)" type="double"/>
+  <param if="$(eval arg('ground_timeout') != '')" name="/competition/config/ground_timeout" value="$(arg ground_timeout)" type="double"/>
+  <param if="$(eval arg('sign_hz') != '')" name="/competition/config/sign_hz" value="$(arg sign_hz)" type="double"/>
+  <param if="$(eval arg('sign_ttl') != '')" name="/competition/config/sign_ttl" value="$(arg sign_ttl)" type="double"/>
+  <param if="$(eval arg('marker_trigger_x') != '')" name="/competition/config/marker_trigger_x" value="$(arg marker_trigger_x)" type="double"/>
+  <param if="$(eval arg('marker_memory_s') != '')" name="/competition/config/marker_memory_s" value="$(arg marker_memory_s)" type="double"/>
+  <param if="$(eval arg('intersection_wait_s') != '')" name="/competition/config/intersection_wait_s" value="$(arg intersection_wait_s)" type="double"/>
+  <param if="$(eval arg('uturn_reverse_speed_raw') != '')" name="/competition/config/uturn_reverse_speed_raw" value="$(arg uturn_reverse_speed_raw)" type="double"/>
+  <param if="$(eval arg('uturn_brake_lead_m') != '')" name="/competition/config/uturn_brake_lead_m" value="$(arg uturn_brake_lead_m)" type="double"/>
+  <param if="$(eval arg('uturn_reverse_max_distance') != '')" name="/competition/config/uturn_reverse_max_distance" value="$(arg uturn_reverse_max_distance)" type="double"/>
+  <param if="$(eval arg('turn_entry') != '')" name="/competition/config/turn_entry" value="$(arg turn_entry)" type="double"/>
+  <param if="$(eval arg('turn_radius') != '')" name="/competition/config/turn_radius" value="$(arg turn_radius)" type="double"/>
+  <param if="$(eval arg('turn_angle_deg') != '')" name="/competition/config/turn_angle_deg" value="$(arg turn_angle_deg)" type="double"/>
+  <param if="$(eval arg('turn_exit') != '')" name="/competition/config/turn_exit" value="$(arg turn_exit)" type="double"/>
+  <param if="$(eval arg('left_turn_entry') != '')" name="/competition/config/left_turn_entry" value="$(arg left_turn_entry)" type="double"/>
+  <param if="$(eval arg('left_turn_full_lock') != '')" name="/competition/config/left_turn_full_lock" value="$(arg left_turn_full_lock)" type="bool"/>
+  <param if="$(eval arg('lidar_timeout') != '')" name="/competition/config/lidar_timeout" value="$(arg lidar_timeout)" type="double"/>
+  <param if="$(eval arg('left_turn_radius') != '')" name="/competition/config/left_turn_radius" value="$(arg left_turn_radius)" type="double"/>
+  <param if="$(eval arg('left_turn_angle_deg') != '')" name="/competition/config/left_turn_angle_deg" value="$(arg left_turn_angle_deg)" type="double"/>
+  <param if="$(eval arg('left_turn_exit') != '')" name="/competition/config/left_turn_exit" value="$(arg left_turn_exit)" type="double"/>
+  <param if="$(eval arg('right_turn_entry') != '')" name="/competition/config/right_turn_entry" value="$(arg right_turn_entry)" type="double"/>
+  <param if="$(eval arg('right_reverse_entry_m') != '')" name="/competition/config/right_reverse_entry_m" value="$(arg right_reverse_entry_m)" type="double"/>
+  <param if="$(eval arg('right_turn_radius') != '')" name="/competition/config/right_turn_radius" value="$(arg right_turn_radius)" type="double"/>
+  <param if="$(eval arg('right_turn_angle_deg') != '')" name="/competition/config/right_turn_angle_deg" value="$(arg right_turn_angle_deg)" type="double"/>
+  <param if="$(eval arg('right_turn_exit') != '')" name="/competition/config/right_turn_exit" value="$(arg right_turn_exit)" type="double"/>
+  <param if="$(eval arg('straight_distance') != '')" name="/competition/config/straight_distance" value="$(arg straight_distance)" type="double"/>
+  <param if="$(eval arg('blue_aligned_advance_m') != '')" name="/competition/config/blue_aligned_advance_m" value="$(arg blue_aligned_advance_m)" type="double"/>
+  <param if="$(eval arg('blue_align_duration_s') != '')" name="/competition/config/blue_align_duration_s" value="$(arg blue_align_duration_s)" type="double"/>
+  <param if="$(eval arg('lane_speed_raw') != '')" name="/competition/config/speed_raw/lane" value="$(arg lane_speed_raw)" type="int"/>
+  <param name="/competition/config/lane_curvature_preview" value="$(arg lane_curvature_preview)" type="bool"/>
+  <param name="/competition/config/lane_curve_speed_raw" value="$(arg lane_curve_speed_raw)" type="int"/>
+  <param if="$(eval arg('action_speed_raw') != '')" name="/competition/config/speed_raw/action" value="$(arg action_speed_raw)" type="int"/>
+  <param if="$(eval arg('straight_speed_raw') != '')" name="/competition/config/straight_speed_raw" value="$(arg straight_speed_raw)" type="int"/>
+  <param if="$(eval arg('startup_steering_raw') != '')" name="/competition/config/startup_steering_raw" value="$(arg startup_steering_raw)" type="int"/>
+  <param name="/competition/config/startup_follow_lane" value="$(arg startup_follow_lane)" type="bool"/>
+  <param name="/competition/config/uturn_reverse_distance_m" value="$(arg uturn_reverse_distance_m)" type="double"/>
+  <param name="/competition/config/uturn_relative_enabled" value="$(arg uturn_relative_enabled)" type="bool"/>
+  <param if="$(eval arg('lookahead') != '')" name="/competition/config/lookahead" value="$(arg lookahead)" type="double"/>
+  <param if="$(eval arg('right_align_lookahead') != '')" name="/competition/config/right_align_lookahead" value="$(arg right_align_lookahead)" type="double"/>
+  <param if="$(eval arg('right_left_capture_max_m') != '')" name="/competition/config/right_left_capture_max_m" value="$(arg right_left_capture_max_m)" type="double"/>
+  <param if="$(eval arg('steering_command_scale_rad') != '')" name="/competition/config/steering_command_scale_rad" value="$(arg steering_command_scale_rad)" type="double"/>
+  <param if="$(eval arg('action_lookahead') != '')" name="/competition/config/action_lookahead" value="$(arg action_lookahead)" type="double"/>
+  <param if="$(eval arg('exit_yaw_tolerance') != '')" name="/competition/config/exit_yaw_tolerance" value="$(arg exit_yaw_tolerance)" type="double"/>
+  <param if="$(eval arg('exit_lane_heading_tolerance') != '')" name="/competition/config/exit_lane_heading_tolerance" value="$(arg exit_lane_heading_tolerance)" type="double"/>
+  <param if="$(eval arg('exit_lateral_tolerance') != '')" name="/competition/config/exit_lateral_tolerance" value="$(arg exit_lateral_tolerance)" type="double"/>
+
+  <group if="$(arg start_cameras)">
+    <node pkg="usb_cam" type="usb_cam_node" name="front_camera" ns="front" output="screen">
+      <remap from="/front/front_camera/image_raw" to="/front/usb_cam/image_raw"/>
+      <param name="video_device" value="$(arg front_device)"/>
+      <param name="image_width" value="640"/><param name="image_height" value="360"/>
+      <param name="pixel_format" value="mjpeg"/><param name="framerate" value="$(arg front_fps)"/>
+      <param name="camera_frame_id" value="front_camera"/>
+      <param name="camera_info_url" value="file://$(find yihan_ros_pkg)/calibration/front_640x360.yaml"/>
+    </node>
+    <node if="$(arg start_rear)" pkg="usb_cam" type="usb_cam_node" name="rear_camera" ns="rear" output="screen">
+      <remap from="/rear/rear_camera/image_raw" to="/rear/usb_cam/image_raw"/>
+      <param name="video_device" value="$(arg rear_device)"/>
+      <param name="image_width" value="640"/><param name="image_height" value="480"/>
+      <param name="pixel_format" value="mjpeg"/><param name="framerate" value="$(arg rear_fps)"/>
+      <param name="camera_frame_id" value="rear_camera"/>
+      <param name="camera_info_url" value="file://$(find yihan_ros_pkg)/calibration/rear_640x480.yaml"/>
+    </node>
+  </group>
+  <group if="$(arg start_lane)">
+    <node pkg="yihan_ros_pkg" type="camera_yihan_web.py" name="competition_lane" output="screen" required="true">
+      <param name="image_topic" value="/front/usb_cam/image_raw"/>
+      <param name="lane_path_topic" value="/vision/lane_path"/>
+      <param name="lane_confidence_topic" value="/vision/lane_confidence"/>
+      <param name="processing_hz" value="$(arg lane_hz)"/>
+      <param name="window_height" value="$(arg lane_window_height)"/>
+      <param name="min_path_span" value="$(arg lane_min_span)"/>
+    </node>
+  </group>
+  <group if="$(arg start_lidar)">
+    <include file="$(find ls01b_v2)/launch/ls01b_v2.launch"/>
+  </group>
+  <group if="$(arg start_ground)">
+    <node if="$(eval arg('parking_mode') == 'timed_sequence')" pkg="robocup_competition" type="timed_vision_node.py" name="parking_timed_vision" output="screen"/>
+    <node if="$(arg start_rear)" pkg="yihan_ros_pkg" type="rear_bev_node.py" name="rear_bev" output="screen">
+      <param name="processing_hz" value="$(arg rear_fps)"/>
+    </node>
+    <node pkg="robocup_competition" type="perception_node.py" name="competition_ground" output="screen">
+      <param name="start_rear" value="$(arg start_rear)"/>
+    </node>
+  </group>
+  <group if="$(arg start_sign)">
+    <node pkg="robocup_competition" type="sign_node.py" name="competition_sign" output="screen">
+      <param name="backend" value="$(arg sign_backend)"/>
+      <param name="model" value="$(arg sign_model)"/>
+      <param name="labels" value="$(arg sign_labels)"/>
+      <param name="roi_mode" value="$(arg sign_roi_mode)"/>
+      <param unless="$(arg sign_capture)" name="capture_dir" value=""/>
+      <param name="debug_images" value="true"/>
+    </node>
+  </group>
+  <node if="$(arg start_controller)" pkg="robocup_competition" type="$(arg controller_type)" name="competition_controller" output="screen">
+    <param name="live" value="$(arg live)"/><param name="enabled" value="$(arg enabled)"/>
+  </node>
+  <group if="$(arg start_actuators)">
+    <node pkg="ackermann_drive_teleop" type="testloop.py" name="ackermann_control_bridge" output="screen">
+      <param name="control_topic" value="/control/cmd"/>
+      <param name="require_stamp" value="true"/>
+      <param name="command_topic" value="/ackermann_cmd"/>
+      <param name="command_timeout" value="0.25"/>
+    </node>
+    <node pkg="base_controller" type="base_controller" name="base_controller" output="screen">
+      <param name="command_topic" value="/ackermann_cmd"/>
+      <param name="command_timeout" value="0.25"/>
+    </node>
+  </group>
+</launch>

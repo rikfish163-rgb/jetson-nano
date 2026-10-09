@@ -1,0 +1,21 @@
+{
+  "src/robot/obstacle/controller.py": "78ba5ef36af27dc8dca06f0230ce0417b0bf950f811f7132b01bbf534359bd9d",
+  "src/robot/motion/config.yaml": "622f8a546b71226448a70dca10d0373f191a92427739fab3c42109b3d40e63c8",
+  "src/robot/motion/README.md": "01392ea662332279bb58a412f8a57e8586d0bc464f7d454f266d8a21d17fd38f",
+  "src/robot/uturn/calibration.py": "ea42cd37c73e0eb6a1c9685332e00feb49f08b681783fcda0a764cc6ac8cc3cd",
+  "src/robot/uturn/config.yaml": "5c563ada22129b9f6bf742c28df31bd2ed56505684f20340d58f7bdf5edc2c26",
+  "src/robot/turn/planner.py": "55a408ff7ee2c11be7a9b3a584aaba1bb1c460d216e6a0db32da360b5ab3a525",
+  "src/robot/turn/README.md": "a0b55d27cef25215a2bac3e91155324c9a94d5f0e1cbddc6e711487c50f8af47",
+  "src/robot/config/workspace_modules.yaml": "0927c3539031235f5308993736435f117521805dff8aee05aa5f32a13926055d",
+  "src/robot/master/telemetry.py": "10dcf8244cefc2a9844dd66f6af747b9b6df3bca1bf82a864482493a24bcb695",
+  "src/robot/master/controller_node.py": "c41e2c5345213f3010e8830097ed2b13632e72e8b4d3a8e568639597cb79b782",
+  "src/robot/test/test_ros_adapter.py": "d5e711ba3893a6633bfcb568f7cfab03ca583cf847a21509911f279c2fd732fc",
+  "src/robot/test/test_uturn_current_model.py": "3c455cb198173bf0449393a6c68817f61a75955759c5caa24332885223898068",
+  "src/robot/test/test_right_boundary_adapter.py": "5759b12b720ea418a4ea699d742ab2bb60d74cdc33fa3e98396fedaa306c5641",
+  "src/robot/common/contracts.py": "14ddf6ec01491d2d32c927450093e6811ccbda32c4e9046baf05bb5c31375b7e",
+  "src/robot/motion/odometry.py": "070711a3e47226dfe0c480f255ad7f9c515238e980d091e314ad3292a569c285",
+  "src/robot/motion/calibration.py": "042ddf21aed09b2caa501bd6e5ffa058319058f0bd3ac40e805586b64771b5b3",
+  "src/robot/test/test_command_odometry.py": "26220cfcb6fcd4830dacef56fab02163d2e98ee2eea60ee084a8f52541eabba4",
+  "src/robot/test/test_motion_feedback.py": "6af72dd0356bf5c1d22e072f2495b18073f223e9ec11e8c6b2d02caf36aed0c8",
+  "src/robot/test/test_chassis_calibration.py": "6c35cef9cea57d5ea8ad9ea804bb59a2a6ff28a3ef5978af1bb186eac899bc47"
+}

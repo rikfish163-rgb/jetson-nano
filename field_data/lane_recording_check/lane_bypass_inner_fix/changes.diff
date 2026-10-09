@@ -1,0 +1,159 @@
+--- before/src/robot/lane/controller.py
++++ src/robot/lane/controller.py
+@@ -48,7 +48,7 @@
+ 
+ 
+ def right_curve_command(ctx, points, steer):
+-    """Hold full right steering until fresh frames confirm a straight exit.
++    """Retain right-bend intent, allowing fresh path corrections in preview mode.
+ 
+     This is ordinary-lane intent, separate from signed intersection maneuvers.
+     Never count repeated control ticks as new visual evidence.
+@@ -73,6 +73,7 @@
+     # Judge its position near the car, not whether every far point is centered.
+     # Keep right-facing bends and straight paths in another lane protected.
+     exit_line = False
++    inside_correction = False
+     if len(points) >= 3 and span >= .20:
+         mx = sum(p[0] for p in points)/len(points)
+         my = sum(p[1] for p in points)/len(points)
+@@ -95,7 +96,16 @@
+                      and residual <= .025 and abs(near_offset) <= .15
+                      and tail_angle is not None
+                      and tail_angle >= -math.radians(8))
++        inside_correction = (ctx.cfg.get('lane_curvature_preview',False) and
++            steer > 0 and coherent and residual <= .025 and
++            .04 <= near_offset <= .15 and points[-1][1] >= .02 and
++            all(0 < y <= .18 for x,y in points) and
++            -math.radians(25) <= math.atan(slope) <= math.radians(25))
+     if ctx.lane_stamp > lock['stamp']:
++        if ctx.lane_stamp-lock['stamp'] > ctx.cfg['sensor_timeout']:
++            lock['correction_frames'] = 0
++        lock['correction_frames'] = (lock.get('correction_frames',0)+1
++                                     if inside_correction else 0)
+         if exit_line:
+             if lock['exit_since'] is None or ctx.lane_stamp-lock['stamp'] > ctx.cfg['sensor_timeout']:
+                 lock['exit_since'],lock['exit_frames'] = ctx.lane_stamp,0
+@@ -103,11 +113,19 @@
+         else:
+             lock['exit_since'],lock['exit_frames'] = None,0
+         lock['stamp'] = ctx.lane_stamp
++        if lock['correction_frames'] >= 2:
++            ctx.lane_curve_lock = None
++            return steer, False
+         if lock['exit_frames'] >= 5 and ctx.lane_stamp-lock['exit_since'] >= .4-1e-9:
+             ctx.lane_curve_lock = None
+             return steer, False
+-    # A smaller far-point offset is not proof that the bend is complete.
+-    # Hold the full command through exit confirmation and short tracking gaps.
++    # A smaller offset alone does not clear bend intent. Preview mode can
++    # reduce the angle without dropping the gap/exit guard.
++    if ctx.cfg.get('lane_curvature_preview',False) and (steer <= 0 or exit_line):
++        # Fresh center observations set the angle. Keep a small right command
++        # until exit confirmation; a gap retains this last accepted angle.
++        lock['steer'] = min(steer,full_right*.20)
++        return lock['steer'], False
+     lock['steer'] = full_right
+     return full_right, steer > 0. and not exit_line
+ 
+@@ -120,6 +138,9 @@
+     if lock is not None:
+         ctx.gap_steer = lock['steer']
+         lock['exit_since'],lock['exit_frames'] = None,0
++        if (not ctx.lane or ctx.lane_target is None or
++                ctx.lane_target.get('reason') != 'opposite_target_during_right_curve'):
++            lock['correction_frames'] = 0
+         lock['stamp'] = ctx.lane_stamp
+     elif ctx.state != 'GAP':
+         ctx.gap_steer = ctx.call('motion', 'current_steering', now)
+@@ -147,11 +168,17 @@
+         points = [p for p in points if p[0] > .05]
+         # Bridge a minor confidence dip using only the previous trusted angle.
+         # Bad frames cannot extend this interval or supply new steering.
++        span = points[-1][0]-points[0][0] if len(points) >= 2 else 0.
++        minor_confidence_dip = (
++            ctx.cfg['lane_min_confidence']*.7 <= ctx.lane_confidence < ctx.cfg['lane_min_confidence'] and
++            span >= ctx.cfg.get('lane_min_path_span',.15)-1e-9)
++        minor_span_dip = (ctx.lane_confidence >= ctx.cfg['lane_min_confidence'] and
++                         len(points) >= 2 and span >= .10-1e-9)
+         if (ctx.gap_origin is not None and 0 <= now-ctx.gap_start <= .25 and
+-                ctx.cfg['lane_min_confidence']*.7 <= ctx.lane_confidence < ctx.cfg['lane_min_confidence'] and
+-                len(points) >= 2 and points[-1][0]-points[0][0] >= ctx.cfg.get('lane_min_path_span',.15)-1e-9):
++                (minor_confidence_dip or minor_span_dip)):
++            grace = 'confidence_grace' if minor_confidence_dip else 'path_span_grace'
+             ctx.lane_target = dict(stamp=now,source_stamp=ctx.lane_stamp,path=points,
+-                target=None,valid=False,reason='confidence_grace',selection='confidence_grace')
++                target=None,valid=False,reason=grace,selection=grace)
+             speed,steer = lane_gap_command(ctx,now)
+             return min(speed,ctx.cfg.get('lane_curve_speed_raw',12)),steer
+         ctx.lane_preview = None
+@@ -172,7 +199,8 @@
+         path=candidates, target=target, target_index=target_index,
+         intersection=None, line_x=None, lateral_offset_m=offset,
+         angle=steer, valid=True, reason='ok',curvature_preview=ctx.lane_preview,
+-        selection='right_curve_full_lock' if ctx.lane_curve_lock else 'topmost_lateral_offset')
++        selection=('right_curve_tracking' if ctx.cfg.get('lane_curvature_preview',False)
++            else 'right_curve_full_lock') if ctx.lane_curve_lock else 'topmost_lateral_offset')
+     if ctx.lane_preview is not None and ctx.lane_curve_lock is None:
+         ctx.lane_target['selection'] = 'topmost_with_curvature_preview'
+     if rejected:
+--- before/src/robot/lane/preview.py
++++ src/robot/lane/preview.py
+@@ -45,6 +45,13 @@
+         return steer
+     scale = ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     physical = steer/scale*ctx.cfg['max_steer']
++    forward = sorted(p for p in points if p[0] > .05)
++    # A coherent center entirely on the correction side is lateral drift.
++    # Do not let bend feedforward cancel the correction back toward it.
++    if (physical*ctx.lane_preview['curvature'] < 0 and forward and
++            abs(forward[0][1]) >= .04 and
++            all(y*physical > 0 for x,y in forward)):
++        return steer
+     physical += math.atan(ctx.cfg['wheelbase']*ctx.lane_preview['curvature'])
+     physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
+     return physical/ctx.cfg['max_steer']*scale
+--- before/src/robot/lane/config.yaml
++++ src/robot/lane/config.yaml
+@@ -1,2 +1,3 @@
+ # 普通巡线使用最远点偏移；整车脚本显式启用曲率预判和弯道降速。
+-{}
++# 降低横偏增益，减少弯内过度纠偏；原始舵量上限仍为 +/-22。
++lane_lateral_full_scale_m: 0.10
+--- before/src/robot/obstacle/config.yaml
++++ src/robot/obstacle/config.yaml
+@@ -5,7 +5,6 @@
+ timed_bypass_trigger_distance_m: 0.85
+ # 停车下发左满舵后等待；这是待标定的换向余量，不是实际轮角反馈。
+ timed_bypass_settle_s: 0.4
+-# RAW 20 下的初始左打时长：26 * 2 / 20 = 2.6 s；仅按指令量估计，需实车复核。
+-timed_bypass_left_s: 2.6
+-# 与左打同倍率延长：6 * (2.6 / 2) = 7.8 s。
+-timed_bypass_right_s: 7.8
++# 用户指定的实际前进时长；停车期间不计时，不按速度比例延长。
++timed_bypass_left_s: 2.0
++timed_bypass_right_s: 6.0
+--- before/src/robot/master/controller_node.py
++++ src/robot/master/controller_node.py
+@@ -474,6 +474,11 @@
+             if changed:
+                 console = {key:status[key] for key in ('stamp','state','reason','command',
+                     'enabled','lane_confidence','source_ages','lidar_processing_ms','sign')}
++                console['timed_bypass'] = status['timed_bypass']
++                console['lane_curve_lock'] = status['lane_curve_lock']
++                check = status['obstacle_check']
++                console['obstacle_check'] = {key:check[key] for key in
++                    ('kind','reason','point_local','support_points','evidence_type') if key in check}
+                 rospy.loginfo('competition_state %s',json.dumps(console,allow_nan=False))
+             self.publish_path(now)
+         except Exception as exc:
+--- before/src/robot/config/workspace_modules.yaml
++++ src/robot/config/workspace_modules.yaml
+@@ -79,6 +79,7 @@
+     - lane_curvature_preview
+     - lane_curve_speed_raw
+     - lane_frame
++    - lane_lateral_full_scale_m
+     - lane_min_confidence
+     - lane_min_path_span
+     - lane_observation_topic

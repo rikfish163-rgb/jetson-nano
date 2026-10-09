@@ -1,0 +1,10 @@
+{
+  "observation_received": true, 
+  "actuator_publishers": [], 
+  "status_received": true, 
+  "enabled": false, 
+  "live": false, 
+  "passed": true, 
+  "camera_source_sha256": "0413466a2683017ec9e5768989232446f50b5f6cf30983a9f85c6e816ae539a3", 
+  "isolated_master_port": 44325
+}

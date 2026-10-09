@@ -1,0 +1,16 @@
+{
+  "capture_geometry_only": {
+    "after": "LEFT_ONLY", 
+    "before": "RIGHT_ONLY"
+  }, 
+  "after": {
+    "frames": 463, 
+    "valid": 272, 
+    "last62_valid": 62
+  }, 
+  "before": {
+    "frames": 463, 
+    "valid": 272, 
+    "last62_valid": 62
+  }
+}

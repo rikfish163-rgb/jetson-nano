@@ -1,0 +1,745 @@
+--- before/src/robot/signs/decisions.py
++++ after/src/robot/signs/decisions.py
+@@ -1,7 +1,7 @@
+ """signs module: explicit context input; coordinator applies returned updates."""
+ from __future__ import division
+ 
+-from robot.common.geometry import _isfinite, local
++from robot.common.geometry import _isfinite
+ 
+ 
+ 
+@@ -42,66 +42,16 @@
+         ctx.direction_window, ctx.uturn_sign_window = [], []
+         ctx.sign_info.update(votes=0, decision='parking_wait_route_action')
+         return
+-    bypass_straight = (label == 'STRAIGHT' and ctx.state == 'TIMED_BYPASS'
+-                       and ctx.action == 'BYPASS' and ctx.pending is None)
+-    straight_active = (ctx.action == 'STRAIGHT' and ctx.state == 'MANEUVER'
+-                       and ctx.straight_search is not None)
+-    if straight_active:
+-        # The next board can enter view before the mandatory 1.25 m ends.
+-        # Repeated STRAIGHT needs the latter part of the segment to avoid
+-        # queuing its own board again. UTURN is a different next action and
+-        # may appear sooner; both require a distinct confirmed blue line.
+-        minimum = max(1.25, ctx.cfg.get('straight_distance', 1.25))
+-        travelled = local(ctx.straight_search['origin'], ctx.pose)[0]
+-        if (label in ('STRAIGHT','UTURN') and ctx.cfg['sign_confidence'] <= confidence <= 1.0
+-                and stamp > ctx.action_started and
+-                (label == 'UTURN' or travelled >= .6*minimum)):
+-            decision = 'next_'+label.lower()
+-            if ctx.next_direction == label:
+-                ctx.direction_window = []
+-                ctx.sign_info.update(votes=0, decision=decision+'_latched')
+-                return
+-            if ctx.direction_window and ctx.direction_window[-1][0] != label:
+-                ctx.direction_window = []
+-            ctx.direction_window.append((label, stamp))
+-            required = int(ctx.cfg.get('direction_sign_votes', 2))
+-            ctx.direction_window = ctx.direction_window[-required:]
+-            ctx.sign_info.update(votes=len(ctx.direction_window), decision=decision+'_voting')
+-            if len(ctx.direction_window) == required:
+-                ctx.next_direction, ctx.next_direction_at = label, now
+-                ctx.direction_window = []
+-                ctx.sign_info['decision'] = decision+'_pending'
+-            return
+-        ctx.direction_window = []
+     directions=('LEFT','RIGHT','STRAIGHT','UTURN')
+-    if ctx.action is None and ctx.pending in directions:
+-        # Before blue commits an action, fresh consecutive observations may
+-        # correct the cached direction; an active action remains locked.
+-        if label in directions and ctx.cfg['sign_confidence'] <= confidence <= 1.0:
+-            if label == ctx.pending:
+-                ctx.direction_window=[]
+-                ctx.sign_info.update(votes=0,decision='pending_latched')
+-                return
+-            if ctx.direction_window and ctx.direction_window[-1][0] != label:
+-                ctx.direction_window=[]
+-            ctx.direction_window.append((label,stamp))
+-            required=int(ctx.cfg.get('direction_sign_votes',2))
+-            ctx.direction_window=ctx.direction_window[-required:]
+-            ctx.sign_info.update(votes=len(ctx.direction_window),decision='direction_correction_voting')
+-            if len(ctx.direction_window)==required:
+-                ctx.pending,ctx.pending_at=label,now
+-                ctx.direction_window=[]
+-                ctx.sign_label,ctx.sign_count='',0
+-                ctx.sign_info['decision']='corrected_pending'
+-            return
+-        ctx.direction_window=[]
+-    if (label in ('LEFT','RIGHT','STRAIGHT','UTURN','PARKING') and
+-            (ctx.pending is not None or ctx.action is not None) and not bypass_straight):
+-        # Do not carry observations made during one action into the next.
++    if (label in directions+('PARKING',) and
++            (ctx.pending is not None or ctx.action is not None or
++             ctx.state == 'STARTUP_STRAIGHT')):
++        # One confirmed action owns the cache through its blue-line wait and
++        # every execution phase. Busy observations cannot replace it or vote
++        # for the next action; RED/GREEN remain available below.
+         ctx.sign_label,ctx.sign_count = '',0
+         ctx.direction_window,ctx.uturn_sign_window = [],[]
+-        if not straight_active:
+-            ctx.next_direction,ctx.next_direction_at = None,0.0
++        ctx.next_direction,ctx.next_direction_at = None,0.0
+         ctx.sign_info.update(votes=0,decision='action_sign_ignored')
+         return
+     threshold = ctx.cfg.get('red_sign_confidence',.8) if label == 'RED' else ctx.cfg['sign_confidence']
+@@ -129,12 +79,9 @@
+         ctx.sign_info['decision'] = 'green_release'
+         if ctx.state == 'WAIT_GREEN':
+             ctx.call('mission', 'begin_startup', now)
+-    elif (bypass_straight or ctx.state in ('LANE','GAP','WAIT_OBSTACLE','STARTUP_STRAIGHT') or
++    elif (ctx.state in ('LANE','GAP','WAIT_OBSTACLE') or
+           (ctx.state == 'WAIT_GREEN' and label == 'UTURN')):
+         # Cache a confirmed U-turn before release; tick still waits for GREEN.
+-        if ctx.pending == 'PARKING':
+-            ctx.sign_info['decision'] = 'parking_latched'
+-            return  # armed parking waits for blue; RED/GREEN still handled above
+         if label == 'PARKING' and not ctx.cfg.get('parking_enabled',True):
+             ctx.sign_info['decision'] = 'parking_disabled'
+             return
+@@ -151,10 +98,6 @@
+         # Consecutive junctions may carry the same direction sign. Accept
+         # fresh post-action observations; consumed-marker filtering prevents
+         # executing again at the previous blue line.
+-        if (ctx.cfg.get('latch_direction_sign', False) and
+-                ctx.pending in ('LEFT','RIGHT','STRAIGHT','UTURN')):
+-            ctx.sign_info['decision'] = 'pending_latched'
+-            return
+         ctx.pending, ctx.pending_at = label, now
+         ctx.sign_info['decision'] = 'stored_pending'
+         if label == 'PARKING':
+--- before/src/robot/master/state_machine.py
++++ after/src/robot/master/state_machine.py
+@@ -212,12 +212,9 @@
+         # Reuse the existing bounded reversal transition at the visual handoff.
+         # Same-side steering remains immediate; ordinary lane tuning is intact.
+         ctx.lane_recovery=dict(stamp=ctx.pose_stamp)
+-    next_junction = (ctx.action == 'STRAIGHT' and ctx.next_direction in ('STRAIGHT','UTURN')
+-                     and ctx.next_direction_at >= ctx.action_started)
+-    marker, candidate = ctx.marker, ctx.marker_candidate
+-    if next_junction:
+-        pending, pending_at = ctx.next_direction, ctx.next_direction_at
+-    elif ctx.action == 'BYPASS' and ctx.pending is not None:
++    if ctx.action == 'BYPASS' and ctx.pending is not None:
++        # An obstacle may interrupt lane following after a sign was cached.
++        # Preserve that one existing instruction; bypass cannot acquire one.
+         pending, pending_at = ctx.pending, ctx.pending_at
+     else:
+         pending, pending_at = None, 0.0
+@@ -232,9 +229,6 @@
+     ctx.exit_pose = None
+     ctx.marker, ctx.parking_marker = None,None
+     ctx.marker_candidate = None
+-    if next_junction:
+-        ctx.marker, ctx.marker_candidate = marker, candidate
+-        ctx.blue_consumed = False
+     ctx.blue_approach = None
+     ctx.blue_prealign = None
+     ctx.blue_clear_since, ctx.blue_clear_frames = None, 0
+@@ -552,8 +546,8 @@
+             return ctx.call('obstacle', 'checked_command', (cfg['speed_raw']['gap'],0.0),now,False)
+     if ctx.state == 'WAIT_SLOT':
+         return ctx.call('parking', 'start_parking', now)
+-    if ctx.pending and ctx.pending != 'PARKING' and cfg['sign_ttl'] > 0 and now-ctx.pending_at > cfg['sign_ttl']:
+-        ctx.pending = None
++    # A confirmed sign stays latched until consumed by its action. Expiring
++    # it here would reopen the cache before that instruction had executed.
+     if ctx.pending or cfg.get('blue_default_straight',False):
+         result = ctx.call('mission', 'dispatch', now)
+         if result is not None:
+--- before/src/robot/config/competition.yaml
++++ after/src/robot/config/competition.yaml
+@@ -58,8 +58,7 @@
+ red_sign_confidence: 0.80
+ sign_width_m: 0.195
+ sign_max_distance_m: 0.60 # approximate camera optical depth, not rear-axle distance
+-sign_ttl: 5.0
+-# Launch sign_ttl:=0 stores a direction until its blue-line action is consumed.
++sign_ttl: 0 # Legacy launch parameter; confirmed signs stay latched until consumed.
+ latch_direction_sign: true
+ sign_rearm_distance: 1.0
+ wait_green: false
+--- before/src/robot/test/test_action_sign_lock.py
++++ after/src/robot/test/test_action_sign_lock.py
+@@ -15,24 +15,194 @@
+     def vote(self,label,t):
+         for i in range(3):self.c.observe_sign(label,.99,t+i*.1,t+i*.1)
+ 
+-    def test_pending_direction_can_be_corrected_before_blue(self):
++    def test_pending_direction_stays_locked_until_its_blue_action(self):
+         self.vote('STRAIGHT',1)
+-        for i,label in enumerate(('RIGHT','LEFT','UTURN','STRAIGHT')):
++        pending_at=self.c.pending_at
++        for i,label in enumerate(('RIGHT','LEFT','UTURN','STRAIGHT','PARKING')):
+             self.vote(label,2+i)
+-            self.assertEqual(self.c.pending,label)
+-            self.assertIsNone(self.c.next_direction)
+-        self.vote('PARKING',8)
+-        self.assertEqual(self.c.pending,'STRAIGHT')
++            self.assertEqual(self.c.pending,'STRAIGHT')
++            self.assertEqual(self.c.pending_at,pending_at)
++            self.assertIsNone(self.c.next_direction)
++
++    def test_pending_parking_cannot_be_replaced_by_another_action(self):
++        self.c.cfg['parking_enabled']=True
++        self.vote('PARKING',1)
++        pending_at=self.c.pending_at
++        for i,label in enumerate(('LEFT','RIGHT','STRAIGHT','UTURN','PARKING')):
++            self.vote(label,2+i)
++            self.assertEqual(self.c.pending,'PARKING')
++            self.assertEqual(self.c.pending_at,pending_at)
++            self.assertIsNone(self.c.next_direction)
+ 
+     def test_active_action_ignores_votes_and_requires_new_votes_after_exit(self):
+-        self.c.state,self.c.action='MANEUVER','STRAIGHT'
+-        self.vote('RIGHT',1)
++        self.c.start_follow([(0,0,0,1,0),(1.25,0,0,1,0)],'STRAIGHT',0)
++        self.c.set_pose((1.1,0,0),1)
++        for i,label in enumerate(('RIGHT','STRAIGHT','UTURN','LEFT','PARKING')):
++            self.vote(label,1+i)
++            self.assertIsNone(self.c.pending)
++            self.assertIsNone(self.c.next_direction)
++            self.assertEqual(self.c.action,'STRAIGHT')
++        self.c.resume_lane()
++        self.assertIsNone(self.c.pending)
++        self.c.observe_sign('RIGHT',.9,6,6)
++        self.assertIsNone(self.c.pending)
++        self.c.observe_sign('RIGHT',.9,6.2,6.2)
++        self.assertEqual(self.c.pending,'RIGHT')
++
++    def test_bypass_cannot_cache_straight_before_completion(self):
++        self.c.state,self.c.action='TIMED_BYPASS','BYPASS'
++        self.vote('STRAIGHT',1)
++        self.assertIsNone(self.c.pending)
+         self.assertIsNone(self.c.next_direction)
+         self.c.resume_lane()
+-        self.c.observe_sign('RIGHT',.9,2,2)
+-        self.assertIsNone(self.c.pending)
+-        self.c.observe_sign('RIGHT',.9,2.2,2.2)
++        self.c.observe_sign('STRAIGHT',.99,2,2)
++        self.assertIsNone(self.c.pending)
++        self.c.observe_sign('STRAIGHT',.99,2.1,2.1)
++        self.assertEqual(self.c.pending,'STRAIGHT')
++
++    def test_bypass_preserves_the_one_sign_cached_before_the_obstacle(self):
++        self.vote('RIGHT',1)
++        pending_at=self.c.pending_at
++        self.c.state,self.c.action='TIMED_BYPASS','BYPASS'
++        self.vote('STRAIGHT',2)
++        self.c.resume_lane()
+         self.assertEqual(self.c.pending,'RIGHT')
++        self.assertEqual(self.c.pending_at,pending_at)
++        self.vote('LEFT',3)
++        self.assertEqual(self.c.pending,'RIGHT')
++
++    def test_startup_straight_cannot_cache_the_next_route_action(self):
++        self.c.state='STARTUP_STRAIGHT'
++        for i,label in enumerate(('LEFT','RIGHT','STRAIGHT','UTURN')):
++            self.vote(label,1+i)
++            self.assertIsNone(self.c.pending)
++            self.assertIsNone(self.c.next_direction)
++
++    def test_completion_discards_old_queued_direction_and_blue_marker(self):
++        for label in ('STRAIGHT','UTURN'):
++            self.c.state,self.c.action='MANEUVER','STRAIGHT'
++            self.c.action_started=1
++            self.c.next_direction,self.c.next_direction_at=label,2
++            self.c.marker=((2,0),2)
++            self.c.marker_candidate={'point':(2,0)}
++            self.c.resume_lane()
++            self.assertIsNone(self.c.pending)
++            self.assertIsNone(self.c.next_direction)
++            self.assertIsNone(self.c.marker)
++
++    def test_confirmed_cache_does_not_expire_and_admit_another_sign(self):
++        self.c.cfg['sign_ttl']=.25
++        self.vote('STRAIGHT',1)
++        self.c.observe_lane([(.3,0),(.6,0)],.99,2)
++        self.c.observe_ground(dict(source='front',part='markers',markers=[],slots=[]),2)
++        self.c.tick(2)
++        self.assertEqual(self.c.pending,'STRAIGHT')
++        self.vote('RIGHT',3)
++        self.assertEqual(self.c.pending,'STRAIGHT')
++
++    def test_production_blue_alignment_then_125_unlocks_next_sign(self):
++        from robot.common.config import load_config
++        cfg=load_config(os.path.join(ROOT,'config'))
++        cfg.update(wait_green=False,lidar_enabled=False)
++        self.assertTrue(cfg['blue_timed_enabled'])
++        self.assertEqual(cfg['straight_distance'],1.25)
++        c=Controller(cfg);self.addCleanup(c.close)
++        cam=cfg['front_camera']
++
++        def frame(t,row=None,angle=0.):
++            import math
++            lines=[] if row is None else [dict(
++                x=(cam['origin_v']-row*(cam['bev_height']-1))/cam['pixels_per_m'],
++                y=0.,yaw=math.radians(angle),length=.6)]
++            c.observe_lane([(.3,0),(.6,0),(.9,0)],.99,t)
++            c.observe_ground(dict(source='front',part='markers',slots=[],
++                blue_lines=lines,markers=[dict(kind='junction',x=line['x'],y=0.,length=.6)
++                                         for line in lines]),t)
++            return c.tick(t)
++
++        c.observe_sign('STRAIGHT',.99,1.,1.)
++        c.observe_sign('STRAIGHT',.99,1.1,1.1)
++        self.assertEqual(c.pending,'STRAIGHT')
++        frame(1.1)
++        self.assertIsNone(c.action)  # Sign alone cannot start the maneuver.
++        for t,row,angle in ((1.2,.30,20.),(1.3,.35,20.),(1.4,.40,20.),
++                            (1.5,.45,0.),(1.6,.50,0.),(1.7,.55,0.),
++                            (1.8,.72,0.),(1.9,.74,0.),(2.,.76,0.)):
++            frame(t,row,angle)
++        self.assertEqual(c.action,'STRAIGHT')
++        self.assertTrue(c.blue_approach['image_timing']['aligned'])
++        c.set_pose((2.,.4,0.),2.)
++        now=2.
++        for i in range(1,51):
++            now=2.+i*.1
++            c.observe_sign('UTURN',.99,now,now)
++            frame(now)
++            self.assertIsNone(c.pending)
++            self.assertIsNone(c.next_direction)
++            if c.state=='MANEUVER':break
++        self.assertEqual(c.state,'MANEUVER',c.reason)
++        origin=c.straight_search['origin']
++        self.assertEqual(origin,(2.,.4,0.))
++        for progress in (1.249,1.249):
++            now+=.1
++            c.set_pose((origin[0]+progress,origin[1],origin[2]),now)
++            c.observe_sign('UTURN',.99,now,now)
++            frame(now)
++            self.assertEqual(c.action,'STRAIGHT')
++            self.assertEqual(c.state,'MANEUVER')
++            self.assertIsNone(c.pending)
++            self.assertIsNone(c.next_direction)
++        now+=.1
++        c.set_pose((origin[0]+1.25,origin[1],origin[2]),now)
++        frame(now)
++        self.assertEqual(c.state,'LANE')
++        self.assertIsNone(c.action)
++        self.assertIsNone(c.pending)
++        for i in (1,2):
++            now+=.1
++            c.observe_sign('UTURN',.99,now,now)
++            self.assertEqual(c.pending,None if i==1 else 'UTURN')
++        self.assertIsNone(c.action)
++        for i in range(3):
++            now+=.1
++            frame(now,.45)
++        self.assertEqual(c.action,'UTURN')
++        self.assertIsNone(c.pending)
++
++    def test_each_new_direction_can_trigger_a_distinct_blue_after_125(self):
++        from robot.common.config import load_config
++        for label in ('LEFT','RIGHT','STRAIGHT','UTURN'):
++            cfg=load_config(os.path.join(ROOT,'config'))
++            cfg.update(wait_green=False,lidar_enabled=False)
++            c=Controller(cfg);self.addCleanup(c.close)
++            c.start_follow([(0,0,0,1,0),(1.25,0,0,1,0)],'STRAIGHT',0.)
++            c.consumed_marker=(.35,0.)
++            c.blue_consumed=True
++            c.set_pose((1.249,0.,0.),1.)
++
++            def frame(t):
++                c.observe_lane([(.3,0),(.6,0),(.9,0)],.99,t)
++                c.observe_ground(dict(source='front',part='markers',slots=[],
++                    markers=[dict(kind='junction',x=.8,y=0.,length=.6)],
++                    blue_lines=[dict(x=.8,y=0.,yaw=0.,length=.6)]),t)
++                return c.tick(t)
++
++            for t in (1.,1.1):
++                c.observe_sign(label,.99,t,t)
++                frame(t)
++                self.assertEqual(c.action,'STRAIGHT')
++                self.assertIsNone(c.pending)
++            c.set_pose((1.25,0.,0.),1.2)
++            frame(1.2)
++            self.assertEqual(c.state,'LANE')
++            self.assertIsNone(c.pending)
++            c.observe_sign(label,.99,1.3,1.3)
++            self.assertIsNone(c.pending)
++            c.observe_sign(label,.99,1.4,1.4)
++            self.assertEqual(c.pending,label)
++            for t in (1.5,1.6,1.7):frame(t)
++            self.assertEqual(c.action,label)
++            self.assertIsNone(c.pending)
+ 
+     def test_parking_and_active_actions_ignore_route_signs(self):
+         for i,state in enumerate(('PARKING','INTERSECTION_WAIT','UTURN')):
+--- before/src/robot/test/test_direction_single_frame.py
++++ after/src/robot/test/test_direction_single_frame.py
+@@ -62,9 +62,9 @@
+         c.observe_sign('STRAIGHT',.82,10.1,10.1)
+         c.observe_sign('LEFT',.99,10.2,10.2)
+         self.assertEqual(c.pending,'STRAIGHT')
+-        self.assertEqual(c.sign_info['decision'],'direction_correction_voting')
++        self.assertEqual(c.sign_info['decision'],'action_sign_ignored')
+ 
+-    def test_recorded_wrong_right_is_corrected_before_next_blue(self):
++    def test_one_wrong_right_frame_cannot_confirm_before_straight(self):
+         c=self.core()
+         c.last_completed_action='STRAIGHT'
+         c.observe_sign('RIGHT',.811439514,38.282694,38.4)
+@@ -76,7 +76,7 @@
+         self.assertEqual(c.sign_info['decision'],'stored_pending')
+         self.assertIsNone(c.action)
+ 
+-    def test_interrupted_corrections_do_not_accumulate_and_action_stays_locked(self):
++    def test_new_direction_observations_cannot_replace_a_locked_action(self):
+         c=self.core();c.observe_sign('RIGHT',.99,1.,1.)
+         c.observe_sign('RIGHT',.99,1.05,1.05)
+         for t,label in ((1.1,'STRAIGHT'),(1.2,'LEFT'),(1.3,'STRAIGHT'),(1.4,'LEFT')):
+@@ -87,15 +87,21 @@
+         self.assertIsNone(c.pending)
+         self.assertEqual(c.action,'RIGHT')
+ 
+-    def test_two_fresh_frames_can_correct_pending_but_duplicate_cannot_vote(self):
++    def test_fresh_or_duplicate_frames_cannot_replace_pending_before_completion(self):
+         c=self.core()
+         for t in (1.,1.2):c.observe_sign('RIGHT',.99,t,t)
+         c.observe_sign('STRAIGHT',.99,1.4,1.4)
+         c.observe_sign('STRAIGHT',.99,1.4,1.5)
+         self.assertEqual(c.pending,'RIGHT')
+         c.observe_sign('STRAIGHT',.99,1.6,1.6)
++        self.assertEqual(c.pending,'RIGHT')
++        self.assertEqual(c.sign_info['decision'],'action_sign_ignored')
++        c.action,c.state,c.pending='RIGHT','MANEUVER',None
++        c.resume_lane()
++        c.observe_sign('STRAIGHT',.99,2.,2.)
++        self.assertIsNone(c.pending)
++        c.observe_sign('STRAIGHT',.99,2.2,2.2)
+         self.assertEqual(c.pending,'STRAIGHT')
+-        self.assertEqual(c.sign_info['decision'],'corrected_pending')
+ 
+     def test_low_confidence_unknown_and_time_gap_break_confirmation(self):
+         for label,conf in (('',0.),('RIGHT',.79)):
+--- before/src/robot/test/test_straight_uturn_handoff.py
++++ after/src/robot/test/test_straight_uturn_handoff.py
+@@ -1,4 +1,4 @@
+-"""Replay an upcoming UTURN visible before the previous straight has ended."""
++"""An upcoming UTURN needs fresh confirmation after straight completes."""
+ import math
+ import os
+ import unittest
+@@ -11,7 +11,8 @@
+     def straight(self, x=1.10):
+         cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
+         cfg.update(wait_green=False, lidar_enabled=False, sign_ttl=0,
+-                   intersection_wait_s=1., straight_speed_raw=20)
++                   intersection_wait_s=1., straight_speed_raw=20,
++                   blue_timed_enabled=False)  # This fixture exercises the geometric stop plane.
+         core = Controller(cfg)
+         self.addCleanup(core.close)
+         core.start_follow([(0, 0, 0, 1, 0), (1.25, 0, 0, 1, 0)], 'STRAIGHT', 10.)
+@@ -30,16 +31,16 @@
+         core.observe_sign(label, .8637654, start, start)
+         core.observe_sign(label, .8109708, start+.2, start+.2)
+ 
+-    def test_detected_uturn_is_queued_before_075_and_survives_blank_frames(self):
++    def test_uturn_visible_before_075_cannot_enter_the_next_action_cache(self):
+         core = self.straight(.6985)
+         self.votes(core)
+-        self.assertEqual(core.next_direction, 'UTURN')
+-        self.assertEqual(core.sign_info['decision'], 'next_uturn_pending')
++        self.assertIsNone(core.next_direction)
++        self.assertEqual(core.sign_info['decision'], 'action_sign_ignored')
+         self.assertEqual(core.action, 'STRAIGHT')
+         self.assertIsNone(core.pending)
+         core.observe_sign('', 0., 18.3, 18.3)
+         core.observe_sign('LEFT', .99, 18.4, 18.4)
+-        self.assertEqual(core.next_direction, 'UTURN')
++        self.assertIsNone(core.next_direction)
+ 
+     def test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action(self):
+         core = self.straight(.6985)
+@@ -59,8 +60,10 @@
+         self.assertGreater(core.tick(18.9)[0], 0)
+         self.assertEqual(core.state, 'LANE')
+         self.assertIsNone(core.action)
+-        self.assertEqual(core.pending, 'UTURN')
+-        for stamp in (19., 19.2, 19.4):
++        self.assertIsNone(core.pending)
++        self.votes(core,start=19.)
++        self.assertEqual(core.pending,'UTURN')
++        for stamp in (19.4, 19.6, 19.8):
+             self.ground(core, stamp, .65)
+             core.tick(stamp)
+         self.assertEqual(core.action, 'UTURN')
+@@ -78,7 +81,7 @@
+             self.assertEqual(core.action, 'STRAIGHT')
+             self.assertIsNone(core.marker)
+ 
+-    def test_queued_uturn_survives_completed_straight_lane_handoff(self):
++    def test_uturn_needs_new_votes_after_completed_straight_lane_handoff(self):
+         core = self.straight()
+         self.votes(core)
+         core.set_pose((1.25, 0, 0), 18.3)
+@@ -86,8 +89,12 @@
+             self.ground(core, stamp)
+             core.tick(stamp)
+         self.assertEqual(core.state, 'LANE')
+-        self.assertEqual(core.pending, 'UTURN')
+-        for stamp in (18.8, 19., 19.2):
++        self.assertIsNone(core.pending)
++        core.observe_sign('UTURN',.99,18.8,18.8)
++        self.assertIsNone(core.pending)
++        core.observe_sign('UTURN',.99,19.,19.)
++        self.assertEqual(core.pending,'UTURN')
++        for stamp in (19.2, 19.4, 19.6):
+             self.ground(core, stamp, .65, lane=False)
+             core.tick(stamp)
+         self.assertEqual(core.action, 'UTURN')
+@@ -99,7 +106,13 @@
+         core.observe_sign('UTURN', .99, 18.2, 18.2)
+         self.assertIsNone(core.next_direction)
+         core.observe_sign('UTURN', .99, 18.4, 18.4)
+-        self.assertEqual(core.next_direction, 'UTURN')
++        self.assertIsNone(core.next_direction)
++        core.resume_lane()
++        core.observe_sign('STRAIGHT',.99,18.6,18.6)
++        core.observe_sign('UTURN',.99,18.8,18.8)
++        self.assertIsNone(core.pending)
++        core.observe_sign('UTURN',.99,19.,19.)
++        self.assertEqual(core.pending,'UTURN')
+ 
+     def test_red_blocks_uturn_blue_handoff(self):
+         core = self.straight(.6985)
+@@ -130,7 +143,9 @@
+         self.ground(core, 2.8)
+         core.tick(2.8)
+         self.assertEqual(core.state, 'LANE')
+-        self.assertEqual(core.pending, 'UTURN')
++        self.assertIsNone(core.pending)
++        self.votes(core,start=2.9)
++        self.assertEqual(core.pending,'UTURN')
+ 
+ 
+ if __name__ == '__main__':
+--- before/src/robot/test/test_straight_queue_uturn_blue.py
++++ after/src/robot/test/test_straight_queue_uturn_blue.py
+@@ -1,4 +1,4 @@
+-"""Replay the missed second STRAIGHT and stop UTURN at the front axle."""
++"""Confirm a second STRAIGHT after completion and stop UTURN at the front axle."""
+ import math
+ import os
+ import unittest
+@@ -12,7 +12,8 @@
+     def core(self):
+         cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
+         cfg.update(wait_green=False, lidar_enabled=False, sign_ttl=0,
+-                   intersection_wait_s=1., straight_speed_raw=20)
++                   intersection_wait_s=1., straight_speed_raw=20,
++                   blue_timed_enabled=False)  # Geometric front-axle assertions below.
+         core = Controller(cfg)
+         self.addCleanup(core.close)
+         return core
+@@ -35,17 +36,17 @@
+         core.observe_sign('STRAIGHT', .8415427, start, start)
+         core.observe_sign('STRAIGHT', .9305515, start+.2, start+.2)
+ 
+-    def test_late_second_straight_is_queued_without_interrupting_current_action(self):
++    def test_late_second_straight_is_ignored_during_current_action(self):
+         core = self.straight()
+         self.votes(core)
+-        self.assertEqual(core.next_direction, 'STRAIGHT')
++        self.assertIsNone(core.next_direction)
+         self.assertEqual(core.action, 'STRAIGHT')
+         self.assertIsNone(core.pending)
+-        self.assertEqual(core.sign_info['decision'], 'next_straight_pending')
+-        # One wrong LEFT frame and blank frames cannot replace confirmed STRAIGHT.
++        self.assertEqual(core.sign_info['decision'], 'action_sign_ignored')
++        # Other labels and blank frames cannot open a second cache.
+         core.observe_sign('LEFT', .82, 18.3, 18.3)
+         core.observe_sign('', 0., 18.4, 18.4)
+-        self.assertEqual(core.next_direction, 'STRAIGHT')
++        self.assertIsNone(core.next_direction)
+ 
+     def test_same_early_board_duplicate_or_interrupted_votes_do_not_queue(self):
+         core = self.straight(.2, 11.)
+@@ -64,7 +65,7 @@
+         self.votes(core)
+         for stamp in (18.3, 18.5, 18.7):
+             self.ground(core, stamp, .8, lane=False)
+-        self.assertIsNotNone(core.marker)
++        self.assertIsNone(core.marker)
+         self.assertEqual(core.action, 'STRAIGHT')
+         self.assertEqual(core.tick(18.7)[0], 20)
+         core.set_pose((1.25, 0, 0), 18.8)
+@@ -72,14 +73,21 @@
+         self.assertGreater(core.tick(18.8)[0], 0)
+         self.assertEqual(core.state, 'LANE')
+         self.assertIsNone(core.action)
+-        self.assertEqual(core.pending, 'STRAIGHT')
++        self.assertIsNone(core.pending)
++        self.assertIsNone(core.marker)
+         core.tick(18.81)
++        self.assertIsNone(core.action)
++        self.votes(core,start=18.9)
++        self.assertEqual(core.pending,'STRAIGHT')
++        for stamp in (19.2,19.4,19.6):
++            self.ground(core,stamp,.65)
++            core.tick(stamp)
+         self.assertEqual(core.state, 'BLUE_APPROACH')
+         self.assertEqual(core.action, 'STRAIGHT')
+         self.assertEqual(core.last_blue_trigger['action'], 'STRAIGHT')
+         self.assertAlmostEqual(core.last_blue_trigger['point_world'][0], 1.90)
+ 
+-    def test_old_blue_or_longitudinal_paint_cannot_dispatch_queued_straight(self):
++    def test_old_blue_or_longitudinal_paint_cannot_dispatch_newly_confirmed_straight(self):
+         for x, yaw in ((.01, 0.), (.8, math.pi/2)):
+             core = self.straight()
+             core.consumed_marker = (1.10+x, 0.) if x == .01 else (.35, 0.)
+@@ -91,9 +99,15 @@
+             self.assertEqual(core.tick(18.8)[0], 0)
+             self.assertEqual(core.state, 'LANE')
+             self.assertIsNone(core.action)
+-            self.assertEqual(core.pending, 'STRAIGHT')
++            self.assertIsNone(core.pending)
++            self.votes(core,start=18.9)
++            self.assertEqual(core.pending,'STRAIGHT')
++            for stamp in (19.3,19.5,19.7):
++                self.ground(core,stamp,x,yaw)
++                core.tick(stamp)
++            self.assertIsNone(core.action)
+ 
+-    def test_next_straight_survives_white_handoff_until_its_blue_line(self):
++    def test_next_straight_requires_fresh_votes_after_white_handoff(self):
+         core = self.straight()
+         self.votes(core)
+         core.set_pose((1.25, 0, 0), 18.3)
+@@ -102,13 +116,15 @@
+             core.tick(stamp)
+         self.assertEqual(core.state, 'LANE')
+         self.assertIsNone(core.action)
+-        self.assertEqual(core.pending, 'STRAIGHT')
+-        for stamp in (18.8, 18.9, 19.):
++        self.assertIsNone(core.pending)
++        self.votes(core,start=18.8)
++        self.assertEqual(core.pending,'STRAIGHT')
++        for stamp in (19.2, 19.4, 19.6):
+             self.ground(core, stamp, .65, lane=False)
+             core.tick(stamp)
+         self.assertEqual(core.state, 'BLUE_APPROACH')
+         self.assertEqual(core.action, 'STRAIGHT')
+-        self.assertGreater(core.tick(19.01)[0], 0)
++        self.assertGreater(core.tick(19.61)[0], 0)
+ 
+     def arm_uturn(self, x, yaw=0.):
+         core = self.core()
+@@ -166,7 +182,7 @@
+         self.assertEqual(core.tick(3.1)[0], 0)
+         self.assertEqual(core.reason, 'blue_stop_front_stale')
+ 
+-    def test_red_overrides_queued_blue_handoff(self):
++    def test_red_stops_current_straight_before_blue_handoff(self):
+         core = self.straight()
+         self.votes(core)
+         for stamp in (18.3, 18.5, 18.7):
+--- before/src/robot/test/test_requested_maneuvers.py
++++ after/src/robot/test/test_requested_maneuvers.py
+@@ -109,32 +109,26 @@
+         speed,steer=c.execute('obstacle','begin_timed_bypass',1.).value
+         self.assertEqual(encode_command(speed,steer,c.cfg,0)['steering_raw'],22)
+ 
+-    def test_bypass_returns_to_lane_preserving_straight_until_blue(self):
++    def test_bypass_requires_fresh_straight_after_lane_handoff(self):
+         c=self.core()
+-        c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True,sign_ttl=0,
+-                     blue_default_straight=False,lookahead=.55,straight_speed_raw=24,
+-                     straight_distance=1.25,parking_entry_speed_raw=12,sign_hz=5)
+-        self.scan(c,1.,(.49,0));c.execute('obstacle','begin_timed_bypass',1.)
+-        for i in range(1,160):
+-            t=1.+i*.05;self.scan(c,t,None);c.observe_lane([],0.,t)
+-            if i in (60,64):c.observe_sign('STRAIGHT',.99,t,t)
+-            self.assertEqual(c.tick(t),(c.cfg['speed_raw']['action'],.1 if i<40 else -.1))
+-        for t in (9.,9.1,9.2):
++        self.addCleanup(c.close)
++        c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True)
++        c.state,c.action='TIMED_BYPASS','BYPASS'
++        c.timed_bypass=dict(phase='REACQUIRE',elapsed_s=0.,last=None)
++        for t in (1.,1.1,1.2):
++            self.scan(c,t,None);c.observe_lane([],0.,t)
++            c.observe_sign('STRAIGHT',.99,t,t)
++            self.assertEqual(c.tick(t),(0,0.))
++            self.assertIsNone(c.pending)
++        for t in (2.,2.1,2.2):
+             self.scan(c,t,None);c.observe_lane([(.3,0),(.6,0)],.9,t);c.tick(t)
+         self.assertEqual(c.state,'LANE')
++        self.assertIsNone(c.pending)
++        c.observe_sign('STRAIGHT',.99,2.3,2.3)
++        self.assertIsNone(c.pending)
++        c.observe_sign('STRAIGHT',.99,2.5,2.5)
+         self.assertEqual(c.pending,'STRAIGHT')
+         self.assertTrue(c.timed_bypass_completed)
+-        c.scan=None
+-        clear_blue(c,9.8)
+-        enter_blue_action(c,'STRAIGHT',10.2)
+-        self.assertIsNone(c.pending)
+-        self.assertEqual(c.straight_search['phase'],'STRAIGHT_DISTANCE')
+-        c.set_pose((1.26,0,0),10.3)
+-        for t in (10.3,10.4,10.5):
+-            c.observe_lane([(.3,0),(.6,0)],.9,t);c.tick(t)
+-        self.assertEqual(c.state,'LANE')
+-        c.observe_sign('STRAIGHT',.99,10.6,10.6)
+-        c.observe_lane([(.3,0),(.6,0)],.9,10.6);c.tick(10.6)
+         self.assertIsNone(c.action)
+ 
+     def test_full_profile_green_bypass_and_lane_handoff(self):
+--- before/src/robot/test/test_startup_straight.py
++++ after/src/robot/test/test_startup_straight.py
+@@ -118,9 +118,13 @@
+         self.c.tick(2.1)
+         self.assertEqual(self.c.state,'LANE')
+ 
+-    def test_startup_preserves_pending_uturn_for_next_blue(self):
+-        self.c.observe_sign('UTURN', .8, 1.15, 1.15)
+-        self.c.observe_sign('UTURN', .8, 1.2, 1.2)
++    def test_startup_preserves_uturn_cached_before_green_for_next_blue(self):
++        self.c=Controller(copy.deepcopy(self.c.cfg))
++        self.addCleanup(self.c.close)
++        self.c.observe_sign('UTURN', .8, .5, .5)
++        self.c.observe_sign('UTURN', .8, .6, .6)
++        for t in (1.,1.05,1.1):
++            self.c.observe_sign('GREEN',.99,t,t)
+         self.assertEqual(self.c.pending, 'UTURN')
+         self.ground(1.3, .8)
+         self.assertEqual(self.c.tick(1.3), (26, 0.0))
+--- before/src/robot/camera/observations.py
++++ after/src/robot/camera/observations.py
+@@ -10,9 +10,9 @@
+ 
+ 
+ 
+-FIELDS = ('cfg', 'action', 'right_lock', 'consumed_marker', 'front_blue_lines', 'front_blue_image_lines', 'front_marker_stamp', 'front_markers',
++FIELDS = ('cfg', 'action', 'last_completed_action', 'right_lock', 'consumed_marker', 'front_blue_lines', 'front_blue_image_lines', 'front_marker_stamp', 'front_markers',
+  'ground_stamp', 'ground_stamps', 'lane', 'lane_boundaries', 'lane_confidence',
+- 'lane_stamp', 'left_boundary', 'left_boundary_stamp', 'marker', 'blue_consumed', 'marker_candidate', 'pending', 'next_direction',
++ 'lane_stamp', 'left_boundary', 'left_boundary_stamp', 'marker', 'blue_consumed', 'marker_candidate', 'pending',
+  'parking_candidate_stamp', 'parking_candidates', 'parking_detection', 'parking_entry',
+  'parking_front_frames', 'parking_lines', 'parking_lines_stamp', 'parking_marker',
+  'parking_trigger_at', 'parallel_parking', 'parallel_scene', 'pose', 'rear_blue_lines', 'rear_marker_stamp', 'rear_markers',
+@@ -226,11 +226,19 @@
+                     ctx.consumed_marker=point
+         exit_blue = (ctx.action == 'RIGHT' and ctx.right_lock is not None and
+                      ctx.cfg.get('right_exit_on_blue', False))
+-        next_junction = (ctx.action == 'STRAIGHT' and
+-                         ctx.next_direction in ('STRAIGHT','UTURN'))
++        # Re-arm a distinct line only after STRAIGHT completed and a new sign
++        # was confirmed. A visible next line cannot queue an active maneuver.
++        next_junction = (ctx.blue_consumed and ctx.action is None and
++                         ctx.last_completed_action == 'STRAIGHT'
++                         and ctx.pending in ('LEFT','RIGHT','STRAIGHT','UTURN'))
+         if next_junction:
+-            markers = [p for p in markers if ctx.consumed_marker is not None and
+-                       distance(p, ctx.consumed_marker) >= ctx.cfg['marker_rearm_distance']]
++            distinct = [p for p in markers if ctx.consumed_marker is not None and
++                        distance(p, ctx.consumed_marker) >= ctx.cfg['marker_rearm_distance']]
++            next_junction = bool(distinct)
++            if next_junction:
++                markers = distinct
++            # A visible old line is not a blank frame. Keep it consumed until
++            # the normal clear-frame sequence opens a new camera episode.
+         if (ctx.pending == 'PARKING' and ctx.cfg.get('parking_mode') != 'forward_center') or exit_blue:
+             # Preserve the existing explicit parking and right-exit handlers.
+             special = [p for p in markers if not ctx.consumed_marker or

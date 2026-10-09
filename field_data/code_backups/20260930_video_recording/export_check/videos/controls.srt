@@ -1,0 +1,15 @@
+1
+00:00:00,000 --> 00:00:00,100
+t+0.000s  camera stamp 1790761000.000000
+TIMED_BYPASS   speed=24 steer=-22  export_check
+
+2
+00:00:00,100 --> 00:00:00,700
+t+0.100s  camera stamp 1790761000.100000
+TIMED_BYPASS   speed=24 steer=-22  export_check
+
+3
+00:00:00,700 --> 00:00:01,300
+t+0.700s  camera stamp 1790761000.700000
+TIMED_BYPASS   speed=24 steer=-22  export_check  [control data older than 0.5s]
+

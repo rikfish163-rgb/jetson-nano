@@ -1,0 +1,250 @@
+#!/usr/bin/env python2
+from __future__ import division
+import unittest
+import os
+from p3_parking_test import P3Run, arguments
+from parking_line_stop_core import StopRun
+from p3_lane_follow import P3LaneFollower, P3LaneVision
+import parking_line_stop_test as approach_test
+
+
+class FakeFollower(object):
+    def __init__(self, command=(30, 8)):
+        self.output = command
+        self.calls = 0
+    def observe(self, observation, now):
+        pass
+    def command(self, now):
+        self.calls += 1
+        return self.output
+
+class P3Tests(unittest.TestCase):
+    def approach(self):
+        core = StopRun(steering=-3)
+        task = P3Run(core)
+        task.start(0.)
+        task.observe(1, 100., 0.)
+        task.observe(2, 100.1, .1)
+        return task
+
+    def stopped(self, task):
+        task.observe(0, 100.2, .2, True)
+        self.assertEqual((0, 0), task.tick(.2, 100.2))
+        self.assertEqual('P3_STOP_HOLD', task.reason)
+
+    def test_full_motion_order_durations_and_final_stop(self):
+        task = self.approach()
+        self.assertEqual((30, -3), task.tick(.1, 100.1))
+        self.stopped(task)
+        self.assertEqual((0, 0), task.tick(.69, 100.69))
+        self.assertEqual((-30, 0), task.tick(.71, 100.71))
+        self.assertEqual('P3_STEP1_REVERSE_STRAIGHT', task.reason)
+        self.assertEqual((-30, 0), task.tick(2.40, 102.40))
+        self.assertEqual((-30, 22), task.tick(2.42, 102.42))
+        self.assertEqual('P3_STEP2_REVERSE_LEFT', task.reason)
+        self.assertEqual((-30, 22), task.tick(2.71, 102.71))
+        self.assertEqual((-30, -22), task.tick(2.73, 102.73))
+        self.assertEqual('P3_STEP3_REVERSE_RIGHT', task.reason)
+        self.assertEqual((-30, -22), task.tick(5.82, 105.82))
+        self.assertEqual((-30, 0), task.tick(5.84, 105.84))
+        self.assertEqual('P3_STEP4_REVERSE_STRAIGHT', task.reason)
+        self.assertEqual((-30, 0), task.tick(6.03, 106.03))
+        self.assertEqual((-30, 22), task.tick(6.05, 106.05))
+        self.assertEqual('P3_STEP5_REVERSE_LEFT', task.reason)
+        self.assertEqual((-30, 22), task.tick(8.14, 108.14))
+        self.assertEqual((0, 0), task.tick(8.16, 108.16))
+        self.assertTrue(task.finished)
+        self.assertEqual('P3_COMPLETE', task.reason)
+        self.assertEqual((0, 0), task.tick(10., 110.))
+
+    def test_zero_lines_without_both_curves_does_not_enter_reverse(self):
+        task = self.approach()
+        task.observe(0, 100.2, .2, False)
+        self.assertEqual((30, -3), task.tick(.2, 100.2))
+        self.assertEqual('APPROACH', task.phase)
+
+    def test_no_lines_seen_fails_without_reverse(self):
+        task = P3Run(StopRun())
+        task.start(0.)
+        task.observe(0, 105.1, 5.1, True)
+        self.assertEqual((0, 0), task.tick(5.1, 105.1))
+        self.assertTrue(task.finished)
+        self.assertEqual('NO_LINES_SEEN', task.reason)
+
+    def test_camera_fault_does_not_start_parking(self):
+        task = self.approach()
+        self.assertEqual((0, 0), task.tick(.8, 100.8))
+        self.assertTrue(task.finished)
+        self.assertEqual('CAMERA_TIMEOUT', task.reason)
+
+    def test_visual_changes_do_not_modify_timed_reverse(self):
+        task = self.approach()
+        self.stopped(task)
+        task.observe(9, 100.6, .6, False)
+        self.assertEqual((-30, 0), task.tick(.71, 100.71))
+        task.observe(0, 101., 1., True)
+        self.assertEqual((-30, 0), task.tick(1., 101.))
+
+    def test_operator_stop_in_each_reverse_stage_latches_zero(self):
+        for stage in range(5):
+            task = self.approach()
+            self.stopped(task)
+            task.tick(.71, 100.71)
+            for i in range(stage):
+                now = task.deadline+.01
+                task.tick(now, 100+now)
+            self.assertEqual((0, 0), task.abort('operator stop'))
+            self.assertEqual((0, 0), task.tick(9., 109.))
+            self.assertEqual('operator stop', task.reason)
+
+    def test_custom_durations_are_independent(self):
+        task = P3Run(StopRun(steering=-3), seconds=(.6, .15, 1.25, .25, .8))
+        task.start(0.)
+        task.observe(1, 100., 0.)
+        task.observe(1, 100.1, .1)
+        self.stopped(task)
+        now = .71
+        for seconds, steering in zip((.6, .15, 1.25, .25, .8), (0, 22, -22, 0, 22)):
+            self.assertEqual((-30, steering), task.tick(now, 100+now))
+            self.assertAlmostEqual(now+seconds, task.deadline)
+            now = task.deadline+.01
+        self.assertEqual((0, 0), task.tick(now, 100+now))
+        self.assertEqual('P3_COMPLETE', task.reason)
+
+    def test_late_loop_does_not_skip_stages(self):
+        task = self.approach()
+        self.stopped(task)
+        self.assertEqual((-30, 0), task.tick(4., 104.))
+        self.assertAlmostEqual(5.7, task.deadline)
+        self.assertEqual((-30, 22), task.tick(7., 107.))
+        self.assertAlmostEqual(7.3, task.deadline)
+
+    def test_cli_defaults_and_saved_approach(self):
+        args = arguments([])
+        self.assertEqual((30, 0, 'right'), (args.speed, args.steering, args.side))
+        self.assertEqual((1.7, .3, 3.1, .2, 2.1), (args.step1_seconds, args.step2_seconds, args.step3_seconds, args.step4_seconds, args.step5_seconds))
+        self.assertFalse(args.execute)
+        tuned = arguments(['--step1-seconds', '1.2', '--step2-seconds', '.4',
+                           '--step3-seconds', '2.4', '--step4-seconds', '.25',
+                           '--step5-seconds', '.9'])
+        self.assertEqual((1.2, .4, 2.4, .25, .9), (tuned.step1_seconds, tuned.step2_seconds, tuned.step3_seconds, tuned.step4_seconds, tuned.step5_seconds))
+        self.assertEqual(0, tuned.steering)
+
+    def test_invalid_motion_parameters_rejected(self):
+        for argv in (['--step1-seconds', '0'], ['--step2-seconds', 'nan'],
+                     ['--step3-seconds', '11'], ['--step4-seconds', 'nan'], ['--step5-seconds', '0'], ['--reverse-speed', '31'],
+                     ['--parking-pause-seconds', '0'], ['--steering', '-3']):
+            self.assertRaises(ValueError, arguments, argv)
+
+    def test_lane_steering_replaces_fixed_approach_only(self):
+        task = self.approach()
+        follower = FakeFollower((30, 8))
+        task.lane_follower = follower
+        self.assertEqual((30, 8), task.tick(.1, 100.1))
+        follower.output = (30, -12)
+        self.assertEqual((30, -12), task.tick(.15, 100.15))
+        self.stopped(task)
+        calls = follower.calls
+        for steer in (0, 22, -22, 0, 22):
+            now = task.deadline+.01
+            self.assertEqual((-30, steer), task.tick(now, 100+now))
+        self.assertEqual(calls, follower.calls)
+
+    def test_lane_loss_waits_at_zero_without_starting_reverse(self):
+        task = self.approach()
+        task.lane_follower = FakeFollower((0, 0))
+        self.assertEqual((0, 0), task.tick(.1, 100.1))
+        self.assertEqual('P3_WAIT_LANE', task.reason)
+        self.assertEqual('APPROACH', task.phase)
+        task.lane_follower.output = (30, -7)
+        self.assertEqual((30, -7), task.tick(.2, 100.2))
+
+    def test_no_lane_motion_cannot_trigger_reverse_from_visual_stop(self):
+        task = self.approach()
+        task.lane_follower = FakeFollower((0, 0))
+        task.observe(0, 100.2, .2, True)
+        self.assertEqual((0, 0), task.tick(.2, 100.2))
+        self.assertEqual('NO_LANE_BEFORE_PARKING', task.reason)
+        self.assertTrue(task.finished)
+
+    def test_no_lane_motion_before_start_or_after_camera_fault(self):
+        follower = FakeFollower()
+        task = P3Run(StopRun(), lane_follower=follower)
+        task.observe(1, 100., 0.)
+        self.assertEqual((0, 0), task.tick(0., 100.))
+        task.start(0.)
+        self.assertEqual((0, 0), task.tick(1., 101.))
+        self.assertEqual('CAMERA_TIMEOUT', task.reason)
+        self.assertEqual(0, follower.calls)
+
+
+class P3LaneTests(unittest.TestCase):
+    def path(self, y, stamp=100.):
+        return dict(stamp=stamp, frame='base_link', confidence=.95,
+                    points=[[x,y] for x in (.2,.4,.6,.8,1.)])
+
+    def test_real_controller_drift_signs_without_compensation(self):
+        for y, direction in ((-.1,-1),(.1,1)):
+            follower = P3LaneFollower(approach_test.ROOT, 30)
+            follower.observe(self.path(y), 100.)
+            speed, angle = follower.command(100.1)
+            self.assertEqual(30, speed)
+            self.assertGreater(angle*direction, 0)
+        follower = P3LaneFollower(approach_test.ROOT, 30)
+        follower.observe(self.path(0.), 100.)
+        self.assertEqual((30, 0), follower.command(100.1))
+        self.assertEqual((0, 0), follower.command(101.))
+
+    def test_gap_grace_then_zero_and_new_path_recovers(self):
+        follower = P3LaneFollower(approach_test.ROOT, 30)
+        follower.observe(self.path(-.1), 100.)
+        good = follower.command(100.)
+        follower.observe(dict(stamp=100.1,frame='base_link',confidence=0.,points=[]),100.1)
+        self.assertEqual(good, follower.command(100.1))
+        self.assertEqual((0, 0), follower.command(100.3))
+        follower.observe(self.path(0.,100.4),100.4)
+        self.assertEqual(30, follower.command(100.4)[0])
+
+    def test_repeated_frame_does_not_refresh_lane(self):
+        follower = P3LaneFollower(approach_test.ROOT, 30)
+        follower.observe(self.path(0.),100.)
+        follower.observe(self.path(0.),100.6)
+        self.assertEqual((0, 0),follower.command(100.6))
+
+    def test_original_config_files_remain_unchanged(self):
+        path = os.path.join(approach_test.ROOT,'src/robot/config/competition.yaml')
+        before = open(path,'rb').read()
+        follower = P3LaneFollower(approach_test.ROOT,30)
+        self.assertEqual(30,follower.follower.cfg['speed_raw']['lane'])
+        self.assertEqual(before,open(path,'rb').read())
+
+    def test_same_frame_path_uses_original_selection_and_metric_conversion(self):
+        import numpy as np
+        class Camera(object):
+            LANE_PATH_FRAME_ID = 'base_link'
+            def detect_white_line(self, frame): return frame
+            def make_metric_bev(self, frame): return frame
+            def track_metric_lane(self, mask, source_stamp=None):
+                self.source_stamp = source_stamp
+                return dict(center_segments=['segment'],tracking_confidence=.8)
+            def build_observed_lane_boundaries(self, tracking, stamp): return {}
+            def select_nearest_lane_path_segment(self, segments):
+                self.segments = segments
+                return [dict(x=1,y=2),dict(x=3,y=4)]
+            def bev_point_to_vehicle_m(self,x,y): return (y/10.,-x/10.)
+            def make_lane_tracking_debug(self,mask,tracking): return mask
+        vision = P3LaneVision.__new__(P3LaneVision)
+        vision.lane = Camera()
+        vision.min_curvature,vision.min_turn_deg = .45,10.
+        frame = np.zeros((2,2),dtype=np.uint8)
+        result, debug = vision.observe(frame,100.)
+        observation = result['lane_observation']
+        self.assertEqual([[.2,-.1],[.4,-.3]],observation['points'])
+        self.assertEqual(.8,observation['confidence'])
+        self.assertEqual(100.,observation['stamp'])
+        self.assertEqual(100.,vision.lane.source_stamp)
+        self.assertEqual(['segment'],vision.lane.segments)
+        self.assertFalse(result['both_curved'])
+
+if __name__ == '__main__':
+    unittest.main()

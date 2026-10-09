@@ -1,0 +1,260 @@
+--- before/record_run.py
++++ src/robot/lane/record_run.py
+@@ -70,6 +70,9 @@
+         self.done=False
+         self.limit=int(rospy.get_param('~max_mb',512))*1024*1024
+         self.reserve=300*1024*1024
++        self.duration=float(rospy.get_param('~duration_s',0.))
++        self.start_on_motion=bool(rospy.get_param('~start_on_motion',False))
++        self.started=None
+         self.thread=threading.Thread(target=self.worker)
+         self.thread.start()
+         self.subs=[]
+@@ -77,11 +80,13 @@
+             self.subs.append(rospy.Subscriber(topic,Image,
+                 lambda msg,k=key:self.enqueue(k,msg),queue_size=100,buff_size=8*1024*1024))
+         for key,topic in (('target','/competition/lane_target'),('observation','/vision/lane_observation'),
+-                          ('calibration','/vision/lane_calibration'),('chassis','/base_controller/status')):
++                          ('calibration','/vision/lane_calibration'),('chassis','/base_controller/status'),
++                          ('status','/competition/status')):
+             self.subs.append(rospy.Subscriber(topic,String,
+                 lambda msg,k=key:self.enqueue(k,msg),queue_size=200))
+         rospy.on_shutdown(self.close)
+-        rospy.loginfo('LANE RECORDING: %s (processed frames, max 512 MiB)',self.path)
++        rospy.loginfo('LANE RECORDING: %s (processed frames, max %d MiB, duration %.0fs, motion arm=%s)',
++                      self.path,self.limit//(1024*1024),self.duration,self.start_on_motion)
+ 
+     def enqueue(self,key,msg):
+         if self.disabled or self.done:return
+@@ -94,6 +99,8 @@
+         with open(os.path.join(self.path,'summary.json'),'w') as out:
+             json.dump(dict(counts=self.counts,dropped_queue=self.dropped,bytes=self.bytes,
+                 stopped_reason=self.disabled,closed=self.done,
++                started_receive_stamp=getattr(self,'started',None),
++                duration_limit_s=getattr(self,'duration',0.),
+                 missing_front=len(self.sources['observation']-self.sources['front']),
+                 missing_bev=len(self.sources['observation']-self.sources['bev']),
+                 scope='all received processed frames; not all USB-camera exposures',
+@@ -114,6 +121,20 @@
+                 try:key,msg,received=self.queue.get(timeout=.2)
+                 except Queue.Empty:continue
+                 if self.disabled:continue
++                data=None if key in ('front','bev') else json.loads(msg.data)
++                if getattr(self,'started',None) is None:
++                    if (not getattr(self,'start_on_motion',False) or
++                            (key=='target' and data.get('command',{}).get('speed_raw',0)!=0)):
++                        self.started=received
++                        rospy.loginfo('LANE RECORDING motion interval started at %.6f',received)
++                duration=getattr(self,'duration',0.)
++                if self.started is not None and duration>0 and received-self.started>=duration:
++                    self.disabled='duration_limit'
++                    rospy.loginfo('LANE RECORDING complete: %.0fs; data at %s',duration,self.path)
++                    self.summary()
++                    continue
++                if key in ('front','bev') and self.started is None:
++                    continue
+                 disk=os.statvfs(self.path)
+                 if disk.f_bavail*disk.f_frsize<self.reserve or self.bytes>=self.limit:
+                     self.disabled='disk_reserve_or_recording_limit'
+@@ -125,8 +146,8 @@
+                     self.save_image(name,self.bridge.imgmsg_to_cv2(msg,'bgr8'))
+                     self.sources[key].add(int(round(msg.header.stamp.to_sec()*1e9)))
+                 else:
+-                    data=json.loads(msg.data)
+-                    if key=='observation':self.sources[key].add(int(round(data['stamp']*1e9)))
++                    if key=='observation' and self.started is not None:
++                        self.sources[key].add(int(round(data['stamp']*1e9)))
+                     if key not in streams:streams[key]=open(os.path.join(self.path,key+'.jsonl'),'a',1)
+                     row=json.dumps(dict(received=received,data=data),allow_nan=False)+'\n'
+                     streams[key].write(row)
+--- before/full.launch
++++ src/robot/launch/full.launch
+@@ -171,6 +171,13 @@
+     <arg name="port" value="$(arg debug_port)"/>
+   </include>
+   <arg name="record_lane" default="false"/>
++  <arg name="record_max_mb" default="512"/>
++  <arg name="record_duration_s" default="0"/>
++  <arg name="record_start_on_motion" default="false"/>
+   <node if="$(arg record_lane)" pkg="robocup_competition" type="record_run.py"
+-        name="lane_run_recorder" output="screen"/>
++        name="lane_run_recorder" output="screen">
++    <param name="max_mb" value="$(arg record_max_mb)"/>
++    <param name="duration_s" value="$(arg record_duration_s)"/>
++    <param name="start_on_motion" value="$(arg record_start_on_motion)"/>
++  </node>
+ </launch>
+--- before/test_lane_recorder.py
++++ src/robot/test/test_lane_recorder.py
+@@ -46,6 +46,36 @@
+                          valid=False, reason='lane_unreliable', target=None))
+         self.assertEqual(recorder.selection_image(event).shape, (600, 640, 3))
+ 
++    def test_motion_arming_preserves_metadata_and_records_only_the_motion_interval(self):
++        worker=recorder.Recorder.__new__(recorder.Recorder)
++        worker.path=tempfile.mkdtemp(prefix='lane-recorder-armed-')
++        self.addCleanup(shutil.rmtree,worker.path)
++        worker.queue=Queue.Queue();worker.counts={}
++        worker.sources=dict(front=set(),bev=set(),observation=set())
++        worker.done,worker.disabled,worker.bytes,worker.dropped=True,None,0,0
++        worker.limit,worker.reserve=1024*1024,0
++        worker.start_on_motion=True;worker.started=None;worker.duration=1.
++        images=[];worker.save_image=lambda name,frame:images.append(name)
++        worker.bridge=type('Bridge',(),dict(imgmsg_to_cv2=lambda *a:None))()
++        def image(stamp):
++            header=type('Header',(),dict(stamp=type('Stamp',(),dict(to_sec=lambda self:stamp))()))()
++            return type('Image',(),dict(header=header))()
++        def command(speed):
++            return type('Message',(),dict(data=json.dumps(dict(
++                stamp=10.,state='STARTUP_STRAIGHT',command=dict(speed_raw=speed)))))()
++        worker.queue.put(('calibration',type('Message',(),dict(data='{"origin":"rear_axle"}'))(),1.))
++        worker.queue.put(('target',command(0),1.))
++        worker.queue.put(('front',image(1.),1.))
++        worker.queue.put(('target',command(12),10.))
++        worker.queue.put(('front',image(10.),10.))
++        worker.queue.put(('bev',image(10.),10.))
++        worker.queue.put(('front',image(11.1),11.1))
++        worker.worker()
++        self.assertEqual(worker.started,10.)
++        self.assertEqual(worker.disabled,'duration_limit')
++        self.assertEqual(len(images),2)
++        self.assertTrue(os.path.exists(os.path.join(worker.path,'calibration.jsonl')))
++
+     def test_missing_selection_renders(self):
+         event = dict(state='WAIT_GREEN', reason='waiting_green',
+                      command=dict(steering_raw=0), selection=None)
+--- /dev/null
++++ tools/export_lane_videos.py
+@@ -0,0 +1,132 @@
++#!/usr/bin/env python3
++"""Offline export of timestamp-matched front/BEV frames and control captions."""
++import argparse
++import bisect
++import json
++import re
++import shutil
++import subprocess
++from pathlib import Path
++
++
++def images(folder, key):
++    pattern = re.compile(r'^(\d+)_' + key + r'\.jpg$')
++    return {int(match.group(1)): p.resolve() for p in folder.glob('*_' + key + '.jpg')
++            for match in [pattern.match(p.name)] if match}
++
++
++def concat_text(stamps, frames):
++    rows = ['ffconcat version 1.0\n']
++    intervals = [(b-a)/1e9 for a,b in zip(stamps,stamps[1:])]
++    last = sorted(intervals)[len(intervals)//2] if intervals else .1
++    for index, stamp in enumerate(stamps):
++        filename = str(frames[stamp]).replace("'", "'\\''")
++        rows.append("file '%s'\n" % filename)
++        duration = intervals[index] if index < len(intervals) else last
++        rows.append('duration %.9f\n' % duration)
++    rows.append("file '%s'\n" % str(frames[stamps[-1]]).replace("'", "'\\''"))
++    return ''.join(rows),last
++
++
++def srt_time(seconds):
++    millis = max(0,round(seconds*1000))
++    return '%02d:%02d:%02d,%03d' % (millis//3600000,millis//60000%60,
++                                     millis//1000%60,millis%1000)
++
++
++def control_rows(folder):
++    rows = []
++    for filename in ('status.jsonl','target.jsonl'):
++        path = folder/filename
++        if not path.exists():
++            continue
++        for line in path.read_text().splitlines():
++            data = json.loads(line)['data']
++            command = data.get('command',{})
++            if not isinstance(command,dict):
++                command = data.get('right_turn_debug',{}).get('encoded_command',{})
++            task = data.get('timed_bypass') or {}
++            rows.append((float(data['stamp']),data.get('state','?'),task.get('phase',''),
++                         command.get('speed_raw','?'),command.get('steering_raw','?'),
++                         data.get('reason','')))
++    return sorted(rows,key=lambda row:row[0])
++
++
++def export(folder, output):
++    if not shutil.which('ffmpeg'):
++        raise RuntimeError('ffmpeg is required for offline export')
++    front,bev = images(folder,'front'),images(folder,'bev')
++    stamps = sorted(set(front)&set(bev))
++    if not stamps:
++        raise RuntimeError('No front/BEV pairs with identical source timestamps')
++    summary_path = folder/'summary.json'
++    summary = json.loads(summary_path.read_text()) if summary_path.exists() else {}
++    if summary.get('closed') is False and not summary.get('stopped_reason'):
++        raise RuntimeError('Recorder is still active; stop it before exporting')
++    output.mkdir(parents=True,exist_ok=True)
++    output = output.resolve()
++    controls = control_rows(folder)
++    control_stamps = [row[0] for row in controls]
++    for key,frames in (('front',front),('bev',bev)):
++        content,last_duration = concat_text(stamps,frames)
++        (output/(key+'.ffconcat')).write_text(content)
++    captions = []
++    start = stamps[0]/1e9
++    for index,stamp in enumerate(stamps):
++        current = stamp/1e9
++        end = stamps[index+1]/1e9 if index+1 < len(stamps) else current+last_duration
++        at = bisect.bisect_right(control_stamps,current)-1
++        text = 't+%.3fs  camera stamp %.6f' % (current-start,current)
++        if at >= 0:
++            row = controls[at]
++            text += '\n%s %s  speed=%s steer=%s  %s' % row[1:]
++            if current-row[0]>.5:
++                text += '  [control data older than 0.5s]'
++        captions.append('%d\n%s --> %s\n%s\n\n' %
++            (index+1,srt_time(current-start),srt_time(end-start),text))
++    (output/'controls.srt').write_text(''.join(captions))
++    common = ['ffmpeg','-hide_banner','-loglevel','error','-y']
++    codec = ['-vsync','vfr','-c:v','libx264','-preset','veryfast','-crf','23',
++             '-pix_fmt','yuv420p','-movflags','+faststart']
++    for key in ('front','bev'):
++        subprocess.run(common+['-f','concat','-safe','0','-i',key+'.ffconcat',
++            '-vf','pad=ceil(iw/2)*2:ceil(ih/2)*2']+codec+[key+'.mp4'],cwd=str(output),check=True)
++    graph = ('[0:v]scale=640:360,pad=640:400:0:20[a];'
++             '[1:v]scale=480:400,pad=640:400:80:0[b];'
++             '[a][b]hstack=inputs=2,subtitles=controls.srt[v]')
++    subprocess.run(common+['-i','front.mp4','-i','bev.mp4','-filter_complex',graph,
++        '-map','[v]']+codec+['comparison.mp4'],cwd=str(output),check=True)
++    manifest = dict(recording=str(folder.resolve()),paired_frames=len(stamps),
++        first_source_stamp_ns=stamps[0],last_source_stamp_ns=stamps[-1],
++        unpaired_front=len(set(front)-set(bev)),unpaired_bev=len(set(bev)-set(front)),
++        gaps_over_half_second=sum(b-a>500000000 for a,b in zip(stamps,stamps[1:])),
++        timing=('Source-stamp intervals supplied to both videos identically; the JPEG '
++                'demuxer rounds playback timestamps to 40 ms. Gaps hold the preceding '
++                'recorded frame; exact source timestamps remain in filenames and logs.'),
++        view='BEV is a camera transform, not an external overhead view of the vehicle.',
++        recorder_summary=summary)
++    (output/'manifest.json').write_text(json.dumps(manifest,indent=2))
++    return manifest
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('recording',type=Path)
++    parser.add_argument('--latest',action='store_true',help='Select newest run within a recording root')
++    parser.add_argument('--output',type=Path)
++    args = parser.parse_args()
++    folder = args.recording
++    if args.latest:
++        runs = sorted(p for p in folder.iterdir() if p.is_dir() and (p/'summary.json').exists())
++        if not runs:
++            parser.error('No recording directories found')
++        folder = runs[-1]
++    try:
++        manifest = export(folder,args.output or folder/'videos')
++    except (RuntimeError,ValueError,OSError,subprocess.CalledProcessError) as exc:
++        parser.exit(1,str(exc)+'\n')
++    print(json.dumps(manifest,indent=2))
++
++
++if __name__=='__main__':
++    main()

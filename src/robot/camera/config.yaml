@@ -1,0 +1,4 @@
+# 摄像头与图像输入：只在此文件写本模块需要覆盖的参数。
+# 默认空映射，沿用 competition.yaml + maneuvers.yaml，避免重复默认值。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+{}

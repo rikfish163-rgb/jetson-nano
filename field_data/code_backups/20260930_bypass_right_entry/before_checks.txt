@@ -1,0 +1,38 @@
+FF...F
+======================================================================
+FAIL: test_blocked_right_entry_has_bounded_left_extension (test_bypass_right_entry.BypassRightEntryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_right_entry.py", line 60, in test_blocked_right_entry_has_bounded_left_extension
+    self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.05).value[0],0)
+AssertionError: 24 != 0
+
+======================================================================
+FAIL: test_clear_imminent_right_sweep_is_not_enough_to_end_left (test_bypass_right_entry.BypassRightEntryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_right_entry.py", line 27, in test_clear_imminent_right_sweep_is_not_enough_to_end_left
+    self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.05).value,(24,.03))
+AssertionError: Tuples differ: (24, -0.03) != (24, 0.03)
+
+First differing element 1:
+-0.03
+0.03
+
+- (24, -0.03)
+?      -
+
++ (24, 0.03)
+
+======================================================================
+FAIL: test_control_stop_event_is_logged_even_when_status_lock_is_busy (test_ros_adapter.RosAdapterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_ros_adapter.py", line 283, in test_control_stop_event_is_logged_even_when_status_lock_is_busy
+    self.assertTrue(events)
+AssertionError: [] is not true
+
+----------------------------------------------------------------------
+Ran 6 tests in 2.710s
+
+FAILED (failures=3)

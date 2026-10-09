@@ -1,0 +1,80 @@
+{
+  "observation_received": true, 
+  "observation": {
+    "followed_boundary": "LEFT", 
+    "confidence": 0.5365092570677187, 
+    "seq": 4, 
+    "stamp": 1790699480.31572, 
+    "frame": "base_link", 
+    "diagnostic": {
+      "selection": "all_current_points", 
+      "point_count": 5, 
+      "center_method": "fitted_boundary_normal", 
+      "reference_side": "left", 
+      "dashed_left": true, 
+      "reason": "ok", 
+      "segment_lengths": [
+        6
+      ]
+    }, 
+    "boundaries": {
+      "RIGHT": [], 
+      "LEFT": [
+        [
+          0.6450202429149797, 
+          -0.07464161091027549
+        ], 
+        [
+          0.7559115523465704, 
+          -0.18813045313868415
+        ], 
+        [
+          0.855675, 
+          -0.295266366473094
+        ], 
+        [
+          0.9484174311926605, 
+          -0.39914031180467163
+        ], 
+        [
+          1.0485615079365078, 
+          -0.5159327379034224
+        ], 
+        [
+          1.1041666666666665, 
+          -0.5828570665993914
+        ]
+      ]
+    }, 
+    "points": [
+      [
+        0.5386706667243896, 
+        -0.3950275232341559
+      ], 
+      [
+        0.6338938349501124, 
+        -0.4972889266714901
+      ], 
+      [
+        0.7226966033577046, 
+        -0.5967513132228673
+      ], 
+      [
+        0.8188689328423452, 
+        -0.7089128429573176
+      ], 
+      [
+        0.8723874986207659, 
+        -0.7733260070068764
+      ]
+    ], 
+    "processing_ms": 96.26412391662598
+  }, 
+  "actuator_publishers": [], 
+  "status_received": true, 
+  "enabled": false, 
+  "live": false, 
+  "passed": true, 
+  "camera_source_sha256": "21319287f3f01c1cdf6fc4073699b94843a5a146fa5de5de86ad9c2ed99c8eea", 
+  "isolated_master_port": 49333
+}

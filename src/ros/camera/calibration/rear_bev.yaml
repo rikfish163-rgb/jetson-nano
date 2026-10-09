@@ -1,0 +1,60 @@
+bev_height: 400
+bev_width: 480
+bev_x_min_m: -0.6
+bev_y_max_m: 1.0
+bev_y_min_m: 0.0
+board_center_x_m: -0.0178834328
+camera_matrix:
+- - 442.58111313585647
+  - 0.0
+  - 373.367179484457
+- - 0.0
+  - 442.1877349028459
+  - 245.28994009298762
+- - 0.0
+  - 0.0
+  - 1.0
+# The calibration tool always writes a BEV whose top row is farther from the
+# vehicle and bottom row is nearer, even when the raw camera board order is
+# reversed.  This field describes the published BEV image.
+depth_order: top_row_far_to_bottom_row_near
+distortion_coefficients:
+- -0.3413775077294737
+- 0.11190340022687434
+- 0.002336115992594587
+- 0.001721963592978518
+- 0.0
+homography_inliers: 54
+homography_max_error_px: 1.7981515475401555
+homography_rectified_to_bev:
+- - 0.29644032093305994
+  - -0.999904914241466
+  - 143.51087036599412
+- - -0.036677413765363244
+  - -1.7166244752908
+  - 528.2424470487911
+- - 7.474189198505479e-06
+  - -0.004168784927421782
+  - 1.0
+homography_rms_error_px: 0.507920288696443
+image_height: 480
+image_width: 640
+mirror_x: false
+near_inner_y_m: 0.5042958773
+pattern_inner_corners:
+- 6
+- 9
+pixels_per_metre: 400.0
+rectified_camera_matrix:
+- - 328.004150390625
+  - 0.0
+  - 378.09193093387876
+- - 0.0
+  - 327.22491455078125
+  - 248.45249401233377
+- - 0.0
+  - 0.0
+  - 1.0
+source_image: /tmp/rear_board_0000.jpg
+source_intrinsics: /home/nano/robocup_ws/src/ros/camera/calibration/rear_640x480.yaml
+square_size_m: 0.025

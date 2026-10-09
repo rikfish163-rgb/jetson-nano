@@ -1,0 +1,15 @@
+# Exit metric adapter.
+#
+# An exit line must be visible in the front metric BEV after parking.  The
+# blue parking start line is not an exit source; supply /perception/exit_pose
+# or another dedicated, independently calibrated white-line detector.
+use_candidate: false
+candidate_yaw_gain: 1.0
+candidate_yaw_bias_rad: 0.0
+candidate_lateral_gain: 1.0
+candidate_lateral_bias_m: 0.0
+candidate_max_yaw_rad: 1.50
+candidate_max_lateral_m: 0.80
+exit_trigger_offset_m: 0.0
+candidate_confidence: 0.75
+input_timeout_s: 0.50

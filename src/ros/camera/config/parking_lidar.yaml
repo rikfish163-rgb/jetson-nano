@@ -1,0 +1,17 @@
+# Safety adapter for the legacy LS01B nearest-point JSON stream.
+#
+# The current lidar_broadcast publisher emits:
+#   {"angle": <degrees>, "distance": <metres>}
+# It does not publish validity or obstacle_detected.  parking_lidar_adapter.py
+# turns it into parking_lidar_v1 before the parking observation builder sees it.
+#
+# These are bring-up values, not final field calibration.  Measure the sensor
+# mounting, chassis envelope and the competition clearance before setting the
+# controller's calibration_complete flag to true.
+input_angle_unit: deg
+output_frame_id: base_link
+min_valid_distance_m: 0.05
+max_valid_distance_m: 2.00
+obstacle_distance_m: 0.35
+obstacle_angle_min_deg: -180.0
+obstacle_angle_max_deg: 180.0

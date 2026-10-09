@@ -1,0 +1,747 @@
+{
+  "actual_vehicle_yaw_measured": false, 
+  "manual_adjustment_before_lane_resume": true,
+  "manual_adjustment_evidence": "User confirmed moving or reorienting the vehicle after UTURN stopped.",
+  "autonomous_uturn_completion_verified": false,
+  "events": [
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 71, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "blue_stop_wait_uturn", 
+      "stamp": 1790876741.076087, 
+      "state": "BLUE_STOP"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 73, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_wait_start", 
+      "stamp": 1790876742.093632, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        20, 
+        0.0
+      ], 
+      "line": 74, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876741.7160616, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_entry", 
+      "stamp": 1790876742.154278, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.03
+      ], 
+      "line": 75, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_gear_pause_1", 
+      "stamp": 1790876743.802426, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        20, 
+        0.03
+      ], 
+      "line": 76, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876744.115708, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_1", 
+      "stamp": 1790876744.513023, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 77, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_gear_pause_2", 
+      "stamp": 1790876748.154412, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        -20, 
+        0.0
+      ], 
+      "line": 79, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876748.3157725, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_2", 
+      "stamp": 1790876748.858555, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        -20, 
+        -0.03
+      ], 
+      "line": 80, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876749.8153083, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_3", 
+      "stamp": 1790876750.131827, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        -20, 
+        0.0
+      ], 
+      "line": 81, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876750.6145713, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_4", 
+      "stamp": 1790876750.992319, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.03
+      ], 
+      "line": 82, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_gear_pause_5", 
+      "stamp": 1790876752.430162, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        20, 
+        0.03
+      ], 
+      "line": 84, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876752.8134196, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_5", 
+      "stamp": 1790876753.151664, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 85, 
+      "obstacle_check": {
+        "evidence_type": "raw_scan_points", 
+        "kind": "obstacle", 
+        "mode": "raw_collision_guard", 
+        "point_local": [
+          0.7360787353418583, 
+          -0.0021877889367227232
+        ], 
+        "ray": {
+          "beam_angle_deg": 1.9999999845072665, 
+          "beam_index": 8, 
+          "cause": "echo_at_query", 
+          "classification": "OCCUPIED", 
+          "query_distance_m": 0.7860000133514404, 
+          "range_m": 0.7860000133514404, 
+          "total_rays": 1440, 
+          "valid_rays": 1440
+        }, 
+        "round_clusters": [], 
+        "scan_stamp": 1790876756.4137044, 
+        "support_points": 35, 
+        "support_radius_m": 0.06, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "lidar_obstacle_in_sweep", 
+      "stamp": 1790876756.772354, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        20, 
+        0.03
+      ], 
+      "line": 86, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876761.8115957, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_5", 
+      "stamp": 1790876762.114058, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        -0.03
+      ], 
+      "line": 87, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_gear_pause_6", 
+      "stamp": 1790876762.521004, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 89, 
+      "obstacle_check": {
+        "evidence_type": "raw_scan_points", 
+        "kind": "obstacle", 
+        "mode": "raw_collision_guard", 
+        "point_local": [
+          -0.34110167861548923, 
+          -0.18907573532240102
+        ], 
+        "ray": {
+          "beam_angle_deg": -151.00000161899064, 
+          "beam_index": 836, 
+          "cause": "echo_at_query", 
+          "classification": "OCCUPIED", 
+          "query_distance_m": 0.3899999856948858, 
+          "range_m": 0.38999998569488525, 
+          "total_rays": 1440, 
+          "valid_rays": 1440
+        }, 
+        "round_clusters": [], 
+        "scan_stamp": 1790876762.9200332, 
+        "support_points": 13, 
+        "support_radius_m": 0.06, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "lidar_obstacle_in_sweep", 
+      "stamp": 1790876763.27339, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        -20, 
+        -0.03
+      ], 
+      "line": 90, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876763.8113346, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_6", 
+      "stamp": 1790876764.209367, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 91, 
+      "obstacle_check": {
+        "evidence_type": "raw_scan_points", 
+        "kind": "obstacle", 
+        "mode": "raw_collision_guard", 
+        "point_local": [
+          -0.3983982438607647, 
+          -0.21488259884948907
+        ], 
+        "ray": {
+          "beam_angle_deg": -151.75000161318087, 
+          "beam_index": 833, 
+          "cause": "echo_at_query", 
+          "classification": "OCCUPIED", 
+          "query_distance_m": 0.45800000429153415, 
+          "range_m": 0.4580000042915344, 
+          "total_rays": 1440, 
+          "valid_rays": 1440
+        }, 
+        "round_clusters": [], 
+        "scan_stamp": 1790876764.01275, 
+        "support_points": 1, 
+        "support_radius_m": 0.06, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "lidar_obstacle_in_sweep", 
+      "stamp": 1790876764.438256, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        -20, 
+        -0.03
+      ], 
+      "line": 92, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876764.2124672, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_6", 
+      "stamp": 1790876764.620138, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 93, 
+      "obstacle_check": {
+        "evidence_type": "raw_scan_points", 
+        "kind": "obstacle", 
+        "mode": "raw_collision_guard", 
+        "point_local": [
+          -0.364248468891196, 
+          -0.20275645909112283
+        ], 
+        "ray": {
+          "beam_angle_deg": -151.50000161511747, 
+          "beam_index": 834, 
+          "cause": "echo_at_query", 
+          "classification": "OCCUPIED", 
+          "query_distance_m": 0.44400000572204545, 
+          "range_m": 0.4440000057220459, 
+          "total_rays": 1440, 
+          "valid_rays": 1440
+        }, 
+        "round_clusters": [], 
+        "scan_stamp": 1790876764.411563, 
+        "support_points": 2, 
+        "support_radius_m": 0.06, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "lidar_obstacle_in_sweep", 
+      "stamp": 1790876764.811894, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        -20, 
+        -0.03
+      ], 
+      "line": 94, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876765.4108937, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_6", 
+      "stamp": 1790876765.75927, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.03
+      ], 
+      "line": 95, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_gear_pause_7", 
+      "stamp": 1790876766.274362, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        20, 
+        0.03
+      ], 
+      "line": 96, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876766.711396, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "uturn_trial_segment_7", 
+      "stamp": 1790876767.028531, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 97, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_settle", 
+      "stamp": 1790876768.25306, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 98, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_wait_lane", 
+      "stamp": 1790876768.974418, 
+      "state": "UTURN"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 99, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "uturn_trial_complete_lane", 
+      "stamp": 1790876771.025533, 
+      "state": "LANE"
+    }, 
+    {
+      "command": [
+        30, 
+        -0.002465006579010145
+      ], 
+      "line": 100, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876770.7085128, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "tracking_lane", 
+      "stamp": 1790876771.076201, 
+      "state": "LANE"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 109, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "blue_stop_wait_left", 
+      "stamp": 1790876785.865974, 
+      "state": "MANEUVER"
+    }, 
+    {
+      "command": [
+        20, 
+        0.0
+      ], 
+      "line": 110, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876785.5067272, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "left_entry_distance", 
+      "stamp": 1790876785.895188, 
+      "state": "MANEUVER"
+    }, 
+    {
+      "command": [
+        20, 
+        0.03
+      ], 
+      "line": 111, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876786.3079476, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "left_wait_exit_lane", 
+      "stamp": 1790876786.842395, 
+      "state": "MANEUVER"
+    }, 
+    {
+      "command": [
+        30, 
+        0.02386363636363636
+      ], 
+      "line": 118, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876793.3062263, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "tracking_lane", 
+      "stamp": 1790876793.903873, 
+      "state": "LANE"
+    }, 
+    {
+      "command": [
+        16, 
+        0.006818181818181818
+      ], 
+      "line": 125, 
+      "obstacle_check": {
+        "kind": "clear", 
+        "mode": "raw_collision_guard", 
+        "round_clusters": [], 
+        "scan_stamp": 1790876796.8054333, 
+        "target_filter": "line_reject"
+      }, 
+      "reason": "tracking_gap", 
+      "stamp": 1790876797.243572, 
+      "state": "GAP"
+    }, 
+    {
+      "command": [
+        0, 
+        0.0
+      ], 
+      "line": 126, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "gap_limit_wait_for_lane", 
+      "stamp": 1790876797.422059, 
+      "state": "GAP"
+    }, 
+    {
+      "command": [
+        0, 
+        0.006818181818181818
+      ], 
+      "line": 214, 
+      "obstacle_check": {
+        "kind": "not_checked"
+      }, 
+      "reason": "lane_stream_stale", 
+      "stamp": 1790876802.691266, 
+      "state": "GAP"
+    }
+  ], 
+  "log_source": "/home/nano/.ros/log/a921e9da-bdbf-11f1-af1c-380025ec2b29/competition_controller-7.log", 
+  "logged_point_model_comparisons": [
+    {
+      "comparisons": [
+        {
+          "max_steer": 0.46275, 
+          "model_radius": 0.5211689906079838, 
+          "point_collision": false
+        }, 
+        {
+          "max_steer": 0.2, 
+          "model_radius": 1.2826202676525922, 
+          "point_collision": true
+        }
+      ], 
+      "logged_point": [
+        0.7360787353418583, 
+        -0.0021877889367227232
+      ]
+    }, 
+    {
+      "comparisons": [
+        {
+          "max_steer": 0.46275, 
+          "model_radius": 0.5211689906079838, 
+          "point_collision": true
+        }, 
+        {
+          "max_steer": 0.2, 
+          "model_radius": 1.2826202676525922, 
+          "point_collision": true
+        }
+      ], 
+      "logged_point": [
+        -0.34110167861548923, 
+        -0.18907573532240102
+      ]
+    }, 
+    {
+      "comparisons": [
+        {
+          "max_steer": 0.46275, 
+          "model_radius": 0.5211689906079838, 
+          "point_collision": false
+        }, 
+        {
+          "max_steer": 0.2, 
+          "model_radius": 1.2826202676525922, 
+          "point_collision": true
+        }
+      ], 
+      "logged_point": [
+        -0.3983982438607647, 
+        -0.21488259884948907
+      ]
+    }, 
+    {
+      "comparisons": [
+        {
+          "max_steer": 0.46275, 
+          "model_radius": 0.5211689906079838, 
+          "point_collision": true
+        }, 
+        {
+          "max_steer": 0.2, 
+          "model_radius": 1.2826202676525922, 
+          "point_collision": true
+        }
+      ], 
+      "logged_point": [
+        -0.364248468891196, 
+        -0.20275645909112283
+      ]
+    }
+  ], 
+  "model_only": true, 
+  "original_calibration": {
+    "forward_left_radius": 0.6784646272, 
+    "forward_mps_per_raw": 0.0096153846, 
+    "forward_right_radius": 0.9925, 
+    "reverse_left_radius": 0.5645372549, 
+    "reverse_mps_per_raw": 0.0092692308, 
+    "reverse_right_radius": 1.3608228346, 
+    "reverse_steering_sign": 1
+  }, 
+  "original_record": "field_data/uturn_open_loop/20260914_220634_1407.json", 
+  "original_sequence": [
+    {
+      "seconds": 3.6000000057599997, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 1.2448132738761388, 
+      "speed": -26, 
+      "steering": 0
+    }, 
+    {
+      "seconds": 0.8298755159174255, 
+      "speed": -26, 
+      "steering": -22
+    }, 
+    {
+      "seconds": 0.41493775795871285, 
+      "speed": -26, 
+      "steering": 0
+    }, 
+    {
+      "seconds": 4.0000000064, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.8298755159174257, 
+      "speed": -26, 
+      "steering": -22
+    }, 
+    {
+      "seconds": 1.2000000012799996, 
+      "speed": 26, 
+      "steering": 22
+    }
+  ], 
+  "predicted_original_yaw_deg": 202.62970009806398, 
+  "predicted_production_yaw_deg": 155.86900007613622, 
+  "production_sequence": [
+    {
+      "seconds": 3.6000000058, 
+      "speed": 20, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 1.2448132739, 
+      "speed": -20, 
+      "steering": 0
+    }, 
+    {
+      "seconds": 0.8298755159, 
+      "speed": -20, 
+      "steering": -22
+    }, 
+    {
+      "seconds": 1.414937758, 
+      "speed": -20, 
+      "steering": 0
+    }, 
+    {
+      "seconds": 4.0000000064, 
+      "speed": 20, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.8298755159, 
+      "speed": -20, 
+      "steering": -22
+    }, 
+    {
+      "seconds": 1.2000000013, 
+      "speed": 20, 
+      "steering": 22
+    }
+  ]
+}

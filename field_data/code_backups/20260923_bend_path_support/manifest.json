@@ -1,0 +1,17 @@
+[
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "1718fe27bae0c40338d6ff815f37a700152bf09a63098e7626aaf2d40051199d",
+    "after": "b018775077c4b189e12139ecf55af50d9b9f96fe141b107e39cac87d016b6041"
+  },
+  {
+    "path": "src/robot/test/test_lane_loss_transition.py",
+    "before": "7557687c26eb93448f6a687de80f2bc8bbaea26f8051bb1369933e89ed8e84ee",
+    "after": "2a05983315e6f0d3cf19efd25d0fad70938a460ac9d1f1f5fb7691c8b31041e8"
+  },
+  {
+    "path": "src/robot/test/test_ros_adapter.py",
+    "before": "7a221e1c5a7756f3913cea7b3f318ee0c260c16e8e07d54d12c86dca4ee446c2",
+    "after": "8f7d322dbb037085c279d86cf659deb179aab9c371bbaa940c9ebd5473ea5cb0"
+  }
+]

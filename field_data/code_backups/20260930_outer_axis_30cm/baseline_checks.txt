@@ -1,0 +1,146 @@
+test_current_40_pixel_windows_preserve_normal_geometry (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_fit_uses_center_y_not_boundary_source_y (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_gap_fill_interpolates_shifted_coordinates_without_extrapolation (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_left_only_keeps_normal_offset_and_forward_coordinate (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_mixed_offsets_remain_one_forward_ordered_segment (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_normal_center_outside_image_is_not_clamped_before_fitting (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_parking_boundaries_are_observed_paint_without_offset (test_lane_center_geometry.CenterGeometryTests) ... ok
+test_parking_export_accepts_actual_tracker_points (test_lane_center_geometry.CenterGeometryTests) ... ok
+test_recorded_bend_does_not_create_a_false_near_target (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_right_only_keeps_normal_offset_and_forward_coordinate (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_straight_single_boundary_is_unchanged (test_lane_center_geometry.CenterGeometryTests) ... ok
+test_temporal_filter_cannot_freeze_on_a_persistent_bend (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_temporal_filter_does_not_move_points_to_previous_forward_position (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_two_side_unshifted_center_is_unchanged (test_lane_center_geometry.CenterGeometryTests) ... ok
+test_untrusted_boundary_cannot_enter_path_through_normal_offset (test_lane_center_geometry.CenterGeometryTests) ... FAIL
+test_outer_solid_and_inner_dashed_paint_bound_the_target_path (test_lane_curve_corridor.CurveCorridorTests) ... FAIL
+test_recorded_turn_preserves_right_edge_through_partial_occlusion (test_lane_curve_corridor.CurveCorridorTests) ... FAIL
+
+======================================================================
+FAIL: test_current_40_pixel_windows_preserve_normal_geometry (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 208, in test_current_40_pixel_windows_preserve_normal_geometry
+    self.assertAlmostEqual(distance, 120., places=5)
+AssertionError: 99.79209979209995 != 120.0 within 5 places
+
+======================================================================
+FAIL: test_fit_uses_center_y_not_boundary_source_y (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 107, in test_fit_uses_center_y_not_boundary_source_y
+    self.assertAlmostEqual(fit['min_y'], min(p['y'] for p in known))
+AssertionError: 290.0 != 240.34587404321545 within 7 places
+
+======================================================================
+FAIL: test_gap_fill_interpolates_shifted_coordinates_without_extrapolation (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 122, in test_gap_fill_interpolates_shifted_coordinates_without_extrapolation
+    self.assertAlmostEqual(result[4]['y'], 240.0)
+AssertionError: 310.0 != 240.0 within 7 places
+
+======================================================================
+FAIL: test_left_only_keeps_normal_offset_and_forward_coordinate (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 78, in test_left_only_keeps_normal_offset_and_forward_coordinate
+    self.assert_offset_preserved('left', 0.45, -20.0)
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 72, in assert_offset_preserved
+    self.assertLessEqual(point['y'], upper)
+AssertionError: 390.0 not less than or equal to 340.3458740432155
+
+======================================================================
+FAIL: test_mixed_offsets_remain_one_forward_ordered_segment (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 155, in test_mixed_offsets_remain_one_forward_ordered_segment
+    self.assertAlmostEqual(point['x'], 0.3*point['y']+100, places=6)
+AssertionError: 218.028571428571 != 217.0 within 6 places
+
+======================================================================
+FAIL: test_normal_center_outside_image_is_not_clamped_before_fitting (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 84, in test_normal_center_outside_image_is_not_clamped_before_fitting
+    self.assert_offset_preserved('right', 1.0, -50.0)
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 73, in assert_offset_preserved
+    self.assertAlmostEqual(point['y'], upper - (upper-lower)*i/5.0)
+AssertionError: 390.0 != 399.0 within 7 places
+
+======================================================================
+FAIL: test_recorded_bend_does_not_create_a_false_near_target (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 173, in test_recorded_bend_does_not_create_a_false_near_target
+    self.assertAlmostEqual(nearest_x, (600.0-values[0][1])/400.0, places=6)
+AssertionError: 0.525 != 0.7478770152059999 within 6 places
+
+======================================================================
+FAIL: test_right_only_keeps_normal_offset_and_forward_coordinate (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 81, in test_right_only_keeps_normal_offset_and_forward_coordinate
+    self.assert_offset_preserved('right', -0.45, 480.0)
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 72, in assert_offset_preserved
+    self.assertLessEqual(point['y'], upper)
+AssertionError: 390.0 not less than or equal to 340.3458740432155
+
+======================================================================
+FAIL: test_temporal_filter_cannot_freeze_on_a_persistent_bend (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 193, in test_temporal_filter_cannot_freeze_on_a_persistent_bend
+    self.assertAlmostEqual(actual['x'],expected['x'],delta=3.)
+AssertionError: 141.0 != 221.0 within 3.0 delta
+
+======================================================================
+FAIL: test_temporal_filter_does_not_move_points_to_previous_forward_position (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 183, in test_temporal_filter_does_not_move_points_to_previous_forward_position
+    self.assertAlmostEqual(actual['y'], expected['y'])
+AssertionError: 373.34587404321553 != 340.3458740432155 within 7 places
+
+======================================================================
+FAIL: test_untrusted_boundary_cannot_enter_path_through_normal_offset (test_lane_center_geometry.CenterGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_center_geometry.py", line 98, in test_untrusted_boundary_cannot_enter_path_through_normal_offset
+    self.assertEqual(lane.select_nearest_lane_path_segment([points]), [])
+AssertionError: Lists differ: [{'y': 200.0, 'window_index': ... != []
+
+First list contains 4 additional elements.
+First extra element 0:
+{'y': 200.0, 'window_index': 0, 'usable': True, 'source_y': 100.0, 'x': 240.0}
+
++ []
+- [{'source_y': 100.0,
+-   'usable': True,
+-   'window_index': 0,
+-   'x': 240.0,
+-   'y': 200.0},
+-  {'source_y': 80.0, 'usable': True, 'window_index': 1, 'x': 240.0, 'y': 180.0},
+-  {'source_y': 60.0, 'usable': True, 'window_index': 2, 'x': 240.0, 'y': 160.0},
+-  {'source_y': 40.0, 'usable': True, 'window_index': 3, 'x': 240.0, 'y': 140.0}]
+
+======================================================================
+FAIL: test_outer_solid_and_inner_dashed_paint_bound_the_target_path (test_lane_curve_corridor.CurveCorridorTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_curve_corridor.py", line 33, in test_outer_solid_and_inner_dashed_paint_bound_the_target_path
+    self.assertEqual(result['lane_mode'], lane.LANE_MODE_BOTH_SIDES)
+AssertionError: 'LEFT_ONLY' != 'BOTH_SIDES'
+
+======================================================================
+FAIL: test_recorded_turn_preserves_right_edge_through_partial_occlusion (test_lane_curve_corridor.CurveCorridorTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_curve_corridor.py", line 65, in test_recorded_turn_preserves_right_edge_through_partial_occlusion
+    self.assertGreaterEqual(len(path), 3)
+AssertionError: 1 not greater than or equal to 3
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.253s
+
+FAILED (failures=13)

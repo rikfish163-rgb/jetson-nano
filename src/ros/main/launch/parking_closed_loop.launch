@@ -1,0 +1,523 @@
+<launch>
+  <!--
+    Control and metric-perception composition for reverse parking.  Camera
+    drivers may be kept under the existing start_dual_camera_fixed.sh, or the
+    optional lane nodes can be enabled below.  All motion remains disabled by
+    parking.yaml until calibration_complete is deliberately set true.
+  -->
+  <arg name="start_lane_nodes" default="false"/>
+  <arg name="start_lane_pose" default="false"/>
+  <arg name="start_sign_node" default="false"/>
+  <arg name="start_cameras" default="false"/>
+  <!-- Once calibration is complete, false lets the central controller keep
+       following the lane until the selected P4/P5 trigger is seen.  The
+       separate require_calibrated_parking gate keeps the default bring-up
+       stopped while calibration_complete is false. -->
+  <arg name="parking_only" default="false"/>
+  <arg name="require_calibrated_parking" default="true"/>
+  <!-- Explicit, bounded bring-up only.  This never changes parking.yaml's
+       calibration_complete flag and is intended for supervised low-speed
+       front/turn experiments before rear/exit calibration is accepted. -->
+  <arg name="allow_experimental_motion" default="false"/>
+  <!-- Explicitly allow the central parking controller to drive straight
+       forward until the selected front marker becomes a parking request. -->
+  <arg name="allow_preparking_approach" default="false"/>
+  <arg name="use_lane_for_preparking" default="false"/>
+  <arg name="experimental_speed_limit_raw" default="20"/>
+  <arg name="experimental_steering_limit_raw" default="22"/>
+  <arg name="green_start_speed_raw" default="20"/>
+  <arg name="green_start_hold_s" default="0.50"/>
+  <arg name="competition_mode" default="true"/>
+  <arg name="start_lane_controller" default="true"/>
+  <arg name="lane_normal_state" default="LANE_FOLLOWING"/>
+  <arg name="lane_speed_raw" default="20"/>
+  <arg name="lane_max_steering_raw" default="22"/>
+  <arg name="lane_command_topic" default="/camera_yihan/receive"/>
+  <!-- AUTO lets the target selector choose the first clear P4/P5 bay.  A
+       concrete P4/P5 value remains supported as a preference/legacy mode. -->
+  <arg name="slot_id" default="$(optenv PARKING_SLOT_ID AUTO)"/>
+  <!-- An explicit slot is a preference.  The lidar selector may still fall
+       back to the other clear bay. -->
+  <arg name="requested_slot_id" default="$(arg slot_id)"/>
+  <arg name="observation_topic" default="/parking/observation"/>
+  <arg name="front_image_topic" default="/front/usb_cam/image_raw"/>
+  <arg name="rear_image_topic" default="/rear/usb_cam/image_raw"/>
+  <arg name="sign_image_topic" default="$(arg front_image_topic)"/>
+  <!-- White bay-line geometry and blue start-line trigger are separate
+       streams.  The compatibility alias keeps older logger/replay launch
+       arguments usable, but it now means the white slot-candidate stream. -->
+  <arg name="slot_candidate_topic" default="/perception/parking_slot_candidate"/>
+  <arg name="start_line_topic" default="/perception/parking_start_line"/>
+  <arg name="front_candidate_topic" default="$(arg slot_candidate_topic)"/>
+  <arg name="target_topic" default="/perception/parking_target"/>
+  <arg name="front_target_topic" default="$(arg target_topic)"/>
+  <arg name="target_scan_topic" default="/scan"/>
+  <arg name="target_input_timeout_s" default="0.50"/>
+  <arg name="target_scan_timeout_s" default="0.35"/>
+  <!-- This gate is intentionally false until the two P4/P5 lidar zones are
+       measured on the real field.  The selector may publish diagnostics but
+       cannot make slot_selection_ready true while it is false. -->
+  <arg name="target_zone_calibrated" default="false"/>
+  <arg name="start_target_selector" default="true"/>
+  <arg name="slot_mask_topic" default="/debug/parking_slot_mask"/>
+  <arg name="slot_overlay_topic" default="/debug/parking_slot_overlay"/>
+  <arg name="start_line_mask_topic" default="/debug/parking_start_line_mask"/>
+  <arg name="start_line_overlay_topic" default="/debug/parking_start_line_overlay"/>
+  <arg name="front_mask_topic" default="$(arg slot_mask_topic)"/>
+  <arg name="front_overlay_topic" default="$(arg slot_overlay_topic)"/>
+  <arg name="front_metric_bev_topic" default="/debug/metric_bev"/>
+  <!-- Blue is the start-line trigger; white metric BEV is the bay geometry. -->
+  <arg name="start_line_input_mode" default="blue_raw"/>
+  <!-- Compatibility input argument: old callers used this to select the
+       metric-white front detector, so it now aliases the slot detector. -->
+  <arg name="front_marker_input_mode" default="metric_white"/>
+  <arg name="slot_input_mode" default="$(arg front_marker_input_mode)"/>
+  <arg name="front_marker_max_abs_lateral_m" default="0.50"/>
+  <arg name="front_marker_horizontal_open_width" default="21"/>
+  <arg name="front_metric_topic" default="/perception/front_parking_metric"/>
+  <arg name="front_pose_topic" default="/perception/front_slot_pose"/>
+  <arg name="rear_bev_topic" default="/debug/rear_bev"/>
+  <arg name="rear_metric_topic" default="/perception/rear_parking_metric"/>
+  <arg name="exit_pose_topic" default="/perception/exit_pose"/>
+  <arg name="exit_metric_topic" default="/perception/exit_metric"/>
+  <arg name="visual_profile_file"
+       default="$(find yihan_ros_pkg)/config/parking_visual_profiles.yaml"/>
+  <arg name="lane_path_topic" default="/vision/lane_path"/>
+  <arg name="lane_confidence_topic" default="/vision/lane_confidence"/>
+  <arg name="front_pose_min_confidence" default="0.45"/>
+  <!-- Match the field-tuned controller gate.  The source node keeps its
+       stricter generic default for other launch compositions. -->
+  <arg name="parking_min_source_confidence" default="0.50"/>
+  <arg name="start_preparking_lane_adapter" default="false"/>
+  <arg name="preparking_speed_raw" default="20"/>
+  <arg name="preparking_lane_state" default="LANE_FOLLOWING"/>
+  <arg name="sign_topic" default="/camera_hts/receive"/>
+  <arg name="sign_send_topic" default="/camera_hts/send"/>
+  <!-- GREEN is a one-shot start gate.  Keep sign inference bounded and run it
+       on one low-priority CPU core so it cannot starve the white-line loop. -->
+  <arg name="sign_hz" default="2.0"/>
+  <arg name="sign_post_green_hz" default="1.0"/>
+  <!-- Current Jetson mapping: USB port 2.3 is front/video0 and 2.4 is
+       rear/video1.  Override these args if the physical cameras are swapped. -->
+  <arg name="front_device"
+       default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"/>
+  <arg name="rear_device"
+       default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.4:1.0-video-index0"/>
+  <arg name="derive_front_pose" default="false"/>
+  <arg name="use_candidate_exit" default="false"/>
+  <!-- Exit pose is derived from the live white-line lane fit only when this
+       is explicitly enabled.  The default stays visual-only for bring-up. -->
+  <arg name="enable_exit_pose" default="false"/>
+  <arg name="exit_distance_offset_m" default="0.0"/>
+  <!-- The adapter is off by default so this launch file never opens the
+       physical lidar during software-only bring-up. -->
+  <arg name="start_lidar_adapter" default="false"/>
+  <arg name="start_lidar_source" default="false"/>
+  <arg name="lidar_input_topic" default="/lidar/receive"/>
+  <arg name="parking_lidar_topic" default="/parking/lidar"/>
+  <arg name="start_actuators" default="false"/>
+  <arg name="actuator_command_topic" default="/ackermann_cmd"/>
+  <arg name="base_controller_status_topic" default="/base_controller/status"/>
+  <!-- Optional bounded reverse recovery.  It uses the existing keyboard
+       override channel and never publishes /ackermann_cmd directly. -->
+  <arg name="start_return_to_start" default="false"/>
+  <arg name="return_to_start_speed_raw" default="-5"/>
+  <arg name="return_to_start_rear_clearance_m" default="0.45"/>
+  <arg name="return_to_start_front_release_distance_m" default="0.60"/>
+  <arg name="return_to_start_maximum_time_s" default="3.0"/>
+  <arg name="odometry_topic" default=""/>
+  <!-- Start the parking request when the calibrated front metric first sees
+       the selected slot.  Set false when a separate sign node is the only
+       authoritative parking trigger. -->
+  <!-- P-sign recognition is the authoritative arm event.  A white bay
+       candidate alone must not create a parking request. -->
+  <arg name="request_from_front_slot" default="false"/>
+  <arg name="allow_legacy_parking_trigger" default="false"/>
+  <arg name="start_field_capture" default="false"/>
+  <arg name="field_capture_output_dir" default="/tmp/parking_field_captures"/>
+  <arg name="field_capture_samples" default="8"/>
+
+  <include file="$(find main)/launch/start_all.launch">
+    <arg name="parking_only" value="$(arg parking_only)"/>
+    <arg name="slot_id" value="$(arg slot_id)"/>
+    <arg name="parking_observation_topic" value="$(arg observation_topic)"/>
+    <arg name="parking_lidar_topic" value="$(arg parking_lidar_topic)"/>
+    <arg name="start_actuators" value="$(arg start_actuators)"/>
+    <arg name="actuator_command_topic" value="$(arg actuator_command_topic)"/>
+    <arg name="base_controller_status_topic" value="$(arg base_controller_status_topic)"/>
+    <arg name="require_calibrated_parking"
+         value="$(arg require_calibrated_parking)"/>
+    <arg name="allow_experimental_motion"
+         value="$(arg allow_experimental_motion)"/>
+    <arg name="allow_preparking_approach"
+         value="$(arg allow_preparking_approach)"/>
+    <arg name="use_lane_for_preparking"
+         value="$(arg use_lane_for_preparking)"/>
+    <arg name="allow_legacy_parking_trigger"
+         value="$(arg allow_legacy_parking_trigger)"/>
+    <arg name="experimental_speed_limit_raw"
+         value="$(arg experimental_speed_limit_raw)"/>
+    <arg name="experimental_steering_limit_raw"
+         value="$(arg experimental_steering_limit_raw)"/>
+    <arg name="green_start_speed_raw" value="$(arg green_start_speed_raw)"/>
+    <arg name="green_start_hold_s" value="$(arg green_start_hold_s)"/>
+    <arg name="competition_mode" value="$(arg competition_mode)"/>
+    <arg name="start_lane_controller" value="$(arg start_lane_controller)"/>
+    <arg name="lane_normal_state" value="$(arg lane_normal_state)"/>
+    <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+    <arg name="lane_max_steering_raw"
+         value="$(arg lane_max_steering_raw)"/>
+    <arg name="lane_path_topic" value="$(arg lane_path_topic)"/>
+    <arg name="lane_confidence_topic"
+         value="$(arg lane_confidence_topic)"/>
+    <arg name="lane_command_topic" value="$(arg lane_command_topic)"/>
+  </include>
+
+  <!-- Optional source driver/legacy nearest-point publisher.  It is kept
+       independent from the adapter so the adapter can also consume a
+       replayed or externally bridged String stream. -->
+  <group if="$(arg start_lidar_source)">
+    <include file="$(find lidar_broadcast)/launch/lidar_msg.launch"/>
+  </group>
+
+  <group if="$(arg start_lidar_adapter)">
+    <node pkg="yihan_ros_pkg" type="parking_lidar_adapter.py"
+          name="parking_lidar_adapter" output="screen">
+      <rosparam command="load"
+                file="$(find yihan_ros_pkg)/config/parking_lidar.yaml"/>
+      <param name="input_topic" value="$(arg lidar_input_topic)"/>
+      <param name="output_topic" value="$(arg parking_lidar_topic)"/>
+    </node>
+  </group>
+
+  <include file="$(find yihan_ros_pkg)/launch/rear_bev.launch">
+    <arg name="image_topic" value="$(arg rear_image_topic)"/>
+    <arg name="output_topic" value="$(arg rear_bev_topic)"/>
+  </include>
+
+  <!-- Detector 1: blue tape is only the global parking start-line event. -->
+  <node pkg="yihan_ros_pkg" type="blue_marker_metric.py"
+        name="parking_start_line_metric" output="screen">
+        <rosparam command="load" file="$(arg visual_profile_file)"/>
+        <param name="role" value="start_line"/>
+        <param name="image_topic" value="$(arg front_image_topic)"/>
+        <param name="input_mode" value="$(arg start_line_input_mode)"/>
+        <param name="max_abs_lateral_m"
+               value="$(arg front_marker_max_abs_lateral_m)"/>
+        <param name="candidate_topic" value="$(arg start_line_topic)"/>
+        <param name="mask_topic" value="$(arg start_line_mask_topic)"/>
+        <param name="overlay_topic" value="$(arg start_line_overlay_topic)"/>
+  </node>
+
+  <!-- Detector 2: white transverse bay edges are the P4/P5 slot geometry. -->
+  <node pkg="yihan_ros_pkg" type="blue_marker_metric.py"
+        name="parking_slot_metric" output="screen">
+        <rosparam command="load" file="$(arg visual_profile_file)"/>
+        <param name="role" value="slot"/>
+        <param name="slot_id" value="$(arg slot_id)"/>
+        <param name="image_topic" value="$(arg front_image_topic)"/>
+        <param name="metric_mask_topic" value="$(arg front_metric_bev_topic)"/>
+        <param name="input_mode" value="$(arg slot_input_mode)"/>
+        <param name="max_abs_lateral_m"
+               value="$(arg front_marker_max_abs_lateral_m)"/>
+        <param name="horizontal_open_kernel_width"
+               value="$(arg front_marker_horizontal_open_width)"/>
+        <param name="candidate_topic" value="$(arg slot_candidate_topic)"/>
+        <param name="mask_topic" value="$(arg slot_mask_topic)"/>
+        <param name="overlay_topic" value="$(arg slot_overlay_topic)"/>
+  </node>
+
+  <group if="$(arg start_target_selector)">
+    <node pkg="yihan_ros_pkg" type="parking_target_selector.py"
+          name="parking_target_selector" output="screen">
+      <rosparam command="load"
+                file="$(find yihan_ros_pkg)/config/parking_target.yaml"/>
+      <rosparam command="load" file="$(arg visual_profile_file)"/>
+      <param name="slot_candidate_topic" value="$(arg slot_candidate_topic)"/>
+      <param name="start_line_topic" value="$(arg start_line_topic)"/>
+      <param name="scan_topic" value="$(arg target_scan_topic)"/>
+      <param name="sign_topic" value="$(arg sign_topic)"/>
+      <param name="output_topic" value="$(arg target_topic)"/>
+      <param name="input_timeout_s" value="$(arg target_input_timeout_s)"/>
+      <param name="scan_timeout_s" value="$(arg target_scan_timeout_s)"/>
+      <param name="preferred_slot_id" value="$(arg requested_slot_id)"/>
+      <param name="zone_calibrated" value="$(arg target_zone_calibrated)"/>
+    </node>
+  </group>
+
+  <node pkg="yihan_ros_pkg" type="parking_front_metric.py"
+        name="parking_front_metric" output="screen">
+    <rosparam command="load"
+              file="$(find yihan_ros_pkg)/config/parking_front.yaml"/>
+    <rosparam command="load" file="$(arg visual_profile_file)"/>
+    <param name="slot_id" value="$(arg slot_id)"/>
+    <param name="candidate_topic" value="$(arg front_target_topic)"/>
+    <param name="pose_topic" value="$(arg front_pose_topic)"/>
+    <param name="output_topic" value="$(arg front_metric_topic)"/>
+    <param name="derive_pose_from_candidate" value="$(arg derive_front_pose)"/>
+  </node>
+
+  <node pkg="yihan_ros_pkg" type="parking_rear_metric.py"
+        name="parking_rear_metric" output="screen">
+    <rosparam command="load"
+              file="$(find yihan_ros_pkg)/config/rear_parking.yaml"/>
+    <rosparam command="load" file="$(arg visual_profile_file)"/>
+    <param name="image_topic" value="$(arg rear_bev_topic)"/>
+    <param name="calibration_file"
+           value="$(find yihan_ros_pkg)/calibration/rear_bev.yaml"/>
+    <param name="output_topic" value="$(arg rear_metric_topic)"/>
+    <param name="slot_id" value="$(arg slot_id)"/>
+    <param name="target_topic" value="$(arg target_topic)"/>
+  </node>
+
+  <node pkg="yihan_ros_pkg" type="parking_exit_metric.py"
+        name="parking_exit_metric" output="screen">
+    <rosparam command="load"
+              file="$(find yihan_ros_pkg)/config/parking_exit.yaml"/>
+    <rosparam command="load" file="$(arg visual_profile_file)"/>
+    <param name="slot_id" value="$(arg slot_id)"/>
+    <param name="pose_topic" value="$(arg exit_pose_topic)"/>
+    <param name="candidate_topic" value="$(arg front_target_topic)"/>
+    <param name="output_topic" value="$(arg exit_metric_topic)"/>
+    <param name="use_candidate" value="$(arg use_candidate_exit)"/>
+  </node>
+
+  <node pkg="yihan_ros_pkg" type="parking_observation_node.py"
+        name="parking_observation_node" output="screen">
+    <param name="output_topic" value="$(arg observation_topic)"/>
+    <param name="default_slot_id" value="$(arg slot_id)"/>
+    <rosparam param="supported_slot_ids">[P4, P5]</rosparam>
+    <param name="front_topic" value="$(arg front_metric_topic)"/>
+    <param name="rear_topic" value="$(arg rear_metric_topic)"/>
+    <param name="exit_topic" value="$(arg exit_metric_topic)"/>
+    <param name="sign_topic" value="$(arg sign_topic)"/>
+    <param name="target_topic" value="$(arg target_topic)"/>
+    <param name="target_timeout_s" value="$(arg target_input_timeout_s)"/>
+    <param name="selected_slot_latch_s" value="120.0"/>
+    <param name="parking_request_hold_s" value="120.0"/>
+    <param name="request_from_front_slot" value="$(arg request_from_front_slot)"/>
+    <param name="allow_legacy_parking_trigger"
+           value="$(arg allow_legacy_parking_trigger)"/>
+    <param name="min_source_confidence"
+           value="$(arg parking_min_source_confidence)"/>
+    <param name="derive_clear_from_lidar" value="true"/>
+    <param name="lidar_topic" value="$(arg parking_lidar_topic)"/>
+  </node>
+
+  <node pkg="yihan_ros_pkg" type="parking_session_logger.py"
+        name="parking_session_logger" output="screen">
+    <param name="config_file"
+           value="$(find main)/config/parking.yaml"/>
+    <!-- Keep this as a comma-separated string: roslaunch expands every
+         $(find ...) substitution in the value, and the logger accepts both
+         this form and a native list.  A nested rosparam block leaves the
+         substitutions literal on ROS Melodic, producing null config hashes. -->
+    <param name="config_files"
+           value="$(find main)/config/parking.yaml,$(find main)/launch/parking_closed_loop.launch,$(find main)/launch/start_all.launch,$(find yihan_ros_pkg)/config/parking_front.yaml,$(find yihan_ros_pkg)/config/rear_parking.yaml,$(find yihan_ros_pkg)/config/parking_exit.yaml,$(find yihan_ros_pkg)/config/parking_lidar.yaml,$(find yihan_ros_pkg)/config/parking_target.yaml,$(arg visual_profile_file),$(find yihan_ros_pkg)/calibration/rear_bev.yaml,$(find yihan_ros_pkg)/calibration/front_640x360.yaml,$(find yihan_ros_pkg)/calibration/rear_640x480.yaml"/>
+    <param name="observation_topic" value="$(arg observation_topic)"/>
+    <param name="front_image_topic" value="$(arg front_image_topic)"/>
+    <param name="rear_image_topic" value="$(arg rear_image_topic)"/>
+    <param name="rear_bev_topic" value="$(arg rear_bev_topic)"/>
+    <param name="slot_id" value="$(arg slot_id)"/>
+    <param name="request_from_front_slot" value="$(arg request_from_front_slot)"/>
+    <param name="front_marker_input_mode"
+           value="$(arg front_marker_input_mode)"/>
+    <param name="slot_input_mode" value="$(arg slot_input_mode)"/>
+    <param name="start_line_input_mode" value="$(arg start_line_input_mode)"/>
+    <param name="parking_only" value="$(arg parking_only)"/>
+    <param name="require_calibrated_parking"
+           value="$(arg require_calibrated_parking)"/>
+    <param name="allow_experimental_motion"
+           value="$(arg allow_experimental_motion)"/>
+    <param name="experimental_speed_limit_raw"
+           value="$(arg experimental_speed_limit_raw)"/>
+    <param name="experimental_steering_limit_raw"
+           value="$(arg experimental_steering_limit_raw)"/>
+    <param name="allow_preparking_approach"
+           value="$(arg allow_preparking_approach)"/>
+    <param name="use_lane_for_preparking"
+           value="$(arg use_lane_for_preparking)"/>
+    <param name="allow_legacy_parking_trigger"
+           value="$(arg allow_legacy_parking_trigger)"/>
+    <param name="derive_front_pose" value="$(arg derive_front_pose)"/>
+    <param name="use_candidate_exit" value="$(arg use_candidate_exit)"/>
+    <param name="start_lidar_adapter" value="$(arg start_lidar_adapter)"/>
+    <param name="start_lidar_source" value="$(arg start_lidar_source)"/>
+    <param name="lidar_topic" value="$(arg parking_lidar_topic)"/>
+    <param name="lidar_raw_topic" value="$(arg lidar_input_topic)"/>
+    <param name="front_candidate_topic" value="$(arg front_candidate_topic)"/>
+    <param name="slot_candidate_topic" value="$(arg slot_candidate_topic)"/>
+    <param name="start_line_topic" value="$(arg start_line_topic)"/>
+    <param name="front_mask_topic" value="$(arg front_mask_topic)"/>
+    <param name="front_overlay_topic" value="$(arg front_overlay_topic)"/>
+    <param name="slot_mask_topic" value="$(arg slot_mask_topic)"/>
+    <param name="slot_overlay_topic" value="$(arg slot_overlay_topic)"/>
+    <param name="start_line_mask_topic" value="$(arg start_line_mask_topic)"/>
+    <param name="start_line_overlay_topic"
+           value="$(arg start_line_overlay_topic)"/>
+    <param name="front_pose_topic" value="$(arg front_pose_topic)"/>
+    <param name="front_metric_topic" value="$(arg front_metric_topic)"/>
+    <param name="rear_metric_topic" value="$(arg rear_metric_topic)"/>
+    <param name="exit_pose_topic" value="$(arg exit_pose_topic)"/>
+    <param name="exit_metric_topic" value="$(arg exit_metric_topic)"/>
+    <param name="sign_topic" value="$(arg sign_topic)"/>
+    <param name="sign_image_topic" value="$(arg sign_image_topic)"/>
+    <param name="lane_path_topic" value="$(arg lane_path_topic)"/>
+    <param name="lane_confidence_topic" value="$(arg lane_confidence_topic)"/>
+    <param name="start_cameras" value="$(arg start_cameras)"/>
+    <param name="start_lane_nodes" value="$(arg start_lane_nodes)"/>
+    <param name="start_lane_pose" value="$(arg start_lane_pose)"/>
+    <param name="enable_exit_pose" value="$(arg enable_exit_pose)"/>
+    <param name="exit_distance_offset_m"
+           value="$(arg exit_distance_offset_m)"/>
+    <param name="start_preparking_lane_adapter"
+           value="$(arg start_preparking_lane_adapter)"/>
+    <param name="preparking_speed_raw" value="$(arg preparking_speed_raw)"/>
+    <param name="front_device" value="$(arg front_device)"/>
+    <param name="rear_device" value="$(arg rear_device)"/>
+    <param name="start_actuators" value="$(arg start_actuators)"/>
+    <param name="actuator_command_topic" value="$(arg actuator_command_topic)"/>
+    <param name="base_controller_status_topic" value="$(arg base_controller_status_topic)"/>
+    <!-- No encoder/odometry source exists in the current stack.  Set this
+         explicitly when a real vehicle-feedback topic is added. -->
+    <param name="odometry_topic" value="$(arg odometry_topic)"/>
+  </node>
+
+  <!-- Visual-only calibration bundle.  This node has no command publisher and
+       exits after a bounded number of samples. -->
+  <group if="$(arg start_field_capture)">
+    <node pkg="yihan_ros_pkg" type="parking_field_capture.py"
+          name="parking_field_capture" output="screen">
+      <rosparam command="load"
+                file="$(find yihan_ros_pkg)/config/rear_parking.yaml"/>
+      <rosparam command="load" file="$(arg visual_profile_file)"/>
+      <param name="slot_id" value="$(arg slot_id)"/>
+      <param name="output_dir" value="$(arg field_capture_output_dir)"/>
+      <param name="sample_count" value="$(arg field_capture_samples)"/>
+      <param name="front_raw_topic" value="$(arg front_image_topic)"/>
+      <param name="front_mask_topic" value="$(arg front_mask_topic)"/>
+      <param name="front_overlay_topic" value="$(arg front_overlay_topic)"/>
+      <param name="slot_mask_topic" value="$(arg slot_mask_topic)"/>
+      <param name="slot_overlay_topic" value="$(arg slot_overlay_topic)"/>
+      <param name="start_line_mask_topic" value="$(arg start_line_mask_topic)"/>
+      <param name="start_line_overlay_topic"
+             value="$(arg start_line_overlay_topic)"/>
+      <param name="rear_raw_topic" value="$(arg rear_image_topic)"/>
+      <param name="rear_bev_topic" value="$(arg rear_bev_topic)"/>
+      <param name="front_candidate_topic" value="$(arg front_candidate_topic)"/>
+      <param name="slot_candidate_topic" value="$(arg slot_candidate_topic)"/>
+      <param name="start_line_topic" value="$(arg start_line_topic)"/>
+      <param name="front_pose_topic" value="$(arg front_pose_topic)"/>
+      <param name="rear_metric_topic" value="$(arg rear_metric_topic)"/>
+      <param name="exit_metric_topic" value="$(arg exit_metric_topic)"/>
+      <param name="observation_topic" value="$(arg observation_topic)"/>
+    </node>
+  </group>
+
+  <group if="$(arg start_lane_nodes)">
+    <node pkg="yihan_ros_pkg" type="camera_yihan_web.py"
+          name="front_lane_metric" output="screen">
+      <param name="image_topic" value="$(arg front_image_topic)"/>
+      <param name="metric_bev_topic" value="$(arg front_metric_bev_topic)"/>
+      <param name="lane_path_topic" value="$(arg lane_path_topic)"/>
+      <param name="lane_confidence_topic" value="$(arg lane_confidence_topic)"/>
+    </node>
+    <node pkg="yihan_ros_pkg" type="rear_camera_lane_web.py"
+          name="rear_lane_debug" output="screen">
+      <param name="image_topic" value="$(arg rear_image_topic)"/>
+    </node>
+    <!-- Compatibility path for callers that explicitly disable the normal
+         lane controller in start_all.launch but still request the old
+         pre-parking adapter. -->
+    <group unless="$(arg start_lane_controller)">
+      <group if="$(arg start_preparking_lane_adapter)">
+      <node pkg="vehicle_control" type="lane_main_adapter.py"
+            name="lane_main_adapter" output="screen">
+        <param name="normal_lane_state" value="$(arg preparking_lane_state)"/>
+        <param name="speed_raw" value="$(arg preparking_speed_raw)"/>
+        <param name="max_steering_raw" value="22"/>
+        <param name="wheelbase" value="0.29"/>
+        <param name="lane_path_topic" value="$(arg lane_path_topic)"/>
+        <param name="lane_confidence_topic"
+               value="$(arg lane_confidence_topic)"/>
+        <param name="output_topic" value="$(arg lane_command_topic)"/>
+      </node>
+      </group>
+    </group>
+  </group>
+
+  <group if="$(arg start_lane_pose)">
+    <node pkg="yihan_ros_pkg" type="parking_lane_pose.py"
+          name="parking_lane_pose" output="screen">
+      <rosparam command="load" file="$(arg visual_profile_file)"/>
+      <param name="slot_id" value="$(arg slot_id)"/>
+      <param name="target_topic" value="$(arg target_topic)"/>
+      <param name="path_topic" value="$(arg lane_path_topic)"/>
+      <param name="confidence_topic" value="$(arg lane_confidence_topic)"/>
+      <param name="front_output_topic" value="$(arg front_pose_topic)"/>
+      <param name="exit_output_topic" value="$(arg exit_pose_topic)"/>
+      <param name="min_confidence"
+             value="$(arg front_pose_min_confidence)"/>
+      <param name="enable_front_pose" value="true"/>
+      <param name="enable_exit_pose" value="$(arg enable_exit_pose)"/>
+      <param name="exit_distance_offset_m"
+             value="$(arg exit_distance_offset_m)"/>
+    </node>
+  </group>
+
+  <group if="$(arg start_cameras)">
+    <node pkg="usb_cam" type="usb_cam_node" name="front_camera"
+          ns="front" output="screen">
+      <remap from="/front/front_camera/image_raw" to="$(arg front_image_topic)"/>
+      <param name="video_device" value="$(arg front_device)"/>
+      <param name="image_width" value="640"/>
+      <param name="image_height" value="360"/>
+      <param name="pixel_format" value="mjpeg"/>
+      <param name="framerate" value="30"/>
+      <param name="camera_frame_id" value="front_camera"/>
+      <param name="camera_name" value="front_camera"/>
+      <param name="camera_info_url"
+             value="file://$(find yihan_ros_pkg)/calibration/front_640x360.yaml"/>
+    </node>
+    <node pkg="usb_cam" type="usb_cam_node" name="rear_camera"
+          ns="rear" output="screen">
+      <remap from="/rear/rear_camera/image_raw" to="$(arg rear_image_topic)"/>
+      <param name="video_device" value="$(arg rear_device)"/>
+      <param name="image_width" value="640"/>
+      <param name="image_height" value="480"/>
+      <param name="pixel_format" value="mjpeg"/>
+      <param name="framerate" value="30"/>
+      <param name="camera_frame_id" value="rear_camera"/>
+      <param name="camera_name" value="rear_camera"/>
+      <param name="camera_info_url"
+             value="file://$(find yihan_ros_pkg)/calibration/rear_640x480.yaml"/>
+    </node>
+  </group>
+
+  <group if="$(arg start_return_to_start)">
+    <node pkg="main" type="return_to_start.py"
+          name="return_to_start" output="screen">
+      <param name="scan_topic" value="/scan"/>
+      <param name="speed_raw" value="$(arg return_to_start_speed_raw)"/>
+      <param name="rear_clearance_m"
+             value="$(arg return_to_start_rear_clearance_m)"/>
+      <param name="front_release_distance_m"
+             value="$(arg return_to_start_front_release_distance_m)"/>
+      <param name="maximum_reverse_time_s"
+             value="$(arg return_to_start_maximum_time_s)"/>
+      <param name="keyboard_control_topic" value="/keyboard/control_cmd"/>
+    </node>
+  </group>
+
+  <group if="$(arg start_sign_node)">
+    <node pkg="hts_ros_pkg" type="sign_string_node.py"
+          name="sign_string_node" output="screen"
+          launch-prefix="nice -n 15 taskset -c 3"
+          args="--image-topic $(arg sign_image_topic)
+                --publish-topic $(arg sign_send_topic)
+                --model $(find hts_ros_pkg)/scripts/resnet18.onnx
+                --hz $(arg sign_hz)">
+      <param name="post_green_hz" value="$(arg sign_post_green_hz)"/>
+    </node>
+  </group>
+</launch>

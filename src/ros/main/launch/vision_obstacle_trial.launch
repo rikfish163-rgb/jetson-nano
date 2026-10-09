@@ -1,0 +1,35 @@
+<launch>
+  <arg name="lane_speed_raw" default="26"/>
+  <arg name="obstacle_speed_raw" default="26"/>
+  <arg name="turn_s" default="5.0"/>
+  <arg name="half_angle_deg" default="15"/>
+  <arg name="distance_m" default="0.50"/>
+  <arg name="center_deg" default="0"/>
+  <arg name="lidar_port" default="/dev/ttyUSB0"/>
+  <arg name="start_actuators" default="true"/>
+  <param name="/main_node/obstacle_half_angle_deg" value="$(arg half_angle_deg)"/>
+  <param name="/main_node/obstacle_distance_m" value="$(arg distance_m)"/>
+  <param name="/main_node/obstacle_center_deg" value="$(arg center_deg)"/>
+  <param name="/main_node/obstacle_speed_raw" value="$(arg obstacle_speed_raw)"/>
+  <param name="/main_node/obstacle_turn_s" value="$(arg turn_s)"/>
+  <include file="$(find main)/launch/vision_competition.launch">
+    <arg name="timed_obstacle_enabled" value="true"/>
+    <arg name="green_start_only" value="true"/>
+    <arg name="sign_debug" value="true"/>
+    <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+    <arg name="green_start_speed_raw" value="$(arg lane_speed_raw)"/>
+    <arg name="start_actuators" value="$(arg start_actuators)"/>
+  </include>
+  <node name="ls01b_v2" pkg="ls01b_v2" type="ls01b_v2" output="screen">
+    <param name="scan_topic" value="scan"/>
+    <param name="frame_id" value="laser_link"/>
+    <param name="serial_port" value="$(arg lidar_port)"/>
+    <param name="baud_rate" value="460800"/>
+    <param name="angle_resolution" value="0.25"/>
+    <param name="zero_as_max" value="false"/>
+    <param name="min_as_zero" value="false"/>
+    <param name="robot_radius" value="0.2"/>
+    <param name="center_x" value="-0.105"/>
+    <param name="center_y" value="0"/>
+  </node>
+</launch>

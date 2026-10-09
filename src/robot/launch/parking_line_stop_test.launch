@@ -1,0 +1,27 @@
+<launch>
+  <arg name="start_camera" default="true"/>
+  <arg name="start_actuators" default="true"/>
+  <arg name="front_device" default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"/>
+  <node if="$(arg start_camera)" pkg="usb_cam" type="usb_cam_node" name="parking_line_camera" ns="front" output="screen" required="true">
+    <remap from="/front/parking_line_camera/image_raw" to="/front/usb_cam/image_raw"/>
+    <param name="video_device" value="$(arg front_device)"/>
+    <param name="image_width" value="640"/><param name="image_height" value="360"/>
+    <param name="pixel_format" value="mjpeg"/><param name="framerate" value="10"/>
+    <param name="camera_frame_id" value="front_camera"/>
+    <param name="camera_info_url" value="file://$(find yihan_ros_pkg)/calibration/front_640x360.yaml"/>
+  </node>
+  <group if="$(arg start_actuators)">
+    <node pkg="ackermann_drive_teleop" type="testloop.py" name="parking_line_stop_bridge" output="screen" required="true">
+      <param name="control_topic" value="/parking_line_stop/cmd"/>
+      <param name="command_topic" value="/ackermann_cmd"/>
+      <param name="command_timeout" value="0.25"/>
+      <param name="require_stamp" value="true"/>
+      <param name="max_speed_raw" value="30"/><param name="max_steering_raw" value="22"/>
+    </node>
+    <node pkg="base_controller" type="base_controller" name="base_controller" output="screen" required="true">
+      <param name="command_topic" value="/ackermann_cmd"/>
+      <param name="status_topic" value="/base_controller/status"/>
+      <param name="command_timeout" value="0.25"/>
+    </node>
+  </group>
+</launch>

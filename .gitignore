@@ -1,0 +1,39 @@
+# ROS and build products
+/build/
+/devel/
+**/build/
+**/devel/
+**/__pycache__/
+*.py[cod]
+
+# Editor and local-machine state
+.DS_Store
+**/.vscode/
+.omx/
+*.swp
+*.swo
+
+# ROS runtime artifacts
+*.bag
+*.bag.active
+*.log
+
+# Local browser diagnostics and accidental roslaunch argument files
+/.playwright-cli/
+/*:=*
+
+# Empty command-line artifacts accidentally created at the workspace root
+/--hz
+/--image-topic
+/--debug
+/--confidence-threshold
+/--publish-topic
+/--model
+
+# Credentials and private key material
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+credentials.json

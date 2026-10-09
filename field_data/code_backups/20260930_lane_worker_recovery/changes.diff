@@ -1,0 +1,45 @@
+--- before/camera_yihan_web.py
++++ src/ros/camera/scripts/camera_yihan_web.py
+@@ -9,6 +9,7 @@
+ import json
+ import threading
+ import hashlib
++import traceback
+ from collections import deque
+ 
+ from geometry_msgs.msg import PoseStamped
+@@ -1983,6 +1984,9 @@
+     last_point = None
+ 
+     for point in points:
++        if point is None:
++            last_point = None
++            continue
+         y_center = int(point["y"])
+ 
+         if point.get("search_x") is not None:
+@@ -2625,9 +2629,9 @@
+     """Reuse observed boundary windows; no predictions or center-line guesses."""
+     msg = Path()
+     msg.header.stamp, msg.header.frame_id = stamp, LANE_PATH_FRAME_ID
+-    for point in sorted(points, key=lambda p: -p['y']):
+-        if not boundary_point_is_reliable(point, trusted_only=True):
+-            continue
++    observed = [point for point in points
++                if boundary_point_is_reliable(point, trusted_only=True)]
++    for point in sorted(observed, key=lambda p: -p['y']):
+         x,y = bev_point_to_vehicle_m(point['x'],point['y'])
+         pose = PoseStamped()
+         pose.header = msg.header
+@@ -2897,6 +2901,11 @@
+                 return
+ 
+         process_image(msg)
++    except Exception:
++        # rospy.Timer exits permanently when a callback raises. Drop this
++        # failed capture and keep the next one eligible; freshness checks in
++        # the controller still stop motion if valid observations cease.
++        rospy.logerr_throttle(5.0, "front lane frame failed:\n%s" % traceback.format_exc())
+     finally:
+         processing_lock.release()
+ 

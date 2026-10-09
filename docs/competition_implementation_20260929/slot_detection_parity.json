@@ -1,0 +1,51 @@
+{
+  "baseline_sha256": "b4f3b6201a95729edc91f4d287fa6ee45a04516571a1a9736a0cef045b2dab4a", 
+  "cases": [
+    {
+      "after_ms": 173.38204383850098, 
+      "before_ms": 851.8319129943848, 
+      "case": "complete_three", 
+      "exact_equal": true, 
+      "slots": [
+        {
+          "kind": "parallel", 
+          "length": 0.7, 
+          "width": 0.36, 
+          "x": 0.7, 
+          "y": 0.0, 
+          "yaw": 0.0
+        }, 
+        {
+          "kind": "parallel", 
+          "length": 0.7, 
+          "width": 0.36, 
+          "x": 0.69875, 
+          "y": 0.70125, 
+          "yaw": 0.0
+        }, 
+        {
+          "kind": "parallel", 
+          "length": 0.7, 
+          "width": 0.36, 
+          "x": 0.7, 
+          "y": -0.69875, 
+          "yaw": 0.0
+        }
+      ]
+    }, 
+    {
+      "after_ms": 1.8551349639892578, 
+      "before_ms": 1.9080638885498047, 
+      "case": "empty", 
+      "exact_equal": true, 
+      "slots": []
+    }, 
+    {
+      "after_ms": 115.88597297668457, 
+      "before_ms": 415.4188632965088, 
+      "case": "cropped", 
+      "exact_equal": true, 
+      "slots": []
+    }
+  ]
+}

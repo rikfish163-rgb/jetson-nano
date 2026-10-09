@@ -1,0 +1,100 @@
+{
+  "confidence": 0.981342613697052, 
+  "detections": [
+    {
+      "bounds": [
+        424, 
+        32, 
+        100, 
+        118
+      ], 
+      "confidence": 0.981342613697052, 
+      "label": "left", 
+      "scores": {
+        "green": 0.0001289249921683222, 
+        "left": 0.981342613697052, 
+        "park": 2.05611577257514e-05, 
+        "red": 0.0001803890336304903, 
+        "right": 8.588633500039577e-05, 
+        "straight": 9.656354814069346e-05, 
+        "uturn": 4.743279714602977e-05
+      }
+    }
+  ], 
+  "inference_ms": 95.40581703186035, 
+  "input_mode": "full_frame_yolo", 
+  "label": "LEFT", 
+  "range_reason": "route_confirmed", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          424, 
+          32, 
+          100, 
+          118
+        ], 
+        "reason": "#1 left 0.98"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        424, 
+        32, 
+        100, 
+        118
+      ], 
+      "confidence": 0.981342613697052, 
+      "label": "left", 
+      "scores": {
+        "green": 0.0001289249921683222, 
+        "left": 0.981342613697052, 
+        "park": 2.05611577257514e-05, 
+        "red": 0.0001803890336304903, 
+        "right": 8.588633500039577e-05, 
+        "straight": 9.656354814069346e-05, 
+        "uturn": 4.743279714602977e-05
+      }
+    }
+  ], 
+  "route_gate": {
+    "center_ratio": 0.740625, 
+    "confidence_threshold": 0.8, 
+    "enabled": true, 
+    "frames": 13, 
+    "left_center_ratio": 0.3, 
+    "min_height_ratio": 0.04, 
+    "required_frames": 2, 
+    "small_target": false, 
+    "track_id": 5
+  }, 
+  "scores": {
+    "GREEN": 0.0001289249921683222, 
+    "LEFT": 0.981342613697052, 
+    "PARKING": 2.05611577257514e-05, 
+    "RED": 0.0001803890336304903, 
+    "RIGHT": 8.588633500039577e-05, 
+    "STRAIGHT": 9.656354814069346e-05, 
+    "UTURN": 4.743279714602977e-05
+  }, 
+  "sign_bounds": [
+    424, 
+    32, 
+    100, 
+    118
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.3277777777777778, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.11181092262268066, 
+  "stamp": 1791541473.066724, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "LEFT"
+}

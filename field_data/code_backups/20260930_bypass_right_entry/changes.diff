@@ -1,0 +1,192 @@
+--- obstacle.before.py
++++ src/robot/obstacle/controller.py
+@@ -110,6 +110,32 @@
+         duration_s=(ctx.cfg.get('timed_bypass_settle_s',0.) if task['phase']=='SETTLE_LEFT'
+                     else ctx.cfg.get('timed_bypass_left_s',2.) if task['phase']=='LEFT' else right_duration)
+         if task['elapsed_s']>=duration_s-1e-9:
++            if task['phase']=='LEFT':
++                if not ctx.call('obstacle','scan_ready',now):
++                    return ctx.call('motion','stop','scan_missing_or_stale')
++                # Two seconds is the nominal left duration. Before reversing
++                # the wheels, check the first two seconds of the right arc:
++                # the 8 cm imminent guard alone notices the cone too late.
++                speed=ctx.cfg['speed_raw']['action']
++                horizon=max(.08,min(.40,2*speed*ctx.cfg['raw_to_mps']['forward']))
++                steer=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
++                angle=command_to_model_steering(-steer,ctx.cfg)
++                obstacles=np.asarray(ctx.scan.obstacles,dtype=float).reshape(-1,2)
++                path=[bicycle(ctx.pose,horizon*i/32,angle,ctx.cfg['wheelbase'])
++                      for i in range(1,33)]
++                blocked=any(collision(p,obstacles,ctx.cfg) for p in path)
++                task['right_entry']=dict(clear=not blocked,horizon_m=horizon,
++                    scan_stamp=ctx.scan.stamp,extra_left_s=task['elapsed_s']-duration_s)
++                if blocked:
++                    if task['elapsed_s']>=duration_s+1.5-1e-9:
++                        return ctx.call('motion','stop','bypass_right_entry_blocked')
++                    # Continue the original left arc only when its imminent
++                    # raw-point and unknown-space checks also permit motion.
++                    command=(speed,steer)
++                    result=ctx.call('obstacle','checked_command',command,now,False)
++                    if result==command:
++                        ctx.reason='bypass_extend_left_for_clearance'
++                    return result
+             task['phase']=('LEFT' if task['phase']=='SETTLE_LEFT' else
+                            'RIGHT' if task['phase']=='LEFT' else 'REACQUIRE')
+             task['elapsed_s']=0.
+@@ -276,6 +302,10 @@
+                         ctx.reason = 'bypass_side_clearance'
+                         ctx.issued_steer = alternative
+                         return speed,alternative
++            else:
++                ctx.obstacle_check['clearance_limit']=dict(
++                    elapsed_s=now-clearance['since'],
++                    distance_m=distance(ctx.pose,clearance['origin']))
+     if allow_bypass:
+         ctx.state = 'WAIT_OBSTACLE'
+         if now >= ctx.retry_at and ctx.cfg['bypass_enabled']:
+--- adapter.before.py
++++ src/robot/master/controller_node.py
+@@ -56,6 +56,8 @@
+         self.status_at = -1.0
+         self.last_sign_event = None
+         self.last_state_event = None
++        self.control_events = deque(maxlen=32)
++        self.last_control_event = None
+         self.live_was_enabled = False
+         # No publisher on the real command topic is even registered in shadow mode.
+         self.live = boolean(rospy.get_param('~live',False))
+@@ -436,6 +438,7 @@
+                 payload['stamp'] = now
+                 self.output.publish(String(data=json.dumps(payload)))
+                 self.last_command = command
++                self.queue_control_event(now,enabled,command)
+                 if getattr(self,'target_debug',None) is not None and self.target_debug.get_num_connections():
+                     self.target_debug.publish(String(data=json.dumps(dict(
+                         stamp=now, source_stamp=(self.core.lane_target['source_stamp']
+@@ -451,7 +454,31 @@
+                 self.seq = (self.seq+1)%256
+                 rospy.logerr_throttle(1,'control fault, stopped: %s',str(exc))
+ 
++    def queue_control_event(self,now,enabled,command):
++        task=self.core.timed_bypass
++        key=(enabled,self.core.state,self.core.reason,
++             task['phase'] if task else None,command[0]==0)
++        if key==getattr(self,'last_control_event',None):
++            return
++        self.last_control_event=key
++        if not hasattr(self,'control_events'):
++            self.control_events=deque(maxlen=32)
++        # Capture at the command decision. Console transport runs in the
++        # telemetry thread, even when a busy state lock prevents full status.
++        self.control_events.append(copy.deepcopy(dict(stamp=now,
++            state=self.core.state,reason=self.core.reason,command=command,
++            timed_bypass=task,obstacle_check=self.core.obstacle_check)))
++
+     def telemetry(self,event):
++        events=getattr(self,'control_events',None)
++        for unused in range(8):
++            try:
++                snapshot=events.popleft() if events is not None else None
++            except IndexError:
++                break
++            if snapshot is None:
++                break
++            rospy.loginfo('competition_control_event %s',json.dumps(snapshot,allow_nan=False))
+         # Skip a busy control cycle. Transport, JSON and console I/O must never
+         # keep lane/scan callbacks or the command timer behind the state lock.
+         if not self.lock.acquire(False):
+--- adapter_tests.before.py
++++ src/robot/test/test_ros_adapter.py
+@@ -267,6 +267,24 @@
+         n.telemetry(None)
+         self.assertEqual(acquired, [True])
+ 
++    def test_control_stop_event_is_logged_even_when_status_lock_is_busy(self):
++        class Sink(object):
++            def publish(self,msg): pass
++        class BusyLock(object):
++            def acquire(self,blocking): return False
++        n=self.node
++        n.seq,n.live,n.last_tick=0,False,10.
++        n.history=deque(maxlen=100)
++        n.output=Sink()
++        n.tick(None)
++        n.lock=BusyLock()
++        n.telemetry(None)
++        events=[args[0] for msg,args in self.fake_rospy.infos if msg=='competition_control_event %s']
++        self.assertTrue(events)
++        event=json.loads(events[-1])
++        self.assertEqual(event['command'],[0,0.])
++        self.assertEqual(event['reason'],n.core.reason)
++
+     def test_visual_direction_caches_without_scan(self):
+         n=self.node
+         n.core.state='LANE'
+--- /dev/null
++++ src/robot/test/test_bypass_right_entry.py
+@@ -0,0 +1,65 @@
++"""Do not enter a right arc that immediately returns into the side obstacle."""
++import os
++import unittest
++from robot.common.config import load_config
++from robot.common.geometry import bicycle
++from robot.common.contracts import command_to_model_steering
++from robot.master.controller import Controller
++from test_continuous_obstacles import _SyntheticScan
++
++
++class BypassRightEntryTests(unittest.TestCase):
++    POINT = (.45,-.18)
++
++    def core(self):
++        cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
++        cfg.update(wait_green=False,lidar_enabled=True,timed_bypass_enabled=True,
++                   steering_command_scale_rad=.03,timed_bypass_left_s=2.,
++                   timed_bypass_right_s=6.)
++        cfg['speed_raw']['action']=24
++        c=Controller(cfg);self.addCleanup(c.close)
++        c.state='TIMED_BYPASS';c.action='BYPASS'
++        c.timed_bypass=dict(phase='LEFT',last=1.,elapsed_s=1.99)
++        return c
++
++    def test_clear_imminent_right_sweep_is_not_enough_to_end_left(self):
++        c=self.core();c.scan=_SyntheticScan(1.05,obstacles=[self.POINT])
++        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.05).value,(24,.03))
++        self.assertEqual(c.timed_bypass['phase'],'LEFT')
++        self.assertEqual(c.reason,'bypass_extend_left_for_clearance')
++
++    def test_clear_right_entry_preserves_nominal_two_second_switch(self):
++        c=self.core();c.scan=_SyntheticScan(1.05)
++        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.05).value,(24,-.03))
++        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++        self.assertEqual(c.timed_bypass['elapsed_s'],0.)
++
++    def test_left_extension_releases_right_when_measured_obstacle_clears(self):
++        c=self.core();released=False
++        for i in range(1,31):
++            now=1.+i*.05
++            c.scan=_SyntheticScan(now,obstacles=[self.POINT])
++            speed,steer=c.execute('obstacle','timed_bypass_tick',now).value
++            self.assertEqual(speed,24)
++            if c.timed_bypass['phase']=='RIGHT':
++                self.assertEqual(steer,-.03)
++                released=True
++                break
++            c.set_pose(bicycle(c.pose,speed*c.cfg['raw_to_mps']['forward']*.05,
++                command_to_model_steering(steer,c.cfg),c.cfg['wheelbase']),now)
++        self.assertTrue(released)
++
++    def test_left_extension_still_checks_imminent_obstacle_and_coverage(self):
++        for obstacles,classification in [([self.POINT,(.20,0)],'FREE'),([self.POINT],'UNKNOWN')]:
++            c=self.core();c.scan=_SyntheticScan(1.05,obstacles=obstacles,classification=classification)
++            self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.05).value[0],0)
++
++    def test_blocked_right_entry_has_bounded_left_extension(self):
++        c=self.core();c.timed_bypass['elapsed_s']=3.49
++        c.scan=_SyntheticScan(1.05,obstacles=[self.POINT])
++        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.05).value[0],0)
++        self.assertEqual(c.reason,'bypass_right_entry_blocked')
++
++
++if __name__=='__main__':
++    unittest.main()

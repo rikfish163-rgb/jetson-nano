@@ -1,0 +1,9 @@
+<launch>
+  <!-- Isolated bridge output; there is deliberately no base_controller here. -->
+  <node pkg="ackermann_drive_teleop" type="testloop.py" name="motion_preview_bridge" output="screen">
+    <param name="control_topic" value="/modules/motion/input"/>
+    <param name="command_topic" value="/modules/motion/output"/>
+    <param name="require_stamp" value="true"/>
+    <param name="command_timeout" value="0.25"/>
+  </node>
+</launch>

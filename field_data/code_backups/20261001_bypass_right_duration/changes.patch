@@ -1,0 +1,324 @@
+--- before/src/robot/obstacle/controller.py
++++ src/robot/obstacle/controller.py
+@@ -10,7 +10,6 @@
+ from robot.common.geometry import in_box
+ from robot.common.geometry import local
+ from robot.common.geometry import world
+-from robot.common.geometry import wrap
+ from robot.obstacle.planner import bypass_path
+ from robot.common.contracts import encode_command
+ from robot.uturn.calibration import trial_active, raw_angle
+@@ -90,56 +89,10 @@
+     ctx.lane_curve_lock = None
+     phase='SETTLE_LEFT' if ctx.cfg.get('timed_bypass_settle_s',0.)>0 else 'LEFT'
+     ctx.timed_bypass=dict(phase=phase,elapsed_s=0.,last=None,
+-                          entry_heading_rad=ctx.pose[2],
+                           trigger_point=trigger_point,trigger_world=trigger_world)
+     ctx.exit_count,ctx.exit_stamp=0,-1.
+     ctx.state='TIMED_BYPASS';ctx.action='BYPASS'
+     return ctx.call('obstacle','timed_bypass_tick',now)
+-
+-
+-def _right_lane_exit(ctx,task,now):
+-    """Confirm measured return-lane geometry after passing the trigger."""
+-    trigger=task.get('trigger_world')
+-    passed=(trigger is not None and local(ctx.pose,trigger)[0] <
+-            -ctx.cfg['rear_overhang']-ctx.cfg['obstacle_margin'])
+-    points=sorted(local(ctx.pose,p) for p in ctx.lane)
+-    angles=[math.atan2(b[1]-a[1],b[0]-a[0]) for a,b in zip(points,points[1:])]
+-    ready=(task['elapsed_s']>=2. and passed and
+-        ctx.call('obstacle','scan_ready',now) and
+-        ctx.call('lane','lane_tracking_ready',now) and
+-        ctx.lane_confidence>=ctx.cfg['lane_min_confidence'] and len(points)>=3 and
+-        .05<points[0][0]<=1. and points[-1][0]-points[0][0]>=.20 and
+-        all(.05<x<=1.5 and abs(y)<=.45 for x,y in points) and
+-        all(b[0]-a[0]>.015 for a,b in zip(points,points[1:])) and
+-        all(abs(a)<=math.radians(30) for a in angles) and
+-        all(abs(b-a)<=math.radians(20) for a,b in zip(angles,angles[1:])))
+-    evidence=task.get('lane_exit')
+-    if not ready:
+-        task['lane_exit']=None
+-        return False
+-    if evidence is None or not 0<=ctx.lane_stamp-evidence['stamp']<=ctx.cfg['sensor_timeout']:
+-        evidence=dict(stamp=-1.,since=ctx.lane_stamp,frames=0)
+-        task['lane_exit']=evidence
+-    if ctx.lane_stamp>evidence['stamp']:
+-        evidence.update(stamp=ctx.lane_stamp,frames=evidence['frames']+1,
+-            near_lateral_m=points[0][1],heading_deg=math.degrees(angles[0]),
+-            right_elapsed_s=task['elapsed_s'])
+-    return evidence['frames']>=3 and ctx.lane_stamp-evidence['since']>=.15-1e-9
+-
+-
+-def _right_heading_exit(ctx,task):
+-    """End full-lock counterturn before rotating past the incoming heading."""
+-    angle=task.get('left_turn_angle_rad',0.)
+-    origin=task.get('right_origin_heading_rad')
+-    if origin is None or angle<=math.radians(5):
+-        return False
+-    returned=wrap(origin-ctx.pose[2])
+-    task['right_geometry']=dict(left_angle_deg=math.degrees(angle),
+-        returned_angle_deg=math.degrees(returned),
+-        remaining_angle_deg=math.degrees(angle-returned))
+-    # Leave a small margin for the following control tick and wheel response.
+-    # The lane controller handles lateral recentering at bend speed.
+-    return returned>=angle-math.radians(3)
+ 
+ 
+ def timed_bypass_tick(ctx,now):
+@@ -158,13 +111,9 @@
+         task['elapsed_s']+=dt
+         duration_s=(ctx.cfg.get('timed_bypass_settle_s',0.) if task['phase']=='SETTLE_LEFT'
+                     else ctx.cfg.get('timed_bypass_left_s',2.) if task['phase']=='LEFT' else right_duration)
+-        if task['phase']=='RIGHT' and _right_lane_exit(ctx,task,now):
+-            task['phase']='REACQUIRE'
+-            task['visual_exit']=True
+-        elif task['phase']=='RIGHT' and _right_heading_exit(ctx,task):
+-            task['phase']='REACQUIRE'
+-            task['heading_exit']=True
+-        elif task['elapsed_s']>=duration_s-1e-9:
++        # Complete the configured motion duration. Neither a visible lane nor
++        # command-estimated heading may shorten the requested right arc.
++        if task['elapsed_s']>=duration_s-1e-9:
+             if task['phase']=='LEFT':
+                 if not ctx.call('obstacle','scan_ready',now):
+                     return ctx.call('motion','stop','scan_missing_or_stale')
+@@ -192,10 +141,8 @@
+                     if result==command:
+                         ctx.reason='bypass_extend_left_for_clearance'
+                     return result
+-            if task['phase']=='LEFT':
+-                task['right_origin_heading_rad']=ctx.pose[2]
+-                task['left_turn_angle_rad']=max(0.,wrap(ctx.pose[2]-
+-                    task.get('entry_heading_rad',ctx.pose[2])))
++            if task['phase']=='RIGHT':
++                task['right_completed_s']=task['elapsed_s']
+             task['phase']=('LEFT' if task['phase']=='SETTLE_LEFT' else
+                            'RIGHT' if task['phase']=='LEFT' else 'REACQUIRE')
+             task['elapsed_s']=0.
+@@ -212,10 +159,8 @@
+         ctx.timed_bypass=None
+         ctx.call('mission','resume_lane')
+         result=ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,False)
+-        if task.get('visual_exit') and result[0]>0:
+-            ctx.reason='bypass_visual_lane_handoff'
+-        elif task.get('heading_exit') and result[0]>0:
+-            ctx.reason='bypass_heading_lane_handoff'
++        if result[0]>0:
++            ctx.reason='bypass_timed_lane_handoff'
+         return result
+     steer=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     if task['phase']=='SETTLE_LEFT':
+--- before/src/robot/obstacle/README.md
++++ src/robot/obstacle/README.md
+@@ -8,7 +8,8 @@
+ 当前定时避障：前方目标进入后轴 0.85 米范围，先进入 `SETTLE_LEFT`，
+ 下发零速度、左满舵并等待 `timed_bypass_settle_s: 0.4` 秒，再以 raw 26 左满舵 2 秒、
+ 右满舵必须完成 6 秒；期间即使发现有效车道也不提前切回循线，安全停车时暂停计时。
+-满 6 秒立即退出避障、交回循线，不再卡在避障等待车道状态；无车道时沿用普通循线保护。
++满 6 秒后，有可用车道则交回循线，日志为 `bypass_timed_lane_handoff`；
++没有可用车道则停车等待，日志为 `bypass_wait_exit_lane`，不继续盲目右转。
+ 避障期间直行牌可缓存，退出后交给原状态机按蓝线条件执行，不直接跳入直行动作。
+ 当前循线不区分左侧或右侧目标车道。0.85 米约等于车头前方
+ 0.52 米，可用 `timed_bypass_trigger_distance_m` 调整。形状筛选为几何判断，
+@@ -17,14 +18,12 @@
+ 重新开始准备计时。0.4 秒是待标定的机械换向余量，不是轮角到位反馈；
+ 底盘是否支持静止打舵仍需先架空验证。它不提供绕锥净空保证。
+ 
+-定时转弯结束后设置 `timed_bypass_completed=true`：本次运行不再触发第二次避障，
+-普通行驶不再因雷达障碍或扫描超时停车，雷达节点仍可采集数据。
+-这也意味着后续真实障碍不会自动停车；急停、红灯、车道保护及需要雷达的停车流程保留。
+-重启主控后该标记清零。直线点云过滤与不规则聚类识别逻辑保持不变。
++定时转弯结束后设置 `timed_bypass_completed=true`，记录本次目标的位置避免重复触发。
++后续不同障碍仍可触发避障；雷达碰撞检查和扫描超时停车继续生效。
+ 
+-定时避障期间不再使用预测车身碰撞停车，诊断显示 `timed_bypass_sweep_disabled`。
+-即使点云位于车身前方也会继续转弯，存在实际碰撞风险；雷达超时、红灯及急停仍暂停动作。
+-其他仍启用雷达的流程保留 `lidar_obstacle_in_sweep` 碰撞停车。
++定时避障期间检查近场车身碰撞和未知空间；雷达超时、红灯及急停暂停动作计时。
++侧方净空不足时可短暂采用已检查的较小舵角绕开，期间不计入满舵动作时间。
++左转结束前检查右弧线入口，必要时延长左转最多 1.5 秒，仍受碰撞保护约束。
+ 旧日志的 `bypass_wait_forward_lane` 等待分支已移除；
+ `gap_limit_wait_for_lane` 表示循线阶段丢线超过允许距离或时间。
+ 固定路锥回归测试覆盖触发、绕行和控制权回切，但假定相机提供有效车道，
+--- before/src/robot/test/test_bypass_visual_exit.py
++++ src/robot/test/test_bypass_visual_exit.py
+@@ -1,4 +1,4 @@
+-"""A stable measured lane can end a bypass right turn before its time cap."""
++"""Lane and estimated heading cannot shorten the requested bypass duration."""
+ import os
+ import unittest
+ from robot.common.config import load_config
+@@ -19,7 +19,7 @@
+         cfg.update(wait_green=False,lidar_enabled=True,timed_bypass_enabled=True,
+                    lane_curvature_preview=True,lane_curve_speed_raw=16,
+                    steering_command_scale_rad=.03,timed_bypass_right_s=6.,
+-                   timed_bypass_speed_raw=24)
++                   timed_bypass_speed_raw=26)
+         cfg['speed_raw'].update(action=24,lane=24)
+         c=Controller(cfg);self.addCleanup(c.close)
+         c.state='TIMED_BYPASS';c.action='BYPASS';c.issued_steer=-.03
+@@ -37,44 +37,46 @@
+             command=self.tick(c,path,stamp)
+         return command
+ 
+-    def test_stable_current_lane_takes_over_before_six_seconds(self):
++    def test_stable_current_lane_cannot_take_over_before_six_seconds(self):
+         c=self.core();speed,steer=self.confirm(c,self.CENTER)
+-        self.assertEqual(c.state,'LANE')
+-        self.assertIsNone(c.timed_bypass)
+-        self.assertTrue(c.timed_bypass_completed)
+-        self.assertEqual(speed,16)
+-        self.assertGreater(steer,-.03)
++        self.assertEqual(c.state,'TIMED_BYPASS')
++        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++        self.assertFalse(c.timed_bypass_completed)
++        self.assertEqual((speed,steer),(26,-.03))
+ 
+-    def test_recorded_four_second_view_is_eligible_for_handoff(self):
++    def test_recorded_four_second_view_cannot_shorten_right_arc(self):
+         c=self.core()
+         for stamp in (1.1,1.2,1.3):
+             speed,steer=self.tick(c,self.RECORDED,stamp,.389641)
+-        self.assertIsNone(c.timed_bypass)
+-        self.assertEqual(speed,16)
++        self.assertIsNotNone(c.timed_bypass)
++        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++        self.assertEqual((speed,steer),(26,-.03))
+ 
+-    def test_recorded_aligned_lane_can_take_over_before_lateral_recentering(self):
++    def test_recorded_aligned_lane_cannot_shorten_right_arc(self):
+         c=self.core()
+         speed,steer=self.confirm(c,self.EARLY_RECORDED)
+-        self.assertIsNone(c.timed_bypass)
+-        self.assertEqual(speed,16)
++        self.assertIsNotNone(c.timed_bypass)
++        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++        self.assertEqual((speed,steer),(26,-.03))
+ 
+-    def test_right_arc_stops_when_left_heading_has_been_cancelled(self):
++    def test_cancelled_left_heading_cannot_shorten_right_arc(self):
+         c=self.core()
+         c.timed_bypass.update(entry_heading_rad=0.,right_origin_heading_rad=1.,
+                              left_turn_angle_rad=1.,elapsed_s=2.65)
+         c.set_pose((0.,0.,.02),1.05)
+         speed,steer=self.tick(c,[(x,-.3) for x,y in self.CENTER],1.1)
+-        self.assertIsNone(c.timed_bypass)
+-        self.assertEqual(speed,16)
++        self.assertIsNotNone(c.timed_bypass)
++        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++        self.assertEqual((speed,steer),(26,-.03))
+ 
+-    def test_heading_endpoint_with_missing_lane_does_not_continue_full_right(self):
++    def test_heading_endpoint_with_missing_lane_continues_right_until_six_seconds(self):
+         c=self.core()
+         c.timed_bypass.update(entry_heading_rad=0.,right_origin_heading_rad=1.,
+                              left_turn_angle_rad=1.,elapsed_s=2.65)
+         c.set_pose((0.,0.,.02),1.05)
+         speed,steer=self.tick(c,[],1.1,0.)
+-        self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
+-        self.assertEqual(speed,0)
++        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++        self.assertEqual((speed,steer),(26,-.03))
+ 
+     def test_repeated_source_image_does_not_confirm_exit(self):
+         c=self.core()
+@@ -104,6 +106,28 @@
+         self.assertIsNone(c.timed_bypass)
+         self.assertEqual(speed,16)
+ 
++    def test_no_lane_stops_only_after_completing_six_seconds(self):
++        c=self.core();c.timed_bypass.update(elapsed_s=5.8)
++        self.assertEqual(self.tick(c,[],1.1,0.),(26,-.03))
++        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
++        self.assertEqual(self.tick(c,[],1.2,0.),(0,0.))
++        self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
++        self.assertEqual(c.reason,'bypass_wait_exit_lane')
++
++    def test_safety_stop_pauses_timer_and_resumes_remaining_right_time(self):
++        c=self.core();c.timed_bypass.update(elapsed_s=5.7)
++        c.scan=None
++        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.1).value,(0,0.))
++        self.assertEqual(c.reason,'scan_missing_or_stale')
++        self.assertAlmostEqual(c.timed_bypass['elapsed_s'],5.8)
++        self.assertIsNone(c.timed_bypass['last'])
++        self.assertEqual(self.tick(c,self.CENTER,10.),(26,-.03))
++        self.assertAlmostEqual(c.timed_bypass['elapsed_s'],5.8)
++        self.assertEqual(self.tick(c,self.CENTER,10.1),(26,-.03))
++        speed,steer=self.tick(c,self.CENTER,10.2)
++        self.assertIsNone(c.timed_bypass)
++        self.assertGreater(speed,0)
++
+ 
+ if __name__=='__main__':
+     unittest.main()
+--- before/src/robot/test/test_bypass_heading_geometry.py
++++ src/robot/test/test_bypass_heading_geometry.py
+@@ -1,52 +1,45 @@
+-"""Full-lock bypass counterturn is bounded by the actual left arc."""
+-import math
++"""Estimated heading cannot override the six-second bypass right arc."""
+ import os
+ import unittest
+ from robot.common.config import load_config
+-from robot.common.contracts import command_to_model_steering
+-from robot.common.geometry import bicycle,local,wrap
++from robot.common.geometry import bicycle
++from robot.motion import calibration as chassis
+ from robot.master.controller import Controller
+ from test_continuous_obstacles import _SyntheticScan
+ 
+ 
+ class BypassHeadingGeometryTests(unittest.TestCase):
+-    def test_extended_left_arc_hands_off_without_turning_past_road_heading(self):
++    def test_extended_left_arc_still_requires_six_seconds_of_right_motion(self):
+         cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
+         cfg.update(wait_green=False,lidar_enabled=True,lane_curvature_preview=True,
+                    lane_curve_speed_raw=16,steering_command_scale_rad=.03,
+-                   timed_bypass_speed_raw=24)
++                   timed_bypass_speed_raw=26,timed_bypass_right_s=6.)
+         cfg['speed_raw'].update(action=24,lane=24)
+         c=Controller(cfg);self.addCleanup(c.close)
+         left_duration=2.6870188713
+-        angle=command_to_model_steering(.03,cfg)
+-        pose=bicycle((0.,0.,0.),.192*left_duration,angle,.26)
++        velocity=26*chassis.speed_gain(cfg,26)
++        angle=chassis.raw_angle(cfg,26,22)
++        pose=bicycle((0.,0.,0.),velocity*left_duration,angle,cfg['wheelbase'])
+         c.set_pose(pose,1.)
+         c.state='TIMED_BYPASS';c.action='BYPASS'
+         c.timed_bypass=dict(phase='LEFT',last=1.,elapsed_s=left_duration,
+             entry_heading_rad=0.,trigger_world=(.747,.154),trigger_point=(.747,.154))
+         c.scan=_SyntheticScan(1.)
+-        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.).value,(24,-.03))
+-        self.assertAlmostEqual(c.timed_bypass['left_turn_angle_rad'],pose[2])
+-        for i in range(1,81):
++        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.).value,(26,-.03))
++        for i in range(1,121):
+             now=1.+i*.05
+-            pose=bicycle(pose,.192*.05,-angle,.26)
++            pose=bicycle(pose,velocity*.05,chassis.raw_angle(cfg,26,-22),cfg['wheelbase'])
+             c.set_pose(pose,now)
+-            # A measured straight road is visible, with lateral offset.
+-            path=[local(pose,(pose[0]+d,0.)) for d in (.6,.8,1.,1.2)]
++            path=[(d,.03) for d in (.6,.8,1.,1.2)]
+             c.observe_lane(path,.8,now);c.scan=_SyntheticScan(now)
+             speed,steer=c.execute('obstacle','timed_bypass_tick',now).value
+             if c.timed_bypass is None:
+-                self.assertEqual(speed,16)
+-                self.assertGreaterEqual(wrap(pose[2]),-math.radians(1.))
+-                self.assertLessEqual(i*.05,left_duration+.05)
+-                # Either confirmed visual return or heading cancellation may
+-                # hand off; both must satisfy the geometry bounds above.
+-                self.assertIn(c.reason,('bypass_heading_lane_handoff',
+-                                        'bypass_visual_lane_handoff'))
++                self.assertEqual(i,120)
++                self.assertGreater(speed,0)
+                 break
+-            self.assertEqual((speed,steer),(24,-.03))
++            self.assertEqual((speed,steer),(26,-.03))
+         else:
+-            self.fail('Right arc continued past the left-heading cancellation')
++            self.fail('Right arc did not finish after six seconds')
+ 
+ 
+ if __name__=='__main__':unittest.main()

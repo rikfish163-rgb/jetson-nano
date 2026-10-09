@@ -1,0 +1,11 @@
+{
+  "count": 50, 
+  "hz": 2.0, 
+  "label": "green", 
+  "topic": "/front/usb_cam/image_raw", 
+  "runtime_scripts": "/home/nano/robocup_ws/src/hts_ros_pkg/scripts", 
+  "split": "train", 
+  "duration": 600.0, 
+  "preview": false, 
+  "root": "/home/nano/robodata/signs_20260914"
+}

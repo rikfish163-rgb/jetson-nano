@@ -1,0 +1,8 @@
+test_40cm_entry_finishes_before_seven_segments (test_uturn_production.ProductionUturnTests) ... ok
+test_default_profile_is_normal_seven_stage_mode (test_uturn_production.ProductionUturnTests) ... ok
+test_sign_blue_seven_segments_then_resume_normal_mission (test_uturn_production.ProductionUturnTests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 5.205s
+
+OK

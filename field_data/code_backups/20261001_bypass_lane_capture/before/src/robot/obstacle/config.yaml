@@ -1,0 +1,12 @@
+# 避障：只在此文件写本模块需要覆盖的参数。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+# 距离参考后轴。车头前伸 0.33 m；0.50 m 触发时转弯空间不足。
+# 0.85 m 约为车头前方 0.52 m，仍由原有碰撞检查决定是否允许运动。
+timed_bypass_trigger_distance_m: 0.85
+# 停车下发左满舵后等待；这是待标定的换向余量，不是实际轮角反馈。
+timed_bypass_settle_s: 0.4
+# 避障左右弧线单独使用 RAW 26；不复用普通路口动作速度。
+timed_bypass_speed_raw: 26
+# 用户指定的实际前进时长；停车期间不计时，不按速度比例延长。
+timed_bypass_left_s: 2.0
+timed_bypass_right_s: 5.0

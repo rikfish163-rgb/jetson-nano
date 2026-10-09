@@ -1,0 +1,998 @@
+{
+  "kind": "saved_images_with_interpolated_command_model_poses", 
+  "after": {
+    "debug": {
+      "distance_source": "live_bottom", 
+      "visual_motion_samples": 3, 
+      "bottom_local": [
+        [
+          0.6212211632677754, 
+          0.14250000000000018
+        ], 
+        [
+          0.6062211632677752, 
+          -0.2700000000000004
+        ]
+      ], 
+      "bottom_age_s": 0.021555423736572266, 
+      "sign_anchor_local": [
+        0.3669301688052896, 
+        0.12244327728715339
+      ], 
+      "sign_association": true, 
+      "bumper_clearance_m": 0.28234254201750797, 
+      "line_age_s": 0.021555423736572266, 
+      "bottom_source": "tracked_bottom", 
+      "bottom_target_aligned": true, 
+      "phase": "CENTER", 
+      "bottom_seen": true, 
+      "remaining_m": 0.24234254201750796, 
+      "sides_behind_sign_rejected": 14, 
+      "target_clearance_m": 0.04, 
+      "visual_motion_scale": 0.47856260429178227
+    }, 
+    "status": null, 
+    "command": [
+      16, 
+      0.0
+    ]
+  }, 
+  "recorded_finish": {
+    "stamp": 1789907039.351082, 
+    "state": "FINISHED", 
+    "parking_entry": {
+      "bumper_clearance_m": 0.038386261643913386, 
+      "bottom_local": [
+        [
+          0.3361606222437938, 
+          0.3664755370792947
+        ], 
+        [
+          0.4068157325727233, 
+          -0.1739251063181819
+        ]
+      ], 
+      "bottom_target_aligned": true, 
+      "sign_anchor_local": [
+        0.36874199741857105, 
+        0.12244327728715315
+      ], 
+      "sign_association": true, 
+      "line_age_s": 0.47949743270874023, 
+      "sides_behind_sign_rejected": 14, 
+      "bottom_source": "p_near_cross", 
+      "bottom_age_s": 7.957715272903442, 
+      "phase": "FINISHED", 
+      "bottom_seen": true, 
+      "remaining_m": -0.001613738356086615, 
+      "distance_source": "measured_bottom_plus_pose", 
+      "target_clearance_m": 0.04
+    }
+  }, 
+  "frames": 37, 
+  "events": [
+    {
+      "stamp": 1789907031.3283892, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907031.328389168_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.6174999999999999, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.6124999999999998, 
+        "bottom_age_s": 0.0
+      }
+    }, 
+    {
+      "stamp": 1789907031.5262291, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907031.526229143_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5955460750853241, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5941896864418043, 
+        "bottom_age_s": 0.19783997535705566
+      }
+    }, 
+    {
+      "stamp": 1789907031.7947886, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907031.794788599_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5759459459459461, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.569346392445008, 
+        "bottom_age_s": 0.4663994312286377
+      }
+    }, 
+    {
+      "stamp": 1789907032.0056155, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907032.005615473_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5632539682539683, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5704999999999999, 
+        "bottom_age_s": 0.0
+      }
+    }, 
+    {
+      "stamp": 1789907032.1307528, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907032.130752802_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5551936026936031, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5593957010326633, 
+        "bottom_age_s": 0.1251373291015625
+      }
+    }, 
+    {
+      "stamp": 1789907032.3932064, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907032.393206358_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5371875000000003, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5361227534243856, 
+        "bottom_age_s": 0.3875908851623535
+      }
+    }, 
+    {
+      "stamp": 1789907032.5261352, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907032.526135206_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5252499999999997, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5243435341795881, 
+        "bottom_age_s": 0.5205197334289551
+      }
+    }, 
+    {
+      "stamp": 1789907032.7263846, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907032.726384640_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.515115511551155, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5066088340210577, 
+        "bottom_age_s": 0.7207691669464111
+      }
+    }, 
+    {
+      "stamp": 1789907033.0074916, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907033.007491589_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.4975986842105263, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.5085909090909091, 
+        "bottom_age_s": 0.0
+      }
+    }, 
+    {
+      "stamp": 1789907033.192832, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907033.192831993_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.48060855263157903, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "clearance_m": 0.49221491228878417, 
+        "bottom_age_s": 0.18534040451049805
+      }
+    }, 
+    {
+      "stamp": 1789907033.7263532, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907033.726353168_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.44541079812206563, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.44513475876443503, 
+        "bottom_age_s": 0.7188615798950195
+      }
+    }, 
+    {
+      "stamp": 1789907033.9271798, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907033.927179813_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.4280363036303628, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.42743462960921813, 
+        "bottom_age_s": 0.9196882247924805
+      }
+    }, 
+    {
+      "stamp": 1789907034.129697, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907034.129697084_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.41070093457943946, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.40990917995909554, 
+        "bottom_age_s": 1.1222054958343506
+      }
+    }, 
+    {
+      "stamp": 1789907034.326, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907034.325999975_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.4000664451827242, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3982629534484861, 
+        "bottom_age_s": 1.3185083866119385
+      }
+    }, 
+    {
+      "stamp": 1789907034.534465, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907034.534465075_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.38615671641791055, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3858951693736224, 
+        "bottom_age_s": 1.5269734859466553
+      }
+    }, 
+    {
+      "stamp": 1789907034.7945158, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907034.794515848_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.37305555555555525, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3704669186644866, 
+        "bottom_age_s": 1.7870242595672607
+      }
+    }, 
+    {
+      "stamp": 1789907034.926645, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907034.926645041_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.36800000000000005, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.36262797907117106, 
+        "bottom_age_s": 1.9191534519195557
+      }
+    }, 
+    {
+      "stamp": 1789907035.126144, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907035.126143932_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.36310747663551396, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3507921407212137, 
+        "bottom_age_s": 2.11865234375
+      }
+    }, 
+    {
+      "stamp": 1789907035.3262784, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907035.326278448_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3605536912751677, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3389185921762764, 
+        "bottom_age_s": 2.318786859512329
+      }
+    }, 
+    {
+      "stamp": 1789907035.6015403, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907035.601540327_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3576013513513509, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3225878994417459, 
+        "bottom_age_s": 2.5940487384796143
+      }
+    }, 
+    {
+      "stamp": 1789907035.7932622, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907035.793262243_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.35555369127516756, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3112134522583459, 
+        "bottom_age_s": 2.7857706546783447
+      }
+    }, 
+    {
+      "stamp": 1789907036.0607746, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907036.060774565_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3550757575757572, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.295342524031549, 
+        "bottom_age_s": 3.0532829761505127
+      }
+    }, 
+    {
+      "stamp": 1789907036.2626157, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907036.262615681_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.352652671755725, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.2833677265835119, 
+        "bottom_age_s": 3.255124092102051
+      }
+    }, 
+    {
+      "stamp": 1789907036.527938, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907036.527937889_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3457720588235292, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.26762673303454104, 
+        "bottom_age_s": 3.520446300506592
+      }
+    }, 
+    {
+      "stamp": 1789907036.7287972, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907036.728797197_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3477272727272726, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.2557101841172339, 
+        "bottom_age_s": 3.7213056087493896
+      }
+    }, 
+    {
+      "stamp": 1789907036.9942834, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907036.994283438_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.34010101010100985, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.2399594589050424, 
+        "bottom_age_s": 3.9867918491363525
+      }
+    }, 
+    {
+      "stamp": 1789907037.1925771, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907037.192577124_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.33590992647058804, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.22819512281900914, 
+        "bottom_age_s": 4.1850855350494385
+      }
+    }, 
+    {
+      "stamp": 1789907037.4600925, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907037.460092545_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.32828282828282845, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.21232401070904144, 
+        "bottom_age_s": 4.452600955963135
+      }
+    }, 
+    {
+      "stamp": 1789907037.6665227, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907037.666522741_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3201250000000002, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.2000769530085778, 
+        "bottom_age_s": 4.65903115272522
+      }
+    }, 
+    {
+      "stamp": 1789907037.8618526, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907037.861852646_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3105947955390332, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.18848845166890332, 
+        "bottom_age_s": 4.854361057281494
+      }
+    }, 
+    {
+      "stamp": 1789907038.1265328, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907038.126532793_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3003846153846153, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.17278555022611392, 
+        "bottom_age_s": 5.119041204452515
+      }
+    }, 
+    {
+      "stamp": 1789907038.3367677, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907038.336767673_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.3005025773195876, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.16031276886042717, 
+        "bottom_age_s": 5.329276084899902
+      }
+    }, 
+    {
+      "stamp": 1789907038.5303535, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907038.530353546_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.290546875, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.14882773716676784, 
+        "bottom_age_s": 5.522861957550049
+      }
+    }, 
+    {
+      "stamp": 1789907038.7396886, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907038.739688635_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.29035714285714265, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.13640833850020065, 
+        "bottom_age_s": 5.732197046279907
+      }
+    }, 
+    {
+      "stamp": 1789907038.927047, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907038.927047014_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.2875949367088607, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.12529277053229843, 
+        "bottom_age_s": 5.919555425643921
+      }
+    }, 
+    {
+      "stamp": 1789907039.1990945, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907039.199094534_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.28278225806451585, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.10915277879128488, 
+        "bottom_age_s": 6.191602945327759
+      }
+    }, 
+    {
+      "stamp": 1789907039.3295267, 
+      "frame": "field_data/sign_capture/20260920_202042_1547/1789907039.329526663_PARKING_frame.png", 
+      "after": {
+        "status": null, 
+        "source": "tracked_bottom", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.2829545454545453, 
+        "bottom_age_s": 0.0
+      }, 
+      "before": {
+        "status": null, 
+        "source": "paired_far_end", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "clearance_m": 0.1014145223066959, 
+        "bottom_age_s": 6.322035074234009
+      }
+    }
+  ], 
+  "before": {
+    "debug": {
+      "bumper_clearance_m": 0.10013568557447133, 
+      "bottom_local": [
+        [
+          0.4395914839637901, 
+          0.12885696208715716
+        ], 
+        [
+          0.42390577413858843, 
+          -0.283958321674575
+        ]
+      ], 
+      "bottom_age_s": 6.343590497970581, 
+      "sign_anchor_local": [
+        0.3669301688052896, 
+        0.12244327728715339
+      ], 
+      "sign_association": true, 
+      "distance_source": "measured_bottom_plus_pose", 
+      "line_age_s": 0.021555423736572266, 
+      "bottom_source": "paired_far_end", 
+      "bottom_target_aligned": true, 
+      "phase": "CENTER", 
+      "bottom_seen": true, 
+      "remaining_m": 0.06013568557447133, 
+      "sides_behind_sign_rejected": 14, 
+      "target_clearance_m": 0.04
+    }, 
+    "status": null, 
+    "command": [
+      16, 
+      0.0
+    ]
+  }
+}

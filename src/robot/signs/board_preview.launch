@@ -1,0 +1,13 @@
+<launch>
+  <!-- Reuse the camera. Publish on an isolated topic with no controller. -->
+  <arg name="model_dir" default="/home/nano/robodata/models/20260915_10000"/>
+  <node pkg="robocup_competition" type="sign_node.py" name="sign_board_preview" output="screen">
+    <rosparam command="load" file="$(find robocup_competition)/config/competition.yaml" param="config"/>
+    <param name="model" value="$(arg model_dir)/resnet18_candidate.onnx"/>
+    <param name="labels" value="$(arg model_dir)/labels.json"/>
+    <param name="roi_mode" value="board"/>
+    <param name="debug_images" value="true"/>
+    <param name="capture_dir" value=""/>
+    <remap from="/competition/sign" to="/competition/sign_preview"/>
+  </node>
+</launch>

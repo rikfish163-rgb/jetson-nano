@@ -1,0 +1,188 @@
+{
+  "metrics": {
+    "lane": {
+      "hz": 12.002281115046523, 
+      "count": 219, 
+      "processing_ms": [
+        39.32499885559082, 
+        46.36893272399902
+      ], 
+      "age_ms": [
+        80.23977279663086, 
+        110.6410264968872
+      ]
+    }, 
+    "camera": {
+      "hz": 15.000567077758195, 
+      "count": 274, 
+      "age_ms": [
+        7.120728492736816, 
+        11.81600093841552
+      ]
+    }, 
+    "sign": {
+      "hz": 5.001071656243731, 
+      "count": 91, 
+      "processing_ms": [
+        93.18089485168457, 
+        100.04854202270508
+      ], 
+      "age_ms": [
+        152.53949165344238, 
+        158.9646339416504
+      ]
+    }
+  }, 
+  "viewer_subscriptions_after_idle": [
+    "/competition/status"
+  ], 
+  "http": [
+    {
+      "status": 503
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34396
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34428
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34465
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34476
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34431
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34326
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34519
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34440
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34580
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34569
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34395
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34677
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34670
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34576
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34587
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34650
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34576
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34690
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34679
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34599
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34602
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34735
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34678
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34649
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34609
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34705
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34626
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34659
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34578
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34610
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34645
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34676
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34678
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34681
+    }, 
+    {
+      "status": 200, 
+      "bytes": 34548
+    }
+  ], 
+  "viewer_subscriptions": [
+    "/competition/status", 
+    "/debug/sign_board_frame"
+  ]
+}

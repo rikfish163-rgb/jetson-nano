@@ -1,0 +1,10 @@
+# 掉头：只在此文件写本模块需要覆盖的参数。
+# 用 python2 tools/module_workspace.py check 检查参数归属。
+# Normal UTURN uses the shared RAW model in motion/config.yaml.
+# 动作表及换挡/收尾停顿完成后，回正直行等待下一条蓝线触发。
+# 0 禁用出口角度修正和额外车道确认等待。
+# 有两侧白线时居中，有单侧线时向内偏移半个车道宽；无线时回正直行。
+# 仍经过白线扫掠、相机、雷达和急停保护。
+uturn_trial_exit_max_s: 0.0
+uturn_trial_exit_min_turn_deg: 150.0
+uturn_trial_exit_heading_deg: 20.0

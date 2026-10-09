@@ -1,0 +1,45 @@
+# 独立开环试验参数，不被正式 full.launch 加载。
+# 没有视觉/雷达避障；只按时间运行，不判断是否已进库。
+side: right                 # 车位在车身哪一侧：right 右侧，left 左侧
+forward_speed_raw: 12       # 前进准备速度，正整数 1~30；与倒车速度分别调节
+forward_seconds: 0.5        # 直行前进准备时间，0~5 秒；示例值，需现场标定；0 跳过
+forward_only: false        # true 只测前进后停车，不进入任何倒车段
+speed_raw: 12               # 倒车速度大小，填正整数 1~30；不是米/秒
+first_steering_raw: 22      # 第一段朝车位侧打方向的大小，1~22；不是角度
+first_seconds: 0.5          # 第一段倒车转弯时间（秒），先短时测试
+second_steering_raw: 22     # 第二段反打方向的大小，1~22
+second_seconds: 0.0         # 反打倒车时间；0 = 不执行
+repeat_bay_steering_raw: 22 # 第二轮朝车位侧打方向的大小，1~22
+repeat_bay_seconds: 0.0     # 第二轮朝车位侧打方向倒车时间；右侧车位即右打，0 = 不执行
+repeat_counter_steering_raw: 22 # 第二轮反打方向的大小，1~22
+repeat_counter_seconds: 0.0 # 第二轮反打方向倒车时间；右侧车位即左打，0 = 不执行
+straight_seconds: 0.0       # 最后回正直线倒车时间；0 = 不执行
+pause_seconds: 0.7          # 两段运动之间停车回正时间（至少 0.3 秒）
+countdown_seconds: 3.0      # 按 g 后启动倒计时（至少 2 秒）
+
+# 仅 --slot 模式使用：先视觉找 P1 最前横线，前轴对线后才按距离定位。
+# 定位目标统一向前平移 70cm：P1 +85cm / P2 +15cm / P3 -55cm。
+# 以前轴对齐 P1 前库线的位置为共同参照。
+# --slot 默认从 motion/config.yaml 读取各档实测速度；下列是 RAW 30 备用系数。
+# 只换算时间，不构成距离闭环；命令行显式系数仍可覆盖。
+slot_reference:
+  reference_offset_m: 0.85
+  slot_spacing_m: 0.70
+  forward_mps_per_raw: 0.0094350167561033
+  reverse_mps_per_raw: 0.009367904818225319
+
+# 对线后的定位和倒车状态机速度；找线循线速度由 reference_search 单独设置。
+slot_motion:
+  position_speed_raw: 30
+  speed_raw: 30
+
+reference_search:
+  seek_speed_raw: 15
+  creep_speed_raw: 15
+  wheelbase_m: 0.26
+  line_tolerance_m: 0.02
+  stop_delay_s: 0.10
+  seek_max_m: 3.0
+  seek_timeout_s: 20.0
+  camera_timeout_s: 0.4
+  settle_seconds: 0.7

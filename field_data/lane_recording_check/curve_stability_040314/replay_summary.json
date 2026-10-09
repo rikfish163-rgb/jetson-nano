@@ -1,0 +1,25 @@
+{
+  "recorded_entry": {
+    "confidence": 0.8485364701648592, 
+    "source_stamp": 1790712275.7770731, 
+    "after_speed": 12, 
+    "stamp": 1790712276.010137, 
+    "after_raw": -10, 
+    "before_speed": 20, 
+    "recorded_speed": 20, 
+    "preview": {
+      "measured_curvature": -0.8775866835495092, 
+      "variance": 0.03328506618950792, 
+      "residual_m": 0.00037268999871785575, 
+      "curvature": -0.8445062712944575, 
+      "stamp": 1790712275.7770731
+    }, 
+    "recorded_raw": 1, 
+    "before_raw": 1
+  }, 
+  "new_target_images": 318, 
+  "rows": 395, 
+  "scope": "same recorded local paths; no simulated physical trajectory or lidar freshness", 
+  "numeric_target_events": 1770, 
+  "old_target_images": 1770
+}

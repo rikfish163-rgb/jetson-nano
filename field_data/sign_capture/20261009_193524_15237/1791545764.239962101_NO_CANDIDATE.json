@@ -1,0 +1,32 @@
+{
+  "confidence": 0.0, 
+  "detections": [], 
+  "inference_ms": 87.27002143859863, 
+  "input_mode": "full_frame_yolo", 
+  "label": "", 
+  "range_reason": "no_candidate", 
+  "roi_diagnostics": {
+    "candidate_count": 0, 
+    "regions": [], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [], 
+  "route_gate": {
+    "enabled": true, 
+    "frames": 0, 
+    "left_center_ratio": 0.3, 
+    "track_id": null
+  }, 
+  "scores": {}, 
+  "sign_bounds": null, 
+  "sign_depth_m": null, 
+  "sign_height_ratio": null, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.12079191207885742, 
+  "stamp": 1791545764.239962, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": ""
+}
