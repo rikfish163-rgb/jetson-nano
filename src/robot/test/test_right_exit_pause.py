@@ -11,7 +11,9 @@ class RightExitPauseTests(unittest.TestCase):
     def core(self):
         cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
         cfg.update(wait_green=False, lidar_enabled=False,
+                   straight_speed_raw=30, lane_curve_speed_raw=30,
                    right_timed_reverse_s=.1, right_timed_turn_s=.2)
+        cfg['speed_raw']['lane'] = 30
         c = Controller(cfg)
         self.addCleanup(c.close)
         c.action = 'RIGHT'
@@ -67,7 +69,7 @@ class RightExitPauseTests(unittest.TestCase):
         start = self.reach_pause(c)
         for i in range(1, 41):
             self.tick(c, start+i*.05)
-        self.assertEqual(self.tick(c, start+2.05, lane=False), (12, 0.))
+        self.assertEqual(self.tick(c, start+2.05, lane=False), (30, 0.))
         self.assertEqual(c.reason, 'right_timed_exit_search_straight')
         self.assertEqual(c.exit_count,0)
 
@@ -81,10 +83,10 @@ class RightExitPauseTests(unittest.TestCase):
             blue_lines=[dict(x=x,y=0.,yaw=yaw,length=.8)]),t)
         return c.tick(t)
 
-    def test_missing_lane_keeps_twelve_past_old_action_timeout_then_recovers(self):
+    def test_missing_lane_keeps_configured_speed_past_old_action_timeout_then_recovers(self):
         c=self.core();self.exit_search(c)
         for t in (1.1,41.,60.):
-            self.assertEqual(self.tick(c,t,lane=False),(12,0.))
+            self.assertEqual(self.tick(c,t,lane=False),(30,0.))
             self.assertEqual(c.state,'MANEUVER')
         for t in (60.1,60.3,60.7):self.tick(c,t)
         self.assertEqual(c.state,'MANEUVER')
@@ -97,14 +99,14 @@ class RightExitPauseTests(unittest.TestCase):
             c=self.core();self.exit_search(c)
             c.issued_steer=-.03
             c.observe_lane(points,confidence,2.)
-            self.assertEqual(self.tick(c,2.,lane=False),(12,0.))
+            self.assertEqual(self.tick(c,2.,lane=False),(30,0.))
 
     def test_confirmed_new_blue_dispatches_queued_direction_without_lane(self):
         for action in ('STRAIGHT','RIGHT'):
             c=self.core();self.exit_search(c)
             c.next_direction=action;c.next_direction_at=2.
             for t in (3.,3.1):
-                self.assertEqual(self.blue(c,t),(12,0.))
+                self.assertEqual(self.blue(c,t),(30,0.))
                 self.assertEqual(c.action,'RIGHT')
             self.blue(c,3.2)
             self.assertEqual(c.action,action)
@@ -171,12 +173,12 @@ class RightExitPauseTests(unittest.TestCase):
         c=self.core();self.exit_search(c)
         c.next_direction='STRAIGHT';c.next_direction_at=2.
         for t in (3.,3.2,3.6,4.,40.,60.):
-            self.assertEqual(self.tick(c,t)[0],12)
+            self.assertEqual(self.tick(c,t)[0],30)
             self.assertEqual(c.action,'RIGHT')
             self.assertEqual(c.reason,'right_timed_exit_align')
         c.observe_lane([(.25,.075),(.45,.135),(.65,.195)],.99,60.1)
         speed,steer=self.tick(c,60.1,lane=False)
-        self.assertEqual(speed,12)
+        self.assertEqual(speed,30)
         self.assertGreater(steer,0.)
         for t in (60.2,60.3,60.4):self.blue(c,t)
         self.assertEqual(c.state,'BLUE_APPROACH')

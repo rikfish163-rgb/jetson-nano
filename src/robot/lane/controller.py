@@ -417,11 +417,14 @@ def left_reference_command(ctx, line, now):
     steer = max(before-limit,min(before+limit,target))
     aligned = (abs(line['heading']) <= math.radians(cfg.get('left_reference_heading_deg',8)) and
                abs(line['lateral']) <= cfg.get('left_reference_lateral_m',.08))
-    # Keep a U-turn/right-turn exit at the guarded crawl until it is aligned;
-    # once released, sweep the actual lane speed that will be returned.
-    speed = (cfg['speed_raw']['lane']
-             if aligned and ctx.action not in ('RIGHT', 'UTURN')
-             else cfg.get('left_reference_speed_raw',12))
+    # Road and RIGHT-exit references use the configured road speeds. Sweep
+    # that actual command, including while only one measured side is visible.
+    if ctx.action == 'UTURN':
+        speed = cfg.get('left_reference_speed_raw',12)
+    else:
+        speed = cfg['speed_raw']['lane']
+        if not aligned:
+            speed = min(speed,cfg.get('lane_curve_speed_raw',12))
     if not _left_boundary_sweep_clear(ctx, line, speed=speed, steer=steer):
         offset = line.get('offset_m', cfg['lane_width'] / 2)
         ctx.left_reference = dict(stamp=now, heading_deg=math.degrees(line['heading']),
@@ -432,10 +435,6 @@ def left_reference_command(ctx, line, now):
     ctx.left_reference = dict(stamp=now,heading_deg=math.degrees(line['heading']),
         lateral_m=line['lateral'],offset_m=line.get('offset_m',cfg['lane_width']/2),aligned=aligned,
         command_steer=steer,target_steer=target,lookahead_m=lookahead)
-    # Keep a U-turn exit at the same guarded crawl used by a right-turn
-    # boundary handoff until the mission releases the maneuver.  The offset
-    # target is deliberately close to the left tape, so a full lane speed
-    # command before the handoff confirmation can carry the body across it.
     ctx.gap_origin,ctx.gap_start,ctx.gap_steer = ctx.pose,now,steer
     return speed,steer
 

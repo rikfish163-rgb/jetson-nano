@@ -57,7 +57,6 @@ class ConsecutiveRightActionTests(unittest.TestCase):
             self.assertEqual(phases['TIMED_TURN']['speed_raw'],
                              cfg.get('right_timed_turn_speed_raw', 30))
             self.assertEqual(c.right_completed_count, junction + 1)
-            self.assertEqual(c.right_handoff_slow, junction == 0)
             triggers.append(c.last_blue_trigger['stamp'])
         self.assertGreater(triggers[1], triggers[0])
 

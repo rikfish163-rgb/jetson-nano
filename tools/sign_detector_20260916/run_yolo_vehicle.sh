@@ -63,7 +63,7 @@ exec roslaunch robocup_competition full.launch \
   lidar_enabled:=true parking_enabled:=true wait_green:=true \
   "parking_slot:=$parking_slot" "parking_mode:=$parking_mode" "parking_entry_style:=$parking_style" \
   lane_hz:=12 lane_window_height:=40 lane_min_span:=0.15 record_lane:=false \
-  lane_speed_raw:=40 action_speed_raw:=20 straight_speed_raw:=30 \
+  lane_speed_raw:=30 action_speed_raw:=20 straight_speed_raw:=30 \
   lane_curvature_preview:=true lane_curve_speed_raw:=30 \
   startup_steering_raw:=-3 \
   lookahead:=1.0 action_lookahead:=0.30 steering_command_scale_rad:=0.03 \

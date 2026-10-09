@@ -21,7 +21,7 @@ left_timed_turn_steering_raw: 22
 left_timed_turn_s: 3.6
 
 # Production RIGHT after shared blue stop. Signed RAW commands, seconds.
-# Three motion stages, a stationary pause, then confirmed lane handoff.
+# Three motion stages, a stationary pause, then immediate normal lane control.
 right_timed_enabled: true
 right_timed_reverse_speed_raw: -30
 right_timed_reverse_steering_raw: 0

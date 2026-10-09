@@ -20,7 +20,7 @@ from robot.motion.calibration import speed_gain
 
 FIELDS = ('action', 'action_source', 'action_started', 'route_action_started',
  'right_sign_locked', 'right_sign_rearmed_at',
- 'route_sign_last_seen', 'route_sign_rearmed', 'right_completed_count', 'right_handoff_slow', 'cfg', 'completed_at_pose',
+ 'route_sign_last_seen', 'route_sign_rearmed', 'right_completed_count', 'cfg', 'completed_at_pose',
  'consumed_marker', 'course_finished', 'course_stop_pending', 'direction_window', 'estop',
  'executor', 'exit_count', 'exit_pose', 'exit_stamp', 'follow_left_boundary', 'follower',
  'front_marker_stamp', 'future', 'gap_origin', 'last_completed_action', 'left_reference', 'lane_source',
@@ -144,7 +144,6 @@ def initial_state(cfg):
     state['left_fit_diagnostic'] = None
     state['right_lock'] = None
     state['right_completed_count'] = 0
-    state['right_handoff_slow'] = False
     state['left_lock'] = None
     state['straight_search'] = None
     state['right_tail_origin'] = None
@@ -181,9 +180,6 @@ def set_pose(ctx, pose, stamp):
 
 
 def start_follow(ctx, path, action, now):
-    if action != 'BYPASS':
-        # Restore the normal maneuver speed at entry, after the blue-line wait.
-        ctx.right_handoff_slow = False
     # Blue approach/stop and the maneuver belong to one sign-owned action.
     # Its queue clock must survive the maneuver's separate timing reset.
     if (ctx.pending != action and not
@@ -240,7 +236,6 @@ def start_follow(ctx, path, action, now):
 def resume_lane(ctx):
     if ctx.action == 'RIGHT':
         ctx.right_completed_count += 1
-        ctx.right_handoff_slow = True
     ctx.lane_speed_state = None
     ctx.lane_preview = None
     ctx.lane_curve_lock = None
@@ -414,7 +409,6 @@ def dispatch(ctx, now):
 def begin_blue_action(ctx, now):
     """Called once after the entry stop and stationary wait."""
     action = ctx.action
-    ctx.right_handoff_slow = False
     parking_anchor = (ctx.blue_approach or {}).get('parking_anchor')
     ctx.blue_approach = None
     if action == 'PARKING':

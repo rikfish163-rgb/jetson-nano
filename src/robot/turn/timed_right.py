@@ -26,7 +26,7 @@ def search_straight(ctx, now):
     steer = task['exit_track_steer'] if hold else 0.
     if not hold:
         ctx.left_reference = None
-    command = (12./ctx.cfg['speed_sign'], steer)
+    command = (ctx.cfg['straight_speed_raw'], steer)
     result = ctx.call('obstacle', 'checked_command', command, now, False)
     if result == command:
         ctx.reason = ('right_timed_exit_hold_reference' if hold else
@@ -80,7 +80,7 @@ def next_blue_handoff(ctx, now):
     ctx.marker = marker
     result = ctx.call('mission','dispatch',now)
     return result if result is not None else ctx.call(
-        'obstacle','checked_command',(12./cfg['speed_sign'],0.),now,False)
+        'obstacle','checked_command',(cfg['straight_speed_raw'],0.),now,False)
 
 
 def align_exit(ctx, now):
@@ -174,10 +174,17 @@ def align_exit(ctx, now):
     return result
 
 
+def resume_normal_lane(ctx, now):
+    """The fixed maneuver is complete; ordinary lane control owns the output."""
+    ctx.call('mission', 'resume_lane')
+    command = ctx.call('lane', 'lane_command', now)
+    return ctx.call('obstacle', 'checked_command', command, now, True)
+
+
 def tick(ctx, now):
     cfg, task = ctx.cfg, ctx.right_lock
     if task.get('phase') in ('WAIT_LANE', 'ALIGN_LANE'):
-        return align_exit(ctx, now)
+        return resume_normal_lane(ctx, now)
     if not 0 <= now-ctx.front_marker_stamp <= cfg.get('ground_timeout', 1.25):
         ctx.state = 'FAULT'
         return ctx.call('motion', 'stop', 'right_timed_front_stale')
@@ -190,9 +197,7 @@ def tick(ctx, now):
     if task['phase'] == 'EXIT_SETTLE':
         if now < task['settle_until']:
             return ctx.call('motion', 'stop', 'right_timed_exit_settle')
-        task.update(phase='WAIT_LANE', exit_started=now)
-        ctx.exit_count, ctx.exit_stamp = 0, -1.
-        return ctx.call('motion', 'stop', 'right_timed_complete_wait_lane')
+        return resume_normal_lane(ctx, now)
     index = next(i for i, stage in enumerate(STAGES) if stage[0] == task['phase'])
     phase, key, seconds, default_speed, default_raw = STAGES[index]
     duration = cfg.get('right_timed_'+key+'_s', seconds)

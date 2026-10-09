@@ -61,10 +61,11 @@ class TimedRightTests(unittest.TestCase):
         for i in range(81,120):
             self.assertEqual(self.command(c,i/20.),(0,0))
             self.assertEqual(c.right_lock['phase'],'EXIT_SETTLE')
-        self.assertEqual(self.command(c,6.0),(0,0))
-        self.assertEqual(c.right_lock['phase'],'WAIT_LANE')
-        self.assertEqual(self.command(c,6.05),(12,0))
-        self.assertEqual(c.action,'RIGHT')
+        c.lane_command=lambda now:(30,0.)
+        self.assertEqual(self.command(c,6.0),(30,0))
+        self.assertEqual(c.state,'LANE')
+        self.assertIsNone(c.right_lock)
+        self.assertIsNone(c.action)
         self.assertIsNone(c.straight_search)
 
     def test_blue_stop_waits_then_dispatches_timed_right(self):
@@ -87,15 +88,24 @@ class TimedRightTests(unittest.TestCase):
         self.assertEqual(c.action,'RIGHT')
         self.assertIsNone(c.straight_search)
 
-    def test_lane_confirmation_keeps_continuous_alignment(self):
+    def test_completed_right_returns_to_normal_lane_without_confirmation(self):
         c=self.make()
         c.right_lock.update(phase='WAIT_LANE',exit_started=.9)
-        for stamp in (1.,1.2,1.6):
-            c.observe_lane([(.25,0),(.45,0),(.65,0)],.95,stamp)
-            self.assertGreater(self.command(c,stamp)[0],0)
-        self.assertEqual(c.state,'MANEUVER')
-        self.assertEqual(c.right_lock['phase'],'ALIGN_LANE')
-        self.assertEqual(c.action,'RIGHT')
+        c.lane_command=lambda now:(30,.006)
+        def forbidden(*args):raise AssertionError('extra exit confirmation')
+        c.handoff_lane_confirmed=forbidden
+        c.front_marker_stamp=1.
+        self.assertEqual(c.tick(1.),(30,.006))
+        self.assertEqual(c.state,'LANE')
+        self.assertIsNone(c.right_lock)
+        self.assertIsNone(c.action)
+
+    def test_no_lane_after_completion_stays_stopped_under_normal_lane_rules(self):
+        c=self.make()
+        c.right_lock.update(phase='WAIT_LANE',exit_started=.9)
+        self.assertEqual(self.command(c,1.),(0,0))
+        self.assertEqual(c.state,'LANE')
+        self.assertIsNone(c.right_lock)
 
     def test_gap_fault_never_restarts(self):
         c=self.make()
