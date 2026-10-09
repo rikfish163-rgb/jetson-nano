@@ -1,0 +1,75 @@
+{
+  "confidence": 0.9460400938987732, 
+  "detections": [
+    {
+      "bounds": [
+        106, 
+        110, 
+        25, 
+        31
+      ], 
+      "confidence": 0.9460400938987732, 
+      "label": "straight", 
+      "scores": {
+        "green": 5.189961666474119e-05, 
+        "left": 0.000915521290153265, 
+        "park": 5.149575736140832e-05, 
+        "red": 1.6849962776177563e-05, 
+        "right": 0.0004243170842528343, 
+        "straight": 0.9460400938987732, 
+        "uturn": 0.0005097826360724866
+      }
+    }
+  ], 
+  "inference_ms": 90.48700332641602, 
+  "input_mode": "full_frame_yolo", 
+  "label": "", 
+  "range_reason": "outside_route_region", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          106, 
+          110, 
+          25, 
+          31
+        ], 
+        "reason": "#1 straight 0.95"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [], 
+  "route_gate": {
+    "enabled": true, 
+    "frames": 0, 
+    "left_center_ratio": 0.3, 
+    "track_id": null
+  }, 
+  "scores": {
+    "GREEN": 5.189961666474119e-05, 
+    "LEFT": 0.000915521290153265, 
+    "PARKING": 5.149575736140832e-05, 
+    "RED": 1.6849962776177563e-05, 
+    "RIGHT": 0.0004243170842528343, 
+    "STRAIGHT": 0.9460400938987732, 
+    "UTURN": 0.0005097826360724866
+  }, 
+  "sign_bounds": [
+    106, 
+    110, 
+    25, 
+    31
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.08611111111111111, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.10373258590698242, 
+  "stamp": 1791549115.2944493, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "STRAIGHT"
+}
