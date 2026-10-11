@@ -78,15 +78,16 @@ bash tools/sign_detector_20260916/run_yolo_vehicle.sh \
 ```
 
 P1–P5 统一优先使用 `forward_plan`，将 `parking_slot` 改为现场确认的具体编号。
-前相机测量指定车位，雷达确认空间，规划器检查整车路径，执行中持续根据观测修正。
-测量缺失、目标不明确或空间未知时停止，不自动切换成定时盲走。
+前相机测量指定车位，规划器检查视觉几何限定的整车路径，执行中持续根据观测修正。
+测量缺失或目标不明确时停止，不自动切换成定时盲走。雷达占用与覆盖率仅作诊断，不否决入库。
 当前相机只输出车位几何，AUTO 需要输入明确目标编号，不能自动识别 P1–P5。
 无编号时按同类车位完整排序关联：侧方需三个，垂直需两个；驶入后保持同一目标。
 后相机不参与前进停车。需要原有后摄掉头的路线可显式设置 `start_rear:=true`。
 原 `reverse_plan`、`parallel_reverse`、`forward_white`、`forward_center` 保留为显式单项模式。
 
-雷达启用后持续检查观测时效及车身运动扫掠，包括绕障期间及绕障完成后。
-无法确认空间时停车。直行距离达到 1.25 m 后停车等待多个不同图像帧确认出口，
+雷达仅参与绕障目标检测；雷达缺失、过期、有效点不足、障碍和未知区域不再触发停车，
+绕障也不再先零速等待打舵。已删除雷达扫掠停车和入库雷达门槛，车辆不再具备雷达自动刹停保护。
+红灯、急停、视觉观测和动作完成停车继续生效。直行距离达到 1.25 m 后停车等待多个不同图像帧确认出口，
 缺少出口时不会直接清除动作。巡线算法和参数由正在修车的另一对话维护。
 
 绿灯、方向牌和蓝线负责触发动作；各行为返回速度/转向建议，
@@ -107,3 +108,13 @@ P1–P5 统一优先使用 `forward_plan`，将 `parking_slot` 改为现场确�
 源码迁移前快照为 `before.tar.gz`。
 
 [架构及接口](docs/ARCHITECTURE.md) · [验证记录](docs/VALIDATION.md)
+
+## Vehicle action tuning
+
+Edit `src/robot/config/vehicle_tuning.yaml` for LEFT, RIGHT, STRAIGHT, UTURN, bypass and P1/P2/P3 parking stages. This file is loaded after module defaults and before explicit launch arguments. Save and restart the vehicle; no live reload. Speed/steering are RAW units; duration is seconds. Visual/distance end conditions are documented in the file.
+
+```bash
+cd /home/nano/robocup_ws
+nano src/robot/config/vehicle_tuning.yaml
+PYTHONDONTWRITEBYTECODE=1 python2 tools/module_workspace.py check
+```

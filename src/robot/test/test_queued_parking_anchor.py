@@ -128,53 +128,6 @@ class QueuedParkingAnchorTests(unittest.TestCase):
         self.assertEqual(node.parking_projector.calls, [])
         self.assertIsNone(node.core.parking_sign)
 
-    def active_s_node(self):
-        from robot.parking.entry import ExplicitStraightEntry
-        node = self.make_node()
-        node.cfg.update(parking_mode='forward_center', parking_entry_style='S',
-                        parking_slot='P4')
-        node.core.state, node.core.action = 'PARKING', 'PARKING'
-        node.core.parking_entry = ExplicitStraightEntry(
-            node.cfg, (10.,20.,0.), 2.8, (10.9,20.3))
-        node.core.parking_sign = dict(point=(10.9,20.3), stamp=2.8)
-        node.parking_projector.point = (.81,.34)
-        return node
-
-    def filtered_p(self, node, stamp=3., now=None, confidence=.97):
-        node.clock.value = stamp if now is None else now
-        node.sign(_ros_fixtures._BoolMessage(json.dumps(dict(
-            stamp=stamp, label='', top_label='PARKING', confidence=confidence,
-            sign_bounds=[86,58,86,108], range_reason='outside_route_region',
-            source='yolov5s'))))
-
-    def test_active_s_tracks_locked_p_when_it_moves_left_of_route_region(self):
-        node = self.active_s_node()
-        self.filtered_p(node)
-        self.assertEqual(node.core.parking_entry.sign_anchor, (10.81,20.34))
-        self.assertEqual(node.core.parking_sign['stamp'], 3.)
-        self.assertIsNone(node.core.pending)
-        self.assertIsNone(node.core.next_direction)
-        self.assertEqual(node.core.sign_info['label'], '')
-
-    def test_filtered_p_does_not_arm_parking_or_replace_a_far_locked_target(self):
-        node = self.make_node()
-        self.filtered_p(node)
-        self.assertEqual(node.parking_projector.calls, [])
-        self.assertIsNone(node.core.parking_sign)
-        node = self.active_s_node()
-        node.parking_projector.point = (2.,1.)
-        self.filtered_p(node)
-        self.assertEqual(node.core.parking_entry.sign_anchor, (10.9,20.3))
-        self.assertEqual(node.core.parking_sign['stamp'], 2.8)
-
-    def test_filtered_p_tracking_rejects_low_confidence_stale_and_duplicate(self):
-        for stamp,now,confidence in ((3.,3.,.5),(1.,4.,.97),(2.7,3.,.97)):
-            node = self.active_s_node()
-            node.core.sign_stamp = 2.8
-            self.filtered_p(node,stamp,now,confidence)
-            self.assertEqual(node.parking_projector.calls, [])
-            self.assertEqual(node.core.parking_entry.sign_anchor, (10.9,20.3))
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -30,10 +30,10 @@ class NearestPairTests(unittest.TestCase):
         self.assertEqual(p.command(1.,c.pose)[0],16)
         p.observe(near+[[(.8,-.11),(.8,.27)]],1.1,c.pose)
         self.assertEqual(p.command(1.1,c.pose)[0],16)
-        p.observe([],1.2,(.431,0.,0.))
+        p.observe([[(.8,-.11),(.8,.27)]],1.2,(.431,0.,0.))
         self.assertEqual(p.command(1.2,(.431,0.,0.)),(0,0.))
 
-    def test_both_steering_directions_are_small_and_missing_pair_is_straight(self):
+    def test_both_steering_directions_use_chassis_range_and_legacy_pair_loss_is_straight(self):
         for sign in (-1,1):
             c,p=self.parking()
             lines=[[(.3,sign*.1+.19),(.9,sign*.25+.19)],
@@ -42,7 +42,7 @@ class NearestPairTests(unittest.TestCase):
             speed,steer=p.command(1.,c.pose)
             self.assertEqual(speed,16)
             self.assertGreater(sign*steer,0)
-            self.assertLessEqual(abs(encode_command(speed,steer,c.cfg,0)['steering_raw']),6)
+            self.assertLessEqual(abs(encode_command(speed,steer,c.cfg,0)['steering_raw']),c.cfg['steering_raw_limit'])
             p.observe(lines[:1],1.1,c.pose)
             self.assertEqual(p.command(1.1,c.pose),(16,0.))
 

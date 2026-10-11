@@ -15,12 +15,13 @@ from robot.common.executor import _SingleJobExecutor
 from robot.parking.forward import ForwardParking
 from robot.common.lidar_policy import lidar_guard_disabled_reason
 from robot.motion.calibration import speed_gain
+from robot.parking.reverse_entry import reverse_after_turn_route
 
 
 
 FIELDS = ('action', 'action_source', 'action_started', 'route_action_started',
  'right_sign_locked', 'right_sign_rearmed_at',
- 'route_sign_last_seen', 'route_sign_rearmed', 'right_completed_count', 'cfg', 'completed_at_pose',
+ 'route_sign_last_seen', 'route_sign_rearmed', 'right_completed_count', 'right_handoff_slow', 'cfg', 'completed_at_pose',
  'consumed_marker', 'course_finished', 'course_stop_pending', 'direction_window', 'estop',
  'executor', 'exit_count', 'exit_pose', 'exit_stamp', 'follow_left_boundary', 'follower',
  'front_marker_stamp', 'future', 'gap_origin', 'last_completed_action', 'left_reference', 'lane_source',
@@ -29,16 +30,16 @@ FIELDS = ('action', 'action_source', 'action_started', 'route_action_started',
  'parking_marker', 'parking_trigger_at', 'parking_trigger_pose', 'pending', 'pending_at',
  'pose', 'pose_stamp', 'reason', 'red', 'left_lock', 'right_lock', 'right_tail_origin', 'sign_count', 'sign_info',
  'sign_label', 'startup_started', 'startup_origin', 'startup_blue_point', 'startup_curve_lock',
- 'state', 'straight_search', 'parking_straight_travel', 'timed_uturn', 'timed_parking', 'uturn', 'uturn_exit_straight',
+ 'state', 'straight_search', 'parking_straight_travel', 'turn_reverse_watch', 'timed_uturn', 'timed_parking', 'uturn', 'uturn_exit_straight',
  'uturn_sign_window', 'wait_until', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen', 'lane_recovery',
  'blue_approach', 'blue_prealign', 'front_blue_image_lines', 'blue_clear_since', 'blue_clear_frames', 'front_blue_lines', 'lane_curve_lock', 'lane_preview', 'lane_speed_state')
-CALLS = (('lane', 'lane_command'), ('mission', 'dispatch'), ('mission', 'resume_lane'),
+CALLS = (('lane', 'search_command'), ('lane', 'lane_command'), ('mission', 'dispatch'), ('mission', 'resume_lane'),
  ('mission', 'start_follow'), ('motion', 'follow_path_tick'), ('motion', 'stop'),
  ('obstacle', 'checked_command'), ('obstacle', 'scan_ready'), ('obstacle', 'timed_bypass_tick'),
  ('lane', 'park_line_command'),
  ('parallel_parking', 'parallel_parking_tick'), ('parking', 'auto_parking_tick'),
  ('parking', 'start_parking'), ('parking', 'start_explicit_parking'),
- ('parking', 'explicit_parking_tick'), ('turn', 'exit_lane_confirmed'),
+ ('parking', 'explicit_parking_tick'), ('parking', 'turn_reverse_tick'), ('turn', 'exit_lane_confirmed'),
  ('turn', 'straight_search_tick'), ('turn', 'blue_approach_tick'), ('uturn', 'course_blue_stop'),
  ('uturn', 'startup_tick'), ('uturn', 'uturn_phase'), ('uturn', 'uturn_tick'))
 OPERATIONS = ('close', 'set_pose', 'start_follow', 'resume_lane', 'dispatch', 'begin_blue_action', 'begin_startup', 'tick')
@@ -110,6 +111,7 @@ def initial_state(cfg):
     state['marker_candidate'] = None
     state['last_blue_trigger'] = None
     state['parking_straight_travel'] = None
+    state['turn_reverse_watch'] = None
     state['parking_marker'] = None
     state['consumed_marker'] = None
     state['completed_at_pose'] = None
@@ -144,6 +146,7 @@ def initial_state(cfg):
     state['left_fit_diagnostic'] = None
     state['right_lock'] = None
     state['right_completed_count'] = 0
+    state['right_handoff_slow'] = False
     state['left_lock'] = None
     state['straight_search'] = None
     state['right_tail_origin'] = None
@@ -175,11 +178,33 @@ def set_pose(ctx, pose, stamp):
         if ctx.last_blue_trigger is not None and 'travelled_m' in ctx.last_blue_trigger:
             ctx.last_blue_trigger['travelled_m'] += distance(ctx.pose,pose)
         if ctx.parking_straight_travel is not None:
-            ctx.parking_straight_travel['travelled_m'] += distance(ctx.pose,pose)
+            travel=ctx.parking_straight_travel
+            if travel.get('source')=='front_axle_blue':
+                dx,dy=pose[0]-ctx.pose[0],pose[1]-ctx.pose[1]
+                heading=ctx.pose[2]+wrap(pose[2]-ctx.pose[2])/2.
+                step=distance(ctx.pose,pose)
+                if dx*math.cos(heading)+dy*math.sin(heading)<0:step=-step
+                if travel['crossed']:
+                    travel['travelled_m']+=step
+                else:
+                    def past_line(p):
+                        x=p[0]+ctx.cfg['wheelbase']*math.cos(p[2])-travel['point_world'][0]
+                        y=p[1]+ctx.cfg['wheelbase']*math.sin(p[2])-travel['point_world'][1]
+                        return x*math.cos(travel['yaw'])+y*math.sin(travel['yaw'])
+                    before,after=past_line(ctx.pose),past_line(pose)
+                    if before<=0<=after and after>before and step>0:
+                        fraction=-before/(after-before)
+                        travel.update(crossed=True,stamp=ctx.pose_stamp+fraction*(stamp-ctx.pose_stamp),
+                            travelled_m=step*(1.-fraction))
+            else:
+                travel['travelled_m'] += distance(ctx.pose,pose)
         ctx.pose, ctx.pose_stamp = tuple(pose), stamp
 
 
 def start_follow(ctx, path, action, now):
+    if action != 'BYPASS':
+        # Restore the normal maneuver speed at entry, after the blue-line wait.
+        ctx.right_handoff_slow = False
     # Blue approach/stop and the maneuver belong to one sign-owned action.
     # Its queue clock must survive the maneuver's separate timing reset.
     if (ctx.pending != action and not
@@ -206,8 +231,10 @@ def start_follow(ctx, path, action, now):
     if action == 'STRAIGHT':
         # Start the S-entry budget at fixed straight, not at blue approach.
         # Keep this checkpoint after straight_search is cleared at handoff.
-        ctx.parking_straight_travel = dict(stamp=now,vehicle_pose=list(ctx.pose),
-            travelled_m=0.,source='fixed_straight',travel_source=ctx.cfg['pose_mode'])
+        if not (ctx.cfg.get('parking_entry_style')=='S' and
+                ctx.cfg.get('parking_s_blue_distance_m',0.)>0):
+            ctx.parking_straight_travel = dict(stamp=now,vehicle_pose=list(ctx.pose),
+                travelled_m=0.,source='fixed_straight',travel_source=ctx.cfg['pose_mode'])
         # Consume sign state at entry, not at the later lane handoff. Keep the
         # running action itself intact and retain sign_stamp for stale rejection.
         route_started = (ctx.route_action_started if ctx.route_action_started is not None
@@ -236,12 +263,14 @@ def start_follow(ctx, path, action, now):
 def resume_lane(ctx):
     if ctx.action == 'RIGHT':
         ctx.right_completed_count += 1
+    ctx.right_handoff_slow = False
+    ctx.follow_left_boundary = False
+    ctx.left_reference = None
     ctx.lane_speed_state = None
     ctx.lane_preview = None
     ctx.lane_curve_lock = None
     ctx.startup_curve_lock = None
-    ctx.uturn_exit_straight = (ctx.action == 'UTURN' or
-                              (ctx.action == 'BYPASS' and ctx.uturn_exit_straight))
+    ctx.uturn_exit_straight = False
     if ctx.action in ('LEFT', 'RIGHT', 'STRAIGHT', 'UTURN'):
         ctx.parking_route_ready = True
     if ctx.action=='LEFT':
@@ -295,6 +324,8 @@ def resume_lane(ctx):
 def dispatch(ctx, now):
     if ctx.action is not None:
         return None
+    if ctx.pending == 'PARKING' and reverse_after_turn_route(ctx):
+        return None  # this route enters on path loss, not the front P anchor
     if (ctx.pending == 'PARKING' and ctx.cfg.get('parking_enabled',True) and
             ctx.cfg.get('parking_mode') == 'forward_center' and
             ctx.cfg.get('parking_entry_style') == 'S'):
@@ -377,6 +408,16 @@ def dispatch(ctx, now):
     # Reserve the observed stripe; align the body before counting entry travel.
     if math.cos(yaw-ctx.pose[2]) < 0:
         yaw = wrap(yaw+math.pi)
+    if (action=='STRAIGHT' and ctx.cfg.get('parking_mode')=='forward_center' and
+            ctx.cfg.get('parking_entry_style')=='S' and
+            ctx.cfg.get('parking_s_blue_distance_m',0.)>0):
+        # Lock this accepted stripe; do not zero at STRAIGHT or the later P sign.
+        past=(ctx.cfg['wheelbase']*math.cos(yaw-ctx.pose[2])-
+              x*math.cos(yaw-ctx.pose[2])-y*math.sin(yaw-ctx.pose[2]))
+        ctx.parking_straight_travel=dict(source='front_axle_blue',
+            point_world=list(ctx.consumed_marker),yaw=yaw,armed_stamp=now,
+            crossed=past>=0,stamp=now if past>=0 else None,
+            travelled_m=max(0.,past),travel_source=ctx.cfg['pose_mode'])
     ctx.blue_approach = dict(point=ctx.consumed_marker,yaw=yaw,
         observed_stamp=ctx.last_blue_trigger['observed_stamp'],started=now,
         origin=ctx.pose,phase='STOP_LINE' if (action in ('STRAIGHT','UTURN') or (action=='LEFT' and ctx.cfg.get('left_timed_enabled',False)) or (action=='RIGHT' and ctx.cfg.get('right_timed_enabled',False))) else 'ALIGN',
@@ -409,6 +450,7 @@ def dispatch(ctx, now):
 def begin_blue_action(ctx, now):
     """Called once after the entry stop and stationary wait."""
     action = ctx.action
+    ctx.right_handoff_slow = False
     parking_anchor = (ctx.blue_approach or {}).get('parking_anchor')
     ctx.blue_approach = None
     if action == 'PARKING':
@@ -442,6 +484,7 @@ def begin_blue_action(ctx, now):
 
 
 def begin_startup(ctx, now):
+    ctx.turn_reverse_watch = None
     ctx.lane_speed_state = None
     ctx.lane_curve_lock = None
     ctx.parking_route_ready = False
@@ -482,43 +525,75 @@ def _interrupt_explicit_parking(ctx,reason):
 
 def _parking_distance_guard(ctx, command=None):
     cfg=ctx.cfg
+    if (getattr(ctx.parking_entry, 'camera_source', 'front') == 'rear' or
+            reverse_after_turn_route(ctx)):
+        return None  # rear entry has no distance cap; do not apply front travel history
     selected=(cfg.get('parking_mode')=='forward_center' and
-              cfg.get('parking_slot') in ('P4','P5') and
               cfg.get('parking_entry_style') in ('S','T'))
     target=(ctx.action=='PARKING' or ctx.pending=='PARKING' or
             ctx.next_direction=='PARKING')
     if not selected or not target:
         return None
-    straight=cfg.get('parking_entry_style')=='S'
-    trigger=ctx.parking_straight_travel if straight else ctx.last_blue_trigger
+    if cfg.get('parking_entry_style')=='S':
+        limit=cfg.get('parking_s_blue_distance_m',0.)
+        if limit>0:
+            trigger=ctx.parking_straight_travel
+            if trigger is None or trigger.get('source')!='front_axle_blue':
+                if ctx.state=='PARKING':
+                    return ctx.call('motion','stop','parking_blue_origin_missing')
+                return None
+            travelled=trigger['travelled_m']
+            trigger.update(parking_limit_m=limit,remaining_m=limit-travelled,
+                           command_reserve_m=0.)
+            entry=ctx.parking_entry
+            if entry is not None:
+                entry.debug.update(distance_limit_enabled=True,
+                    travel_origin='front_axle_blue',front_axle_crossed=trigger['crossed'],
+                    travel_m=travelled,travel_limit_m=limit,travel_remaining_m=limit-travelled)
+            if trigger['crossed'] and travelled>=limit-1e-9:
+                reason='parking_blue_net_distance_reached'
+                if entry is not None:
+                    entry.inner.status=entry.inner.phase='FINISHED'
+                    entry.inner.reason=entry.inner.finish_reason=reason
+                    entry.debug['phase']='FINISHED'
+                ctx.state='FINISHED'
+                return ctx.call('motion','stop',reason)
+            return None
+        # S finishes at the observed bottom clearance, never at a travel cap.
+        # Keep commanded travel for diagnostics only; no straight origin is required.
+        trigger=ctx.parking_straight_travel
+        if trigger is not None:
+            trigger.update(parking_limit_m=None,remaining_m=None,command_reserve_m=0.)
+        if ctx.parking_entry is not None:
+            ctx.parking_entry.debug.update(distance_limit_enabled=False,
+                travel_origin='fixed_straight' if trigger is not None else None,
+                travel_m=(trigger or {}).get('travelled_m'),
+                travel_limit_m=None,travel_remaining_m=None)
+        return None
+    trigger=ctx.last_blue_trigger
     reason=None
     if trigger is None or 'travelled_m' not in trigger:
         if ctx.state=='PARKING':
-            reason='parking_straight_origin_missing' if straight else 'parking_blue_origin_missing'
+            reason='parking_blue_origin_missing'
         else:
-            return None  # Wait for S fixed straight or T's next blue trigger.
+            return None  # Wait for T's next blue trigger.
     else:
-        limit=min(1.7,cfg.get('parking_blue_max_travel_m',1.7))
+        limit=min(2.1,cfg.get('parking_blue_max_travel_m',2.1))
         travelled=trigger['travelled_m']
         reserve=(abs(command[0])*speed_gain(cfg,command[0])*.25
                  if command is not None and command[0] else 0.)
         trigger.update(parking_limit_m=limit,remaining_m=limit-travelled,
                        command_reserve_m=reserve)
         if ctx.parking_entry is not None:
-            ctx.parking_entry.debug.update(travel_origin='fixed_straight' if straight else 'blue_trigger',
+            ctx.parking_entry.debug.update(travel_origin='blue_trigger',
                 travel_m=travelled,travel_limit_m=limit,travel_remaining_m=limit-travelled)
         if travelled+reserve>=limit-1e-9:
-            reason='parking_straight_distance_limit' if straight else 'parking_blue_distance_limit'
+            reason='parking_blue_distance_limit'
     if reason is None:
         return None
     entry=ctx.parking_entry
     if entry is not None:
-        if cfg['parking_entry_style']=='T':
-            entry.abort(reason)
-        else:
-            entry.inner.stopped(reason,fault=True)
-            entry.inner.phase='FAULT'
-            entry.inner.debug['phase']='FAULT'
+        entry.abort(reason)
     ctx.state='FAULT'
     return ctx.call('motion','stop',reason)
 
@@ -549,6 +624,8 @@ def _tick(ctx, now):
             ctx.state = 'FAULT'
         return ctx.call('motion', 'stop', 'emergency_stop')
     if ctx.state == 'FINISHED':
+        if ctx.reason=='parking_blue_net_distance_reached':
+            return ctx.call('motion','stop',ctx.reason)
         if ctx.timed_parking is not None:
             return ctx.call('motion','stop',ctx.timed_parking.reason)
         if (cfg.get('parking_mode')=='forward_center' and
@@ -578,12 +655,12 @@ def _tick(ctx, now):
     lidar_disabled = lidar_guard_disabled_reason(
         cfg, ctx.state, ctx.action, ctx.timed_bypass_completed)
     if lidar_disabled is None and not ctx.call('obstacle', 'scan_ready', now):
-        _interrupt_explicit_parking(ctx,'scan_missing_or_stale')
+        # Missing lidar suppresses new bypass triggers, not an active timed
+        # action. Ordinary lane driving is slowed by checked_command below.
         ctx.obstacle_check = dict(kind='unknown',reason='scan_missing_or_stale')
-        if ctx.timed_parking is not None and not ctx.timed_parking.finished:
-            ctx.timed_parking.abort('scan_missing_or_stale')
-            ctx.state = 'FAULT'
-        return ctx.call('motion', 'stop', 'scan_missing_or_stale')
+    reverse_command = ctx.call('parking', 'turn_reverse_tick', now)
+    if reverse_command is not None:
+        return reverse_command
     if ctx.state == 'TIMED_PARKING':
         task = ctx.timed_parking
         command = task.command(now)
@@ -685,7 +762,7 @@ def _tick(ctx, now):
             ctx.call('mission', 'resume_lane')
         else:
             if distance(ctx.pose,ctx.exit_pose) >= cfg['exit_search_distance'] or not yaw_ok:
-                return ctx.call('motion', 'stop', 'correct_exit_not_found')
+                return ctx.call('lane','search_command',now,'exit_lane_search')
             return ctx.call('obstacle', 'checked_command', (cfg['speed_raw']['gap'],0.0),now,False)
     if ctx.state == 'WAIT_SLOT':
         return ctx.call('parking', 'start_parking', now)

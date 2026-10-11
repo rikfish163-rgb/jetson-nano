@@ -93,6 +93,8 @@ class SchedulingTests(unittest.TestCase):
         n.slot_at = n.diag_at = -1
         n.next_slot_source = 'front'
         n.parking_requested = False
+        n.rear_parking_requested = False
+        n.s_parking_requested = False
         n.parking_selecting = False
         n.uturn_requested = False
         n.uturn_vision = None
@@ -119,6 +121,84 @@ class SchedulingTests(unittest.TestCase):
                 return []
         n.bridge,n.detector = Bridge(),Detector()
         return n
+
+    def test_active_s_front_updates_white_lines_without_blue_geometry(self):
+        from robot.camera.vision import GroundDetector
+        from robot.common.config import load_config
+        n=self.ground()
+        n.cfg=load_config(os.path.join(ROOT,'config'))
+        n.cfg.update(parking_mode='forward_center',parking_entry_style='S')
+        detector=GroundDetector(n.cfg)
+        image=np.zeros((360,640,3),np.uint8)
+        import cv2
+        cv2.rectangle(image,(180,220),(450,230),(255,255,255),-1)
+        full=detector.bev(image,parking=True)
+        hsv=cv2.cvtColor(full,cv2.COLOR_BGR2HSV)
+        w=n.cfg['white']
+        expected=cv2.inRange(hsv,(0,0,w['v_min']),(179,w['s_max'],255))
+        seen=[]
+        def lines(mask,u_offset=0,min_length_m=.12):
+            self.assertTrue(np.array_equal(mask,expected))
+            seen.append((u_offset,min_length_m))
+            return [[(.6,-.19),(.6,.19)]]
+        def no_blue(*args,**kwargs):
+            raise AssertionError('active S must not wait for front blue geometry')
+        detector.detect=no_blue
+        detector.parking_lines=lines
+        n.detector=detector
+        n.bridge.imgmsg_to_cv2=lambda msg,encoding:image
+        n.status(type('Status',(object,),{'data':json.dumps(
+            dict(state='PARKING',parking_entry=dict(camera_source='front')))})())
+        for stamp in (9.9,9.95):
+            n.front(self.image(stamp));n.tick(None);n.tick(None)
+        self.assertEqual(seen,[(360,.04),(360,.04)])
+        self.assertEqual([m['part'] for m in n.pub.messages],['parking_lines']*2)
+        self.assertEqual([m['stamp'] for m in n.pub.messages],
+                         [self.image(t).header.stamp.to_sec() for t in (9.9,9.95)])
+
+    def test_active_s_rear_does_not_wait_for_front_detection(self):
+        n=self.ground()
+        n.cfg.update(parking_mode='forward_center',parking_entry_style='S')
+        n.status(type('Status',(object,),{'data':json.dumps(
+            dict(state='PARKING',parking_entry=dict(camera_source='rear')))})())
+        calls=[]
+        def detect(bev,rear=False,include_slots=True):
+            self.assertTrue(rear)
+            calls.append(rear)
+            return dict(markers=[],slots=[],blue_lines=[]),bev,bev
+        n.detector.detect=detect
+        n.detector.parking_lines=lambda *args,**kwargs:[]
+        n.front(self.image(9.9));n.rear(self.image(9.9));n.tick(None)
+        self.assertEqual(calls,[True])
+        self.assertEqual([(m['source'],m['part']) for m in n.pub.messages],
+                         [('rear','parking_lines')])
+
+    def test_blue_geometry_resumes_after_s_parking_and_remains_during_pending_p(self):
+        n=self.ground()
+        n.cfg.update(parking_mode='forward_center',parking_entry_style='S')
+        n.detector.parking_lines=lambda *args,**kwargs:[]
+        for state,pending in (('STRAIGHT','PARKING'),('PARKING',None),('STRAIGHT',None)):
+            n.status(type('Status',(object,),{'data':json.dumps(dict(state=state,pending=pending))})())
+            if state=='PARKING':continue
+            stamp=9.95 if pending is None else 9.9
+            n.front(self.image(stamp));n.tick(None)
+        self.assertEqual([m['stamp'] for m in n.pub.messages if m['part']=='markers'],
+                         [self.image(t).header.stamp.to_sec() for t in (9.9,9.95)])
+
+    def test_only_explicit_s_requests_short_parking_lines(self):
+        for style, minimum in (('S',.04),('T',.12),('',.12)):
+            n = self.ground()
+            n.cfg.update(parking_mode='forward_center',parking_entry_style=style)
+            n.parking_requested = True
+            seen = []
+            def lines(white,u_offset=0,min_length_m=.12):
+                seen.append(min_length_m)
+                return []
+            n.detector.parking_lines = lines
+            n.front(self.image(9.9))
+            n.tick(None)
+            self.assertEqual(seen,[minimum])
+            self.assertTrue(any(m['part']=='parking_lines' for m in n.pub.messages))
 
     def test_forward_parking_publishes_blue_then_lines_then_slots(self):
         import yaml
@@ -159,32 +239,6 @@ class SchedulingTests(unittest.TestCase):
         n.parking_requested = True
         n.front(self.image(9.9));n.tick(None)
         self.assertEqual([m['part'] for m in n.pub.messages],['markers','parking_lines'])
-
-    def test_queued_s_parking_prepares_lines_during_fixed_straight(self):
-        from std_msgs.msg import String
-        n = self.ground()
-        n.cfg.update(parking_mode='forward_center', parking_entry_style='S')
-        n.status(String(data=json.dumps(dict(state='MANEUVER', action='STRAIGHT',
-                     pending=None, next_direction='PARKING'))))
-        n.front(self.image(9.9))
-        n.tick(None)
-        self.assertTrue(n.parking_requested)
-        self.assertEqual([m['part'] for m in n.pub.messages],
-                         ['markers', 'parking_lines'])
-        n.status(String(data=json.dumps(dict(state='LANE', pending=None,
-                                             next_direction=None))))
-        self.assertFalse(n.parking_requested)
-
-    def test_queued_t_parking_does_not_request_white_geometry(self):
-        from std_msgs.msg import String
-        n = self.ground()
-        n.cfg.update(parking_mode='forward_center', parking_entry_style='T')
-        n.status(String(data=json.dumps(dict(state='MANEUVER', action='STRAIGHT',
-                     pending=None, next_direction='PARKING'))))
-        n.front(self.image(9.9))
-        n.tick(None)
-        self.assertFalse(n.parking_requested)
-        self.assertEqual([m['part'] for m in n.pub.messages], ['markers'])
 
     def test_blue_latest_is_published_without_any_parking_work(self):
         n = self.ground()

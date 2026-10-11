@@ -54,7 +54,15 @@ class Controller(object):
         return self.execute('uturn', 'startup_tick', *args, **kwargs).value
 
     def tick(self, *args, **kwargs):
-        return self.execute('mission', 'tick', *args, **kwargs).value
+        speed, steer = self.execute('mission', 'tick', *args, **kwargs).value
+        # Slow the entire visual handoff after every RIGHT. Preserve the
+        # calibrated blue advance and subsequent maneuver/parking commands.
+        blue_timed = ((self.blue_approach or {}).get('image_timing') or {}).get('trigger')
+        if (self.right_handoff_slow and blue_timed is None and
+                self.state in ('LANE', 'GAP', 'WAIT_OBSTACLE', 'BLUE_APPROACH',
+                               'BLUE_STOP', 'INTERSECTION_WAIT')):
+            speed = max(-20, min(20, speed))
+        return speed, steer
 
     def observe_lane(self, *args, **kwargs):
         return self.execute('camera', 'observe_lane', *args, **kwargs).value

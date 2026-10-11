@@ -83,13 +83,7 @@ class TimedRightEntry(object):
 
 
 class ExplicitStraightEntry(object):
-    """P4/P5 ``S`` entry with a hard gate on measured white geometry.
-
-    ``ForwardParking`` contains the calibrated side and bottom-line geometry,
-    but its legacy ``forward_center`` fallback follows a lane when no bay line
-    is visible.  The explicit S route must wait in that situation so a missing
-    parking frame can never turn into blind forward motion.
-    """
+    """P4/P5 S entry: measured bay guidance, straight fallback without lines."""
 
     def __init__(self, cfg, pose, now, sign_anchor=None):
         # Import lazily because forward.py already imports WhiteParking from
@@ -97,6 +91,9 @@ class ExplicitStraightEntry(object):
         from robot.parking.forward import ForwardParking
         self.inner = ForwardParking(cfg, pose, now)
         self.inner.bottom_only = True
+        self.inner.bottom_stop_enabled = not (
+            cfg.get('parking_s_blue_distance_m',0.)>0 and
+            getattr(self,'camera_source','front')=='front')
         self.cfg = cfg
         # ``parking_sign_association`` is a production-wide default for the
         # legacy forward route.  An explicit S task may have no projected P
@@ -123,6 +120,88 @@ class ExplicitStraightEntry(object):
         self.inner.tracked_view = None
         self.inner.tracked_view_stamp = -1.0
         self.inner.debug['geometry_ready'] = False
+        self.geometry_after = float(now)-1e-9
+        self.arm_p_reverse()
+
+    def arm_p_reverse(self):
+        # Speed is in this task's camera-facing frame. Rear entry negates it.
+        self.p_reverse_active = self.cfg.get('parking_p_reverse_s', 0.) > 0
+        self.p_reverse_phase = 'PAUSE_BEFORE'
+        self.p_reverse_until = None
+        self.p_reverse_last = None
+        self.p_reverse_elapsed = 0.
+
+    def abort_p_reverse(self, reason):
+        self.inner.status = self.inner.phase = 'FAULT'
+        self.inner.reason = reason
+        self.inner.debug.update(phase='FAULT', reason=reason)
+        return 0, 0.
+
+    def p_reverse_command(self, now, pose):
+        """Move away from P, then pause before returning to visual entry."""
+        if not self.p_reverse_active:
+            return None
+        pause = max(.3, self.cfg.get('cusp_pause', .3))
+        if self.p_reverse_until is None:
+            # First tick issues a stop; a callback alone cannot start a pause.
+            self.p_reverse_until = now+pause
+        if self.p_reverse_phase in ('PAUSE_BEFORE', 'PAUSE_AFTER'):
+            if now < self.p_reverse_until:
+                self.inner.reason = 'parking_p_reverse_gear_pause'
+                self.inner.debug.update(phase=self.p_reverse_phase,
+                    p_reverse_duration_s=self.cfg['parking_p_reverse_s'],
+                    p_reverse_elapsed_s=self.p_reverse_elapsed,
+                    steering_reference='straight', steering_command_rad=0.)
+                return 0, 0.
+            if self.p_reverse_phase == 'PAUSE_AFTER':
+                self.p_reverse_active = False
+                self.geometry_after = now
+                self.inner.reset_bottom_loss(after=now)
+                self.inner.debug['phase'] = self.inner.phase
+                return None
+            self.p_reverse_phase = 'P_REVERSE'
+        if self.p_reverse_last is not None:
+            dt = now-self.p_reverse_last
+            if not 0. <= dt <= .5:
+                return self.abort_p_reverse('parking_p_reverse_control_gap')
+            self.p_reverse_elapsed += min(dt, .25)
+        self.p_reverse_last = now
+        self.inner.debug.update(phase='P_REVERSE',
+            p_reverse_duration_s=self.cfg['parking_p_reverse_s'],
+            p_reverse_elapsed_s=self.p_reverse_elapsed,
+            pair_local=None,side_local=None,
+            steering_reference='straight', steering_command_rad=0.)
+        if self.p_reverse_elapsed >= self.cfg['parking_p_reverse_s']-1e-9:
+            self.p_reverse_phase = 'PAUSE_AFTER'
+            self.p_reverse_until = now+pause
+            self.inner.reason = 'parking_p_reverse_gear_pause'
+            self.inner.debug['phase'] = self.p_reverse_phase
+            return 0, 0.
+        self.inner.reason = 'parking_p_reverse'
+        self.inner.pose = tuple(pose)
+        reference = self.inner.view or self.inner.single
+        steer = 0.
+        # Use fresh measured target sides while moving away from P. In this
+        # camera-facing frame the motion is reverse, so heading feedback flips.
+        if (reference is not None and
+                0 <= now-self.inner.stamp <= self.cfg.get('ground_timeout',1.25)):
+            steer = self.inner.limited_steer(reference,direction=-1)
+            paired = self.inner.view is not None
+            source = 'both_sides' if paired else reference.get('source','none')
+            self.inner.debug.update(steering_reference=source,
+                left_seen=paired or source=='left_side',
+                right_seen=paired or source=='right_side',geometry_ready=True)
+            if paired:
+                self.inner.debug['pair_local'] = [[local(pose,p) for p in side]
+                                                  for side in reference['sides']]
+            else:
+                self.inner.debug['side_local'] = [local(pose,p) for p in reference['side']]
+        else:
+            self.inner.debug.update(left_seen=False,right_seen=False,
+                geometry_ready=False,pair_local=None,side_local=None,
+                centerline_local=None,centerline_heading_error_deg=None,
+                centerline_lateral_error_m=None)
+        return -self.cfg.get('parking_entry_speed_raw', 12), steer
 
     @property
     def sign_anchor(self):
@@ -140,27 +219,23 @@ class ExplicitStraightEntry(object):
         return getattr(self.inner, name)
 
     def observe(self, lines, stamp, pose=None):
+        if stamp <= self.geometry_after:
+            return
         return self.inner.observe(lines, stamp, pose)
 
     def command(self, now, pose):
         if self.inner.status in ('FINISHED', 'FAULT'):
             return self.inner.command(now, pose)
-        sign_side = (self.inner.phase == 'APPROACH' and
-                     self.inner.single is not None)
-        if self.inner.view is None and self.inner.bottom is None and not sign_side:
-            self.inner.reason = 'parking_wait_white_geometry'
-            self.inner.debug.update(phase=self.inner.phase, geometry_ready=False,
-                bottom_only_search=True,bottom_seen=False,
-                bottom_candidate_frames=(self.inner.bottom_candidate or {}).get('frames',0),
-                line_count=len(self.inner.lines), single_side_seen=False,
-                sign_association=self.inner.associate,
-                sign_anchor_local=(local(pose,self.inner.sign_anchor)
-                    if self.inner.sign_anchor is not None else None),
-                sides_behind_sign_rejected=self.inner.sides_behind_sign_rejected,
-                line_age_s=now-self.inner.stamp)
-            return 0, 0.0
+        prelude = self.p_reverse_command(now,pose)
+        if prelude is not None:
+            reverse_sign = self.cfg.get('chassis_calibration',{}).get('reverse_steering_sign',1)
+            self.inner.debug['steering_command_rad'] = prelude[1]*reverse_sign
+            return prelude[0],prelude[1]*reverse_sign
+        side_ready = (self.inner.single is not None and
+                      self.inner.single.get('source') in ('left_side','right_side'))
         command = self.inner.command(now, pose)
-        self.inner.debug['geometry_ready'] = True
+        self.inner.debug['geometry_ready'] = bool(
+            self.inner.view is not None or self.inner.bottom is not None or side_ready)
         return command
 
 
@@ -341,7 +416,7 @@ class WhiteParking(object):
             return None
         # Worst corner of the front bumper, not the rear-axle/line-center distance.
         x0 = a[0]-a[1]*dx/dy
-        front = self.cfg['wheelbase']+self.cfg['front_overhang']
+        front = getattr(self, 'bumper_offset', self.cfg['wheelbase']+self.cfg['front_overhang'])
         clearance = x0-front-abs(dx/dy)*self.cfg['body_width']/2
         return clearance-self.cfg.get('parking_bottom_clearance_m',.04)
 
@@ -352,9 +427,9 @@ class WhiteParking(object):
         self.debug.update(phase=self.phase,reason=reason)
         return 0,0.0
 
-    def steer(self, theta, center):
+    def steer(self, theta, center, direction=1):
         heading,lateral = self.errors(theta,center)
-        physical = 2.5*heading-math.atan2(1.5*lateral,.30)
+        physical = direction*2.5*heading-math.atan2(1.5*lateral,.30)
         physical = max(-self.cfg['max_steer'],min(self.cfg['max_steer'],physical))
         return physical/self.cfg['max_steer']*self.cfg.get('steering_command_scale_rad',self.cfg['max_steer'])
 

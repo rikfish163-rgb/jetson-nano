@@ -8,8 +8,8 @@ def tick(ctx, now):
     if task.get('phase') == 'WAIT_LANE':
         if ctx.call('turn','handoff_lane_confirmed',now):
             ctx.call('mission','resume_lane')
-            return ctx.call('motion','stop','left_timed_complete_lane')
-        return ctx.call('motion','stop','left_timed_wait_lane')
+            return ctx.call('lane','search_command',now,'left_timed_complete_lane')
+        return ctx.call('lane','search_command',now,'left_timed_lane_search')
     if task.get('timed_started') is None:
         task.update(phase='TIMED_ENTRY',timed_started=now,timed_last=now)
     dt=now-task['timed_last']
@@ -27,7 +27,7 @@ def tick(ctx, now):
         else:
             task['phase']='WAIT_LANE'
             ctx.exit_count,ctx.exit_stamp=0,-1.
-            return ctx.call('motion','stop','left_timed_complete_wait_lane')
+            return ctx.call('lane','search_command',now,'left_timed_lane_search')
     entry=task['phase']=='TIMED_ENTRY'
     speed=cfg.get('left_timed_entry_speed_raw',30) if entry else cfg.get('left_timed_turn_speed_raw',30)
     raw=cfg.get('left_timed_entry_steering_raw',0) if entry else cfg.get('left_timed_turn_steering_raw',22)

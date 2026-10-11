@@ -1,4 +1,4 @@
-"""RIGHT exit uses coherent sparse paint and bridges brief reference loss."""
+"""RIGHT exit bridges brief loss of the measured left tape."""
 import os
 import unittest
 
@@ -10,9 +10,7 @@ class RightExitReferenceLossTests(unittest.TestCase):
     def core(self):
         cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
         cfg.update(wait_green=False, lidar_enabled=False,
-                   straight_speed_raw=30, lane_curve_speed_raw=30,
                    steering_command_scale_rad=.03)
-        cfg['speed_raw']['lane'] = 30
         c = Controller(cfg)
         self.addCleanup(c.close)
         c.action = 'RIGHT'
@@ -24,17 +22,18 @@ class RightExitReferenceLossTests(unittest.TestCase):
         if points is None:
             points = [(.25, -.075), (.45, -.135), (.65, -.195)]
         c.observe_lane(points, confidence, stamp)
+        c.observe_left_boundary([(x, y+.32) for x, y in points], stamp)
         c.front_marker_stamp = stamp
         command = c.tick(stamp)
         c.issued_steer = command[1]
         return command
 
-    def test_recorded_confidence_dip_still_tracks_coherent_geometry(self):
+    def test_center_confidence_dip_does_not_reject_measured_left_tape(self):
         c = self.core()
         for stamp, confidence in ((10.1, .95), (10.2, .323), (10.3, .95),
                                   (10.4, .323)):
             speed, steer = self.lane(c, stamp, confidence)
-            self.assertEqual(speed, 30)
+            self.assertEqual(speed, 12)
             self.assertLess(steer, 0.)
             self.assertEqual(c.reason, 'right_timed_exit_align')
 
@@ -42,7 +41,7 @@ class RightExitReferenceLossTests(unittest.TestCase):
         c = self.core()
         points = [(.25, -.075), (.45, -.135), (.65, -.195), (1.8, .5)]
         speed, steer = self.lane(c, 10.1, .323, points)
-        self.assertEqual(speed, 30)
+        self.assertEqual(speed, 12)
         self.assertLess(steer, 0.)
         self.assertEqual(c.reason, 'right_timed_exit_align')
 
@@ -81,15 +80,15 @@ class RightExitReferenceLossTests(unittest.TestCase):
         self.lane(c, 10.1)
         self.lane(c, 10.2, 0., [])
         command = self.lane(c, 10.3, .323)
-        self.assertEqual(command[0], 30)
+        self.assertEqual(command[0], 12)
         self.assertEqual(c.reason, 'right_timed_exit_align')
         self.assertEqual(c.right_lock['exit_track_stamp'], 10.3)
 
-    def test_long_loss_continues_configured_speed_without_old_steer(self):
+    def test_user_selected_long_loss_continues_twelve_without_old_steer(self):
         c = self.core()
         self.lane(c, 10.1)
         for stamp in (11.11, 15., 30.):
-            self.assertEqual(self.lane(c, stamp, 0., []), (30, 0.))
+            self.assertEqual(self.lane(c, stamp, 0., []), (12, 0.))
             self.assertEqual(c.reason, 'right_timed_exit_search_straight')
             self.assertEqual(c.state, 'MANEUVER')
         self.assertEqual(c.right_lock['exit_track_stamp'], 10.1)
@@ -97,7 +96,7 @@ class RightExitReferenceLossTests(unittest.TestCase):
     def test_entry_does_not_reuse_timed_turn_or_old_reference(self):
         c = self.core()
         c.issued_steer = -.03
-        self.assertEqual(self.lane(c, 10.1, 0., []), (30, 0.))
+        self.assertEqual(self.lane(c, 10.1, 0., []), (12, 0.))
         self.assertNotIn('exit_track_stamp', c.right_lock)
 
 

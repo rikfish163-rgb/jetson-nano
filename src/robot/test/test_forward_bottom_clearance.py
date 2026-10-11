@@ -29,22 +29,22 @@ class ForwardBottomClearanceTests(unittest.TestCase):
 
     def test_p_near_cross_does_not_discard_visible_sides(self):
         c,p=self.parking(bottom_x=1.)
-        self.assertEqual(p.bottom_source,'p_near_cross')
+        self.assertEqual(p.bottom_source,'paired_far_end')
         self.assertIsNotNone(p.view)
         self.assertEqual(p.command(1.,c.pose)[0],12)
         self.assertEqual(p.reason,'parking_center_between_sides')
 
-    def test_final_speed_then_front_clearance_with_line_out_of_view(self):
+    def test_final_speed_then_fresh_front_clearance(self):
         c,p=self.parking()
         for now,x,speed in ((2.,.75,8),(3.,1.02,8),(4.,1.031,0)):
             pose=(x,0.,0.)
-            p.observe([],now,pose)  # Fresh image; paint is retained in world coordinates.
+            p.observe([[(1.4,-.19),(1.4,.19)]],now,pose)
             self.assertEqual(p.command(now,pose)[0],speed)
             if speed:self.assertIsNone(p.status)
         self.assertEqual(p.status,'FINISHED')
         self.assertEqual(p.reason,'parking_at_bottom_clearance')
         self.assertAlmostEqual(p.debug['bumper_clearance_m'],.039)
-        self.assertEqual(p.debug['distance_source'],'measured_bottom_plus_pose')
+        self.assertEqual(p.debug['distance_source'],'live_bottom')
         self.assertEqual(p.command(20.,(1.,0.,0.)),(0,0.))
 
     def test_slanted_bottom_uses_nearest_front_corner(self):
@@ -52,7 +52,7 @@ class ForwardBottomClearanceTests(unittest.TestCase):
         p.bottom=[(1.38,-.2),(1.42,.2)]
         # At rear-axle x=1.02 the center has .05 m; closest corner only .038 m.
         pose=(1.02,0.,0.)
-        p.observe([],2.,pose)
+        p.observe([p.bottom],2.,pose)
         self.assertEqual(p.command(2.,pose),(0,0.))
         self.assertEqual(p.status,'FINISHED')
         self.assertAlmostEqual(p.debug['bumper_clearance_m'],.038)
@@ -62,7 +62,7 @@ class ForwardBottomClearanceTests(unittest.TestCase):
         c,p=self.parking(origin)
         self.assertEqual(p.command(1.,origin)[0],12)
         pose=tuple(world(origin,(1.031,0.)))+(origin[2],)
-        p.observe([],2.,pose)
+        p.observe([p.bottom],2.,pose)
         self.assertEqual(p.command(2.,pose),(0,0.))
         self.assertAlmostEqual(p.debug['bumper_clearance_m'],.039)
 

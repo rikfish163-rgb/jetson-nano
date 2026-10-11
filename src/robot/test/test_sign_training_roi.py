@@ -85,6 +85,35 @@ class TrainingRoiTests(unittest.TestCase):
         self.node.infer(None); self.node.infer(None)
         self.assertEqual(len(self.messages),1)
 
+    def test_rear_selection_uses_independent_frames_and_output(self):
+        n=self.node;rear_messages=[]
+        n.rear_pub=Value(publish=lambda msg:rear_messages.append(json.loads(msg.data)))
+        n.infer(None)  # front RIGHT at stamp 10.0
+        n.status(Value(data=json.dumps(dict(state='PARKING',
+                         parking_entry=dict(camera_source='rear')))))
+        self.scores=dict(park=.95,right=.05)
+        n.rear_callback(Value(header=Value(stamp=Value(to_sec=lambda:10.0))))
+        n.infer(None);n.infer(None)
+        self.assertEqual(len(self.messages),1)
+        self.assertEqual(len(rear_messages),1)
+        self.assertEqual(rear_messages[0]['label'],'PARKING')
+        self.assertEqual(rear_messages[0]['camera_source'],'rear')
+        n.status(Value(data=json.dumps(dict(state='LANE',parking_entry=None))))
+        n.latest=Value(header=Value(stamp=Value(to_sec=lambda:10.05)))
+        n.infer(None)
+        self.assertEqual(len(self.messages),2)
+        self.assertEqual(self.messages[-1]['camera_source'],'front')
+
+    def test_rear_does_not_publish_direction_sign_as_route_command(self):
+        n=self.node;rear_messages=[]
+        n.rear_pub=Value(publish=lambda msg:rear_messages.append(json.loads(msg.data)))
+        n.status(Value(data=json.dumps(dict(state='PARKING',
+                         parking_entry=dict(camera_source='rear')))))
+        n.rear_callback(n.latest)
+        n.infer(None)
+        self.assertEqual(self.messages,[])
+        self.assertEqual(rear_messages[-1]['label'],'')
+
     def test_stale_frame_not_published(self):
         self.node.latest.header.stamp=Value(to_sec=lambda:8.0)
         self.node.infer(None)

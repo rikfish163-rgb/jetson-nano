@@ -1,4 +1,4 @@
-"""After the minimum arc, confirm a capturable bypass lane while stopped."""
+"""Confirm a bypass lane while moving; crawl at the six-second limit."""
 import os
 import unittest
 from robot.common.config import load_config
@@ -41,9 +41,11 @@ class BypassLaneCaptureTests(unittest.TestCase):
         for stamp in (1.064331,1.3,1.6,1.9):
             self.assertEqual(self.tick(c,self.CENTER,stamp),(26,-.03))
             self.assertEqual(c.timed_bypass['phase'],'RIGHT')
-        self.assertEqual(self.tick(c,self.CENTER,2.),(0,0.))
-        self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
-        self.assertAlmostEqual(c.timed_bypass['right_completed_s'],4.)
+        self.assertEqual(self.tick(c,self.CENTER,2.),(26,-.03))
+        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
+        self.assertEqual(self.tick(c,self.CENTER,2.1),(26,-.03))
+        self.assertGreater(self.tick(c,self.CENTER,2.2)[0],0)
+        self.assertIsNone(c.timed_bypass)
 
     def test_stable_lane_cannot_end_right_before_minimum(self):
         c=self.core(4.1)
@@ -51,20 +53,19 @@ class BypassLaneCaptureTests(unittest.TestCase):
             self.assertEqual(self.tick(c,self.CENTER,now),(26,-.03))
         self.assertEqual(c.timed_bypass['phase'],'RIGHT')
 
-    def test_capturable_lane_stops_full_lock_while_confirming(self):
+    def test_capturable_candidate_keeps_moving_if_next_frame_is_lost(self):
         c=self.core(3.0);c.cfg['timed_bypass_right_s']=3.0
-        self.assertEqual(self.tick(c,self.CENTER,1.16305995),(0,0.))
-        self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
-        self.assertAlmostEqual(c.timed_bypass['right_completed_s'],3.16305995)
+        self.assertEqual(self.tick(c,self.CENTER,1.16305995),(26,-.03))
+        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
         self.assertEqual(c.timed_bypass['lane_exit']['frames'],1)
         self.assertFalse(c.timed_bypass_completed)
-        self.assertEqual(self.tick(c,[],1.25,0.),(0,0.))
-        self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
+        self.assertEqual(self.tick(c,[],1.25,0.),(26,-.03))
+        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
 
     def test_three_fresh_consistent_frames_handoff_after_minimum(self):
         c=self.core()
         for now in (1.1,1.2):
-            self.assertEqual(self.tick(c,self.CENTER,now),(0,0.))
+            self.assertEqual(self.tick(c,self.CENTER,now),(26,-.03))
         speed,steer=self.tick(c,self.CENTER,1.3)
         self.assertIsNone(c.timed_bypass)
         self.assertEqual(c.state,'LANE')
@@ -76,8 +77,8 @@ class BypassLaneCaptureTests(unittest.TestCase):
 
     def test_single_valid_frame_at_old_five_second_endpoint_does_not_handoff(self):
         c=self.core(4.95)
-        self.assertEqual(self.tick(c,self.CENTER,1.1),(0,0.))
-        self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
+        self.assertEqual(self.tick(c,self.CENTER,1.1),(26,-.03))
+        self.assertEqual(c.timed_bypass['phase'],'RIGHT')
 
     def test_missing_lane_continues_search_past_five_seconds(self):
         c=self.core(4.95)
@@ -89,28 +90,28 @@ class BypassLaneCaptureTests(unittest.TestCase):
         self.assertEqual(self.tick(c,[],1.1,0.),(26,-.03))
         self.assertEqual(self.tick(c,[],1.2,0.),(0,0.))
         self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
-        self.assertEqual(c.reason,'bypass_wait_exit_lane')
+        self.assertEqual(c.reason,'search_lane_missing_or_stale')
         self.assertAlmostEqual(c.timed_bypass['right_completed_s'],6.)
 
     def test_stopped_search_can_handoff_after_three_new_lane_frames(self):
         c=self.core(5.9)
         self.assertEqual(self.tick(c,[],1.1,0.),(0,0.))
         for now in (1.2,1.3):
-            self.assertEqual(self.tick(c,self.CENTER,now),(0,0.))
+            self.assertEqual(self.tick(c,self.CENTER,now)[0],12)
         self.assertGreater(self.tick(c,self.CENTER,1.4)[0],0)
         self.assertIsNone(c.timed_bypass)
 
     def test_repeated_source_image_does_not_confirm_exit(self):
         c=self.core(4.5)
         for now in (1.1,1.2,1.3):
-            self.assertEqual(self.tick(c,self.CENTER,now,source_stamp=1.1),(0,0.))
+            self.assertEqual(self.tick(c,self.CENTER,now,source_stamp=1.1),(26,-.03))
         self.assertIsNotNone(c.timed_bypass)
 
     def test_alternating_detected_lanes_reset_confirmation(self):
         c=self.core(4.5)
         for i,offset in enumerate((-.2,.2,-.2,.2)):
             self.assertEqual(self.tick(c,[(x,offset) for x,y in self.CENTER],
-                                      1.1+i*.1),(0,0.))
+                                      1.1+i*.1),(26,-.03))
         self.assertIsNotNone(c.timed_bypass)
 
     def test_world_frame_consistency_allows_vehicle_motion_during_capture(self):
@@ -131,22 +132,22 @@ class BypassLaneCaptureTests(unittest.TestCase):
                 self.assertEqual(self.tick(c,path,now,confidence),(26,-.03))
             self.assertIsNotNone(c.timed_bypass)
 
-    def test_trigger_still_ahead_cannot_complete_bypass(self):
+    def test_old_trigger_position_does_not_veto_confirmed_visual_exit(self):
         c=self.core();c.timed_bypass['trigger_world']=(.2,0.)
         for now in (1.1,1.2,1.3):
-            self.assertEqual(self.tick(c,self.CENTER,now),(26,-.03))
-        self.assertIsNotNone(c.timed_bypass)
+            self.assertGreater(self.tick(c,self.CENTER,now)[0],0)
+        self.assertIsNone(c.timed_bypass)
 
     def test_aligned_sparse_lane_can_handoff_without_being_already_centered(self):
         c=self.core();path=[(.6,-.3),(.72,-.3)]
-        for now in (1.1,1.2):self.assertEqual(self.tick(c,path,now,.329595),(0,0.))
+        for now in (1.1,1.2):self.assertEqual(self.tick(c,path,now,.329595),(26,-.03))
         self.assertGreater(self.tick(c,path,1.3,.329595)[0],0)
         self.assertIsNone(c.timed_bypass)
 
     def test_safety_stop_pauses_minimum_motion_timer(self):
         c=self.core(4.2);c.scan=None
-        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.1).value,(0,0.))
-        self.assertEqual(c.reason,'scan_missing_or_stale')
+        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.1).value,(26,-.03))
+        self.assertEqual(c.stop('emergency_stop'),(0,0.))
         self.assertAlmostEqual(c.timed_bypass['elapsed_s'],4.3)
         self.assertEqual(self.tick(c,self.CENTER,10.),(26,-.03))
         self.assertAlmostEqual(c.timed_bypass['elapsed_s'],4.3)

@@ -152,14 +152,25 @@ def observe_ground(ctx, data, stamp):
         ctx.rear_markers = [world(ctx.pose,(m['x'],m['y']))
             for m in data.get('markers',[]) if m['kind']=='junction' and m['x']<0]
         ctx.rear_marker_stamp = stamp
+        entry=ctx.parking_entry
+        if getattr(entry,'camera_source',None)=='rear':
+            entry.observe_blue(ctx.rear_blue_lines,stamp,ctx.pose)
         if channel[1] == 'markers':
             return  # Rear blue must not dispatch a forward junction action.
     if channel[1] == 'parking_lines':
+        entry = ctx.parking_entry
+        source = getattr(entry, 'camera_source', 'front')
         if channel[0] == 'front':
             ctx.parking_lines = [[world(ctx.pose,p) for p in line] for line in data['lines']]
             ctx.parking_lines_stamp = stamp
-            if ctx.parking_entry is not None:
-                ctx.parking_entry.observe(ctx.parking_lines,stamp,ctx.pose)
+        if entry is not None and channel[0] == source:
+            lines = [[world(ctx.pose,p) for p in line] for line in data['lines']]
+            entry.observe(lines,stamp,ctx.pose)
+            if source == 'rear' and hasattr(entry, 'observe_blue'):
+                blue = [dict(point=world(ctx.pose,(m['x'],m['y'])),
+                             yaw=wrap(ctx.pose[2]+m['yaw']),length=m['length'])
+                        for m in data.get('blue_lines',[])]
+                entry.observe_blue(blue,stamp,ctx.pose)
         return
     # Measured-scene parking has its own producer.  It is called before the
     # legacy candidate latch so every accepted camera slot frame can
@@ -182,6 +193,11 @@ def observe_ground(ctx, data, stamp):
                               for m in data.get('markers', [])
                               if m['kind'] == 'junction' and m['x'] > 0]
         ctx.front_marker_stamp = stamp
+        entry=ctx.parking_entry
+        if getattr(entry,'camera_source',None)=='rear':
+            # Rear parking still uses the visible FRONT blue stripe for
+            # heading. Its white bay sides and stopping bottom remain rear.
+            entry.observe_blue(ctx.front_blue_lines,stamp,ctx.pose,source='front')
     markers = []
     for m in data.get('markers', []) if channel[0]=='front' else []:
         if m['kind'] in ('tick','junction') and m['x'] > 0:
@@ -277,6 +293,8 @@ def observe_ground(ctx, data, stamp):
                     ctx.marker=None
         else:
             ctx.blue_clear_since,ctx.blue_clear_frames = None,0
+    if ctx.cfg.get('parking_mode') == 'forward_center':
+        return  # P and measured paint select visual bays; no numbered-slot latch.
     auto = ctx.cfg['parking_slot'] == 'AUTO'
     profile_name = ('P1' if ctx.slot_locked and ctx.slot['kind'] == 'parallel' else 'P4') if auto else ctx.cfg['parking_slot']
     profile = ctx.cfg['slots'][profile_name]

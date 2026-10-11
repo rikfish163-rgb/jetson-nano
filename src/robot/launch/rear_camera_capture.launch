@@ -1,0 +1,17 @@
+<launch>
+  <!-- Camera-only child launch. Never starts a controller or actuator. -->
+  <arg name="rear_device"/>
+  <arg name="rear_fps" default="8"/>
+  <arg name="start_ground" default="true"/>
+  <node pkg="usb_cam" type="usb_cam_node" name="rear_camera" ns="rear" output="screen">
+    <remap from="/rear/rear_camera/image_raw" to="/rear/usb_cam/image_raw"/>
+    <param name="video_device" value="$(arg rear_device)"/>
+    <param name="image_width" value="640"/><param name="image_height" value="480"/>
+    <param name="pixel_format" value="mjpeg"/><param name="framerate" value="$(arg rear_fps)"/>
+    <param name="camera_frame_id" value="rear_camera"/>
+    <param name="camera_info_url" value="file://$(find yihan_ros_pkg)/calibration/rear_640x480.yaml"/>
+  </node>
+  <node if="$(arg start_ground)" pkg="yihan_ros_pkg" type="rear_bev_node.py" name="rear_bev" output="screen">
+    <param name="processing_hz" value="$(arg rear_fps)"/>
+  </node>
+</launch>

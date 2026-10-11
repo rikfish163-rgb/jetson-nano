@@ -5,12 +5,12 @@ tire_radius: 0.025
 front_overhang: 0.07
 rear_overhang: 0.07
 body_width: 0.24
-max_steer: 0.2
+max_steer: 0.23
 steering_raw_limit: 22
 steering_sign: 1
 speed_sign: 1
 speed_raw_limit: 60
-speed_raw: {lane: 20, action: 20, parking: 16, gap: 16}
+speed_raw: {lane: 30, action: 20, parking: 16, gap: 16}
 # Placeholder empirical mapping. Measure separately forward/reverse on YOUR chassis.
 raw_to_mps: {forward: 0.008, reverse: 0.007}
 lookahead: 1.0
@@ -132,6 +132,7 @@ parking_blue_required: true
 # Measured front-camera forward plan covers all designated P1-P5 bays.
 parking_mode: forward_plan
 parking_entry_speed_raw: 12
+parking_bay_width_m: 0.38 # P-associated visual bay width, independent of numbered slots
 parking_final_speed_raw: 8
 parking_bottom_clearance_m: 0.04 # measured line to front bumper, not rear axle
 parking_divider_trigger_x: 0.33 # divider aligned with front bumper (0.26 + 0.07)

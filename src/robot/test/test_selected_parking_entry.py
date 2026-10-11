@@ -45,6 +45,22 @@ class SelectedParkingEntryTests(unittest.TestCase):
         self.assertEqual(c.state,'PARKING')
         self.assertIsNone(c.marker)
 
+    def test_s_continues_at_six_cm_and_stops_at_five_cm(self):
+        c=self.core('S');c.dispatch(1.)
+        self.assertAlmostEqual(c.cfg['parking_bottom_clearance_m'],.05)
+        lines=[[(.4,-.19),(1.,-.19)],[(.4,.19),(1.,.19)],
+               [(1.,-.19),(1.,.19)]]
+        c.observe_ground(dict(source='front',part='parking_lines',lines=lines),1.1)
+        self.assertGreater(self.tick(c,1.1)[0],0)
+        bumper_offset=c.cfg['wheelbase']+c.cfg['front_overhang']
+        c.set_pose((1.-bumper_offset-.06,0.,0.),1.2)
+        self.assertGreater(self.tick(c,1.2)[0],0)
+        self.assertAlmostEqual(c.parking_entry.debug['bumper_clearance_m'],.06)
+        c.set_pose((1.-bumper_offset-.05+.000001,0.,0.),1.3)
+        self.assertEqual(self.tick(c,1.3),(0,0.))
+        self.assertEqual(c.state,'FINISHED')
+        self.assertEqual(c.reason,'parking_at_bottom_clearance')
+
     def test_s_camera_sides_and_bottom_finish_at_front_bumper_clearance(self):
         for slot in ('P4','P5'):
             c=self.core('S',slot);c.dispatch(1.)
@@ -136,11 +152,10 @@ class SelectedParkingEntryTests(unittest.TestCase):
         self.assertEqual(c.state,'FAULT')
         self.assertEqual(self.tick(c,1.3),(0,0.))
 
-    def test_explicit_style_rejects_unknown_or_parallel_slot(self):
+    def test_explicit_style_rejects_unknown_style(self):
         c=self.core('S')
-        for style,slot in [('X','P4'),('S','P3'),('T','P2')]:
-            c.cfg.update(parking_entry_style=style,parking_slot=slot)
-            with self.assertRaises(ValueError):validate_config(c.cfg)
+        c.cfg.update(parking_entry_style='X')
+        with self.assertRaises(ValueError):validate_config(c.cfg)
 
 
 if __name__=='__main__':unittest.main()

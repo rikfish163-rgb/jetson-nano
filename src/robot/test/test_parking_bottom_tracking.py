@@ -5,6 +5,52 @@ from robot.common.geometry import world
 
 
 class ParkingBottomTrackingTests(unittest.TestCase):
+    def test_p_depth_does_not_shorten_measured_rails_and_hide_bottom(self):
+        c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(.77,-.29))
+        rails=[[(.55,-.20),(1.04,-.20)],[(.56,.18),(1.04,.18)]]
+        rails.append([(.55,-.195),(.7825,-.195)])
+        p.observe(rails+[[(1.04,-.22),(1.04,.44)]],1.,c.pose)
+        self.assertIsNotNone(p.view)
+        self.assertAlmostEqual(max(q[0] for side in p.view['sides'] for q in side),1.04)
+        self.assertIsNotNone(p.bottom)
+        self.assertEqual(p.bottom_stamp,1.)
+        # A shared paint stripe is clipped to the measured target bay only.
+        self.assertAlmostEqual(min(q[1] for q in p.bottom),-.20)
+        self.assertAlmostEqual(max(q[1] for q in p.bottom),.18)
+
+    def test_p_beside_confirmed_bay_does_not_veto_bottom(self):
+        c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,-.40))
+        rails=[[(.4,-.19),(1.,-.19)],[(.4,.19),(1.,.19)]]
+        p.observe(rails+[[(1.,-.19),(1.,.19)]],1.,c.pose)
+        self.assertIsNotNone(p.view)
+        self.assertIsNotNone(p.bottom)
+
+    def test_short_visible_piece_updates_existing_bottom_but_cannot_acquire(self):
+        c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
+        p.bottom_only=True
+        piece=[[(1.,.08),(1.,.18)]]
+        p.observe(piece,1.,c.pose)
+        self.assertIsNone(p.bottom)
+        p.observe([[(1.,-.19),(1.,.19)]],1.1,c.pose)
+        self.assertIsNotNone(p.bottom)
+        p.observe(piece,1.2,c.pose)
+        self.assertEqual(p.bottom_stamp,1.2)
+        # A piece wholly beyond the last observed extent must not match.
+        p.observe([[(1.,.21),(1.,.31)]],1.3,c.pose)
+        self.assertEqual(p.bottom_stamp,1.2)
+
+    def test_bottom_reacquisition_does_not_overwrite_side_pair_reference(self):
+        c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
+        rails=[[(.4,-.19),(1.,-.19)],[(.4,.19),(1.,.19)]]
+        p.observe(rails+[[(1.,-.19),(1.,.19)]],1.,c.pose)
+        p.command(1.,c.pose)
+        for stamp in (1.1,1.2):
+            p.observe(rails+[[(1.3,-.19),(1.3,.19)]],stamp,c.pose)
+            self.assertIsNotNone(p.view)
+            self.assertGreater(p.command(stamp,c.pose)[0],0)
+        self.assertEqual(p.bottom_source,'reacquired_bottom')
+        self.assertEqual(p.bottom_stamp,1.2)
+
     def test_confirmed_pair_keeps_centering_when_cached_p_drifts(self):
         c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
         rails=[[(.4,-.19),(1.,-.19)],[(.4,.19),(1.,.19)]]
@@ -28,24 +74,24 @@ class ParkingBottomTrackingTests(unittest.TestCase):
             self.assertIsNone(p.view)
             self.assertEqual(p.command(p.stamp,c.pose)[1],0.)
 
-    def test_production_parking_slows_then_stops_five_cm_earlier(self):
+    def test_production_parking_slows_then_stops_at_five_cm(self):
         import os
         from robot.common.config import load_config
         from robot.parking.forward import ForwardParking
         cfg=load_config(os.path.join(os.path.dirname(os.path.dirname(__file__)),'config'))
         self.assertEqual(cfg['parking_entry_speed_raw'],16)
         self.assertEqual(cfg['parking_final_speed_raw'],12)
-        self.assertAlmostEqual(cfg['parking_bottom_clearance_m'],.09)
+        self.assertAlmostEqual(cfg['parking_bottom_clearance_m'],.05)
         p=ForwardParking(cfg,(0.,0.,0.),1.);p.sign_anchor=(1.,0.)
         p.observe([[ (.85,-.3),(.85,.3)]],1.,(0.,0.,0.))
         self.assertEqual(p.command(1.,(0.,0.,0.))[0],16)
         p.observe([],1.2,(.20,0.,0.))
         self.assertEqual(p.command(1.2,(.20,0.,0.))[0],12)
-        p.observe([],1.4,(.42,0.,0.))
-        self.assertGreater(p.command(1.4,(.42,0.,0.))[0],0)
-        p.observe([],1.6,(.431,0.,0.))
-        self.assertEqual(p.command(1.6,(.431,0.,0.)),(0,0.))
-        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.089)
+        p.observe([],1.4,(.469,0.,0.))
+        self.assertGreater(p.command(1.4,(.469,0.,0.))[0],0)
+        p.observe([[ (.85,-.3),(.85,.3)]],1.6,(.471,0.,0.))
+        self.assertEqual(p.command(1.6,(.471,0.,0.)),(0,0.))
+        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.049)
 
     def parking(self):
         c,p=fixtures.ParkingAnchorTests.__dict__['parking'](self,anchor=(1.,0.))
@@ -76,7 +122,12 @@ class ParkingBottomTrackingTests(unittest.TestCase):
         self.assertGreater(p.command(3.2,(.9,0.,0.))[0],0)
         self.assertAlmostEqual(p.debug['bumper_clearance_m'],.07)
         p.observe([],3.4,(.97,0.,0.))
-        self.assertEqual(p.command(3.4,(.97,0.,0.)),(0,0.))
+        self.assertGreater(p.command(3.4,(.97,0.,0.))[0],0)
+        self.assertIsNone(p.status)  # Even calibrated extrapolation is not arrival.
+        p.observe([[world(p.pose,q) for q in ((.365,-.3),(.365,.3))]],3.5,p.pose)
+        self.assertGreater(p.command(3.5,p.pose)[0],0)
+        p.observe([[world(p.pose,q) for q in ((.365,-.3),(.365,.3))]],3.6,p.pose)
+        self.assertEqual(p.command(3.6,p.pose),(0,0.))
 
     def test_tracking_does_not_switch_to_background_line_or_adjacent_bay(self):
         c,p=self.parking()

@@ -7,13 +7,23 @@ class GateTests(unittest.TestCase):
     def setUp(self):
         self.gate=RouteSignGate(dict(enabled=True))
 
-    def result(self,label='PARKING',bounds=(271,100,29,28),confidence=.94,stamp=10.,shape=(360,640,3)):
+    def result(self,label='PARKING',bounds=(271,100,29,48),confidence=.94,stamp=10.,shape=(360,640,3)):
         return self.gate.evaluate(label,confidence,bounds,shape,stamp)
 
-    def test_small_real_p_board_confirms_three_distinct_frames(self):
-        results=[self.result(stamp=10.+i*.333) for i in range(3)]
-        self.assertEqual([r[0] for r in results],['','','PARKING'])
-        self.assertEqual(results[-1][2]['frames'],3)
+    def test_far_uturn_cannot_pass_with_high_confidence_or_more_frames(self):
+        for i in range(8):
+            result=self.result(label='UTURN',bounds=(515,103,28,35),confidence=.99,stamp=10.+i*.333)
+            self.assertEqual(result[0],'')
+            self.assertEqual(result[1],'too_small')
+
+    def test_height_boundary_edge_right_and_scaled_image(self):
+        for height,shape,accepted in ((44,(360,640,3),False),(45,(360,640,3),True),
+                                      (52,(360,640,3),True),(89,(720,1280,3),False),
+                                      (90,(720,1280,3),True)):
+            self.setUp()
+            for i in range(3):
+                result=self.result(label='RIGHT',bounds=(shape[1]-4,100,4,height),shape=shape,stamp=10.+i*.333)
+            self.assertEqual(result[0],'RIGHT' if accepted else '')
 
     def test_obvious_left_board_is_excluded_even_with_high_confidence(self):
         for i in range(6):
@@ -25,16 +35,16 @@ class GateTests(unittest.TestCase):
         self.result(label='LEFT',bounds=(220,83,45,48))
         self.assertEqual(self.result(label='LEFT',bounds=(236,80,49,51),stamp=10.33)[0],'LEFT')
 
-    def test_small_low_confidence_board_resets_track(self):
+    def test_low_confidence_board_resets_track(self):
         self.result()
-        self.assertEqual(self.result(confidence=.88,stamp=10.33)[1],'low_confidence')
+        self.assertEqual(self.result(confidence=.78,stamp=10.33)[1],'low_confidence')
         self.assertEqual(self.result(stamp=10.66)[2]['frames'],1)
 
     def test_different_same_class_boards_cannot_share_votes(self):
-        self.result(bounds=(250,100,20,20))
-        a=self.result(bounds=(520,100,20,20),stamp=10.33)
+        self.result(bounds=(250,100,20,50))
+        a=self.result(bounds=(520,100,20,50),stamp=10.33)
         self.assertEqual(a[2]['frames'],1)
-        self.assertEqual(self.result(bounds=(520,100,20,20),stamp=10.66)[0],'')
+        self.assertEqual(self.result(bounds=(520,100,20,50),stamp=10.66)[0],'PARKING')
 
     def test_missing_or_stale_observation_resets_track(self):
         self.result()
@@ -79,7 +89,7 @@ class NodeGateTests(TrainingRoiTests):
 
     def test_large_left_foreign_board_does_not_hide_front_p_candidate(self):
         foreign=self.detection('right',[0,80,150,150])
-        own=self.detection('park',[271,100,29,28])
+        own=self.detection('park',[271,100,29,48])
         self.prepare([foreign,own])
         for i in range(3):info=self.infer_at(10.+i*.333)
         self.assertEqual(info['label'],'PARKING')
@@ -99,9 +109,28 @@ class NodeGateTests(TrainingRoiTests):
         self.prepare([self.detection('park',[300,103,26,23],.9355)])
         info=self.infer_at(10.)
         self.assertEqual(info['label'],'')
-        self.assertEqual(info['range_reason'],'candidate_tracking')
+        self.assertEqual(info['range_reason'],'too_small')
         self.assertEqual(info['confidence'],.9355)
         self.assertEqual(info['stamp'],10.)
+
+    def test_far_uturn_then_near_straight_with_gate_enabled(self):
+        self.prepare([self.detection('uturn',[515,103,28,35],.99)])
+        for i in range(6):
+            info=self.infer_at(10.+i*.333)
+            self.assertEqual(info['label'],'')
+            self.assertEqual(info['range_reason'],'too_small')
+        self.prepare([self.detection('straight',[528,43,98,109],.968)])
+        self.infer_at(12.)
+        self.assertEqual(self.infer_at(12.333)['label'],'STRAIGHT')
+
+    def test_wide_short_board_does_not_hide_tall_edge_right(self):
+        far=self.detection('uturn',[200,100,150,35],.99)
+        edge=self.detection('right',[619,80,21,52],.94)
+        self.prepare([far,edge])
+        self.infer_at(10.)
+        info=self.infer_at(10.333)
+        self.assertEqual(info['label'],'RIGHT')
+        self.assertEqual(info['route_detections'],[edge])
 
 
 if __name__=='__main__':unittest.main()

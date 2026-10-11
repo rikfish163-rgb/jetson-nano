@@ -3,7 +3,6 @@
 
 def explicit_parking_lidar_disabled(cfg, state, action):
     return (state == 'PARKING' and action == 'PARKING' and
-            cfg.get('parking_slot') in ('P4', 'P5') and
             cfg.get('parking_mode') == 'forward_center' and
             cfg.get('parking_entry_style') in ('S', 'T') and
             not cfg.get('parking_lidar_enabled', True))

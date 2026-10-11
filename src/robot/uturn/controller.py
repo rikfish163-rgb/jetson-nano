@@ -49,7 +49,7 @@ def uturn_phase(ctx, phase, now):
 
 
 def _finish_uturn(ctx, now):
-    """Finish the maneuver and drive straight until the next blue trigger."""
+    """Finish the maneuver and return to ordinary road-center feedback."""
     ctx.follow_left_boundary = False
     ctx.left_reference = None
     ctx.timed_uturn = None
@@ -57,7 +57,7 @@ def _finish_uturn(ctx, now):
     command = ctx.call('lane', 'lane_command', now)
     output = ctx.call('obstacle', 'checked_command', command, now, True)
     if command[0] and output == command:
-        ctx.reason = 'uturn_exit_straight_wait_blue'
+        ctx.reason = 'uturn_complete_lane'
     return output
 
 

@@ -42,7 +42,7 @@ after confirmation and does not wait for the parking blue line.
 | 4 | -30 | 0 | 0.1 | 0.1 | 0.1 |
 | 5 | -30 | +22 | 2.1 | 2.1 | 2.1 |
 
-Settings: `src/robot/config/maneuvers.yaml`, key `parking_timed`, including
+Settings: `src/robot/config/vehicle_tuning.yaml`, key `parking_timed`, including
 `sequences/P1`, `sequences/P2`, `sequences/P3`. Steering is in protocol units.
 Selection is manual: this mode does not identify a numbered bay or verify its
 occupancy/final pose; it reproduces the saved tests. Normal lidar collision

@@ -1,55 +1,36 @@
 # 避障
 
-controller.py 检查障碍并选择停车或绕行；planner.py 生成绕行路径。
+正式整车的避障动作参数统一在 `../config/vehicle_tuning.yaml` 的“六、定时避障”中。
+保存后重启整车生效。速度、舵量是 RAW 控制值；+22 左满舵，-22 右满舵。
 
-调参修改本目录 `config.yaml`；未覆盖参数沿用整车标定。
+当前固定顺序：
 
-在 Nano 的 `/home/nano/robocup_ws` 执行 `./avoid` 会启动车辆。
-当前定时避障：前方目标进入后轴 0.85 米范围，先进入 `SETTLE_LEFT`，
-下发零速度、左满舵并等待 `timed_bypass_settle_s: 0.4` 秒，再以 raw 26 左满舵 1.5 秒、
-右满舵至少完成 4.0 秒（`timed_bypass_right_s`），安全停车时暂停计时。
-此后连续 3 帧、跨至少 0.15 秒确认可接管车道才交回原循线，
-日志为 `bypass_visual_lane_handoff`；一帧有效或航向估算不代表动作完成。
-检查近处车道的方向、位置、点间连贯性，并在车身运动补偿后检查跨帧一致性。
-车道可有横向偏移，交接后由原循线恢复到中心，交接当次速度不超过 RAW 26。
-未找到可接管车道时最多右转到 6 秒（`timed_bypass_right_max_s`），然后停车等待，
-日志为 `bypass_wait_exit_lane`；等待时确认连续新画面后仍可恢复循线。
-避障期间直行牌可缓存，退出后交给原状态机按蓝线条件执行，不直接跳入直行动作。
-当前循线不区分左侧或右侧目标车道。0.85 米约等于车头前方
-0.52 米，可用 `timed_bypass_trigger_distance_m` 调整。形状筛选为几何判断，
-不是视觉路锥分类；固定转弯时长也不代表已经测量确认绕过路锥。
-交接还要求估算的触发目标已位于车身后方，不能替代独立里程或目标测量。
-准备阶段不计入左转行驶时间；红灯、急停或雷达超时使其停车回正后，
-重新开始准备计时。0.4 秒是待标定的机械换向余量，不是轮角到位反馈；
-底盘是否支持静止打舵仍需先架空验证。它不提供绕锥净空保证。
+1. LEFT：速度30、左满舵，1.5秒。
+2. RIGHT：速度30、右满舵，3秒。
+3. RETURN_LEFT：速度30、左满舵，1秒。
+4. 立即调用正常巡线控制，使用原巡线速度和视觉转向；没有额外定时接线段。
 
-绕障成功确认车道并交回循线后设置 `timed_bypass_completed=true`。
-生产配置 `straight_lidar_once=true`：首次成功完成前，保留触发、扫描时效和碰撞检查；
-完成后关闭普通循线和 STRAIGHT 动作的直行类雷达检查，也不再触发同类绕障。
-中途拦停、扫描过期或等待出口车道都不消耗这一次机会；重启主控重新启用。
-雷达节点继续运行，LEFT、RIGHT、UTURN 和其他专用流程仍按各自规则使用雷达。
-P4/P5 的 S/T 入库由独立的 `parking_lidar_enabled` 控制，当前临时关闭。
-设 `straight_lidar_once:=false` 可恢复绕障后的普通行驶检查和不同目标触发；
-在该配置下仍记录已完成目标，避免同一目标重复触发。
+每段速度/舵量/时间分别使用 `timed_bypass_left_*`、`timed_bypass_right_*`、
+`timed_bypass_return_left_*`。`timed_bypass_settle_s=0`，直接开始第一段。
+旧的右弧3至6秒视觉确认退出流程和 `timed_bypass_right_max_s` 已移除。
+即使提前看见车道，三段也必须完成；缺少车道时仍完成固定三段，交回巡线后
+遵守正常巡线的丢线/过期停车规则。完成日志为 `bypass_timed_lane_handoff`，
+如果巡线输出为停车则保留其具体停车原因。
 
-定时避障期间检查近场车身碰撞和未知空间；雷达超时、红灯及急停暂停动作计时。
-侧方净空不足时可短暂采用已检查的较小舵角绕开，期间不计入满舵动作时间。
-左转结束前检查右弧线入口，必要时延长左转最多 1.5 秒，仍受碰撞保护约束。
-旧日志的 `bypass_wait_forward_lane` 等待分支已移除；
-`gap_limit_wait_for_lane` 表示循线阶段丢线超过允许距离或时间。
-固定路锥回归测试覆盖触发、绕行和控制权回切，但假定相机提供有效车道，
-不能代替实车车道重捕获验证。
+触发：巡线且没有正在执行的任务、有效雷达及车道；前方目标到后轴不超过0.85米、
+横向不超过车宽一半加0.10米；同一目标确认3次新扫描、跨度至少0.15秒。
+full 默认启用雷达形状筛选。现有 `straight_lidar_once=true` 保留：
+固定动作表完成后消费本次启动的避障机会。预先缓存的方向牌在交回巡线时保留。
+
+红牌/急停暂停计时；控制时钟异常停车。当前左右弧的雷达预测碰撞拦停仍未启用。
+这些是软件指令时长，无轮角到位反馈，也不是实测行驶距离。
+
+无车辆运动的回归检查：
 
 ```bash
 cd /home/nano/robocup_ws
 source /opt/ros/melodic/setup.bash
 source devel/setup.bash
-python2 tools/module_workspace.py list obstacle
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:src/robot/test:$PYTHONPATH python2 -m unittest -v test_fixed_bypass_sequence test_timed_bypass_speed
 PYTHONDONTWRITEBYTECODE=1 python2 tools/module_workspace.py check
-PYTHONDONTWRITEBYTECODE=1 python2 tools/module_workspace.py replay src/robot/obstacle/example.json
-PYTHONDONTWRITEBYTECODE=1 python2 tools/module_workspace.py test obstacle --report-dir /tmp/obstacle-tests
 ```
-
-回放与测试不启动车辆；样例只验证接口，不代表完整实车动作完成。
-
-模块协议见 [架构](../../../docs/ARCHITECTURE.md)。

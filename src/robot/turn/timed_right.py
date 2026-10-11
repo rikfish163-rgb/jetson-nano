@@ -2,8 +2,8 @@
 Durations measure outgoing commands, not wheel motion.
 """
 import math
-import numpy as np
 from robot.common.geometry import local, distance
+from robot.parking.reverse_entry import reverse_after_turn_enabled
 
 STAGES = (
     ('TIMED_REVERSE', 'reverse', 1.0, -30, 0),
@@ -26,7 +26,7 @@ def search_straight(ctx, now):
     steer = task['exit_track_steer'] if hold else 0.
     if not hold:
         ctx.left_reference = None
-    command = (ctx.cfg['straight_speed_raw'], steer)
+    command = (float(ctx.cfg.get('right_timed_exit_speed_raw',20))/ctx.cfg['speed_sign'], steer)
     result = ctx.call('obstacle', 'checked_command', command, now, False)
     if result == command:
         ctx.reason = ('right_timed_exit_hold_reference' if hold else
@@ -37,6 +37,8 @@ def search_straight(ctx, now):
 def next_blue_handoff(ctx, now):
     """A queued sign plus a confirmed NEW transverse blue can finish the exit."""
     cfg, task = ctx.cfg, ctx.right_lock
+    if ctx.next_direction == 'PARKING' and reverse_after_turn_enabled(cfg):
+        return None  # the right-exit loss gate starts the rear entry
     # P1-P3 and explicit S start on P itself, without a junction blue.
     if (ctx.next_direction == 'PARKING' and cfg.get('parking_enabled',True) and
             (cfg.get('parking_mode') == 'timed_sequence' or
@@ -80,11 +82,11 @@ def next_blue_handoff(ctx, now):
     ctx.marker = marker
     result = ctx.call('mission','dispatch',now)
     return result if result is not None else ctx.call(
-        'obstacle','checked_command',(cfg['straight_speed_raw'],0.),now,False)
+        'obstacle','checked_command',(float(cfg.get('right_timed_exit_speed_raw',20))/cfg['speed_sign'],0.),now,False)
 
 
 def align_exit(ctx, now):
-    """Finish on the normal road center, independent of the U-turn left rule."""
+    """Acquire fresh road centers, then release to normal lane following."""
     cfg, task = ctx.cfg, ctx.right_lock
     if task['phase'] == 'WAIT_LANE':
         task.update(phase='ALIGN_LANE', stable_since=None, aligned_frames=0,
@@ -92,47 +94,34 @@ def align_exit(ctx, now):
         ctx.exit_count, ctx.exit_stamp = 0, -1.
         ctx.left_reference = None
     ctx.lane_source = 'right_timed_exit_alignment'
-    task['exit_source'] = 'lane_center'
+    task['exit_source'] = 'left_boundary'
     handoff = next_blue_handoff(ctx,now)
     if handoff is not None:
         return handoff
-    stamp = ctx.lane_stamp
-    points = sorted(local(ctx.pose, p) for p in ctx.lane)
-    points = [p for p in points if .10 <= p[0] <= 1.10]
-    if (stamp <= task['exit_started'] or not ctx.call('lane', 'lane_tracking_ready', now, points)
-            or len(points) < 2 or points[-1][0]-points[0][0] < .10):
-        task.update(stable_since=None, stable_s=0., aligned_frames=0)
-        ctx.exit_count = 0
-        ctx.exit_reason = ('before_timed_completion' if stamp <= task['exit_started']
-                           else 'missing_near_lane')
+    # Keep center confirmation independent of the temporary left-line tracker.
+    # Only images acquired after the two-second stop can release the maneuver.
+    if ctx.lane_stamp > task['exit_started']:
+        ctx.exit_count = task.get('center_frames',0)
+        ctx.exit_stamp = task.get('center_stamp',-1.)
+        confirmed = ctx.call('turn','handoff_lane_confirmed',now)
+        task.update(center_frames=ctx.exit_count,center_stamp=ctx.exit_stamp)
+        if confirmed:
+            ctx.call('mission','resume_lane')
+            return ctx.call('obstacle','checked_command',
+                ctx.call('lane','lane_command',now),now,True)
+    else:
+        task.update(center_frames=0,center_stamp=-1.)
+    stamp = ctx.left_boundary_stamp
+    if stamp <= task['exit_started']:
+        ctx.exit_reason = 'left_before_timed_completion'
         return search_straight(ctx,now)
-
-    near_end = points[0][0] + cfg.get('right_align_lookahead', .30)
-    points = points[:max(3, sum(p[0] <= near_end for p in points))]
-    mx = sum(p[0] for p in points)/len(points)
-    xx = sum((x-mx)**2 for x,y in points)
-    if xx <= 1e-9:
-        task.update(stable_since=None, stable_s=0., aligned_frames=0)
-        ctx.exit_count = 0
-        ctx.exit_reason = 'degenerate_near_lane'
+    # Do not let the right bend or a fused center path move this reference.
+    line = ctx.call('lane', 'left_exit_line', now, offset_m=.30)
+    if line is None:
+        ctx.exit_reason = 'left_'+(ctx.left_fit_diagnostic or {}).get('reason','unavailable')
         return search_straight(ctx,now)
-    # Evaluate the near curve's tangent at the vehicle, not the forward
-    # chord angle. A car correctly following the circular road must be able
-    # to finish the turn without straightening that road's visible arc.
-    fit = np.polyfit([x-mx for x,y in points], [y for x,y in points],
-                     2 if len(points) >= 3 else 1)
-    slope = float(np.polyval(np.polyder(fit), -mx))
-    intercept = float(np.polyval(fit, -mx))
-    error = max(abs(y-float(np.polyval(fit, x-mx))) for x,y in points)
-    if error > .035 or abs(math.atan(slope)) >= math.radians(60.):
-        task.update(stable_since=None, stable_s=0., aligned_frames=0)
-        ctx.exit_count = 0
-        ctx.exit_reason = 'unreliable_near_lane'
-        return search_straight(ctx,now)
-    line = dict(points=points, heading=math.atan(slope),
-                lateral=intercept/math.hypot(1., slope), offset_m=0.)
     task['reference_source_stamp'] = stamp
-    task['reference_fit_error_m'] = error
+    task['reference_fit_error_m'] = line['error']
 
     command = ctx.call('lane', 'left_reference_command', line, now)
     reference = ctx.left_reference
@@ -169,22 +158,14 @@ def align_exit(ctx, now):
     task['stable_s'] = 0. if task['stable_since'] is None else stamp-task['stable_since']
     ctx.exit_reason = 'ok' if reference['aligned'] else 'lane_reference_not_aligned'
     ctx.reason = 'right_timed_exit_align'
-    # Alignment is ongoing feedback, not a completion gate. Keep correcting
-    # even after a few aligned frames; the next sign/blue owns the handoff.
+    # Temporary left-reference acquisition ends once road centers confirm.
     return result
-
-
-def resume_normal_lane(ctx, now):
-    """The fixed maneuver is complete; ordinary lane control owns the output."""
-    ctx.call('mission', 'resume_lane')
-    command = ctx.call('lane', 'lane_command', now)
-    return ctx.call('obstacle', 'checked_command', command, now, True)
 
 
 def tick(ctx, now):
     cfg, task = ctx.cfg, ctx.right_lock
     if task.get('phase') in ('WAIT_LANE', 'ALIGN_LANE'):
-        return resume_normal_lane(ctx, now)
+        return align_exit(ctx, now)
     if not 0 <= now-ctx.front_marker_stamp <= cfg.get('ground_timeout', 1.25):
         ctx.state = 'FAULT'
         return ctx.call('motion', 'stop', 'right_timed_front_stale')
@@ -197,7 +178,9 @@ def tick(ctx, now):
     if task['phase'] == 'EXIT_SETTLE':
         if now < task['settle_until']:
             return ctx.call('motion', 'stop', 'right_timed_exit_settle')
-        return resume_normal_lane(ctx, now)
+        task.update(phase='WAIT_LANE', exit_started=now)
+        ctx.exit_count, ctx.exit_stamp = 0, -1.
+        return align_exit(ctx, now)
     index = next(i for i, stage in enumerate(STAGES) if stage[0] == task['phase'])
     phase, key, seconds, default_speed, default_raw = STAGES[index]
     duration = cfg.get('right_timed_'+key+'_s', seconds)

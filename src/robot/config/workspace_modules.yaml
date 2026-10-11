@@ -105,9 +105,15 @@ modules:
     - timed_bypass_trigger_distance_m
     - timed_bypass_settle_s
     - timed_bypass_speed_raw
+    - timed_bypass_left_speed_raw
+    - timed_bypass_right_speed_raw
+    - timed_bypass_left_steering_raw
+    - timed_bypass_right_steering_raw
     - timed_bypass_left_s
     - timed_bypass_right_s
-    - timed_bypass_right_max_s
+    - timed_bypass_return_left_s
+    - timed_bypass_return_left_speed_raw
+    - timed_bypass_return_left_steering_raw
     - bypass_enabled
     - bypass_offset
     - bypass_pass
@@ -149,6 +155,8 @@ modules:
     - right_timed_exit_reverse_steering_raw
     - right_timed_exit_reverse_s
     - right_timed_exit_stop_s
+    - right_timed_exit_speed_raw
+    - maneuver_search_speed_raw
     - right_align_lookahead
     - right_direct_left_follow
     - right_exit_on_blue
@@ -210,6 +218,11 @@ modules:
     - uturn_reverse_yaw_rad
     - uturn_tracking_error_max
     - uturn_trial_enabled
+    - uturn_trial_sequence
+    - uturn_trial_pause_s
+    - uturn_trial_entry_m
+    - uturn_exit_speed_raw
+    - uturn_exit_curve_speed_raw
     - uturn_trial_exit_max_s
     - uturn_trial_exit_min_turn_deg
     - uturn_trial_exit_heading_deg
@@ -225,10 +238,12 @@ modules:
     - parking_blue_required
     - parking_bottom_clearance_m
     - parking_blue_max_travel_m
+    - parking_s_blue_distance_m
     - parking_capture_yaw_deg
     - parking_divider_trigger_x
     - parking_enabled
     - parking_entry_speed_raw
+    - parking_p_reverse_s
     - parking_entry_timeout_s
     - parking_final_max_m
     - parking_final_speed_raw
@@ -237,6 +252,7 @@ modules:
     - parking_max_cusps
     - parking_mode
     - parking_entry_style
+    - parking_bay_width_m
     - parking_lidar_enabled
     - parking_mouth_side
     - parking_near_start_tolerance_m

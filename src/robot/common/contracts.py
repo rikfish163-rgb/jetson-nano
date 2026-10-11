@@ -32,6 +32,27 @@ def command_to_model_steering(command, cfg):
 def validate_config(cfg):
     from robot.motion.calibration import validate as validate_chassis
     validate_chassis(cfg)
+    for key in ('maneuver_search_speed_raw','right_timed_exit_speed_raw',
+                'uturn_exit_speed_raw','uturn_exit_curve_speed_raw',
+                'timed_bypass_left_speed_raw','timed_bypass_right_speed_raw',
+                'timed_bypass_return_left_speed_raw'):
+        if key in cfg:
+            value=number(cfg[key])
+            if value != int(value) or not 1 <= value <= min(30,cfg['speed_raw_limit']):
+                raise ValueError('invalid '+key)
+    for key in ('timed_bypass_left_steering_raw','timed_bypass_right_steering_raw',
+                'timed_bypass_return_left_steering_raw'):
+        if key in cfg:
+            value=number(cfg[key])
+            if value != int(value) or abs(value) > cfg['steering_raw_limit']:
+                raise ValueError('invalid '+key)
+    if 'blue_stop_test' in cfg:
+        from robot.turn.blue_timed import validate_settings as validate_blue
+        validate_blue(cfg['blue_stop_test'],cfg)
+    if 'parking_timed' in cfg and cfg.get('parking_mode') != 'timed_sequence':
+        from robot.parking.timed_core import validate_settings
+        for slot in ('P1','P2','P3'):
+            validate_settings(dict(cfg,parking_slot=slot))
     if 'sign_route_gate' in cfg:
         from robot.signs.candidate_gate import validate_settings
         validate_settings(cfg['sign_route_gate'])
@@ -97,8 +118,8 @@ def validate_config(cfg):
     parking_style = cfg.get('parking_entry_style','')
     if parking_style not in ('','S','T'):
         raise ValueError('parking_entry_style must be S or T')
-    if mode == 'forward_center' and parking_style and cfg['parking_slot'] not in ('P4','P5'):
-        raise ValueError('S/T entry requires parking_slot P4 or P5')
+    if not .30 <= number(cfg.get('parking_bay_width_m',.38)) <= .50:
+        raise ValueError('parking_bay_width_m must be in [.30,.50]')
     boolean(cfg.get('timed_bypass_enabled',False))
     boolean(cfg.get('straight_lidar_once',False))
     if not 0 < number(cfg.get('timed_bypass_speed_raw',cfg['speed_raw']['action'])) <= cfg['speed_raw_limit']:
@@ -107,11 +128,10 @@ def validate_config(cfg):
         raise ValueError('timed_bypass_settle_s must be in [0,2]')
     if not 0 < number(cfg.get('timed_bypass_left_s',2.)) <= 6:
         raise ValueError('timed_bypass_left_s must be in (0,6]')
-    right_minimum=number(cfg.get('timed_bypass_right_s',4.5))
-    if not 0 < right_minimum <= 12:
+    if not 0 < number(cfg.get('timed_bypass_right_s',3.)) <= 12:
         raise ValueError('timed_bypass_right_s must be in (0,12]')
-    if not right_minimum <= number(cfg.get('timed_bypass_right_max_s',max(6.,right_minimum))) <= 12:
-        raise ValueError('timed_bypass_right_max_s must be >= timed_bypass_right_s and <= 12')
+    if not 0 < number(cfg.get('timed_bypass_return_left_s',1.)) <= 6:
+        raise ValueError('timed_bypass_return_left_s must be in (0,6]')
     trigger_distance = number(cfg.get('timed_bypass_trigger_distance_m',.50))
     if not cfg['wheelbase']+cfg['front_overhang']+cfg['obstacle_margin'] < trigger_distance <= 2.0:
         raise ValueError('timed_bypass_trigger_distance_m must exceed the front footprint and be <= 2 m')
@@ -150,7 +170,9 @@ def validate_config(cfg):
         raise ValueError('forward_white requires parking_slot AUTO and lidar_enabled true')
     for key,default,low,high in (
             ('parking_bottom_clearance_m',.04,.01,.15),
-            ('parking_blue_max_travel_m',1.7,.1,1.7),
+            ('parking_p_reverse_s',0,0,10),
+            ('parking_blue_max_travel_m',2.1,.1,2.1),
+            ('parking_s_blue_distance_m',0.,0.,5.),
             ('parking_align_heading_deg',6,1,15),('parking_align_lateral_m',.035,.01,.08),
             ('parking_align_stable_s',.5,.1,2),('parking_final_max_m',.30,.03,.5),
             ('parking_entry_timeout_s',35,5,90),('parking_edge_match_m',.07,.02,.12),
@@ -362,7 +384,7 @@ def validate_config(cfg):
     for value in cfg['raw_to_mps'].values():
         if not 0 < number(value) < 1:
             raise ValueError('invalid raw_to_mps coefficient')
-    if cfg['parking_slot'] != 'AUTO' and cfg['parking_slot'] not in cfg['slots']:
+    if mode != 'forward_center' and cfg['parking_slot'] != 'AUTO' and cfg['parking_slot'] not in cfg['slots']:
         raise ValueError('unknown requested slot')
     for name,default,upper in (('parking_observe_s',.8,10),('parking_prep_offset',0,3)):
         if not 0 <= number(cfg.get(name,default)) <= upper:
@@ -415,8 +437,8 @@ def ground(raw,now,timeout):
                 not 0<number(line['length'])<=8):
             raise ValueError('invalid blue line geometry')
     if data.get('part') == 'parking_lines':
-        if data.get('source') != 'front' or data.get('markers') or data.get('slots'):
-            raise ValueError('parking lines must be an independent front observation')
+        if data.get('markers') or data.get('slots'):
+            raise ValueError('parking lines must be an independent camera observation')
         lines = data.get('lines')
         if not isinstance(lines,list) or len(lines)>80:
             raise ValueError('invalid parking lines')

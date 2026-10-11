@@ -14,9 +14,9 @@ class TimedBypassSpeedTests(unittest.TestCase):
         cfg.update(wait_green=False, lidar_enabled=True, steering_command_scale_rad=.03)
         return cfg
 
-    def test_both_arcs_use_26_with_each_vehicle_profile_action_speed(self):
+    def test_three_arcs_use_30_with_each_vehicle_profile_action_speed(self):
         for action_speed in (20, 24):
-            for phase, raw_steer in (('LEFT', 22), ('RIGHT', -22)):
+            for phase, raw_steer in (('LEFT', 22), ('RIGHT', -22), ('RETURN_LEFT', 22)):
                 cfg = self.config()
                 cfg['speed_raw']['action'] = action_speed
                 core = Controller(cfg)
@@ -26,7 +26,7 @@ class TimedBypassSpeedTests(unittest.TestCase):
                 core.scan = _SyntheticScan(1.1)
                 speed, steer = core.tick(1.1)
                 encoded = encode_command(speed, steer, cfg, 1)
-                self.assertEqual(encoded['speed_raw'], 26)
+                self.assertEqual(encoded['speed_raw'], 30)
                 self.assertEqual(encoded['steering_raw'], raw_steer)
                 self.assertEqual(core.cfg['speed_raw']['action'], action_speed)
 

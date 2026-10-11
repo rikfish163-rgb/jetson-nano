@@ -1,6 +1,46 @@
 from test_sign_training_roi import TrainingRoiTests, Value
 
 class YoloSignNodeTests(TrainingRoiTests):
+    def test_rear_small_p_triggers_first_frame_anywhere_despite_larger_right(self):
+        import json
+        from robot.signs.candidate_gate import RouteSignGate
+        n=self.node;n.backend='yolo_trt';rear_messages=[]
+        n.route_gate=RouteSignGate(dict(enabled=True),.8,.125)
+        n.rear_route_gate=RouteSignGate(dict(enabled=True,left_center_ratio=0.),.8,.125)
+        n.rear_pub=Value(publish=lambda msg:rear_messages.append(json.loads(msg.data)))
+        p=dict(label='park',confidence=.95,bounds=[10,80,20,12],scores={'park':.95})
+        right=dict(label='right',confidence=.95,bounds=[300,80,90,90],scores={'right':.95})
+        n.detector=Value(detect=lambda frame:[right,p])
+        n.infer(None)
+        self.assertEqual(self.messages[-1]['route_gate']['frames'],1)
+        self.assertEqual(self.messages[-1]['top_label'],'RIGHT')
+        n.status(Value(data=json.dumps(dict(state='PARKING',parking_entry=dict(camera_source='rear')))))
+        for stamp in (10.,10.05):
+            n.rear_callback(Value(header=Value(stamp=Value(to_sec=lambda:stamp))))
+            n.infer(None)
+        self.assertEqual([m['label'] for m in rear_messages],['PARKING','PARKING'])
+        self.assertEqual(rear_messages[0]['sign_min_height_ratio'],0.)
+        self.assertEqual(rear_messages[-1]['sign_bounds'],p['bounds'])
+        self.assertEqual(rear_messages[-1]['camera_source'],'rear')
+        self.assertEqual(n.route_gate.track['count'],1)
+        self.assertFalse(self.warnings)
+
+    def test_rear_p_still_requires_confidence_and_fresh_frame(self):
+        import json
+        n=self.node;n.backend='yolo_trt';n.rear_requested=True;received=[]
+        n.rear_pub=Value(publish=lambda msg:received.append(json.loads(msg.data)))
+        p=dict(label='park',confidence=.79,bounds=[10,80,20,12],scores={'park':.79})
+        n.detector=Value(detect=lambda frame:[p])
+        n.rear_callback(Value(header=Value(stamp=Value(to_sec=lambda:10.))))
+        n.infer(None)
+        self.assertEqual(received[-1]['label'],'')
+        p['confidence']=.95
+        n.infer(None)
+        self.assertEqual(len(received),1)
+        n.rear_callback(Value(header=Value(stamp=Value(to_sec=lambda:8.))))
+        n.infer(None)
+        self.assertEqual(len(received),1)
+
     def test_route_height_gate_matches_recorded_far_and_edge_boards(self):
         n=self.node;n.backend='yolo_trt';n.min_height_ratio=.125
         for label,bounds,accepted in (

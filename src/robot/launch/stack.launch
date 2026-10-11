@@ -1,4 +1,5 @@
 <launch>
+  <arg name="vehicle_tuning" default="$(find robocup_competition)/config/vehicle_tuning.yaml"/>
   <!-- Shadow: does not register a publisher on /control/cmd. -->
   <arg name="config" default="$(find robocup_competition)/config/competition.yaml"/>
   <arg name="maneuver_config" default="$(find robocup_competition)/config/maneuvers.yaml"/>
@@ -36,7 +37,8 @@
   <arg name="parking_lidar_enabled" default=""/>
   <arg name="parking_slot" default=""/>
   <arg name="parking_mode" default="$(eval 'timed_sequence' if arg('parking_slot') in ('P1','P2','P3') else 'forward_center' if arg('parking_slot') in ('P4','P5') else '')"/>
-  <arg name="parking_entry_style" default="$(eval 'S' if arg('parking_slot') in ('P4','P5') else '')"/>
+  <arg name="parking_entry_style" default="$(eval 'S' if arg('parking_mode') == 'forward_center' else '')"/>
+  <arg name="rear_after_path_loss" value="$(eval arg('parking_mode') == 'forward_center' and arg('parking_entry_style') == 'S')"/>
   <arg name="parking_entry_speed_raw" default=""/>
   <arg name="parking_final_speed_raw" default=""/>
   <arg name="parking_bottom_clearance_m" default=""/>
@@ -114,6 +116,8 @@
   <param name="/competition/config/lane_min_path_span" value="$(arg lane_min_span)" type="double"/>
   <!-- Shared calibrated pixel/time approach; also used by blue_stop_test.launch. -->
   <rosparam command="load" file="$(arg module_config_dir)/turn/blue_stop_test.yaml" param="/competition/config/blue_stop_test"/>
+  <!-- Central vehicle tuning overrides module defaults; explicit arguments remain last. -->
+  <rosparam if="$(eval arg('vehicle_tuning') != '')" command="load" file="$(arg vehicle_tuning)" param="/competition/config"/>
   <!-- Optional command-line overrides; blank values preserve the user's YAML. -->
   <param if="$(eval arg('lidar_enabled') != '')" name="/competition/config/lidar_enabled" value="$(arg lidar_enabled)" type="bool"/>
   <param if="$(eval arg('straight_lidar_once') != '')" name="/competition/config/straight_lidar_once" value="$(arg straight_lidar_once)" type="bool"/>
@@ -126,6 +130,7 @@
   <param if="$(eval arg('parking_enabled') != '')" name="/competition/config/parking_enabled" value="$(arg parking_enabled)" type="bool"/>
   <param if="$(eval arg('parking_lidar_enabled') != '')" name="/competition/config/parking_lidar_enabled" value="$(arg parking_lidar_enabled)" type="bool"/>
   <param if="$(eval arg('parking_slot') != '')" name="/competition/config/parking_slot" value="$(arg parking_slot)" type="str"/>
+  <param if="$(eval arg('parking_mode') == 'forward_center')" name="/competition/config/parking_slot" value="" type="str"/>
   <param if="$(eval arg('parking_mode') != '')" name="/competition/config/parking_mode" value="$(arg parking_mode)" type="str"/>
   <param if="$(eval arg('parking_entry_style') != '')" name="/competition/config/parking_entry_style" value="$(arg parking_entry_style)" type="str"/>
   <param if="$(eval arg('parking_entry_speed_raw') != '')" name="/competition/config/parking_entry_speed_raw" value="$(arg parking_entry_speed_raw)" type="int"/>
@@ -195,13 +200,18 @@
       <param name="camera_frame_id" value="front_camera"/>
       <param name="camera_info_url" value="file://$(find yihan_ros_pkg)/calibration/front_640x360.yaml"/>
     </node>
-    <node if="$(arg start_rear)" pkg="usb_cam" type="usb_cam_node" name="rear_camera" ns="rear" output="screen">
+    <node if="$(eval arg('start_rear') and not arg('rear_after_path_loss'))" pkg="usb_cam" type="usb_cam_node" name="rear_camera" ns="rear" output="screen">
       <remap from="/rear/rear_camera/image_raw" to="/rear/usb_cam/image_raw"/>
       <param name="video_device" value="$(arg rear_device)"/>
       <param name="image_width" value="640"/><param name="image_height" value="480"/>
       <param name="pixel_format" value="mjpeg"/><param name="framerate" value="$(arg rear_fps)"/>
       <param name="camera_frame_id" value="rear_camera"/>
       <param name="camera_info_url" value="file://$(find yihan_ros_pkg)/calibration/rear_640x480.yaml"/>
+    </node>
+    <node if="$(eval arg('start_rear') and arg('rear_after_path_loss'))" pkg="robocup_competition" type="deferred_rear_node.py" name="rear_camera_gate" output="screen" required="true">
+      <param name="rear_device" value="$(arg rear_device)"/>
+      <param name="rear_fps" value="$(arg rear_fps)"/>
+      <param name="start_ground" value="$(arg start_ground)"/>
     </node>
   </group>
   <group if="$(arg start_lane)">
@@ -219,7 +229,7 @@
   </group>
   <group if="$(arg start_ground)">
     <node if="$(eval arg('parking_mode') == 'timed_sequence')" pkg="robocup_competition" type="timed_vision_node.py" name="parking_timed_vision" output="screen"/>
-    <node if="$(arg start_rear)" pkg="yihan_ros_pkg" type="rear_bev_node.py" name="rear_bev" output="screen">
+    <node if="$(eval arg('start_rear') and not arg('rear_after_path_loss'))" pkg="yihan_ros_pkg" type="rear_bev_node.py" name="rear_bev" output="screen">
       <param name="processing_hz" value="$(arg rear_fps)"/>
     </node>
     <node pkg="robocup_competition" type="perception_node.py" name="competition_ground" output="screen">

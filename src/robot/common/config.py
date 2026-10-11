@@ -31,7 +31,7 @@ def check_override(owner, override, catalog):
                 raise ValueError('%s cannot override parameter %s' % (owner, path))
 
 
-def load_config(config_dir, base_path=None, maneuver_path=None):
+def load_config(config_dir, base_path=None, maneuver_path=None, tuning_path=None):
     catalog = read_mapping(os.path.join(config_dir, 'workspace_modules.yaml'))
     cfg = read_mapping(base_path or os.path.join(config_dir, 'competition.yaml'))
     cfg = merge(cfg, read_mapping(maneuver_path or os.path.join(config_dir, 'maneuvers.yaml')))
@@ -40,4 +40,13 @@ def load_config(config_dir, base_path=None, maneuver_path=None):
         check_override(owner, override, catalog)
         cfg = merge(cfg, override)
     cfg['blue_stop_test'] = read_mapping(os.path.join(os.path.dirname(config_dir),'turn','blue_stop_test.yaml'))
+    path = tuning_path if tuning_path is not None else os.path.join(config_dir, 'vehicle_tuning.yaml')
+    if path:
+        tuning = read_mapping(path)
+        allowed = set(key.split('.')[0] for module in catalog['modules'].values()
+                      for key in module['parameters'])
+        unknown = set(tuning)-allowed
+        if unknown:
+            raise ValueError('unknown vehicle tuning parameters: '+', '.join(sorted(unknown)))
+        cfg = merge(cfg, tuning)
     return cfg

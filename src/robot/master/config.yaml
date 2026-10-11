@@ -1,4 +1,8 @@
 # 总控与集成：只在此文件写本模块需要覆盖的参数。
-# 默认空映射，沿用 competition.yaml + maneuvers.yaml，避免重复默认值。
 # 用 python2 tools/module_workspace.py check 检查参数归属。
-{}
+# 当前 rear_bev.yaml 的单应矩阵将原图横向翻转；BEV 左侧对应车体左侧。
+# 在像素转车体坐标时补偿，白库线和蓝线共用；不反转底盘舵量。
+rear_bev:
+  y_sign: -1.0
+  # 2026-10-11 实测：镜头在后轴后方约 5 cm，镜头与棋盘均对准车身中心。
+  axle_x: -0.05

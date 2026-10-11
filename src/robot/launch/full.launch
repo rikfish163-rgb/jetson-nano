@@ -1,4 +1,5 @@
 <launch>
+  <arg name="vehicle_tuning" default="$(find robocup_competition)/config/vehicle_tuning.yaml"/>
   <arg name="live" default="false"/>
   <arg name="debug_view" default="false"/>
   <arg name="debug_port" default="8080"/>
@@ -23,9 +24,10 @@
   <arg name="right_lock_heading_deg" default=""/>
   <arg name="parking_enabled" default="true"/>
   <arg name="parking_lidar_enabled" default=""/>
-  <arg name="parking_slot" default="P4"/>
-  <arg name="parking_mode" default="$(eval 'timed_sequence' if arg('parking_slot') in ('P1','P2','P3') else 'forward_center' if arg('parking_slot') in ('P4','P5') else '')"/>
-  <arg name="parking_entry_style" default="$(eval 'S' if arg('parking_slot') in ('P4','P5') else '')"/>
+  <!-- Numbered slots are only for legacy timed/planned modes. Visual entry follows P. -->
+  <arg name="parking_slot" default=""/>
+  <arg name="parking_mode" default="$(eval 'timed_sequence' if arg('parking_slot') in ('P1','P2','P3') else 'forward_center' if arg('parking_slot') in ('','P4','P5') else '')"/>
+  <arg name="parking_entry_style" default="$(eval 'S' if arg('parking_mode') == 'forward_center' else '')"/>
   <arg name="parking_entry_speed_raw" default=""/>
   <arg name="parking_final_speed_raw" default=""/>
   <arg name="parking_bottom_clearance_m" default=""/>
@@ -89,6 +91,7 @@
   <arg name="exit_lane_heading_tolerance" default=""/>
   <arg name="exit_lateral_tolerance" default=""/>
   <include file="$(find robocup_competition)/launch/stack.launch">
+    <arg name="vehicle_tuning" value="$(arg vehicle_tuning)"/>
     <arg name="sign_backend" value="$(arg sign_backend)"/>
     <arg name="sign_model" value="$(arg sign_model)"/>
     <arg name="sign_labels" value="$(arg sign_labels)"/>

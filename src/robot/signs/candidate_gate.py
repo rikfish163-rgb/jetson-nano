@@ -40,7 +40,10 @@ class RouteSignGate(object):
         return (bounds[0]+bounds[2]/2.)/shape[1]>=self.settings.get('left_center_ratio',.30)
 
     def filter(self,detections,shape):
-        return [d for d in detections if self.allowed(d['label'],d['bounds'],shape)]
+        # Reject distant boards before selecting the largest actionable candidate.
+        return [d for d in detections if self.allowed(d['label'],d['bounds'],shape)
+                and (normalize(d['label']) not in ROUTE_LABELS or
+                     d['bounds'][3]/float(shape[0])>=self.normal_height)]
 
     def evaluate(self,label,confidence,bounds,shape,stamp):
         label=normalize(label)
@@ -60,8 +63,10 @@ class RouteSignGate(object):
         threshold=max(self.threshold,self.settings.get('small_confidence',.90)) if small else self.threshold
         diagnostics.update(center_ratio=center[0]/shape[1],small_target=small,
             required_frames=required,confidence_threshold=threshold,
-            min_height_ratio=self.settings.get('min_height_ratio',.04))
-        if height<self.settings.get('min_height_ratio',.04) or w/float(shape[1])<.01:
+            min_height_ratio=self.normal_height)
+        # Confidence and repeated observations must never bypass the height floor.
+        # Do not impose a width floor: valid edge boards can be partly clipped.
+        if height<self.normal_height:
             self.track=None
             return '','too_small',diagnostics
         if confidence<threshold:

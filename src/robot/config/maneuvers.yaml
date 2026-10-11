@@ -1,3 +1,4 @@
+# 动作速度/舵量/时间已移至 ../config/vehicle_tuning.yaml（最后加载）。
 # Production maneuvers. full/stack load this after competition.yaml;
 # explicit launch arguments take precedence. Metres, seconds, degrees as named.
 # Normal UTURN sign + blue-line dispatch uses the configured four-stage trial.
@@ -6,47 +7,12 @@
 parking_mode: forward_plan # measured front-camera entry for P1-P5; reverse remains explicit
 # full/stack parking_slot:=P1/P2/P3 selects timed_sequence automatically.
 # Saved test profiles. Raw speed/steering are protocol units; seconds are wall time.
-parking_timed:
-  approach_speed_raw: 30
-  side: right
-  seen_frames: 2
-  seek_seconds: 15.0
-  max_seconds: 30.0
-  end_zero_frames: 2
-  end_zero_seconds: 0.1
-  parking_pause_seconds: 0.5
-  end_verify_seconds: 2.0
-  min_line_m: 0.08
-  acquire_line_m: 0.12
-  angle_deg: 25.0
-  white_v_min: 190
-  curve_min_curvature: 0.45
-  curve_min_turn_deg: 10.0
-  sequences:
-    P1:
-      - {speed: 30, steering: 0, seconds: 4.0}
-      - {speed: -30, steering: 22, seconds: 0.2}
-      - {speed: -30, steering: -22, seconds: 3.4}
-      - {speed: -30, steering: 0, seconds: 0.1}
-      - {speed: -30, steering: 22, seconds: 2.1}
-    P2:
-      - {speed: 30, steering: 0, seconds: 1.2}
-      - {speed: -30, steering: 22, seconds: 0.2}
-      - {speed: -30, steering: -22, seconds: 3.4}
-      - {speed: -30, steering: 0, seconds: 0.1}
-      - {speed: -30, steering: 22, seconds: 2.1}
-    P3:
-      - {speed: -30, steering: 0, seconds: 1.5}
-      - {speed: -30, steering: 22, seconds: 0.2}
-      - {speed: -30, steering: -22, seconds: 3.4}
-      - {speed: -30, steering: 0, seconds: 0.1}
-      - {speed: -30, steering: 22, seconds: 2.1}
 # Temporary: only explicit P4/P5 S/T entry ignores lidar.
 parking_lidar_enabled: false
 parking_entry_speed_raw: 16
 parking_final_speed_raw: 12
-parking_bottom_clearance_m: 0.09
-parking_blue_max_travel_m: 1.7
+parking_bottom_clearance_m: 0.05
+parking_blue_max_travel_m: 2.1 # T entry only; front S uses parking_s_blue_distance_m.
 parking_sign_association: true
 left_turn_full_lock: false # follow the configured 0.65 m arc instead of the tighter full-lock arc
 timed_bypass_enabled: true
@@ -59,17 +25,9 @@ uturn_relative_enabled: false
 uturn_vision_enabled: false
 uturn_blue_landmarks_enabled: false
 uturn_trial_side: left
-uturn_trial_entry_m: 0.0 # No extra entry before the configured sequence.
 uturn_trial_forward_mps: 0.250
 uturn_trial_forward_raw: 26
 uturn_trial_reverse_raw: 26
-uturn_trial_pause_s: 0.7
-uturn_trial_sequence:
-  - {speed: 30, steering: 0, seconds: 1.0}
-  - {speed: 30, steering: 22, seconds: 2.8}
-  - {speed: -30, steering: -22, seconds: 1.6}
-  - {speed: 30, steering: 22, seconds: 3.4}
-  - {speed: -30, steering: 0, seconds: 2.0}
 
 # Alternative relative U-turn requires a profile disabling uturn_trial_enabled.
 # Reverse parallel parking remains available via parking_mode:=parallel_reverse.

@@ -6,6 +6,37 @@ from robot.turn.blue_stop_test import BlueStopTest
 
 
 class BlueStopTests(unittest.TestCase):
+    def test_alignment_scale_is_independent_of_lane_scale(self):
+        from robot.turn.blue_timed import approach_command
+        from robot.common.contracts import encode_command
+        cfg=copy.deepcopy(CONFIG)
+        cfg.update(max_steer=.2,steering_command_scale_rad=.03,steering_sign=1)
+        p=dict(speed_raw=20,align_speed_raw=20,align_tolerance_deg=1,
+               align_max_steering_raw=10,align_max_steer_rad=.2)
+        state=dict(heading_deg=2.)
+        original=approach_command(state,'align',cfg,p)
+        cfg['max_steer']=.5
+        self.assertEqual(original,approach_command(state,'align',cfg,p))
+        p['align_max_steer_rad']=.4
+        reduced=approach_command(state,'align',cfg,p)
+        self.assertAlmostEqual(reduced[1],original[1]/2)
+        for angle in (-30.,30.):
+            command=approach_command(dict(heading_deg=angle),'align',cfg,p)
+            raw=encode_command(command[0],command[1],cfg,0)['steering_raw']
+            self.assertEqual(raw,10 if angle>0 else -10)
+        self.assertEqual(approach_command(state,'timed',cfg,p)[1],0.)
+
+    def test_alignment_scale_validation(self):
+        from robot.turn.blue_timed import validate_settings
+        c=self.make()
+        settings=dict(c.test_settings)
+        settings.pop('align_max_steer_rad',None)
+        self.assertEqual(validate_settings(settings,c.cfg)['align_max_steer_rad'],.2)
+        for value in (0,-.2,float('nan'),float('inf'),True,1.1):
+            settings['align_max_steer_rad']=value
+            with self.assertRaises(ValueError):
+                validate_settings(settings,c.cfg)
+
     def make(self):
         settings=dict(speed_raw=12,trigger_row_ratio=.65,trigger_band_ratio=.2,
                       confirm_frames=3,heading_tolerance_deg=10,forward_seconds=1,

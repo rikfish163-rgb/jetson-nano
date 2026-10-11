@@ -24,10 +24,10 @@ class ParkingAnchorTests(unittest.TestCase):
         self.assertAlmostEqual(p.view['center'][0],1.05)
         speed,steer=p.command(1.,c.pose)
         self.assertEqual(speed,12)
-        self.assertLessEqual(abs(encode_command(speed,steer,c.cfg,0)['steering_raw']),6)
+        self.assertLessEqual(abs(encode_command(speed,steer,c.cfg,0)['steering_raw']),c.cfg['steering_raw_limit'])
         p.observe(target+[[(1.4,-.09),(1.4,.29)]],1.1,c.pose)
         self.assertEqual(p.command(1.1,c.pose)[0],12)
-        p.observe([],1.2,(1.031,0.,0.))
+        p.observe([[(1.4,-.09),(1.4,.29)]],1.2,(1.031,0.,0.))
         self.assertEqual(p.command(1.2,(1.031,0.,0.)),(0,0.))
 
     def test_wrong_side_pair_and_missing_sign_cannot_stop(self):
@@ -83,10 +83,10 @@ class ParkingAnchorTests(unittest.TestCase):
         self.assertIsNone(p.status)
         # Nearest bumper corner reaches the 4 cm clearance at x=.34357.
         pose=(.344,0.,0.)
-        p.observe([],1.1,pose)
+        p.observe([line],1.1,pose)
         self.assertEqual(p.command(1.1,pose),(0,0.))
         self.assertEqual(p.status,'FINISHED')
-        self.assertEqual(p.debug['bottom_source'],'p_near_cross')
+        self.assertEqual(p.debug['bottom_source'],'tracked_bottom')
         self.assertEqual(p.command(1.2,pose),(0,0.))
 
     def test_entrance_adjacent_bay_and_behind_p_cross_do_not_stop(self):
@@ -110,7 +110,8 @@ class ParkingAnchorTests(unittest.TestCase):
         self.assertGreater(c.tick(1.3)[0],0)
         self.assertEqual(c.state,'PARKING')
         c.set_pose((.344,0.,0.),1.4)
-        c.observe_ground(dict(source='front',part='parking_lines',lines=[]),1.4)
+        c.observe_ground(dict(source='front',part='parking_lines',
+            lines=[[(.69-.344,-.34),(.765-.344,.36)]]),1.4)
         self.assertEqual(c.tick(1.4),(0,0.))
         self.assertEqual(c.state,'FINISHED')
         self.assertEqual(c.reason,'parking_at_bottom_clearance')

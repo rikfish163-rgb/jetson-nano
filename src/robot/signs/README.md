@@ -67,15 +67,32 @@ python2 tools/sign_detector_20260916/inspect_sign_captures.py --label STRAIGHT
 这保留了前方偏左余量：实拍有效 LEFT 中心约243px、有效P候选约286px，
 不能把画面左半幅全部裁掉。红/绿牌继续使用现有信号逻辑。
 
-45px 是普通目标的分界，不再是绝对拒绝门槛。更小目标至少占图高4%、图宽1%，
-置信度至少0.90，连续3张不同源图像关联同一目标；普通目标连续2帧。
+`sign_min_height_ratio: 0.125` 是前摄方向牌和 P 牌的入队硬下限：360px 图高时
+检测框至少45px高，720px 图高时至少90px高。更小目标即使高置信度、连续多帧
+也不能放行。不卡最小宽度，以保留画面边缘部分露出的牌；合格目标连续2帧确认。
 相邻帧超过0.75秒、类别变化、目标位置/尺寸跳变或低置信度会重置候选。
 候选通过后仍经过总控原有投票、路线阶段和动作触发条件。
 
-先过滤明显左侧再选择目标，避免左侧大牌遮蔽前方小牌。
+先过滤明显左侧和高度不足的牌，再选择最大面积目标，避免不合格牌遮蔽有效牌。
 JSON 保留全部模型检测 `detections` 和可接受区域内候选 `route_detections`，
 `route_gate` 记录目标ID、帧数、门槛；`range_reason` 可以是
-`outside_route_region`、`candidate_tracking`、`low_confidence`、`route_confirmed`。
+`outside_route_region`、`too_small`、`candidate_tracking`、`low_confidence`、`route_confirmed`。
 这是一项按实拍设置的图像区域启发规则，不等于地图定位或车道空间关联。
 弯道时合法牌可能横向移动，需要实车抓拍继续校准 left_center_ratio。
-暂时恢复旧45px逻辑，可将本模块配置 `sign_route_gate.enabled` 设为 false。
+前摄硬高度下限在 `sign_route_gate` 开启和关闭时均生效；后摄不使用此下限。
+
+## 左转或右转后的后摄 P 识别
+
+P4/P5 的 S 入库模式下，识牌节点自动接收后摄原图
+`/rear/usb_cam/image_raw`。总控进入后摄倒退状态后，同一个模型改为处理后摄，
+输出 `/competition/rear_sign`，JSON 的 `camera_source=rear`；前摄仍用原话题。
+两路图像的时间戳去重独立。后摄只接受 P 和红牌；P 在任意图像位置、任意
+检测框高度均可触发，不经过区域筛选和连续两帧投票。新鲜图像首帧置信度
+达到 `sign_confidence` 即发布，日志为 `rear_direct`、高度门槛为 0。
+置信度与图像时效检查保留；其他方向牌不参与
+后摄目标选择，也不进入前摄方向指令队列。前摄的区域限制和投票保持原逻辑。
+
+换向后先直轮倒退，后摄 P 一经确认，总控即切换到库线和蓝线纠偏入库，
+记录 `competition_rear_sign_decision`。没有确认 P 时保持倒退直行。
+P 位置投影也不再设置后摄检测框最小高度；仍拒绝无法可靠按宽度估距的
+过窄/截断检测框及无效坐标。此时 P 已触发，但需取得可用位置才能关联目标库。

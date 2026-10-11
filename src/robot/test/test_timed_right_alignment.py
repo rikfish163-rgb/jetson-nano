@@ -33,7 +33,7 @@ class TimedRightAlignmentTests(unittest.TestCase):
         self.assertEqual(c.action, 'RIGHT')
         self.assertEqual(c.right_lock['phase'], 'ALIGN_LANE')
         self.assertGreater(command[0], 0)
-        self.assertLessEqual(command[0], c.cfg['left_reference_speed_raw'])
+        self.assertLessEqual(command[0], 20)
         self.assertGreater(command[1], 0)
 
     def test_stable_alignment_keeps_tracking_and_accepts_the_second_right(self):
@@ -65,7 +65,7 @@ class TimedRightAlignmentTests(unittest.TestCase):
     def test_pre_completion_line_cannot_release_right(self):
         c = self.core()
         self.observe(c, 9.9)
-        self.assertEqual(c.tick(10.1), (12,0.))
+        self.assertEqual(c.tick(10.1), (20,0.))
         self.assertEqual(c.action, 'RIGHT')
         self.assertEqual(c.exit_count, 0)
 
@@ -103,6 +103,7 @@ class TimedRightAlignmentTests(unittest.TestCase):
             # The vehicle is tangent to the circle at x=0. A chord fitted
             # only ahead of the vehicle has a nonzero angle on this road.
             c.observe_lane([(x, .5*x*x) for x in (.25, .35, .45, .65)], .95, stamp)
+            c.observe_left_boundary([(x, .3+.3*x*x) for x in (.25, .35, .45, .65)], stamp)
             c.front_marker_stamp = stamp
             command = c.tick(stamp)
         self.assertEqual(c.action, 'RIGHT')
@@ -110,18 +111,19 @@ class TimedRightAlignmentTests(unittest.TestCase):
         self.assertGreater(command[0], 0)
         self.assertFalse(c.follow_left_boundary)
 
-    def test_left_line_alone_cannot_replace_the_normal_exit_center_path(self):
+    def test_left_line_alone_is_sufficient_without_a_center_path(self):
         c = self.core()
         for stamp in (10.1, 10.2, 10.7):
             c.observe_left_boundary([(.25, .3), (.45, .3), (.65, .3)], stamp)
             c.observe_lane([], 0., stamp)
-            self.assertEqual(c.tick(stamp), (12,0.))
+            self.assertEqual(c.tick(stamp), (20,0.))
+            self.assertEqual(c.reason, 'right_timed_exit_align')
         self.assertEqual(c.action, 'RIGHT')
 
     def test_stale_lane_and_lidar_veto_completion(self):
         c = self.core()
         self.observe(c, 9.5)
-        self.assertEqual(c.tick(10.1), (12,0.))
+        self.assertEqual(c.tick(10.1), (20,0.))
         self.assertEqual(c.action, 'RIGHT')
         self.assertEqual(c.exit_count, 0)
         c.checked_command = lambda *args: (0, 0)

@@ -4,7 +4,6 @@ No ROS, pose integration or distance-to-stop calculation.
 from __future__ import division
 import math
 from robot.common.contracts import number
-from robot.camera.alignment import steering_for_heading
 from robot.common.geometry import distance
 
 
@@ -22,11 +21,13 @@ def validate_settings(settings, cfg):
                 heading_tolerance_deg=(1,30),max_search_seconds=(1,60),camera_timeout_s=(.1,2),
                 align_speed_raw=(1,min(30,cfg['speed_raw_limit'])),
                 align_max_steering_raw=(1,cfg['steering_raw_limit']),
+                align_max_steer_rad=(.01,1.0),
                 align_tolerance_deg=(1,15),align_confirm_frames=(1,10),align_timeout_s=(.1,30),
                 align_recheck_s=(0,3))
     result={}
+    defaults=dict(align_recheck_s=0,align_max_steer_rad=.2)
     for key,(low,high) in limits.items():
-        value=number(settings.get(key,0) if key=='align_recheck_s' else settings[key])
+        value=number(settings.get(key,defaults[key]) if key in defaults else settings[key])
         if not low<=value<=high:raise ValueError('invalid blue stop '+key)
         result[key]=value
     if result['trigger_row_ratio']+result['trigger_band_ratio']>1:
@@ -151,7 +152,11 @@ def approach_command(state,result,cfg,p):
         speed=p['align_speed_raw']
         angle=state['heading_deg']
         if abs(angle)>p['align_tolerance_deg']:
-            steering=steering_for_heading(math.radians(angle),cfg)
+            # Independent blue-line scale; lane max_steer must not change
+            # alignment sensitivity. RAW clipping remains separate.
+            maximum=p.get('align_max_steer_rad',.2)
+            fraction=max(-1.,min(1.,1.5*math.radians(angle)/maximum))
+            steering=fraction*cfg.get('steering_command_scale_rad',cfg['max_steer'])
             limit=(cfg.get('steering_command_scale_rad',cfg['max_steer'])*
                    p['align_max_steering_raw']/float(cfg['steering_raw_limit']))
             steering=max(-limit,min(limit,steering))

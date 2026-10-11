@@ -28,6 +28,8 @@ class Node(object):
         self.slot_at, self.diag_at = -1.0, -1.0
         self.next_slot_source = 'front'
         self.parking_requested = False
+        self.rear_parking_requested = False
+        self.s_parking_requested = False
         self.parking_selecting = False
         self.uturn_requested = False
         self.uturn_vision = None
@@ -61,6 +63,12 @@ class Node(object):
     def status(self,msg):
         try:
             data = json.loads(msg.data)
+            self.s_parking_requested = (data.get('state') == 'PARKING' and
+                self.cfg.get('parking_enabled',True) and
+                self.cfg.get('parking_mode') == 'forward_center' and
+                self.cfg.get('parking_entry_style') == 'S')
+            self.rear_parking_requested = (data.get('state') == 'PARKING' and
+                (data.get('parking_entry') or {}).get('camera_source') == 'rear')
             self.uturn_requested = data.get('pending')=='UTURN' or data.get('action')=='UTURN'
             if self.uturn_vision is not None:
                 with self.lock:
@@ -69,12 +77,7 @@ class Node(object):
                     self.uturn_vision.requested = data.get('pending')=='UTURN'
                     self.uturn_vision.set_active(data.get('state')=='UTURN')
             previous_parking_requested = self.parking_requested
-            queued_straight_entry = (
-                self.cfg.get('parking_mode') == 'forward_center' and
-                self.cfg.get('parking_entry_style') == 'S' and
-                data.get('next_direction') == 'PARKING')
             self.parking_requested = (data.get('pending') == 'PARKING' or
-                queued_straight_entry or
                 data.get('state') in ('WAIT_SLOT','PLANNING','PARKING',
                                       'PARALLEL_PARKING','PARKING_SCAN',
                                       'AUTO_PLANNING'))
@@ -122,12 +125,17 @@ class Node(object):
     def tick(self,event):
         with self.lock:
             front, rear = self.latest['front'], self.latest['rear']
+        # Once S entry owns the vehicle, front junction geometry is unused.
+        # In rear entry it must not delay the current rear bay measurement.
+        s_parking = self.s_parking_requested
+        if s_parking and self.rear_parking_requested:
+            front = None
         try:
             stamp = self.fresh_stamp(front,'front')
             if stamp is not None and stamp > self.last['front']:
                 self.last['front'] = stamp
                 started = time.time()
-                parking = (self.parking_requested and self.cfg.get('parking_enabled',True) and
+                parking = (self.parking_requested and not self.rear_parking_requested and self.cfg.get('parking_enabled',True) and
                            self.cfg.get('parking_mode') != 'timed_sequence')
                 blue_reference = (self.uturn_vision is not None and self.uturn_vision.blue_enabled and
                                   self.uturn_requested)
@@ -135,8 +143,17 @@ class Node(object):
                 full_bev = self.detector.bev(self.bridge.imgmsg_to_cv2(front,'bgr8'),parking=wide)
                 offset = 360 if wide else 0
                 bev = full_bev[:self.cfg['front_camera']['bev_height'],offset:offset+self.cfg['front_camera']['bev_width']]
-                data,blue,white = self.detector.detect(bev,include_slots=False)
-                self.publish(data,front,'front','markers')
+                slot_white = None
+                if s_parking and parking:
+                    hsv = cv2.cvtColor(full_bev,cv2.COLOR_BGR2HSV)
+                    b,w = self.cfg['blue'],self.cfg['white']
+                    slot_white = cv2.inRange(hsv,(0,0,w['v_min']),(179,w['s_max'],255))
+                    white = slot_white[:bev.shape[0],offset:offset+bev.shape[1]]
+                    blue = cv2.inRange(hsv[:bev.shape[0],offset:offset+bev.shape[1]],
+                        (b['h_min'],b['s_min'],b['v_min']),(b['h_max'],255,255))
+                else:
+                    data,blue,white = self.detector.detect(bev,include_slots=False)
+                    self.publish(data,front,'front','markers')
                 if self.uturn_vision is not None and not parking:
                     vision_bev,vision_white,vision_blue=bev,white,blue
                     if blue_reference:
@@ -156,17 +173,25 @@ class Node(object):
                             self.stats['uturn_blue_correction_stamp']=self.uturn_vision.blue_landmarks.corrected_at
                     if scene is not None:
                         self.uturn_scene_pub.publish(String(data=json.dumps(scene,allow_nan=False)))
-                slot_white = white
                 if parking:
                     # Keep the whole bay view for either parking executor.
-                    hsv = cv2.cvtColor(full_bev,cv2.COLOR_BGR2HSV)
-                    w = self.cfg['white']
-                    slot_white = cv2.inRange(hsv,(0,0,w['v_min']),(179,w['s_max'],255))
+                    if slot_white is None:
+                        hsv = cv2.cvtColor(full_bev,cv2.COLOR_BGR2HSV)
+                        w = self.cfg['white']
+                        slot_white = cv2.inRange(hsv,(0,0,w['v_min']),(179,w['s_max'],255))
                     if self.cfg.get('parking_mode') in ('forward_white','forward_center'):
-                        lines = self.detector.parking_lines(slot_white,u_offset=offset)
+                        # Short near-field paint may continue a locked S bay;
+                        # its controller still requires long sides to acquire it.
+                        if (self.cfg.get('parking_mode')=='forward_center' and
+                                self.cfg.get('parking_entry_style')=='S'):
+                            lines = self.detector.parking_lines(slot_white,u_offset=offset,min_length_m=.04)
+                        else:
+                            lines = self.detector.parking_lines(slot_white,u_offset=offset)
                         self.publish(dict(markers=[],slots=[],lines=lines),front,'front','parking_lines')
                     self.debug_image('parking_bev',full_bev,front)
                     self.debug_image('parking_white',slot_white,front)
+                else:
+                    slot_white = white
                 self.front_cache = (front,slot_white,offset)
                 self.stats.update(front_frames=self.stats['front_frames']+1,
                                   blue_ms=(time.time()-started)*1000,
@@ -174,14 +199,21 @@ class Node(object):
                 for name,img in (('front_bev',bev),('blue',blue),('white',white)):
                     self.debug_image(name,img,front)
             now = rospy.Time.now().to_sec()
-            if self.uturn_requested:
+            if self.uturn_requested or self.rear_parking_requested:
                 stamp = self.fresh_stamp(rear,'rear')
                 if stamp is not None and stamp > self.last['rear']:
                     self.last['rear'] = stamp
                     bev = self.bridge.imgmsg_to_cv2(rear,'bgr8')
-                    data,blue,_ = self.detector.detect(bev,rear=True,include_slots=False)
-                    self.publish(data,rear,'rear','markers')
-                    self.debug_image('rear_blue',blue,rear)
+                    data,blue,white = self.detector.detect(bev,rear=True,include_slots=False)
+                    if self.uturn_requested:
+                        self.publish(data,rear,'rear','markers')
+                        self.debug_image('rear_blue',blue,rear)
+                    if self.rear_parking_requested:
+                        lines = self.detector.parking_lines(white,min_length_m=.04,rear=True)
+                        self.publish(dict(markers=[],slots=[],lines=lines,
+                                          blue_lines=data.get('blue_lines',[])),rear,'rear','parking_lines')
+                        self.debug_image('rear_white',white,rear)
+                        self.debug_image('rear_blue',blue,rear)
             # Reverse parallel parking starts with a front frame and, when a
             # current rear frame is available, alternates the 8 Hz ground
             # budget at 4 Hz per camera.  Forward-plan parking stays

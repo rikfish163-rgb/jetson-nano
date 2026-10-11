@@ -16,10 +16,10 @@ from robot.common.contracts import model_to_command_steering
 FIELDS = ('action', 'action_source', 'action_started', 'cfg', 'completed_at_pose',
  'consumed_marker', 'exit_count', 'exit_pose', 'exit_reason', 'exit_stamp',
  'follow_left_boundary', 'front_blue_lines', 'front_blue_image_lines', 'front_marker_stamp', 'lane', 'lane_source',
- 'lane_stamp', 'last_completed_action', 'left_boundary_stamp', 'left_reference', 'marker',
+ 'lane_stamp', 'last_completed_action', 'left_boundary_stamp', 'left_fit_diagnostic', 'left_reference', 'marker',
  'parking_marker', 'pose', 'reason', 'left_lock', 'right_lock', 'right_tail_origin', 'state',
  'straight_search', 'blue_approach', 'next_direction')
-CALLS = (('lane', 'lane_command'), ('lane', 'lane_valid'), ('lane', 'lane_tracking_ready'), ('lane', 'left_exit_line'),
+CALLS = (('lane', 'search_command'), ('lane', 'lane_command'), ('lane', 'lane_valid'), ('lane', 'left_exit_line'),
  ('lane', 'left_reference_command'), ('mission', 'resume_lane'), ('mission', 'dispatch'),
  ('mission', 'start_follow'), ('mission','begin_blue_action'), ('turn','exit_lane_confirmed'),
  ('motion', 'current_steering'), ('motion', 'stop'),
@@ -202,13 +202,23 @@ def straight_search_tick(ctx, now):
     s = ctx.straight_search
     travelled = local(s['origin'],ctx.pose)[0]
     minimum = ctx.cfg.get('straight_distance',1.25)
+    parking_approach = (ctx.next_direction == 'PARKING' and
+                        ctx.cfg.get('parking_enabled',True) and
+                        ctx.cfg.get('parking_mode') == 'forward_center' and
+                        ctx.cfg.get('parking_entry_style') == 'S')
+    if parking_approach:
+        # Consume the confirmed P immediately, retaining the straight travel
+        # origin while handing speed/steering and bottom stopping to parking.
+        ctx.call('mission', 'resume_lane')
+        return ctx.call('mission', 'dispatch', now)
     s.update(elapsed_s=now-s['started'],travelled_m=travelled,
              minimum_distance_m=minimum,
              phase='STRAIGHT_DISTANCE')
-    if travelled >= minimum:
-        # Every blue-triggered STRAIGHT completes its distance before handing
-        # back to lane. A queued sign cannot preempt it; the next lane tick
-        # may dispatch the next confirmed blue event through the normal path.
+    confirmed = (ctx.lane_stamp > s['started'] and
+                 ctx.call('turn','handoff_lane_confirmed',now))
+    if confirmed or travelled >= minimum:
+        # Fresh road centers take over immediately; distance is only the
+        # fallback endpoint while acquiring a usable lane.
         ctx.call('mission', 'resume_lane')
         return ctx.call('obstacle', 'checked_command', ctx.call('lane', 'lane_command', now),now,True)
     if now-s['started'] >= s['timeout_s']:

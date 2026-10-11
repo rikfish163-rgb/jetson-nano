@@ -13,6 +13,7 @@ from robot.common.planning import hybrid_plan
 from robot.parking.entry import select_entry
 from robot.parking.entry import ExplicitStraightEntry
 from robot.parking.entry import TimedRightEntry
+from robot.parking.reverse_entry import ReverseStraightEntry, reverse_after_turn_route
 from robot.common.lidar_policy import explicit_parking_lidar_disabled
 
 
@@ -23,18 +24,65 @@ FIELDS = ('action', 'action_started', 'cfg', 'executor', 'follower', 'future',
  'parking_sign',
  'parking_lines_stamp', 'parking_trigger_at', 'parking_trigger_pose', 'pose', 'reason',
  'retry_at', 'scan', 'slot', 'slot_locked', 'slot_stamp', 'state', 'pending',
- 'pending_at')
+ 'pending_at', 'next_direction', 'last_completed_action', 'right_lock',
+ 'turn_reverse_watch', 'lane_stamp', 'lane', 'action_source')
 CALLS = (('mission', 'start_follow'), ('motion', 'stop'),
-         ('obstacle', 'scan_ready'), ('obstacle', 'checked_command'))
+         ('obstacle', 'scan_ready'), ('obstacle', 'checked_command'),
+         ('lane', 'lane_tracking_ready'))
 OPERATIONS = ('start_parking', 'auto_parking_tick',
-              'start_explicit_parking', 'explicit_parking_tick')
+              'start_explicit_parking', 'explicit_parking_tick', 'turn_reverse_tick')
+
+
+def turn_reverse_tick(ctx, now):
+    """Require two continuous source seconds without a path, not camera dropout."""
+    if not reverse_after_turn_route(ctx):
+        ctx.turn_reverse_watch = None
+        return None
+    watch = ctx.turn_reverse_watch
+    if watch is None:
+        watch = dict(acquired=False, stamp=-1., loss_since=None, loss_frames=0)
+        ctx.turn_reverse_watch = watch
+    stamp = ctx.lane_stamp
+    if not 0 <= now-stamp <= ctx.cfg['sensor_timeout']:
+        watch.update(loss_since=None, loss_frames=0)
+        return ctx.call('motion', 'stop', 'turn_reverse_front_stale')
+    # Never acquire the exit using a frame taken during the timed turn.
+    if ctx.action == 'RIGHT' and stamp <= (ctx.right_lock or {}).get('exit_started', now):
+        return ctx.call('motion', 'stop', 'turn_reverse_wait_exit_frame')
+    ready = ctx.call('lane', 'lane_tracking_ready', now)
+    if stamp > watch['stamp']:
+        if stamp-watch['stamp'] > ctx.cfg['sensor_timeout']:
+            watch.update(loss_since=None, loss_frames=0)
+        watch['stamp'] = stamp
+        if ready:
+            watch.update(acquired=True, loss_since=None, loss_frames=0)
+        elif ctx.lane:
+            # A short/low-confidence path is still visible; it cannot count
+            # towards the user's two seconds of seeing no path at all.
+            watch.update(loss_since=None, loss_frames=0)
+        elif watch['acquired']:
+            if watch['loss_since'] is None:
+                watch['loss_since'] = stamp
+            watch['loss_frames'] += 1
+    if ready:
+        return None
+    if (not watch['acquired'] or watch['loss_frames'] < 2 or
+            stamp-watch['loss_since'] < 2.):
+        return ctx.call('motion', 'stop', 'turn_reverse_wait_reliable_path'
+                        if not watch['acquired'] else 'turn_reverse_confirm_path_loss')
+    ctx.parking_entry = ReverseStraightEntry(ctx.cfg, ctx.pose, now, wait_for_sign=True)
+    ctx.state = ctx.action = 'PARKING'
+    ctx.action_source, ctx.action_started = 'turn_path_loss', now
+    ctx.pending, ctx.pending_at, ctx.next_direction = None, 0., None
+    ctx.follower, ctx.right_lock = None, None
+    ctx.turn_reverse_watch = None
+    return ctx.call('motion', 'stop', 'parking_reverse_gear_pause')
 
 
 def _explicit_style(ctx):
     style = str(ctx.cfg.get('parking_entry_style', '')).strip().upper()
-    slot = str(ctx.cfg.get('parking_slot', '')).strip().upper()
-    if slot not in ('P4', 'P5') or style not in ('S', 'T'):
-        raise ValueError('explicit parking requires P4/P5 and parking_entry_style S or T')
+    if ctx.cfg.get('parking_mode') != 'forward_center' or style not in ('S', 'T'):
+        raise ValueError('explicit parking requires forward_center and parking_entry_style S or T')
     return style
 
 
@@ -113,6 +161,9 @@ def explicit_parking_tick(ctx, now):
         if is_timed:
             entry.abort('parking_t_entry_scan_stale')
             return _explicit_fault(ctx, entry.reason)
+        if getattr(entry, 'p_reverse_active', False):
+            entry.abort_p_reverse('parking_p_reverse_scan_stale')
+            return _explicit_fault(ctx, entry.reason)
         return ctx.call('motion', 'stop', 'parking_scan_missing_or_stale')
     command = entry.command(now) if is_timed else entry.command(now, ctx.pose)
     ctx.reason = entry.reason
@@ -127,6 +178,12 @@ def explicit_parking_tick(ctx, now):
     if is_timed and result != command:
         entry.abort('parking_t_entry_guard:'+str(ctx.reason))
         return _explicit_fault(ctx, entry.reason)
+    if getattr(entry, 'p_reverse_active', False) and result != command:
+        entry.abort_p_reverse('parking_p_reverse_guard:'+str(ctx.reason))
+        return _explicit_fault(ctx, entry.reason)
+    if result == command and (getattr(entry, 'camera_source', 'front') == 'rear' or
+                              getattr(entry, 'p_reverse_active', False)):
+        ctx.reason = entry.reason  # retain the timed stage or rear visual source
     return result
 
 def start_parking(ctx, now):

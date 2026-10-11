@@ -24,6 +24,12 @@ class TimedRightTests(unittest.TestCase):
             self.assertEqual(self.command(c,t),(30,-22))
         self.assertEqual(self.command(c,5.801),(-30,0))
         self.assertEqual(c.right_lock['phase'],'TIMED_EXIT_REVERSE')
+        for t in [5.901+i*.1 for i in range(27)]+[8.600]:
+            self.assertEqual(self.command(c,t),(-30,0))
+        self.assertEqual(self.command(c,8.602),(0,0))
+        self.assertEqual(c.right_lock['phase'],'EXIT_SETTLE')
+        self.assertEqual(self.command(c,10.601),(0,0))
+        self.assertEqual(self.command(c,10.603),(20,0))
 
     def make(self, start=True):
         cfg=copy.deepcopy(CONFIG)
@@ -61,11 +67,10 @@ class TimedRightTests(unittest.TestCase):
         for i in range(81,120):
             self.assertEqual(self.command(c,i/20.),(0,0))
             self.assertEqual(c.right_lock['phase'],'EXIT_SETTLE')
-        c.lane_command=lambda now:(30,0.)
-        self.assertEqual(self.command(c,6.0),(30,0))
-        self.assertEqual(c.state,'LANE')
-        self.assertIsNone(c.right_lock)
-        self.assertIsNone(c.action)
+        self.assertEqual(self.command(c,6.0),(20,0))
+        self.assertEqual(c.right_lock['phase'],'ALIGN_LANE')
+        self.assertEqual(self.command(c,6.05),(20,0))
+        self.assertEqual(c.action,'RIGHT')
         self.assertIsNone(c.straight_search)
 
     def test_blue_stop_waits_then_dispatches_timed_right(self):
@@ -88,24 +93,16 @@ class TimedRightTests(unittest.TestCase):
         self.assertEqual(c.action,'RIGHT')
         self.assertIsNone(c.straight_search)
 
-    def test_completed_right_returns_to_normal_lane_without_confirmation(self):
+    def test_lane_confirmation_keeps_continuous_alignment(self):
         c=self.make()
         c.right_lock.update(phase='WAIT_LANE',exit_started=.9)
-        c.lane_command=lambda now:(30,.006)
-        def forbidden(*args):raise AssertionError('extra exit confirmation')
-        c.handoff_lane_confirmed=forbidden
-        c.front_marker_stamp=1.
-        self.assertEqual(c.tick(1.),(30,.006))
-        self.assertEqual(c.state,'LANE')
-        self.assertIsNone(c.right_lock)
-        self.assertIsNone(c.action)
-
-    def test_no_lane_after_completion_stays_stopped_under_normal_lane_rules(self):
-        c=self.make()
-        c.right_lock.update(phase='WAIT_LANE',exit_started=.9)
-        self.assertEqual(self.command(c,1.),(0,0))
-        self.assertEqual(c.state,'LANE')
-        self.assertIsNone(c.right_lock)
+        for stamp in (1.,1.2,1.6):
+            c.observe_lane([(.25,0),(.45,0),(.65,0)],.95,stamp)
+            c.observe_left_boundary([(.25,.3),(.45,.3),(.65,.3)],stamp)
+            self.assertGreater(self.command(c,stamp)[0],0)
+        self.assertEqual(c.state,'MANEUVER')
+        self.assertEqual(c.right_lock['phase'],'ALIGN_LANE')
+        self.assertEqual(c.action,'RIGHT')
 
     def test_gap_fault_never_restarts(self):
         c=self.make()
@@ -172,7 +169,7 @@ class TimedRightTests(unittest.TestCase):
         validate_config(cfg)
         self.assertTrue(cfg['right_timed_enabled'])
         self.assertEqual(cfg['right_timed_turn_s'],4.7)
-        self.assertEqual(cfg['right_timed_exit_reverse_s'],2.5)
+        self.assertEqual(cfg['right_timed_exit_reverse_s'],2.8)
         self.assertEqual(cfg['right_timed_exit_stop_s'],2.0)
         self.assertEqual(cfg['right_timed_exit_reverse_speed_raw'],-30)
         self.assertEqual(cfg['right_timed_exit_reverse_steering_raw'],0)

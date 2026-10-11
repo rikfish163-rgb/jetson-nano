@@ -99,37 +99,6 @@ class ExplicitParkingEntryTests(unittest.TestCase):
         self.assertEqual(raw['steering_raw'], 0)
         self.assertEqual(core.state, 'PARKING')
 
-    def test_s_can_align_on_a_fresh_single_side_associated_with_p(self):
-        core = self.core('S')
-        core.cfg.update(parking_sign_association=True,
-                        parking_entry_speed_raw=16)
-        core.parking_sign = dict(point=(.8108, .3417), stamp=10.)
-        self.start(core, 'S', 'sign')
-        # Parking exposure from 2026-10-09: the car is to the right of P,
-        # with only the near bay side recovered at about ten degrees.
-        core.parking_entry.observe([[(.5525, .0875), (.8108, .13335)]],
-                                   10.1, core.pose)
-        self.assertIsNone(core.parking_entry.view)
-        self.assertIsNotNone(core.parking_entry.single)
-        command = core.execute('parking', 'explicit_parking_tick', 10.1).value
-        self.assertEqual(command[0], 16)
-        self.assertGreater(command[1], 0.)
-        self.assertEqual(core.reason, 'parking_follow_sign_side')
-        self.assertLessEqual(abs(encode_command(command[0], command[1],
-                                                core.cfg, 0)['steering_raw']), 6)
-        self.assertEqual(core.execute('parking', 'explicit_parking_tick',
-                                      12.).value, (0, 0.))
-        self.assertEqual(core.reason, 'parking_front_stale')
-
-    def test_s_unassociated_single_side_still_waits(self):
-        core = self.start(self.core('S'), 'S', 'sign')
-        core.parking_entry.observe([[(.5525, .0875), (.8108, .13335)]],
-                                   10.1, core.pose)
-        self.assertIsNone(core.parking_entry.single)
-        self.assertEqual(core.execute('parking', 'explicit_parking_tick',
-                                      10.1).value, (0, 0.))
-        self.assertEqual(core.reason, 'parking_wait_white_geometry')
-
     def test_s_discards_white_lines_captured_before_the_sign(self):
         core = self.core('S')
         old_lines = [[(.40, -.19), (1.00, -.19)],

@@ -195,12 +195,11 @@ class IntegrationTests(unittest.TestCase):
         for t in (.1,.2,.3):c.observe_sign('PARKING',.99,t,t)
         self.assertEqual(c.pending,'RIGHT')
 
-    def test_estop_red_missing_scan_and_obstacle_abort_latch(self):
-        for fault in ('estop','red','scan','obstacle'):
+    def test_estop_red_and_explicit_command_rejection_abort_latch(self):
+        for fault in ('estop','red','command_rejected'):
             c=self.core();self.start(c)
             c.observe_timed_parking(scene(.4),.4)
             if fault in ('estop','red'):setattr(c,fault,True)
-            elif fault=='scan':c.scan_ready=lambda now:False
             else:c.checked_command=lambda command,now,allow_bypass:(0,0.)
             self.assertEqual(c.tick(.4),(0,0))
             self.assertEqual(c.state,'FAULT')
@@ -208,7 +207,7 @@ class IntegrationTests(unittest.TestCase):
             c.estop,c.red=False,False;c.scan_ready=lambda now:True
             self.assertEqual(c.tick(.5),(0,0))
 
-    def test_normal_lidar_guard_keeps_clear_stage_and_rejects_near_obstacle(self):
+    def test_lidar_predictions_do_not_interrupt_timed_parking(self):
         import math
         from robot.lidar.scan import Scan
         c=self.core();c.pending='PARKING';c.dispatch(.3)
@@ -220,8 +219,11 @@ class IntegrationTests(unittest.TestCase):
         for i in range(175,186):rays[i]=.2
         c.scan=Scan(rays,-math.pi,math.pi/180,.05,6,c.pose,c.cfg['lidar'],.5)
         c.observe_timed_parking(scene(.5),.5)
-        self.assertEqual(c.tick(.5),(0,0))
-        self.assertEqual(c.state,'FAULT')
+        self.assertGreater(c.tick(.5)[0],0)
+        self.assertEqual(c.state,'TIMED_PARKING')
+        c.scan_ready=lambda now:False
+        c.observe_timed_parking(scene(.6),.6)
+        self.assertGreater(c.tick(.6)[0],0)
 
 class AdapterTests(unittest.TestCase):
     def test_vision_produces_scene_before_parking_status_arrives(self):

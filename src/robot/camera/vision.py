@@ -139,14 +139,15 @@ class GroundDetector(object):
             return slots
         return self._slots(white,lambda u,v:self.metric(u-u_offset,v,rear),ppm)
 
-    def parking_lines(self, white, u_offset=0):
-        """Finite front-camera segments for tracking a selected bay at ground_hz."""
-        ppm = self.c['pixels_per_m']
-        rows = cv2.HoughLinesP(white,1,np.pi/180,25,
-                              minLineLength=int(ppm*.12),maxLineGap=int(ppm*.025))
+    def parking_lines(self, white, u_offset=0, min_length_m=.12, rear=False):
+        """Finite segments in the same rear-axle frame for either camera."""
+        ppm = self.cfg['rear_bev']['pixels_per_m'] if rear else self.c['pixels_per_m']
+        minimum = int(ppm*min_length_m)
+        rows = cv2.HoughLinesP(white,1,np.pi/180,max(10,min(25,minimum)),
+                              minLineLength=minimum,maxLineGap=int(ppm*.025))
         if rows is None:
             return []
-        return [[self.metric(a-u_offset,b),self.metric(c-u_offset,d)]
+        return [[self.metric(a-u_offset,b,rear),self.metric(c-u_offset,d,rear)]
                 for a,b,c,d in (row[0] for row in rows[:80])]
 
     def _slots(self, mask, metric, ppm):

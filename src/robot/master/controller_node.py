@@ -15,6 +15,7 @@ from nav_msgs.msg import Odometry,Path
 from sensor_msgs.msg import LaserScan
 from std_msgs.msg import String,Float32,Bool
 from robot.master.controller import Controller
+from robot.parking.reverse_entry import reverse_after_turn_enabled
 from robot.lidar.scan import Scan
 from robot.motion.odometry import CommandOdometry
 from robot.motion import calibration as chassis
@@ -50,9 +51,19 @@ class Node(object):
         self.lock = threading.RLock()
         # Warm up optional OpenCV geometry before subscriptions/control timers.
         self.parking_projector = None
+        self.rear_parking_projector = None
         if self.cfg.get('parking_sign_association', False) and self.cfg.get('parking_mode') != 'timed_sequence':
             from robot.parking.sign_anchor import ParkingSignProjector
             self.parking_projector = ParkingSignProjector(self.cfg)
+        if reverse_after_turn_enabled(self.cfg):
+            import os
+            import rospkg
+            import yaml
+            from robot.parking.sign_anchor import ParkingSignProjector
+            path=os.path.join(rospkg.RosPack().get_path('yihan_ros_pkg'),
+                              'calibration','rear_bev.yaml')
+            with open(path) as stream:
+                self.rear_parking_projector=ParkingSignProjector(self.cfg,yaml.safe_load(stream))
         self.seq = 0
         self.confidence, self.confidence_time = 0.0,-1.0
         self.applied, self.applied_at = (0,0),-1.0
@@ -91,6 +102,8 @@ class Node(object):
         if self.cfg.get('lidar_enabled',True) or (self.cfg.get('parking_enabled',True) and self.cfg.get('parking_mode')!='forward_center'):
             rospy.Subscriber(self.cfg['scan_topic'],LaserScan,self.scan,queue_size=1)
         rospy.Subscriber('/competition/sign',String,self.sign,queue_size=1)
+        if reverse_after_turn_enabled(self.cfg):
+            rospy.Subscriber('/competition/rear_sign',String,self.rear_sign,queue_size=1)
         rospy.Subscriber('/competition/uturn_scene',String,self.uturn_scene,queue_size=1)
         if self.cfg.get('parking_mode') == 'timed_sequence':
             rospy.Subscriber('/competition/parking_timed_scene',String,self.timed_parking_scene,queue_size=1)
@@ -291,12 +304,48 @@ class Node(object):
         except (ValueError,KeyError,TypeError) as exc:
             rospy.logwarn_throttle(2,'scan rejected: %s',str(exc))
 
+    def rear_sign(self,msg):
+        """Associate rear P with its bay using the image-time vehicle pose."""
+        try:
+            now=rospy.Time.now().to_sec()
+            data,stamp=decode(msg.data,now,self.cfg['sign_timeout'])
+            if data.get('camera_source')!='rear':
+                return
+            label,confidence=data['label'],number(data['confidence'])
+            with self.lock:
+                now=rospy.Time.now().to_sec()
+                entry=self.core.parking_entry
+                if (self.core.state!='PARKING' or self.core.estop or self.core.red or
+                        getattr(entry,'camera_source',None)!='rear'):
+                    return
+                if label=='RED':
+                    self.core.observe_sign(label,confidence,stamp,now)
+                    return
+                if label!='PARKING' or not self.cfg['sign_confidence']<=confidence<=1.:
+                    return
+                if entry.inner.sign_anchor is not None:
+                    return
+                source_pose=self.source_pose(stamp)
+            bounds=data.get('sign_bounds')
+            point=self.rear_parking_projector.position(bounds)
+            anchor=world(source_pose,point) if point is not None else None
+            with self.lock:
+                now=rospy.Time.now().to_sec()
+                if (self.core.parking_entry is not entry or self.core.state!='PARKING'
+                        or self.core.estop or self.core.red):
+                    return
+                accepted=entry.observe_sign(label,confidence,stamp,now,anchor=anchor,bounds=bounds)
+                event=dict(entry.rear_sign) if accepted else None
+            if event is not None:
+                rospy.loginfo('competition_rear_sign_decision %s',json.dumps(event,allow_nan=False))
+        except (ValueError,KeyError,TypeError) as exc:
+            rospy.logwarn_throttle(2,'rear sign rejected: %s',str(exc))
+
     def sign(self,msg):
         started = time.time()
         projection_ms = 0.0
         event_info = None
         projection = None
-        tracking_projection = False
         try:
             now = rospy.Time.now().to_sec()
             data,stamp = decode(msg.data,now,self.cfg['sign_timeout'])
@@ -321,25 +370,6 @@ class Node(object):
                         and decision in ('parking_voting','stored_pending','parking_latched',
                                          'next_direction_voting','stored_next_direction')
                         and self.parking_projector is not None):
-                    projection = (self.source_pose(stamp), self.core.state,
-                                  self.core.action, self.core.pending)
-                elif (label == '' and data.get('top_label') == 'PARKING' and
-                        data.get('range_reason') == 'outside_route_region' and
-                        self.cfg['sign_confidence'] <= confidence <= 1. and
-                        self.core.sign_stamp == stamp and
-                        decision != 'stale_or_duplicate' and
-                        self.cfg.get('parking_mode') == 'forward_center' and
-                        self.cfg.get('parking_entry_style') == 'S' and
-                        self.cfg.get('parking_slot') in ('P4','P5') and
-                        self.core.state == 'PARKING' and self.core.action == 'PARKING' and
-                        self.core.parking_entry is not None and
-                        self.core.parking_entry.phase == 'APPROACH' and
-                        self.core.parking_entry.sign_anchor is not None and
-                        self.parking_projector is not None):
-                    # The route-region filter controls new instructions.
-                    # An already locked P can move left as the car approaches;
-                    # retain its measured position only near the same target.
-                    tracking_projection = True
                     projection = (self.source_pose(stamp), self.core.state,
                                   self.core.action, self.core.pending)
                 self.core.sign_info['source']=data.get('source','classifier')
@@ -387,14 +417,9 @@ class Node(object):
                     if (self.core.sign_stamp == stamp and
                             (self.core.state,self.core.action,self.core.pending) == projection[1:] and
                             0 <= now-stamp <= self.cfg['sign_timeout']):
-                        entry=self.core.parking_entry
-                        same_target = (not tracking_projection or
-                            (entry is not None and entry.phase == 'APPROACH' and
-                             entry.sign_anchor is not None and point is not None and
-                             math.hypot(point[0]-entry.sign_anchor[0],
-                                        point[1]-entry.sign_anchor[1])<.35))
-                        if point is not None and same_target:
+                        if point is not None:
                             self.core.parking_sign=dict(point=point,stamp=stamp)
+                            entry=self.core.parking_entry
                             if entry is not None and entry.phase=='APPROACH':
                                 old=entry.sign_anchor
                                 if old is None or math.hypot(point[0]-old[0],point[1]-old[1])<.35:
@@ -578,8 +603,12 @@ class Node(object):
         task=self.core.timed_bypass
         key=(enabled,self.core.state,self.core.reason,
              task['phase'] if task else None,command[0]==0)
-        if key==getattr(self,'last_control_event',None):
+        parking_sample=(self.core.state=='PARKING' and
+                        now-getattr(self,'last_parking_visual_event',-1.)>=1.)
+        if key==getattr(self,'last_control_event',None) and not parking_sample:
             return
+        if self.core.state=='PARKING':
+            self.last_parking_visual_event=now
         self.last_control_event=key
         if not hasattr(self,'control_events'):
             self.control_events=deque(maxlen=32)
@@ -587,6 +616,8 @@ class Node(object):
         # telemetry thread, even when a busy state lock prevents full status.
         self.control_events.append(copy.deepcopy(dict(stamp=now,
             state=self.core.state,reason=self.core.reason,command=command,
+            parking_entry=(self.core.parking_entry.debug
+                           if self.core.parking_entry is not None else None),
             action=self.core.action,pending=self.core.pending,
             uturn_exit_straight=self.core.uturn_exit_straight,
             boundary_guard=self.core.left_fit_diagnostic if self.core.uturn_exit_straight else None,

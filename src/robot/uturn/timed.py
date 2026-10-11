@@ -16,7 +16,7 @@ def sequence_steps(cfg,forward,vf,entry,pause):
         for v in (speed,raw,seconds):
             if isinstance(v,bool) or not isinstance(v,(int,float)) or math.isnan(v) or math.isinf(v):
                 raise ValueError('invalid trial segment number')
-        if speed!=int(speed) or not 1<=abs(speed)<=30 or raw not in (-22,0,22) or not 0<seconds<=10:
+        if speed!=int(speed) or not 1<=abs(speed)<=30 or raw!=int(raw) or abs(raw)>min(22,cfg['steering_raw_limit']) or not 0<seconds<=10:
             raise ValueError('trial segment outside limits')
         if i==0 and speed<0:raise ValueError('trial must start forward')
         angle=raw/cfg['steering_raw_limit']/cfg['steering_sign']*cfg.get('steering_command_scale_rad',cfg['max_steer'])

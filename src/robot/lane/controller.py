@@ -14,12 +14,28 @@ from robot.lane.preview import preview_steering, lane_speed
 FIELDS = ('action', 'action_started', 'cfg', 'follow_left_boundary', 'front_marker_stamp', 'gap_origin', 'gap_start',
  'gap_steer', 'lane', 'lane_boundaries', 'lane_confidence', 'lane_source', 'lane_stamp', 'last_completed_action',
  'left_boundary', 'left_boundary_stamp', 'left_fit_diagnostic', 'left_reference',
- 'park_line_side', 'pending', 'pose', 'right_lock', 'right_tail_origin', 'state', 'lane_recovery',
+ 'park_line_side', 'pending', 'pose', 'reason', 'right_lock', 'right_tail_origin', 'state', 'lane_recovery',
  'startup_curve_lock', 'lane_target', 'lane_curve_lock', 'lane_preview', 'issued_steer', 'lane_speed_state', 'uturn_exit_straight')
 CALLS = (('lane', 'lane_valid'), ('lane', 'left_exit_line'), ('lane', 'left_reference_command'),
  ('lane', 'park_line_command'), ('motion', 'current_steering'), ('motion', 'stop'))
-OPERATIONS = ('lane_valid', 'lane_tracking_ready', 'forward_lane_ready', 'lane_command', 'park_line_command', 'left_reference_command',
+OPERATIONS = ('search_command', 'lane_valid', 'lane_tracking_ready', 'forward_lane_ready', 'lane_command', 'park_line_command', 'left_reference_command',
  'left_exit_line')
+
+
+def search_command(ctx, now, reason):
+    """Crawl on current lane feedback without losing the maneuver state."""
+    if not lane_tracking_ready(ctx, now):
+        return ctx.call('motion', 'stop', 'search_lane_missing_or_stale')
+    points = sorted(local(ctx.pose, p) for p in ctx.lane)
+    points = [p for p in points if p[0] > .05]
+    result = PurePursuit(ctx.cfg['wheelbase'], .30).compute(points)
+    if not result.valid:
+        return ctx.call('motion', 'stop', 'search_lane_geometry_invalid')
+    steer = model_to_command_steering(result.steering_angle, ctx.cfg)
+    ctx.gap_origin, ctx.gap_start, ctx.gap_steer = ctx.pose, now, steer
+    ctx.issued_steer = steer
+    ctx.reason = reason
+    return ctx.cfg.get('maneuver_search_speed_raw',12), steer
 
 
 def lane_valid(ctx, now):
@@ -31,14 +47,13 @@ def lane_valid(ctx, now):
     return len(points) >= 2 and points[-1][0]-points[0][0] >= ctx.cfg.get('lane_min_path_span',.15)-1e-9
 
 
-def lane_tracking_ready(ctx, now, points=None):
+def lane_tracking_ready(ctx, now):
     """Allow coherent current sparse paint at bend speed, never stale guesses."""
     if lane_valid(ctx, now):
         return True
     if not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']:
         return False
-    if points is None:
-        points = sorted(local(ctx.pose,p) for p in ctx.lane)
+    points = sorted(local(ctx.pose,p) for p in ctx.lane)
     # Slanted normal offsets shorten forward span; also check the actual
     # measured segment length instead of applying the full-path 15 cm gate.
     if (len(points) < 2 or not all(_isfinite(v) for p in points for v in p) or
@@ -108,7 +123,7 @@ def _uturn_exit_command(ctx, now):
     if not edges:
         ctx.lane_preview = None
         ctx.lane_source = 'uturn_exit_straight'
-        return ctx.cfg['straight_speed_raw'], 0.
+        return ctx.cfg.get('uturn_exit_speed_raw',ctx.cfg['straight_speed_raw']), 0.
 
     def interpolate(points, x):
         for a, b in zip(points, points[1:]):
@@ -158,15 +173,11 @@ def _uturn_exit_command(ctx, now):
     aligned = (abs(centers[0][1]) <= .08 and
                all(abs(math.atan2(b[1]-a[1], b[0]-a[0])) <= math.radians(8)
                    for a, b in zip(centers, centers[1:])))
-    speed = ctx.cfg['straight_speed_raw']
+    speed = ctx.cfg.get('uturn_exit_speed_raw',ctx.cfg['straight_speed_raw'])
     if not aligned:
-        speed = min(speed, ctx.cfg.get('lane_curve_speed_raw', 12))
+        speed = min(speed, ctx.cfg.get('uturn_exit_curve_speed_raw',ctx.cfg.get('lane_curve_speed_raw',12)))
     ctx.lane_target = dict(stamp=now, source_stamp=ctx.lane_stamp, path=centers,
                           valid=True, selection='uturn_exit_boundary_center', angle=steer)
-    for side in ('LEFT', 'RIGHT'):
-        if side in lines and not _left_boundary_sweep_clear(ctx, lines[side], speed, steer):
-            ctx.lane_target.update(valid=False, guard_side=side)
-            return ctx.call('motion', 'stop', 'uturn_exit_boundary_crossing')
     ctx.gap_origin, ctx.gap_start, ctx.gap_steer = ctx.pose, now, steer
     return speed, steer
 
@@ -417,29 +428,25 @@ def left_reference_command(ctx, line, now):
     steer = max(before-limit,min(before+limit,target))
     aligned = (abs(line['heading']) <= math.radians(cfg.get('left_reference_heading_deg',8)) and
                abs(line['lateral']) <= cfg.get('left_reference_lateral_m',.08))
-    # Road and RIGHT-exit references use the configured road speeds. Sweep
-    # that actual command, including while only one measured side is visible.
-    if ctx.action == 'UTURN':
-        speed = cfg.get('left_reference_speed_raw',12)
-    else:
-        speed = cfg['speed_raw']['lane']
-        if not aligned:
-            speed = min(speed,cfg.get('lane_curve_speed_raw',12))
-    if not _left_boundary_sweep_clear(ctx, line, speed=speed, steer=steer):
-        offset = line.get('offset_m', cfg['lane_width'] / 2)
-        ctx.left_reference = dict(stamp=now, heading_deg=math.degrees(line['heading']),
-            lateral_m=line['lateral'], offset_m=offset, aligned=False,
-            command_steer=steer, target_steer=target, lookahead_m=lookahead,
-            guard_reason='footprint_crosses_left_boundary')
-        return ctx.call('motion', 'stop', 'left_boundary_footprint_crossing')
+    # Keep a U-turn/right-turn exit at the guarded crawl until it is aligned;
+    # once released, sweep the actual lane speed that will be returned.
+    speed = (cfg['speed_raw']['lane']
+             if aligned and ctx.action not in ('RIGHT', 'UTURN')
+             else cfg.get('left_reference_speed_raw',12))
+    if ctx.action == 'RIGHT' and cfg.get('right_timed_enabled',False) and aligning:
+        speed = cfg.get('right_timed_exit_speed_raw',20)
     ctx.left_reference = dict(stamp=now,heading_deg=math.degrees(line['heading']),
         lateral_m=line['lateral'],offset_m=line.get('offset_m',cfg['lane_width']/2),aligned=aligned,
         command_steer=steer,target_steer=target,lookahead_m=lookahead)
+    # Keep a U-turn exit at the same guarded crawl used by a right-turn
+    # boundary handoff until the mission releases the maneuver.  The offset
+    # target is deliberately close to the left tape, so a full lane speed
+    # command before the handoff confirmation can carry the body across it.
     ctx.gap_origin,ctx.gap_start,ctx.gap_steer = ctx.pose,now,steer
     return speed,steer
 
 
-def left_exit_line(ctx, now):
+def left_exit_line(ctx, now, offset_m=None):
     """Fit only current observed near-left points, never an inferred center."""
     capture = ctx.right_lock is not None and ctx.cfg.get('right_direct_left_follow',False)
     maximum = ctx.cfg.get('right_left_capture_max_m',.80) if capture else ctx.cfg['lane_width']
@@ -495,7 +502,8 @@ def left_exit_line(ctx, now):
         return reject('left_distance_too_far')
     diagnostic.update(valid=True,reason='ok')
     # Offset by half a lane along the inward normal, not toward the line.
-    half = ctx.cfg['lane_width']/2
+    half = ctx.cfg['lane_width']/2 if offset_m is None else offset_m
     centers = [(x+half*slope/norm,slope*x+intercept-half/norm) for x,y in points]
     return dict(points=centers,heading=math.atan(slope),
-                lateral=intercept/norm-half,offset_m=half,error=error)
+                lateral=intercept/norm-half,offset_m=half,error=error,
+                boundary_distance_m=intercept/norm)

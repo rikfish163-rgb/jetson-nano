@@ -7,7 +7,7 @@ import threading
 import time
 import cv2
 import rospy
-from flask import Flask, Response, abort, jsonify, request
+from flask import Flask, Response, abort, jsonify
 from werkzeug.serving import make_server
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
@@ -36,7 +36,6 @@ frames, encoded_at = {}, {}
 subscriptions, requested_at = {}, {}
 STREAM_IDLE_SECONDS = 3.0
 controller = {}
-sign = {}
 lock = threading.Lock()
 
 
@@ -97,20 +96,6 @@ def status_callback(msg):
         return
 
 
-def sign_callback(msg):
-    if len(msg.data) > 131072:
-        return
-    try:
-        data = json.loads(msg.data)
-        if not isinstance(data, dict) or not isinstance(data.get('stamp'), (int, float)):
-            return
-        with lock:
-            sign.clear()
-            sign.update(data)
-    except (ValueError, TypeError):
-        return
-
-
 @app.after_request
 def headers(response):
     response.headers['Cache-Control'] = 'no-store'
@@ -124,12 +109,10 @@ def status():
     now = rospy.Time.now().to_sec()
     with lock:
         result = dict(controller)
-        sign_result = dict(sign)
         streams = {name: dict(topic=topic, fresh=fresh(frames.get(name, (None,))[0], now),
                     age_s=now-frames[name][0] if name in frames else None)
                    for name, topic in TOPICS.items()}
     return jsonify(controller=result, controller_fresh=fresh(result.get('stamp'), now, 1),
-                   sign=sign_result, sign_fresh=fresh(sign_result.get('stamp'), now),
                    streams=streams)
 
 
@@ -164,58 +147,6 @@ def stream(name):
 
 @app.route('/')
 def index():
-    if request.args.get('view') == 'signs':
-        return u"""<!doctype html><html lang="zh-CN"><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>路牌识别预览</title>
-<style>
-body{margin:18px;background:#15222b;color:#eef4f5;font:16px sans-serif;line-height:1.6}
-h1{font-size:23px;margin:0 0 6px}h2{font-size:17px;margin:0 0 8px}
-p{margin:8px 0;color:#bbccd2}#health{color:#ffbe70}
-article{background:#20323d;padding:12px;margin:14px 0;border-radius:8px}
-img{width:100%;object-fit:contain}.stale img{opacity:.2}
-small{display:block;color:#bbccd2}table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:8px 5px;border-bottom:1px solid #40545f}
-.selected{background:#344a44;color:#e4ffeb}pre{overflow:auto;font-size:12px}
-</style>
-<h1>路牌识别预览</h1><strong id="health">等待识别数据</strong>
-<p>静止识别预览。画面显示所有检测框；黄色粗框为最近候选，只确认这一块牌的类别。</p>
-<article id="sign_board_frame" class="stale"><h2>全部检测框与最近候选</h2><img><small></small></article>
-<p id="selection">等待图像</p>
-<table><thead><tr><th>远近顺序</th><th>路牌</th><th>识别分数</th><th>框尺寸</th></tr></thead><tbody id="rows"></tbody></table>
-<p>顺序按检测框面积估计；同尺寸、朝向接近时有效。最近候选分数不足时等待确认。</p>
-<article id="front_camera" class="stale"><h2>前摄原图</h2><img><small></small></article>
-<details><summary>识别数据</summary><pre id="details"></pre></details>
-<script>
-const labels={red:'红牌',green:'绿牌',straight:'直行',left:'左转',right:'右转',uturn:'掉头',park:'停车',parking:'停车'};
-const labelName=x=>labels[String(x||'').toLowerCase()]||String(x||'未知');
-async function poll(){
- try{
-  const r=await fetch('/status',{cache:'no-store'});if(!r.ok)throw Error('status');
-  const data=await r.json(),s=data.sign||{},ds=s.detections||[];
-  document.getElementById('health').textContent=data.sign_fresh?'实时 · 检测到 '+ds.length+' 块路牌':'等待识别数据或数据已过期';
-  document.getElementById('selection').textContent=data.sign_fresh?(ds.length?
-   '最近候选：'+labelName(s.top_label)+' · '+(s.confidence*100).toFixed(1)+'% · '+(s.label?'已确认':'分数不足，等待确认'):
-   '当前没有检测到路牌'):'等待最新识别结果';
-  const rows=document.getElementById('rows');rows.textContent='';
-  if(data.sign_fresh)ds.forEach((d,i)=>{
-   const tr=document.createElement('tr');if(i===0)tr.className='selected';
-   const cells=[i===0?'1 · 最近':String(i+1),labelName(d.label),(d.confidence*100).toFixed(1)+'%',d.bounds[2]+' × '+d.bounds[3]+' px'];
-   cells.forEach(x=>{const td=document.createElement('td');td.textContent=x;tr.append(td);});rows.append(tr);
-  });
-  document.getElementById('details').textContent=JSON.stringify(s,null,2);
-  for(const key of ['sign_board_frame','front_camera']){
-   const a=document.getElementById(key),v=data.streams[key];a.classList.toggle('stale',!v.fresh);
-   a.querySelector('small').textContent=(v.fresh?'实时':'等待图像或图像已过期')+(v.age_s===null?'':' · '+v.age_s.toFixed(2)+' 秒');
-   a.querySelector('img').src='/frame/'+key+'?t='+Date.now();
-  }
- }catch(e){
-  document.getElementById('health').textContent='连接中断';
-  document.getElementById('selection').textContent='等待连接恢复';
-  document.getElementById('rows').textContent='';
-  document.querySelectorAll('article').forEach(a=>{a.classList.add('stale');a.querySelector('img').removeAttribute('src');});
- }finally{setTimeout(poll,500);}
-}poll();
-</script></html>"""
     return u"""<!doctype html><html lang="zh-CN"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>比赛实时调试</title>
 <style>
@@ -287,8 +218,6 @@ def main():
     rospy.init_node('competition_viewer')
     expiry_timer = rospy.Timer(rospy.Duration(1), expire_streams)
     rospy.Subscriber('/competition/status', String, status_callback, queue_size=1)
-    rospy.Subscriber(rospy.get_param('~sign_topic', '/competition/sign'), String,
-                     sign_callback, queue_size=1)
     port = int(rospy.get_param('~port', 8080))
     if not 1024 <= port <= 65535:
         raise ValueError('viewer port must be 1024..65535')
