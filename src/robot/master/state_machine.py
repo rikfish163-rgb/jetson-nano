@@ -20,7 +20,7 @@ from robot.lidar.left_bays import decide as decide_left_bay
 
 
 
-FIELDS = ('parking_side_pending', 'parking_completed', 'left_bay_cache', 'left_bay_selection', 'action', 'action_source', 'action_started', 'route_action_started',
+FIELDS = ('straight_uturn_guard', 'parking_side_pending', 'parking_completed', 'left_bay_cache', 'left_bay_selection', 'action', 'action_source', 'action_started', 'route_action_started',
  'right_sign_locked', 'right_sign_rearmed_at',
  'route_sign_last_seen', 'route_sign_rearmed', 'right_completed_count', 'right_handoff_slow', 'cfg', 'completed_at_pose',
  'consumed_marker', 'course_finished', 'course_stop_pending', 'direction_window', 'estop',
@@ -48,6 +48,7 @@ OPERATIONS = ('close', 'set_pose', 'start_follow', 'resume_lane', 'dispatch', 'f
 def initial_state(cfg):
     state = {}
     state['cfg'] = cfg
+    state['straight_uturn_guard'] = None
     state['left_bay_cache'] = None
     state['left_bay_selection'] = None
     state['parking_completed'] = False
@@ -207,6 +208,8 @@ def set_pose(ctx, pose, stamp):
 
 
 def start_follow(ctx, path, action, now):
+    if action not in ('STRAIGHT','BYPASS'):
+        ctx.straight_uturn_guard = None
     if action != 'BYPASS':
         # Restore the normal maneuver speed at entry, after the blue-line wait.
         ctx.right_handoff_slow = False
@@ -234,6 +237,9 @@ def start_follow(ctx, path, action, now):
     else:
         ctx.pending = None
     if action == 'STRAIGHT':
+        ctx.straight_uturn_guard = dict(origin=tuple(ctx.pose), started=now,
+            candidate_stamp=None, blocked_point=None, distance_at=None,
+            clear_since=None, clear_frames=0, processed=-1., ready_at=None)
         # Start the S-entry budget at fixed straight, not at blue approach.
         # Keep this checkpoint after straight_search is cleared at handoff.
         if not (ctx.cfg.get('parking_entry_style')=='S' and
@@ -335,6 +341,10 @@ def resume_lane(ctx):
 def dispatch(ctx, now):
     if ctx.action is not None:
         return None
+    if ctx.pending not in (None,'PARKING') and ctx.straight_uturn_guard is not None:
+        progress = local(ctx.straight_uturn_guard['origin'],ctx.pose)[0]
+        if progress < ctx.cfg.get('straight_distance',1.4):
+            return None
     if (ctx.pending == 'PARKING' and ctx.parking_side_pending and
             ctx.cfg.get('parking_side_lidar_enabled',False) and
             ctx.cfg.get('parking_enabled',True)):
@@ -507,6 +517,8 @@ def freeze_left_bay(ctx,now):
 
 def begin_blue_action(ctx, now):
     """Called once after the entry stop and stationary wait."""
+    if ctx.action != 'STRAIGHT':
+        ctx.straight_uturn_guard = None
     action = ctx.action
     selection=freeze_left_bay(ctx,now)
     if selection is not None and not selection.get('frozen',False):

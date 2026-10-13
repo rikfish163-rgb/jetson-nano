@@ -92,6 +92,7 @@ def controller_status(core, cfg, now, live, enabled, command, seq, lane_observat
         parking_entry=core.parking_entry.debug if core.parking_entry else None,
         turn_reverse_watch=core.turn_reverse_watch,
         parking_straight_travel=core.parking_straight_travel,
+        straight_uturn_guard=getattr(core,'straight_uturn_guard',None),
         parking_mode=cfg.get('parking_mode','reverse_plan'),
         parking_entry_style=cfg.get('parking_entry_style') if cfg.get('parking_enabled',True) else None,
         parking_timed=core.timed_parking.status(now) if core.timed_parking else None,

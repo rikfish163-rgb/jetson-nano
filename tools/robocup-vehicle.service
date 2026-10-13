@@ -1,0 +1,16 @@
+[Unit]
+Description=Robocup vehicle (wait for green at power on)
+Wants=systemd-udev-settle.service
+After=local-fs.target systemd-udev-settle.service
+
+[Service]
+Type=simple
+User=nano
+WorkingDirectory=/home/nano/robocup_ws
+ExecStart=/bin/bash /home/nano/robocup_ws/runall.sh wait_green:=true
+Restart=no
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

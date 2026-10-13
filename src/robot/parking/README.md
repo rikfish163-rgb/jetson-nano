@@ -67,7 +67,7 @@ uses its existing lidar policy. S uses straight entry-speed motion before
 initial white bay acquisition or when all side references are lost. It continues
 from the last measured geometry and current pose when
 ground updates pause, without a `parking_front_stale` stop.
-后摄 S（以及关闭 parking_s_blue_distance_m 的前摄 S）在已识别的底线从后续图像中消失后，再沿入库方向走 15 cm 停车。
+关闭 parking_s_blue_distance_m 的前摄 S 在底线丢失后再行进 15 cm 停车；后摄使用下述视觉参考剩余距离策略。
 起点是第一张缺失底线图像对应的车辆位置，不是识别 P 或开始直行的位置；
 这段按 `parking_final_speed_raw` 低速行驶，有侧线时继续纠偏。
 重新看到底线会取消本次计距；之后再次消失重新起算。未识别过底线、重复帧、
@@ -89,13 +89,16 @@ distance is labelled `measured_bottom_plus_pose`, not `live_bottom`.
 `no_matching_bottom` 及实际匹配来源，`bottom_cross_candidates` 记录横线候选数，
 `bottom_measurement_stamp` 记录真正更新的时间。PARKING 控制事件至少每秒留一份
 几何快照，不再仅靠动作/停车原因变化打印，便于逐秒定位失配。
-If command odometry has drifted, a farther stripe
-within 45 cm of the prediction requires two distinct consistent frames before
-reacquisition (`reacquired_bottom`); a nearer mouth or adjacent bay is rejected.
+前摄 S 锁定底线后，普通跟踪、双侧库线末端选线和重新捕获都必须保持底线连续性。
+沿入库方向行驶时，新底线的相机测距不能增加；转向造成的剩余距离变化也不能加大停车预算。
+P 后倒退退让允许按实际估算退行增加距离。同一底线仍需满足角度和片段重叠条件。
+更远横线被拒绝时记录 `bottom_identity_rejected`，不更新底线时间，也不重置丢线后
+15 cm 的停车计距。其他前进模式保留原来的两帧远线重新捕获逻辑。
 T faults when the control gap exceeds 0.5 seconds. A delayed interval
 contributes at most 0.25 seconds of valid command time.
 
-前摄 S 默认使用 `vehicle_tuning.yaml` 的 `parking_s_blue_distance_m: 1.40`：
+当前 `vehicle_tuning.yaml` 的 `parking_s_blue_distance_m: 0.0`，使用底线停车。
+以下蓝线距离模式仅在该参数设置为正数时启用（例如 1.40）：
 锁定 STRAIGHT 对应的已确认蓝线，以前轴越过该线为计距零点；跨线那次位姿更新
 插值分离线前/线后距离。此后沿路径累计，前进加、倒退减；退回蓝线前可出现负值，
 不会重新置零。识别 P、退让换向及进入入库状态均保留计距，净路程达到 1.40 m
@@ -219,24 +222,17 @@ bash runall.sh \
 同一条命令兼顾三种来路：直行牌→前摄 P→正向入库；左转／右转完成→
 连续 2 秒无路径→后摄找 P→倒车入库。绿牌起步沿用当前不要求先有车道的流程。
 P 后退让方向相反：前摄倒退 3 秒、后摄前进 1 秒，分别由上述两个参数配置。
-前摄按当前调参表的 1.70 m 净距离停车；后摄以底线视觉参考更新剩余距离：
-480x400 鸟瞰图中底线位于第 318 行时，剩余 20 cm。
-每次确认同一条底线都刷新剩余距离；两次有效视觉更新之间，沿用前摄的
-带符号净路程计算，倒着入库扣距离、远离车库加距离，不再乘视觉学习系数。
+前摄 1.70 m 净距离停车已关闭，保留前摄距离不增限制。
+后摄恢复视觉参考停车：底线位于鸟瞰图第 318 行时剩余 20 cm；
+有效视觉可修正剩余距离，倒车入库扣净路程、前进退让加距离。
 后摄底线在命令里程计模式下还按相邻图像中的深度、角度和横向重叠跟踪，
 避免估算位姿漂移后拒绝仍然可见的底线。旧底线未在当前帧确认时，不再裁掉
 当前双侧；同一目标库的双侧末端和闭合横线连续两帧一致，可以重新确认底线，
-记录 `paired_bottom_reconfirming` / `paired_bottom_reacquired` 并刷新剩余距离。
-单独一条更远横线仍不能重置距离，跳变拒绝记录为
-`bottom_track_depth_jump` / `bottom_depth_jump_rejected`。
-底线丢失后继续计算净路程，但只有最后一次实测已经达到第 318 行近处参考位置
-（剩余不超过 20 cm），才能扣到 0 后宣布完成；不重新起算固定 15 cm。
-远处底线丢失、旧估算扣完时继续使用现有末段低速寻找视觉确认，不宣布完成；
-`bottom_waiting_visual_confirmation=true` 表示此情况，
-`bottom_extrapolation_can_finish` 表示当前是否允许依靠最后近处观测完成收尾。
-日志中的 `bottom_reference_measured_remaining_m` 为最后一次视觉剩余距离，
-`bottom_reference_net_travel_m` 为该次观测后的净入库路程，两者相减即
-`remaining_m`；停车原因为 `parking_rear_visual_reference_reached`。
+记录 `paired_bottom_reconfirming` / `paired_bottom_reacquired` 并更新视觉参考。
+后摄保留原来的单条远横线拒绝和双侧连续两帧重新确认，不套用前摄的距离不增限制。
+后摄底线丢失后扣减最后视觉参考剩余距离，不重新起算固定 15 cm。
+只有最后有效观测已经到达近处参考位置，才允许扣到零后完成；
+远处底线丢失时继续等待视觉确认。停车原因为 `parking_rear_visual_reference_reached`。
 前后摄 P 已确认但位置投影暂缺时，都可以用当前可见双侧库线居中；
 后摄日志 `parking_started_unprojected` 表示已进入入库、等待补充 P 位置，
 不会因缺少位置投影而完全屏蔽双侧纠偏。已有目标的相邻库排除继续保留。
@@ -264,8 +260,8 @@ P 后退让方向相反：前摄倒退 3 秒、后摄前进 1 秒，分别由上
 后摄 P 取消检测框高度、位置和两帧投票门槛，新鲜图像置信度达标即可触发。
 前摄 +/-6、后摄 +/-10 的入库额外纠偏限幅已删除；使用底盘标定的
 完整舵量范围（当前 +/-22 RAW），不是固定打满，实际舵量取决于中心线误差。
-后摄视觉参考的位置和剩余 20 cm 参数在调参表的 `rear_bev` 中；
-实际停止精度仍需现场验证。
+后摄参考位置和剩余距离由 `rear_bev.bottom_reference_v` / `bottom_reference_remaining_m`
+配置（当前 318 行 / 20 cm）；实际停止精度仍需现场验证。
 `parking_follow_right_side` / `steering_reference=right_side` 表示后视右库线
 纠偏；`parking_reverse_missing_white_straight` 表示暂无可用库线、保持直轮倒行。
 库边线控制优先：有双侧线时为 `both_sides`，单侧线为 `right_side` 或

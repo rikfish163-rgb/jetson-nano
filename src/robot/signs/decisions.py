@@ -7,7 +7,7 @@ from robot.parking.reverse_entry import reverse_after_turn_enabled
 
 
 
-FIELDS = ('parking_side_pending', 'left_bay_cache', 'action', 'action_started', 'route_action_started', 'route_sign_last_seen',
+FIELDS = ('straight_uturn_guard', 'parking_side_pending', 'left_bay_cache', 'action', 'action_started', 'route_action_started', 'route_sign_last_seen',
  'right_sign_locked', 'right_sign_rearmed_at', 'estop',
  'route_sign_rearmed', 'cfg', 'completed_at_pose', 'course_stop_pending', 'direction_window',
  'green_start_window', 'last_completed_action', 'marker', 'next_direction',

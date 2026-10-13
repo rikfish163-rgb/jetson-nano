@@ -10,7 +10,7 @@ from robot.common.geometry import wrap
 
 
 
-FIELDS = ('cfg', 'action', 'last_completed_action', 'right_lock', 'consumed_marker', 'front_blue_lines', 'front_blue_image_lines', 'front_marker_stamp', 'front_markers',
+FIELDS = ('straight_uturn_guard', 'cfg', 'action', 'last_completed_action', 'right_lock', 'consumed_marker', 'front_blue_lines', 'front_blue_image_lines', 'front_marker_stamp', 'front_markers',
  'ground_stamp', 'ground_stamps', 'lane', 'lane_boundaries', 'lane_confidence',
  'lane_stamp', 'left_boundary', 'left_boundary_stamp', 'marker', 'blue_consumed', 'marker_candidate', 'pending',
  'parking_candidate_stamp', 'parking_candidates', 'parking_detection', 'parking_entry',

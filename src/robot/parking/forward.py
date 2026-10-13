@@ -23,6 +23,8 @@ class ForwardParking(WhiteParking):
         self.left_reference=None
         self.bottom_only=False;self.bottom_candidate=None
         self.bottom_stop_enabled=True
+        self.front_remaining_limit=None
+        self.front_remaining_pose=None
         self.bottom_reacquire_candidate=None
         self.bottom_detection_reason='not_observed'
         self.bottom_cross_candidates=0
@@ -141,6 +143,37 @@ class ForwardParking(WhiteParking):
                 'observed_bottom' if self.independent_bottom else 'standalone_bottom')
 
     def remember_bottom(self,line,stamp,source):
+        # Front S keeps one stripe across every acquisition path, including
+        # paired far ends and two-frame reacquisition. Compare in the previous
+        # observation frame for overlap/angle, and camera-relative depths for
+        # monotonic approach. Signed retreat can increase the observed depth;
+        # forward command-model drift cannot veto a decreasing visual depth.
+        if self.bottom_only and not self.independent_bottom and self.bottom is not None:
+            reference=self.bottom_pose or self.pose
+            old_a,old_b=[local(reference,p) for p in self.bottom]
+            new_a,new_b=[local(reference,p) for p in line]
+            old_dy=old_b[1]-old_a[1];new_dy=new_b[1]-new_a[1]
+            valid=abs(old_dy)>.05 and abs(new_dy)>.05
+            if valid:
+                old_k=(old_b[0]-old_a[0])/old_dy
+                new_k=(new_b[0]-new_a[0])/new_dy
+                delta=(new_a[0]-new_a[1]*new_k)-(old_a[0]-old_a[1]*old_k)
+                old_span=sorted((old_a[1],old_b[1]))
+                new_span=sorted((new_a[1],new_b[1]))
+                overlap=min(old_span[1],new_span[1])-max(old_span[0],new_span[0])
+                ca,cb=[local(self.pose,p) for p in line]
+                current_dy=cb[1]-ca[1]
+                current_depth=(ca[0]-ca[1]*(cb[0]-ca[0])/current_dy
+                               if abs(current_dy)>.05 else float('inf'))
+                old_depth=old_a[0]-old_a[1]*old_k
+                retreat=max(0.,-self.reference_step(reference,self.pose))
+                valid=(delta>=-.12 and current_depth<=old_depth+retreat+1e-6 and
+                       abs(math.atan(new_k)-math.atan(old_k))<=math.radians(10) and
+                       overlap>=min(.18,.8*abs(old_dy),.8*abs(new_dy)))
+            if not valid:
+                self.bottom_depth_jump_rejected+=1
+                self.bottom_detection_reason='bottom_identity_rejected'
+                return
         self.bottom_detection_reason=source
         if source!='tracked_bottom':
             # A newly associated line cannot calibrate travel against another.
@@ -216,7 +249,15 @@ class ForwardParking(WhiteParking):
             origin=self.bottom_pose
             pose=(origin[0]+(pose[0]-origin[0])*self.motion_scale,
                   origin[1]+(pose[1]-origin[1])*self.motion_scale,pose[2])
-        return self.measured_remaining(pose)
+        remaining=self.measured_remaining(pose)
+        if self.bottom_only and not self.independent_bottom and remaining is not None:
+            previous=self.front_remaining_pose
+            retreat=(previous is not None and self.reference_step(previous,self.pose)<-1e-6)
+            if self.front_remaining_limit is not None and not retreat:
+                remaining=min(remaining,self.front_remaining_limit)
+            self.front_remaining_limit=remaining
+            self.front_remaining_pose=tuple(self.pose)
+        return remaining
 
     def side_reaches_anchor(self, end, anchor_x):
         far=getattr(self,'side_view_far_m',None)

@@ -21,6 +21,9 @@ launch:
   debug_view: false
   debug_port: 8080
 
+sign_min_height_ratio: 0.125 # 前摄路牌框高至少45px（360px图高）；后摄不受此门槛影响。
+sign_confidence: 0.85 # 路牌识别置信度门槛。
+
 speed_raw:
   lane: 40 # 普通巡线速度；不是下面的 straight_speed_raw（直行牌动作速度）。
   action: 20 # 通用动作速度；分段动作的独立速度优先。
@@ -103,35 +106,35 @@ uturn_relative_enabled: false
 # S入库：识别P后的退让时间，0关闭；换向前后另停车至少0.3秒。
 parking_p_reverse_s: 3.0 # Front-camera P: reverse away for 3 seconds.
 parking_rear_p_reverse_s: 1.0 # Rear-camera P: move forward away for 1 second.
-parking_s_blue_distance_m: 1.70 # 前摄S入库：前轮过已确认蓝线后累计净路程，前进加、倒退减；到达后停车，替代底线停车。
+parking_s_blue_distance_m: 0.0 # 关闭前摄S蓝线净路程停车，恢复底线停车。
 rear_bev:
-  bottom_reference_v: 318.0 # 后摄480x400鸟瞰图：用户实测底库线即将消失的位置，原图像素行。
-  bottom_reference_remaining_m: 0.20 # 底线位于参考行时还需沿入库方向走20cm；新视觉持续更新，丢线后扣净路程。
+  bottom_reference_v: 318.0 # 后摄鸟瞰图中底线到达此参考行时，剩余距离使用下一项标定。
+  bottom_reference_remaining_m: 0.20 # 后摄参考行对应剩余20cm；丢线后扣减净入库路程。
 
 # 一、蓝线接近与路口等待
 intersection_wait_s: 1.0 # 蓝线触发后的直行完成后，停车等待多少秒再开始路牌动作。
 blue_timed_enabled: true # 是否启用四种方向牌共用的蓝线图像触发＋计时前进流程。
 blue_stop_test: # 共用蓝线接近参数组：正式方向牌动作和独立蓝线测试使用。
   align_max_steer_rad: 1 # 蓝线独立转向换算尺度，弧度；相同误差下越大修正越弱，越小越强；不改巡线max_steer，实际舵量仍受align_max_steering_raw限制。
-  align_confirm_frames: 3 # 对齐角度合格需要连续确认的新图像帧数；越大确认越慢。
+  align_confirm_frames: 1 # 对齐角度合格需要连续确认的新图像帧数；越大确认越慢。
   align_max_steering_raw: 22 # 对齐时最大舵机修正幅度，RAW值；越大允许修正越强，最大22。
   align_recheck_s: 1.0 # 进入触发区但角度超限时，停车复核的最长秒数；0表示立即报错。
   align_speed_raw: 30 # 蓝线方向修正时的前进RAW速度；方向牌确认后的循线接近也受此上限限制。
   align_timeout_s: 8.0 # 看到蓝线后尚未完成对齐的超时上限，秒；超时进入故障停止。
   align_tolerance_deg: 5 # 触发区之前的对齐角度容差，度；越小越严格，不得大于heading_tolerance_deg。
   camera_timeout_s: 0.6 # 蓝线测试允许的视觉数据年龄，秒；正式整车蓝线流程使用ground_timeout覆盖它。
-  confirm_frames: 3 # 蓝线位于触发区且角度合格时，需要连续确认的新图像帧数。
+  confirm_frames: 1 # 蓝线位于触发区且角度合格时，需要连续确认的新图像帧数。
   forward_seconds: 1 # 触发确认后，回正舵机继续前进的计时时长，秒；增大通常停得更靠后。
   heading_tolerance_deg: 15 # 触发区内允许的蓝线方向误差，度；超过此值停车复核。
   max_search_seconds: 15.0 # 从蓝线接近流程开始到触发确认的总超时上限，秒，包含搜索和对齐。
   speed_raw: 20 # 对齐后的接近和触发后的计时直行RAW速度；改变它会影响停车位置。
-  trigger_band_ratio: 0.2 # 触发确认区高度占图像高度的比例；下边界=trigger_row_ratio+本值，两者之和不得超过1。
+  trigger_band_ratio: 0.25 # 触发确认区高度占图像高度的比例；下边界=trigger_row_ratio+本值，当前0.70～0.95，两者之和不得超过1。
   trigger_row_ratio: 0.7 # 俯视图顶部为0、底部为1；蓝线与中心竖线的交点达到此高度开始确认，越大通常触发越晚。
 
 # 二、左转：先前进，再左转，最后交接视觉巡线
 left_timed_enabled: true # 是否使用左转固定动作序列。
 left_bay_choice:
-  enabled: false # 全局左转缓存后采样；蓝线触发时选择P4/P5动作，S倒库共用。
+  enabled: true # 仅左转在蓝线停车等待后用新雷达帧选择P4/P5；两库均无障碍走普通左转。
   min_points: 1 # 任一框有点即参与选库，不要求连续多帧。
   max_age_s: 1.5 # 蓝线触发时只使用新鲜雷达证据。
   bay_spacing_m: 0.40 # 单根路牌竖线定位：上方障碍物=P4，下方障碍物=P5，现场两库间距约40cm。
@@ -146,10 +149,10 @@ left_bay_choice:
   p4_entry_s: 1.8 # P5占用或双框都占用 -> P4：先直行1.8秒（用户指定双框也执行此路线）。
   turn_s: 3.6 # 两路线均RAW 30、左舵22。
   straight_s: 1.6 # 转后RAW 30回正直行；之后停车0.7秒并交回原视觉/倒库流程。
-left_timed_entry_s: 2.1 # 左转第1段（前进直行）的时长，秒。
+left_timed_entry_s: 2.0 # 左转第1段（前进直行）的时长，秒。
 left_timed_entry_speed_raw: 30 # 左转第1段的RAW速度；正数前进。
 left_timed_entry_steering_raw: 0 # 左转第1段的RAW舵量；0回正，正左负右。
-left_timed_turn_s: 3.3 # 左转第2段（转弯）的时长，秒。
+left_timed_turn_s: 3.0 # 左转第2段（转弯）的时长，秒。
 left_timed_turn_speed_raw: 30 # 左转第2段的RAW速度。
 left_timed_turn_steering_raw: 22 # 左转第2段的RAW舵量；22为左满舵。
 
@@ -159,7 +162,7 @@ right_timed_exit_reverse_s: 2.5 # 右转第3段（转弯后倒车）的时长，
 right_timed_exit_reverse_speed_raw: -30 # 右转第3段RAW速度；负数倒车。
 right_timed_exit_reverse_steering_raw: 0 # 右转第3段RAW舵量；0表示回正倒车。
 right_timed_exit_stop_s: 2.0 # 右转第3段结束后的停车等待时长，秒。
-right_timed_reverse_s: 0.5 # 右转第1段（转弯前倒车）的时长，秒。
+right_timed_reverse_s: 0.7 # 右转第1段（转弯前倒车）的时长，秒。
 right_timed_reverse_speed_raw: -30 # 右转第1段RAW速度；负数倒车。
 right_timed_reverse_steering_raw: 0 # 右转第1段RAW舵量；0表示回正倒车。
 right_timed_turn_s: 4.1 # 右转第2段（前进右转）的时长，秒。
@@ -171,7 +174,7 @@ maneuver_search_speed_raw: 12 # 动作结束后调用视觉找线接管流程时
 # 四、直行牌对应的独立直行段
 straight_speed_raw: 30 # 独立直行段的RAW速度；不等于普通循线速度。
 straight_steering_raw: -5 # 直行牌对应固定直行段的RAW舵机偏置；负右正左，不用于普通循线或绿牌起步。
-straight_distance: 1.25 # 直行段的估算前进距离，米；新鲜车道确认通过可提前交回巡线。
+straight_distance: 1.5 # 直行段估算距离及后续方向牌执行门槛，米；可提前交回循线，但方向牌须达到此距离才可触发，P牌除外。
 straight_search_timeout: 20.0 # 独立直行段的超时上限，秒；不是要求必须行驶这么久。
 
 # 五、掉头动作表与恢复行驶
@@ -180,11 +183,11 @@ uturn_trial_resume_lane: true # 定时掉头完成后是否进入恢复行驶流
 uturn_trial_entry_m: 0.0 # 掉头动作表之前额外回正前进的估算距离，米；0表示不添加该段。
 uturn_trial_pause_s: 0.3 # 首段前、前进/倒车换挡前、最后收尾的停车秒数；换挡等待时预置下一段舵量。
 uturn_trial_sequence: # 掉头分段动作表，按下列顺序执行；speed=RAW速度，steering=RAW舵量，seconds=该段秒数。
-- {speed: 30, steering: -3, seconds: 1.4} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-- {speed: 30, steering: 22, seconds: 3.5} # 第2段：前进，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-- {speed: -30, steering: -22, seconds: 1.8} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-- {speed: 30, steering: 22, seconds: 3.6} # 第4段：前进，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-- {speed: -30, steering: -3, seconds: 1.8} # 第5段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: 30, steering: -3, seconds: 0.9} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: 30, steering: 22, seconds: 3.0} # 第2段：前进，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: -30, steering: -22, seconds: 1.6} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: 30, steering: 22, seconds: 2.8} # 第4段：前进，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: -30, steering: -3, seconds: 1.6} # 第5段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
 uturn_trial_exit_max_s: 0.0 # 动作表完成后额外出口角度修正的时间上限，秒；0关闭该修正，不代表恢复行驶只能持续0秒。
 uturn_exit_speed_raw: 30 # 掉头后恢复行驶的RAW速度；无边线时的回正前进也使用它。
 uturn_exit_curve_speed_raw: 30 # 掉头出口尚未居中/对正时的RAW速度上限，实际不超过uturn_exit_speed_raw。
@@ -198,7 +201,7 @@ timed_bypass_left_steering_raw: 22 # 第1段：左满舵。
 timed_bypass_left_s: 1.6 # 第1段：向左绕出，秒。
 timed_bypass_right_speed_raw: 30 # 第2段：前进RAW速度。
 timed_bypass_right_steering_raw: -22 # 第2段：右满舵。
-timed_bypass_right_s: 3.5 # 第2段：向右转回，固定秒数。
+timed_bypass_right_s: 3.8 # 第2段：向右转回，固定秒数。
 timed_bypass_return_left_speed_raw: 30 # 第3段：前进RAW速度。
 timed_bypass_return_left_steering_raw: 22 # 第3段：左满舵。
 timed_bypass_return_left_s: 1.0 # 第3段：向左转修正，秒；结束后立即交回正常巡线。
@@ -234,21 +237,21 @@ parking_timed: # 自动侧方识别P后，前摄新画面中P牌消失即停车�
   sequences: # 按车位编号选择的固定动作表；每行speed为RAW速度、steering为RAW舵量、seconds为秒数。
     P1: # 启动参数parking_slot:=P1时使用，以下五段依次执行。
     - {speed: 30, steering: 0, seconds: 4.0} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: 22, seconds: 0.2} # 第2段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: -22, seconds: 3.4} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: 22, seconds: 0.3} # 第2段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: -22, seconds: 3.0} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
     - {speed: -30, steering: 0, seconds: 0.1} # 第4段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: 22, seconds: 2.1} # 第5段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: 22, seconds: 1.7} # 第5段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
     P2: # 启动参数parking_slot:=P2时使用，以下五段依次执行。
-    - {speed: 30, steering: 0, seconds: 1.2} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: 22, seconds: 0.2} # 第2段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: -22, seconds: 3.4} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: 30, steering: 0, seconds: 1.7} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: 22, seconds: 0.3} # 第2段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: -22, seconds: 3.0} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
     - {speed: -30, steering: 0, seconds: 0.1} # 第4段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: 22, seconds: 2.1} # 第5段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: 22, seconds: 1.7} # 第5段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
     P3: # 启动参数parking_slot:=P3时使用，以下五段依次执行。
-    - {speed: -30, steering: 0, seconds: 1.5} # 第1段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: 22, seconds: 0.2} # 第2段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: -22, seconds: 3.4} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: 0, seconds: 0.6} # 第1段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: 22, seconds: 0.3} # 第2段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: -22, seconds: 3.0} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
     - {speed: -30, steering: 0, seconds: 0.1} # 第4段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-    - {speed: -30, steering: 22, seconds: 2.1} # 第5段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+    - {speed: -30, steering: 22, seconds: 1.7} # 第5段：倒车，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
   side: right # 车位线检测侧：right为车右侧，left为车左侧；不会自动改变动作表的转向符号。
   white_v_min: 190 # 白色识别HSV亮度V下限，0～255；越大越只接受明亮区域，过大可能漏白线。

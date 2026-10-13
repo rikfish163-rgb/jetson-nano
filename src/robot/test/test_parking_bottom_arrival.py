@@ -74,7 +74,7 @@ class ParkingBottomArrivalTests(unittest.TestCase):
         self.assertEqual(entry.status,'FINISHED')
         self.assertTrue(entry.debug['bottom_arrival_confirmed'])
 
-    def test_recorded_33cm_drift_recovers_farther_stripe_in_two_frames(self):
+    def test_recorded_33cm_jump_cannot_replace_locked_front_bottom(self):
         entry=self.entry();p=entry.inner
         # Recorded last remembered stripe and visible bottom just before stop.
         old=[(.4107205486,.1653454287),(.3743183743,-.1173202426)]
@@ -84,9 +84,10 @@ class ParkingBottomArrivalTests(unittest.TestCase):
             entry.observe([seen],stamp,(0.,0.,0.))
             self.assertGreater(entry.command(stamp,(0.,0.,0.))[0],0)
             self.assertIsNone(entry.status)
-        self.assertEqual(p.bottom_source,'reacquired_bottom')
-        self.assertEqual(p.bottom_stamp,12.45)
-        self.assertGreater(p.debug['measured_bumper_clearance_m'],.40)
+        self.assertEqual(p.bottom_source,'paired_far_end')
+        self.assertEqual(p.bottom_stamp,1.1)
+        self.assertEqual(p.bottom,old)
+        self.assertTrue(p.debug['bottom_loss_active'])
 
     def test_recovery_rejects_nearer_mouth_duplicates_and_adjacent_bay(self):
         for line in ([[(.4,-.19),(.4,.19)]],

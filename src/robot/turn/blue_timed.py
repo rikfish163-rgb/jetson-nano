@@ -4,13 +4,16 @@ No ROS, pose integration or distance-to-stop calculation.
 from __future__ import division
 import math
 from robot.common.contracts import number
-from robot.common.geometry import distance
+from robot.common.geometry import distance, local
 
 
 DIRECTION_ACTIONS = ('LEFT','RIGHT','STRAIGHT','UTURN')
 
 
 def pending_approach(ctx):
+    guard = ctx.straight_uturn_guard
+    if guard is not None and local(guard['origin'],ctx.pose)[0] < ctx.cfg.get('straight_distance',1.4):
+        return False
     return (ctx.cfg.get('blue_timed_enabled',False) and ctx.action is None and
             ctx.pending in DIRECTION_ACTIONS and ctx.state in ('LANE','GAP','WAIT_OBSTACLE'))
 

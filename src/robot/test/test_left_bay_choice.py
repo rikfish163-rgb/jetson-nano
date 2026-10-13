@@ -186,6 +186,13 @@ class BayIntegrationTest(unittest.TestCase):
         self.assertNotIn('bay_profile',c.left_lock)
         self.assertEqual(c.left_bay_selection['status'],'empty')
 
+    def test_non_left_actions_skip_bay_selection_even_with_occupied_cache(self):
+        for action in ('RIGHT','STRAIGHT','UTURN','PARKING'):
+            c=self.prepare(False,True)
+            c.action=action
+            self.assertIsNone(c.execute('mission','freeze_left_bay',1.4).value)
+
+
     def test_both_profiles_exact_raw_and_timed_straight(self):
         for p4,entry,target in ((True,0.,'P5'),(False,1.8,'P4')):
             c=self.prepare(p4,not p4)

@@ -703,6 +703,7 @@ class Node(object):
                 console['parking_entry'] = status['parking_entry']
                 console['parking_completed'] = status['parking_completed']
                 console['parking_straight_travel'] = status['parking_straight_travel']
+                console['straight_uturn_guard'] = status['straight_uturn_guard']
                 console['uturn'] = status['uturn']
                 console['uturn_exit_straight'] = status['uturn_exit_straight']
                 if status['uturn_exit_straight']:

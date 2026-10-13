@@ -63,6 +63,23 @@ PYTHONDONTWRITEBYTECODE=1 python2 tools/module_workspace.py test lane --report-d
 ## 整车启动
 
 统一使用主目录的 `runall.sh`。日常参数只改 `src/robot/config/vehicle_tuning.yaml`。
+开机自启只需在 Nano 设置一次（提示时输入 Nano 的 sudo 密码）：
+
+```bash
+cd /home/nano/robocup_ws
+bash runall.sh --enable true
+```
+
+此命令只安装并启用 `robocup-vehicle.service`，不会立即启动程序或动车。
+以后上电自动运行整车程序，等待绿牌确认后按现有起步流程行驶，无需电脑输入命令。
+启动时读取同一份 YAML；开机服务固定附加 `wait_green:=true`，保证开机等待绿牌。
+`--enable` 管理开机服务，不是 YAML 中控制输出的 `launch.enabled`。
+关闭以后开机自启：`bash runall.sh --enable false`（不会停止当前运行）。
+开关不能和临时行驶参数混用；开机使用的长期参数请修改 YAML。
+查看状态：`systemctl status robocup-vehicle.service`；查看日志：`journalctl -u robocup-vehicle.service -b`。
+开机服务运行期间，不要再手动启动第二份程序；如需改为手动运行，先在现场停止服务：
+`sudo systemctl stop robocup-vehicle.service`。服务退出后不会自动重启。
+
 默认巡线 raw 40、前瞻 1.0 m、转向映射 0.03；入库按当前状态机自动分流，不需要写 `--S`。
 速度、动作时长、开关在 YAML 主体；相机帧率、模型路径等在同一文件的 `launch` 小节。
 参数优先级：模块默认值 < 此 YAML < 显式命令行参数。保存后重启整车生效。
@@ -80,6 +97,11 @@ bash runall.sh
 左右转时间修改 `left_timed_*_s` / `right_timed_*_s`，掉头修改 `uturn_trial_sequence`，
 避障修改 `timed_bypass_*`，侧方开关修改 `parking_side_lidar_enabled`。
 临时覆盖示例：`bash runall.sh lane_speed_raw:=30`，不会改写 YAML。
+直行后的所有动作牌（左转、右转、直行、掉头、P）：直行期间只记为候选，不进入下一动作缓存。
+即使提前交回循线，仍需从直行起点推进到 `straight_distance`（当前 1.4 米），
+越过门槛前记录的蓝线，并由至少 3 个连续新画面、跨度至少 0.3 秒确认旧线离开。
+之后必须重新识别对应牌子，方向动作才能在新蓝线上触发；P 重新确认后按原停车流程处理。
+红牌停车、绿牌放行不受此门槛限制；距离与越线位置仍采用当前位姿估算。
 不动车检查最终参数：`bash runall.sh --dump-params`；只检查节点清单：`bash runall.sh --nodes`。
 配置中 `parking_mode` / `parking_entry_style` 保留当前共用视觉控制设置；
 前摄 P、后摄 P 和侧方分流由状态机决定，本次统一参数不改变触发条件。
