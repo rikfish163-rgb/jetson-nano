@@ -1,6 +1,6 @@
 """Rear-camera adapter for the same measured S parking used by the front."""
 import math
-from robot.common.geometry import distance, local, wrap
+from robot.common.geometry import distance, local, wrap, _isfinite
 from robot.parking.entry import ExplicitStraightEntry
 
 
@@ -11,13 +11,14 @@ def reverse_after_turn_enabled(cfg):
 
 
 def reverse_after_turn_route(ctx):
+    if ctx.parking_completed:
+        return False
     if not reverse_after_turn_enabled(ctx.cfg):
         return False
     if any(value not in (None, 'PARKING')
            for value in (ctx.pending, ctx.next_direction)):
         return False
-    if ctx.action == 'RIGHT':
-        return ((ctx.right_lock or {}).get('phase') in ('WAIT_LANE', 'ALIGN_LANE'))
+    # Turn exit search still belongs to the maneuver, not lane following.
     return (ctx.action is None and ctx.last_completed_action in ('LEFT','RIGHT') and
             ctx.state in ('LANE', 'GAP', 'WAIT_OBSTACLE'))
 
@@ -39,10 +40,21 @@ class ReverseStraightEntry(ExplicitStraightEntry):
         return pose[0], -pose[1], wrap(math.pi-pose[2])
 
     def __init__(self, cfg, pose, now, wait_for_sign=False):
+        # Rear P retreat has its own duration; never change the front task config.
+        cfg = dict(cfg, parking_p_reverse_s=cfg.get(
+            "parking_rear_p_reverse_s", cfg.get("parking_p_reverse_s", 0.)))
         ExplicitStraightEntry.__init__(self, cfg, self.reverse_pose(pose), now)
         self.inner.bumper_offset = cfg['rear_overhang']
+        r = cfg.get('rear_bev', {})
+        self.inner.side_view_far_m=-r['axle_x']+r['origin_v']/r['pixels_per_m']
+        self.inner.camera_steering_feedback=cfg.get('pose_mode')=='command_model'
+        if 'bottom_reference_v' in r:
+            self.inner.bottom_reference = dict(
+                depth_m=-r['axle_x']+(r['origin_v']-r['bottom_reference_v'])/r['pixels_per_m'],
+                remaining_m=r['bottom_reference_remaining_m'])
         self.inner.allow_unanchored_side = not wait_for_sign
-        self.inner.associate = wait_for_sign
+        # P gates entry below. Once accepted, use the current front geometry
+        # policy, including paired far ends and short bottom-fragment tracking.
         self.inner.lock_target_bay = wait_for_sign
         self.inner.independent_bottom = True
         self.armed_at = float(now)
@@ -123,29 +135,56 @@ class ReverseStraightEntry(ExplicitStraightEntry):
         mirrored = [[(x,-y) for x,y in line] for line in lines]
         ExplicitStraightEntry.observe(self, mirrored, stamp, self.reverse_pose(pose))
 
+    @staticmethod
+    def same_p_bounds(previous, current):
+        """Keep the same image target using the front tracker's box continuity."""
+        if previous is None or current is None:
+            return True
+        if (not isinstance(previous,(list,tuple)) or not isinstance(current,(list,tuple)) or
+                len(previous)!=4 or len(current)!=4):return False
+        try:
+            old=[float(v) for v in previous]
+            new=[float(v) for v in current]
+        except (ValueError,TypeError):return False
+        if not all(_isfinite(v) for v in old+new):return False
+        ox,oy,ow,oh=old
+        x,y,w,h=new
+        if min(ow,oh,w,h)<=0:return False
+        ratio=float(w*h)/(ow*oh)
+        return (.35<=ratio<=2.8 and
+                abs(x+w/2.-ox-ow/2.)<=1.5*max(w,ow) and
+                abs(y+h/2.-oy-oh/2.)<=1.5*max(h,oh))
+
     def observe_sign(self, label, confidence, stamp, now, anchor=None, bounds=None):
-        """Arm on rear P, then lock its projected world position exactly once."""
-        if self.inner.sign_anchor is not None or self.inner.status in ('FAULT','FINISHED'):
+        """Trigger once on rear P; refresh its position from newer images."""
+        if self.inner.status in ('FAULT','FINISHED'):
             return False
         if (stamp <= max(self.armed_at,self.rear_sign_stamp) or
                 not 0<=now-stamp<=self.cfg['sign_timeout']):
             return False
         self.rear_sign_stamp = stamp
-        self.rear_sign = dict(label=label,confidence=confidence,stamp=stamp,decision='waiting_p')
         if label!='PARKING' or not self.cfg['sign_confidence']<=confidence<=1.:
             return False
-        if self.parking_started is None:
+        previous=self.rear_sign
+        if not self.same_p_bounds(previous.get('sign_bounds'),bounds):
+            previous.update(last_rejected_stamp=stamp,last_rejection='different_rear_p')
+            return False
+        first=self.parking_started is None
+        if first:
             self.parking_started = float(now)
             self.arm_p_reverse()
-        self.geometry_after = stamp
-        self.inner.associate = True
-        self.inner.allow_unanchored_side = False
-        self.inner.lock_target_bay = True
-        self.rear_sign.update(sign_bounds=bounds,anchor_world=anchor,
-            decision='parking_wait_p_position' if anchor is None else 'parking_started')
+            self.geometry_after = stamp
         if anchor is not None:
-            self.inner.sign_anchor=(anchor[0],-anchor[1])
-        self.inner.reason = 'parking_reverse_p_seen'
+            ExplicitStraightEntry.sign_anchor.fset(self,(anchor[0],-anchor[1]))
+        self.rear_sign=dict(label=label,confidence=confidence,stamp=stamp,
+            sign_bounds=bounds if bounds is not None else previous.get('sign_bounds'),
+            anchor_world=anchor if anchor is not None else previous.get('anchor_world'),
+            position_stamp=stamp if anchor is not None else previous.get('position_stamp'),
+            position_updates=previous.get('position_updates',0)+(1 if anchor is not None else 0),
+            decision=('parking_started' if anchor is not None else 'parking_started_unprojected')
+                     if first else
+                     ('parking_p_position_updated' if anchor is not None else 'parking_p_observed_unprojected'))
+        if first:self.inner.reason = 'parking_reverse_p_seen'
         return True
 
     def observe_blue(self, lines, stamp, pose, source='rear'):
@@ -239,15 +278,14 @@ class ReverseStraightEntry(ExplicitStraightEntry):
             # Away from rear P means physically FORWARD before reversing in.
             self.inner.debug['direction'] = 1 if prelude[0] else 0
             return -prelude[0], prelude[1]
-        # Enter the shared front visual controller directly: its no-line
-        # fallback continues straight at the configured parking entry speed.
-        # The front S wrapper's wait-for-first-geometry gate is not a reverse
-        # entry stage. Side/pair correction and bottom stopping remain shared.
-        speed, steer = self.inner.command(now, self.reverse_pose(pose))
+        # Reuse the front S wrapper as well as its inner visual controller;
+        # keep geometry readiness and no-line fallback in one implementation.
+        speed, steer = ExplicitStraightEntry.command(self, now, self.reverse_pose(pose))
         reference=self.inner.view or self.inner.single
         self.inner.debug['rear_vehicle_lateral_m']=None
         if reference is not None:
-            unused_heading,lateral=self.inner.errors(reference['theta'],reference['center'])
+            unused_heading,lateral=self.inner.errors(reference['theta'],reference['center'],
+                pose=self.inner.steering_pose(reference))
             # Positive: vehicle is to the RIGHT of its bay in rear view.
             self.inner.debug['rear_vehicle_lateral_m']=lateral
         if speed:
@@ -262,8 +300,6 @@ class ReverseStraightEntry(ExplicitStraightEntry):
             self.inner.reason = 'parking_rear_stale'
         if self.inner.reason == 'parking_missing_white_straight':
             self.inner.reason = 'parking_reverse_missing_white_straight'
-        if self.inner.associate and self.inner.sign_anchor is None:
-            self.inner.reason = 'parking_reverse_wait_p_position'
         reverse_sign = self.cfg.get('chassis_calibration', {}).get('reverse_steering_sign', 1)
         self.inner.debug['steering_command_rad'] = steer*reverse_sign
         return -speed, steer*reverse_sign

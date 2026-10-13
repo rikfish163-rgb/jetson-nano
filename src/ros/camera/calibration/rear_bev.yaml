@@ -5,54 +5,53 @@ bev_y_max_m: 1.0
 bev_y_min_m: 0.0
 board_center_x_m: 0.0
 camera_matrix:
-- - 447.24903
+- - 521.10578
   - 0.0
-  - 380.94372
+  - 393.51607
 - - 0.0
-  - 448.11036
-  - 253.20428
+  - 521.55259
+  - 262.28364
 - - 0.0
   - 0.0
   - 1.0
 depth_order: top_row_far_to_bottom_row_near
 distortion_coefficients:
-- -0.374
-- 0.150515
-- 0.0017
-- -0.002625
+- -0.487578
+- 0.212
+- -0.005704
+- -0.014223
 - 0.0
 homography_inliers: 88
-homography_max_error_px: 0.6578422265154859
+homography_max_error_px: 0.7257524330605177
 homography_rectified_to_bev:
-- - 0.39438795692113654
-  - -1.3979275703842164
-  - 104.98072665030443
-- - -0.005076236393232916
-  - -2.345054447123278
-  - 554.1205747591848
-- - 2.569133223178979e-05
-  - -0.005716943741625206
+- - 0.3306330279669154
+  - -1.1928998578090044
+  - 121.40956781450889
+- - -0.005889574172296711
+  - -2.0868607098206575
+  - 535.1079709471213
+- - -6.649342073741692e-06
+  - -0.004938686356084294
   - 1.0
-homography_rms_error_px: 0.21886959256949584
+homography_rms_error_px: 0.25044623136221156
 image_height: 480
 image_width: 640
-input_corner_order: near_row_first_right_to_left
-mirror_x: false
-near_inner_y_m: 0.285
+mirror_x: true
+near_inner_y_m: 0.26
 pattern_inner_corners:
 - 8
 - 11
 pixels_per_metre: 400.0
 rectified_camera_matrix:
-- - 343.8708801269531
+- - 383.0557861328125
   - 0.0
-  - 377.57770408612123
+  - 380.70405435065913
 - - 0.0
-  - 344.45831298828125
-  - 255.9977445199911
+  - 376.3688659667969
+  - 260.6919025853949
 - - 0.0
   - 0.0
   - 1.0
-source_image: /home/nano/robocup_ws/artifacts/rear_calibration_20261011T115527Z/ground.png
-source_intrinsics: /home/nano/robocup_ws/artifacts/rear_calibration_20261011T115527Z/intrinsics.yaml
+source_image: /home/nano/robocup_ws/artifacts/rear_recalibration_vMFrMN/ground_0.png
+source_intrinsics: /home/nano/robocup_ws/artifacts/rear_recalibration_vMFrMN/intrinsics.yaml
 square_size_m: 0.02

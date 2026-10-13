@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Latest-frame ground processing: publish blue BEFORE optional bay search."""
 import json
+import os
 import threading
 import time
 import cv2
@@ -20,6 +21,12 @@ class Node(object):
         validate_config(self.cfg)
         cv2.setNumThreads(1)
         self.detector, self.bridge = GroundDetector(self.cfg), CvBridge()
+        self.rear_sign_observation = None
+        self.rear_sign_mask = None
+        if rospy.get_param('~start_rear',True):
+            from robot.camera.rear_sign_mask import RearSignMask
+            self.rear_sign_mask=RearSignMask(os.path.join(os.path.dirname(__file__),
+                '..','..','ros','camera','calibration','rear_bev.yaml'))
         self.lock = threading.Lock()
         self.latest = {'front':None,'rear':None}
         self.last = {'front':-1.0,'rear':-1.0}
@@ -69,6 +76,8 @@ class Node(object):
                 self.cfg.get('parking_entry_style') == 'S')
             self.rear_parking_requested = (data.get('state') == 'PARKING' and
                 (data.get('parking_entry') or {}).get('camera_source') == 'rear')
+            self.rear_sign_observation=((data.get('parking_entry') or {}).get('rear_sign')
+                                        if self.rear_parking_requested else None)
             self.uturn_requested = data.get('pending')=='UTURN' or data.get('action')=='UTURN'
             if self.uturn_vision is not None:
                 with self.lock:
@@ -209,6 +218,10 @@ class Node(object):
                         self.publish(data,rear,'rear','markers')
                         self.debug_image('rear_blue',blue,rear)
                     if self.rear_parking_requested:
+                        sign=getattr(self,'rear_sign_observation',None)
+                        if (sign and abs(stamp-sign.get('stamp',-1.))<=.5 and
+                                self.rear_sign_mask is not None):
+                            white=self.rear_sign_mask.apply(white,sign.get('sign_bounds'))
                         lines = self.detector.parking_lines(white,min_length_m=.04,rear=True)
                         self.publish(dict(markers=[],slots=[],lines=lines,
                                           blue_lines=data.get('blue_lines',[])),rear,'rear','parking_lines')

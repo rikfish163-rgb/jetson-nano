@@ -37,7 +37,7 @@ class RightSignDisappearanceTests(unittest.TestCase):
         c = self.core(active=False)
         c.observe_sign('', 0., 1.2, 1.2)
         self.assertEqual(c.pending, 'RIGHT')
-        self.assertEqual(c.pending_at, 1.1)
+        self.assertEqual(c.pending_at, 1.0)  # First valid image stores RIGHT.
         self.assertTrue(c.route_sign_rearmed)
         c.action, c.state, c.pending = 'RIGHT', 'BLUE_STOP', None
         c.action_source = 'sign'

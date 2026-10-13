@@ -20,7 +20,7 @@ def validate_settings(settings):
             raise ValueError('invalid sign_route_gate.'+key)
     for key,default in (('normal_frames',2),('small_frames',3)):
         value=settings.get(key,default)
-        if isinstance(value,bool) or not isinstance(value,(int,float)) or value!=int(value) or not 2<=value<=8:
+        if isinstance(value,bool) or not isinstance(value,(int,float)) or value!=int(value) or not 1<=value<=8:
             raise ValueError('invalid sign_route_gate.'+key)
     if settings.get('small_frames',3)<settings.get('normal_frames',2):
         raise ValueError('small target requires at least normal_frames')

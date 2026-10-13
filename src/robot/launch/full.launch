@@ -8,6 +8,7 @@
   <!-- Lidar stays running for category-specific checks after straight bypass. -->
   <arg name="lidar_enabled" default="true"/>
   <arg name="straight_lidar_once" default=""/>
+  <arg name="timed_bypass_enabled" default=""/>
   <arg name="lidar_shape_filter" default="true"/>
   <arg name="config" default="$(find robocup_competition)/config/competition.yaml"/>
   <arg name="maneuver_config" default="$(find robocup_competition)/config/maneuvers.yaml"/>
@@ -26,6 +27,7 @@
   <arg name="parking_lidar_enabled" default=""/>
   <!-- Numbered slots are only for legacy timed/planned modes. Visual entry follows P. -->
   <arg name="parking_slot" default=""/>
+  <arg name="parking_side_lidar_enabled" default="$(eval arg('parking_slot') not in ('P1','P2','P3'))"/>
   <arg name="parking_mode" default="$(eval 'timed_sequence' if arg('parking_slot') in ('P1','P2','P3') else 'forward_center' if arg('parking_slot') in ('','P4','P5') else '')"/>
   <arg name="parking_entry_style" default="$(eval 'S' if arg('parking_mode') == 'forward_center' else '')"/>
   <arg name="parking_entry_speed_raw" default=""/>
@@ -110,6 +112,7 @@
     <arg name="right_lock_heading_deg" value="$(arg right_lock_heading_deg)"/>
     <arg name="parking_enabled" value="$(arg parking_enabled)"/>
     <arg name="parking_lidar_enabled" value="$(arg parking_lidar_enabled)"/>
+    <arg name="parking_side_lidar_enabled" value="$(arg parking_side_lidar_enabled)"/>
     <arg name="parking_slot" value="$(arg parking_slot)"/>
     <arg name="parking_mode" value="$(arg parking_mode)"/>
     <arg name="parking_entry_style" value="$(arg parking_entry_style)"/>
@@ -178,6 +181,7 @@
     <arg name="start_lidar" value="$(eval arg('lidar_enabled') or arg('parking_enabled'))"/>
     <arg name="lidar_enabled" value="$(arg lidar_enabled)"/>
     <arg name="straight_lidar_once" value="$(arg straight_lidar_once)"/>
+    <arg name="timed_bypass_enabled" value="$(arg timed_bypass_enabled)"/>
     <arg name="lidar_shape_filter" value="$(arg lidar_shape_filter)"/>
   </include>
   <include if="$(arg debug_view)" file="$(find robocup_competition)/launch/debug_view.launch">

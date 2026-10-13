@@ -1,12 +1,15 @@
-# 路牌筛选：前方/右侧候选 + 同一目标多帧确认。
+# 路牌筛选：前方/右侧候选，首张有效图像即可确认。
 # 45px（360px 图高）是入队硬下限；高置信度和多帧不能放行更小目标。
+sign_votes: 1
+direction_sign_votes: 1
+parking_sign_votes: 1
 sign_min_height_ratio: 0.125
 sign_route_gate:
   enabled: true
   # 图像中线左侧留前方余量：640px 图中检测框中心 >= 192px。
   left_center_ratio: 0.30
   min_height_ratio: 0.125
-  normal_frames: 2
-  small_frames: 3
+  normal_frames: 1
+  small_frames: 1
   small_confidence: 0.90
   max_gap_s: 0.75

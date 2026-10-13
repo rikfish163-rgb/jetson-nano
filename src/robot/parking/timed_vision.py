@@ -6,6 +6,7 @@ import numpy as np
 from collections import OrderedDict
 from robot.parallel_parking.reference_vision import ReferenceVision,paint_mask
 from robot.parking.timed_core import near_lane_geometry
+from robot.parking.p_line_reference import PLineReference
 
 class LineVision(object):
     def __init__(self, cfg, side='right', min_length=.08, angle_deg=25., acquire_length=.12,
@@ -108,8 +109,20 @@ class BayLineVision(LineVision):
                             args.acquire_line_m,args.white_v_min)
         self.heading = 0.
         self.last_heading_stamp = None
+        self.lines = []
+        self.p_reference_enabled = True
+        self.p_tracker=PLineReference(cfg['front_camera']['width'],cfg['front_camera']['height'])
+        self.sign_observation=None
+        self.frame_stamp=None
+        self.p_reference=self.p_tracker.result(False,'WAIT_TARGET_P')
+        camera=self.detector.c
+        self.K=np.asarray(camera['K'],float).reshape(3,3)
+        self.D=np.asarray(camera['D'],float)
+        size=(camera['width'],camera['height'])
+        self.newK=cv2.getOptimalNewCameraMatrix(self.K,self.D,size,1.,size)[0]
 
     def set_lane_observation(self, observation):
+        self.frame_stamp=observation['stamp']
         geometry = near_lane_geometry(observation)
         if geometry['valid']:
             self.heading = math.radians(geometry['heading_deg'])
@@ -123,6 +136,8 @@ class BayLineVision(LineVision):
         return np.dot(np.asarray(points),np.array([[c,-s],[s,c]]))
 
     def accepts(self, a, b):
+        if self.p_reference_enabled and self.p_tracker.locked and self.p_tracker.matches([a,b],self.frame_stamp):
+            return True
         road = self.road_axes([a,b])
         dx,dy = road[1]-road[0]
         if np.linalg.norm(road[1]-road[0]) < self.min_length:
@@ -178,6 +193,21 @@ class BayLineVision(LineVision):
         mask = self.paint_roi(bev)
         candidates = [line for line in self.segments(mask) if self.paint_supported(line,mask)]
         lines = self.filter_lines(candidates)
+        self.lines = lines
+        if self.p_reference_enabled and self.frame_stamp is not None:
+            self.p_tracker.observe_p(self.sign_observation,self.frame_stamp)
+            p=self.p_tracker.p
+            anchor=None
+            if p is not None:
+                x,y,w,h=p['sign_bounds']
+                anchor=cv2.undistortPoints(np.array([[[x+w/2.,y+h]]],float),self.K,self.D,P=self.newK)[0,0]
+            c=self.camera
+            pixels=np.array([[[c['origin_u']-p[1]*c['pixels_per_m']-360,
+                               c['origin_v']-p[0]*c['pixels_per_m']] for p in line]
+                             for line in lines],dtype=np.float64)
+            image_lines=(cv2.perspectiveTransform(pixels,np.linalg.inv(self.detector.H)) if lines else [])
+            self.p_reference=self.p_tracker.update(self.frame_stamp,lines,image_lines,
+                                                    self.sign_observation,anchor)
         for line in lines:
             pts = [(int(self.camera['origin_u']-p[1]*self.camera['pixels_per_m']),
                     int(self.camera['origin_v']-p[0]*self.camera['pixels_per_m'])) for p in line]
@@ -185,6 +215,14 @@ class BayLineVision(LineVision):
         cv2.putText(bev,'P3 BAY LINES: %d; road yaw %.1f deg' %
                     (len(lines),math.degrees(self.heading)),(15,28),
                     cv2.FONT_HERSHEY_SIMPLEX,.55,(0,255,255),2)
+        target=self.p_reference
+        if self.p_reference_enabled and target['line'] is not None:
+            pts=[(int(self.camera['origin_u']-p[1]*self.camera['pixels_per_m']),
+                  int(self.camera['origin_v']-p[0]*self.camera['pixels_per_m'])) for p in target['line']]
+            cv2.line(bev,pts[0],pts[1],(0,255,0),4)
+        if self.p_reference_enabled:
+            cv2.putText(bev,'%s; missing %d' % (target['reason'],target['missing_frames']),
+                        (15,53),cv2.FONT_HERSHEY_SIMPLEX,.55,(0,255,0),2)
         return len(lines),bev
 
 
@@ -245,6 +283,16 @@ def both_boundary_curves(boundaries, min_curvature=.45, min_turn_deg=10.):
     return result
 
 
+def road_curve_evidence(lane,options):
+    """Any reliably fitted observed road boundary can trigger automatic parking."""
+    result = both_boundary_curves(lane.get('boundaries',{}),
+                                 options['curve_min_curvature'],options['curve_min_turn_deg'])
+    sides = [side.upper() for side in ('left','right') if result[side]['kind']=='CURVE']
+    result.update(road_curved=bool(sides),road_curve_sides=sides,
+                  road_curve_reason='reliable_road_boundary_curve' if sides else 'wait_road_curve')
+    return result
+
+
 class PairBuffer(object):
     """Pair by the ORIGINAL image stamp; never combine adjacent camera frames."""
     def __init__(self,limit=20):
@@ -262,4 +310,3 @@ class PairBuffer(object):
         stamp = max(stamps)
         self.last = stamp
         return (self.images[stamp],self.lanes[stamp])
-

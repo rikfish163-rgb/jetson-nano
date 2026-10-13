@@ -21,6 +21,34 @@ class ParkingPReverseDelayTests(unittest.TestCase):
             cfg['parking_p_reverse_s']=value
             with self.assertRaises(ValueError):validate_config(cfg)
 
+    def test_rear_one_second_is_independent_of_front_three_seconds(self):
+        cfg=copy.deepcopy(CONFIG)
+        cfg.update(parking_p_reverse_s=3.,parking_rear_p_reverse_s=1.,
+                   parking_entry_speed_raw=16)
+        front=ExplicitStraightEntry(cfg,(0.,0.,0.),10.)
+        rear=ReverseStraightEntry(cfg,(0.,0.,0.),10.,wait_for_sign=True)
+        self.assertEqual(cfg['parking_p_reverse_s'],3.)
+        self.assertEqual(front.cfg['parking_p_reverse_s'],3.)
+        self.assertEqual(rear.cfg['parking_p_reverse_s'],1.)
+        rear.observe_sign('PARKING',.99,10.5,10.5,anchor=(-1.,.04))
+        self.assertEqual(rear.command(10.6,(0.,0.,0.)),(0,0.))
+        for i in range(10):
+            now=11.+i*.1
+            self.assertEqual(rear.command(now,(0.,0.,0.))[0],16)
+        rear.observe_sign('PARKING',.99,11.95,11.95,anchor=(-1.,.04))
+        self.assertEqual(rear.command(12.,(0.,0.,0.)),(0,0.))
+        self.assertEqual(rear.command(12.4,(0.,0.,0.))[0],-16)
+        self.assertEqual(rear.parking_started,10.5)
+
+    def test_production_rear_override_and_validation(self):
+        cfg=load_config(os.path.join(PACKAGE_DIR,'config'))
+        self.assertEqual(cfg['parking_rear_p_reverse_s'],1.)
+        self.assertEqual(cfg['parking_p_reverse_s'],3.)
+        for value in (-1.,float('nan'),11.):
+            invalid=copy.deepcopy(cfg)
+            invalid['parking_rear_p_reverse_s']=value
+            with self.assertRaises(ValueError):validate_config(invalid)
+
     def test_rear_search_before_p_does_not_run_away(self):
         entry=self.entry()
         self.assertEqual(entry.command(11.,(0.,0.,0.)),(-16,0.))
@@ -103,7 +131,8 @@ class ParkingPReverseDelayTests(unittest.TestCase):
             self.assertEqual(speed,16)
             self.assertAlmostEqual(steer,0.)
             self.assertEqual(entry.reason,'parking_p_reverse')
-        self.assertFalse(entry.observe_sign('PARKING',.99,13.95,13.95,anchor=(-1.,.04)))
+        self.assertTrue(entry.observe_sign('PARKING',.99,13.95,13.95,anchor=(-1.,.04)))
+        self.assertEqual(entry.parking_started,10.5)
         entry.command(14.,(0.,0.,0.))
         self.assertNotEqual(entry.reason,'parking_p_reverse')
         self.assertEqual(entry.command(14.4,(0.,0.,0.))[0],-16)

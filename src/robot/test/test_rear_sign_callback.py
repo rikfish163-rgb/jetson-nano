@@ -62,5 +62,29 @@ class RearSignCallbackTests(unittest.TestCase):
         self.assertIsNone(self.entry.parking_started)
         self.assertIsNone(replacement.parking_started)
 
+    def test_new_image_updates_existing_p_position_without_rearming(self):
+        self.node.rear_sign(self.msg)
+        started=self.entry.parking_started
+        boundary=self.entry.geometry_after
+        self.clock=10.8
+        self.node.rear_parking_projector=Box(position=lambda bounds:(-.65,.18))
+        message=Box(data=json.dumps(dict(camera_source='rear',label='PARKING',
+            confidence=.97,stamp=10.7,sign_bounds=[195,95,90,90])))
+        self.node.rear_sign(message)
+        self.assertEqual(self.entry.inner.sign_anchor,(-.65,-.18))
+        self.assertEqual(self.entry.parking_started,started)
+        self.assertEqual(self.entry.geometry_after,boundary)
+        self.assertEqual(self.entry.rear_sign['decision'],'parking_p_position_updated')
+
+    def test_clipped_new_image_keeps_last_valid_position(self):
+        self.node.rear_sign(self.msg)
+        self.clock=10.8
+        self.node.rear_parking_projector=Box(position=lambda bounds:None)
+        message=Box(data=json.dumps(dict(camera_source='rear',label='PARKING',
+            confidence=.97,stamp=10.7,sign_bounds=[195,95,90,90])))
+        self.node.rear_sign(message)
+        self.assertEqual(self.entry.inner.sign_anchor,(-.9,-.24))
+        self.assertEqual(self.entry.rear_sign['decision'],'parking_p_observed_unprojected')
+
 
 if __name__=='__main__':unittest.main()

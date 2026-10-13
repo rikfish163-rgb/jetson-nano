@@ -1,4 +1,4 @@
-"""Camera launch must wait for the controller's confirmed path-loss handoff."""
+"""Prewarm during S turns; path-loss handoff remains the fallback trigger."""
 import unittest
 
 
@@ -27,6 +27,25 @@ class DeferredRearCameraTests(unittest.TestCase):
         c=self.camera();c.observe(self.status());c.tick(10.3);c.tick(10.4)
         self.assertEqual(len(self.starts),1)
 
+    def test_ordinary_turn_prewarms_camera_without_waiting_for_reverse(self):
+        for turn in ('LEFT','RIGHT'):
+            c=self.camera()
+            c.observe(self.status(state='MANEUVER',action=turn,action_source='sign',
+                parking_entry=None,parking_completed=False,
+                parking_mode='forward_center',parking_entry_style='S'))
+            c.tick(10.3);c.tick(10.4)
+            self.assertEqual(len(self.starts),1)
+
+    def test_prewarm_ignores_other_modes_completed_bay_and_stale_status(self):
+        for change in (dict(parking_mode='timed_sequence'),dict(parking_completed=True),
+                       dict(parking_entry_style='T'),dict(stamp=8.),dict(enabled=False)):
+            c=self.camera()
+            data=self.status(state='MANEUVER',action='RIGHT',action_source='sign',
+                parking_entry=None,parking_completed=False,
+                parking_mode='forward_center',parking_entry_style='S')
+            data.update(change);c.observe(data);c.tick(10.3)
+            self.assertEqual(self.starts,[])
+
     def test_stale_prelaunch_and_future_status_never_start_camera(self):
         for stamp in (9.9,8.,12.):
             c=self.camera();c.observe(self.status(stamp=stamp));c.tick(10.3)
@@ -49,6 +68,23 @@ class DeferredRearCameraTests(unittest.TestCase):
             camera.observe(controller_status(core,cfg,stamp,True,True,(0,0.),0))
             camera.tick(stamp)
             self.assertEqual(len(self.starts),1 if stamp==12.4 else 0)
+
+    def test_real_turn_telemetry_prewarms_only_when_s_parking_enabled(self):
+        import copy
+        from test_core import CONFIG
+        from robot.master.controller import Controller
+        from robot.master.telemetry import controller_status
+        for enabled in (True,False):
+            for turn in ('LEFT','RIGHT'):
+                cfg=copy.deepcopy(CONFIG)
+                cfg.update(parking_mode='forward_center',parking_entry_style='S',
+                           parking_enabled=enabled,wait_green=False)
+                core=Controller(cfg);self.addCleanup(core.close)
+                core.state='MANEUVER';core.action=turn
+                camera=self.camera()
+                camera.observe(controller_status(core,cfg,10.2,True,True,(0,0.),0))
+                camera.tick(10.3)
+                self.assertEqual(len(self.starts),1 if enabled else 0)
 
 
 if __name__=='__main__':unittest.main()

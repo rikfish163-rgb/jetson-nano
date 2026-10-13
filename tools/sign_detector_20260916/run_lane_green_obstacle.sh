@@ -5,7 +5,7 @@ cd /home/nano/robocup_ws
 # Retain green release and collision/unknown-space protection with no parking.
 # Mandatory 1.25 m straight at 12; lane bends and uncertain exits use 16.
 # Lane control admits 24 only after sustained centered straight observations.
-exec bash tools/sign_detector_20260916/run_yolo_vehicle.sh \
+exec bash runall.sh \
   parking_enabled:=false start_rear:=false wait_green:=true lidar_enabled:=true \
   startup_follow_lane:=false straight_distance:=1.25 \
   lane_speed_raw:=24 action_speed_raw:=24 straight_speed_raw:=12 \

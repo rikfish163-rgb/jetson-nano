@@ -243,6 +243,8 @@ class AdapterTests(unittest.TestCase):
         node.cfg=config();node.options=node.cfg['parking_timed']
         node.lock=threading.Lock();node.stop=OneCycle();node.buffer=PairBuffer()
         node.active=False;node.active_stamp=-1.
+        node.poses=Value(at=lambda stamp:None)
+        node.signs=[];node.target=Value(run=None)
         frame=object()
         image=Value(header=Value(stamp=Value(to_sec=lambda:1.)))
         node.buffer.put('image',1.,image)

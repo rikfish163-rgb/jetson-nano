@@ -43,6 +43,7 @@ def load_config(config_dir, base_path=None, maneuver_path=None, tuning_path=None
     path = tuning_path if tuning_path is not None else os.path.join(config_dir, 'vehicle_tuning.yaml')
     if path:
         tuning = read_mapping(path)
+        tuning.pop('launch', None)  # ROS process settings are resolved by vehicle_launch.py.
         allowed = set(key.split('.')[0] for module in catalog['modules'].values()
                       for key in module['parameters'])
         unknown = set(tuning)-allowed

@@ -69,9 +69,12 @@ python2 tools/sign_detector_20260916/inspect_sign_captures.py --label STRAIGHT
 
 `sign_min_height_ratio: 0.125` 是前摄方向牌和 P 牌的入队硬下限：360px 图高时
 检测框至少45px高，720px 图高时至少90px高。更小目标即使高置信度、连续多帧
-也不能放行。不卡最小宽度，以保留画面边缘部分露出的牌；合格目标连续2帧确认。
+也不能放行。不卡最小宽度，以保留画面边缘部分露出的牌；合格目标首帧确认。
 相邻帧超过0.75秒、类别变化、目标位置/尺寸跳变或低置信度会重置候选。
-候选通过后仍经过总控原有投票、路线阶段和动作触发条件。
+识别节点的 `normal_frames`、`small_frames` 和总控的 `sign_votes`、
+`direction_sign_votes`、`parking_sign_votes` 当前均为 1：同一张有效图像
+可以完成候选确认并缓存路牌，不再叠加两层多帧等待。
+路线阶段、重复路牌锁和动作触发条件继续生效。
 
 先过滤明显左侧和高度不足的牌，再选择最大面积目标，避免不合格牌遮蔽有效牌。
 JSON 保留全部模型检测 `detections` 和可接受区域内候选 `route_detections`，

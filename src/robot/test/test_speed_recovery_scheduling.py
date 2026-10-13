@@ -4,7 +4,8 @@ import json
 import os
 import threading
 import unittest
-from robot.common.contracts import decode
+from robot.common.contracts import decode,number
+from robot.parking.target_line import FramePoses
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,18 +29,19 @@ class SpeedRecoverySchedulingTests(unittest.TestCase):
         clock = Box(value=10.)
         calls = []
         output = []
-        scope = dict(json=json,decode=decode,String=lambda data:data,
+        scope = dict(json=json,decode=decode,number=number,String=lambda data:data,
             time=Box(time=lambda:clock.value),cv2=Box(error=RuntimeError),
             CvBridgeError=RuntimeError,
             rospy=Box(Time=Box(now=lambda:Box(to_sec=lambda:clock.value)),
                       is_shutdown=lambda:False,logwarn_throttle=lambda *args:None),
             validate_scene=lambda *args:None,both_boundary_curves=lambda *args:{})
         node = load_methods(os.path.join(ROOT,'parking/timed_vision_node.py'),
-                            ('work','status'),scope,('processing_interval',))
+                            ('work','status'),scope,('processing_interval','side_run'))
         node.cfg = dict(ground_timeout=1.25)
         node.options = dict(curve_min_curvature=.1,curve_min_turn_deg=10.)
         node.lock = threading.Lock()
         node.mission_hint = hint
+        node.poses=FramePoses();node.signs=[];node.target=Box(run=None)
         refresh = hint is not None and hint["stamp"] == 10.
         node.bridge = Box(imgmsg_to_cv2=lambda *args:object())
         def pair(*args):

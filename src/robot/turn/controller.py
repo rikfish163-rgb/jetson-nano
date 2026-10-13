@@ -13,7 +13,7 @@ from robot.common.contracts import model_to_command_steering
 
 
 
-FIELDS = ('action', 'action_source', 'action_started', 'cfg', 'completed_at_pose',
+FIELDS = ('parking_completed', 'turn_reverse_watch', 'left_bay_selection', 'action', 'action_source', 'action_started', 'cfg', 'completed_at_pose',
  'consumed_marker', 'exit_count', 'exit_pose', 'exit_reason', 'exit_stamp',
  'follow_left_boundary', 'front_blue_lines', 'front_blue_image_lines', 'front_marker_stamp', 'lane', 'lane_source',
  'lane_stamp', 'last_completed_action', 'left_boundary_stamp', 'left_fit_diagnostic', 'left_reference', 'marker',
@@ -21,7 +21,7 @@ FIELDS = ('action', 'action_source', 'action_started', 'cfg', 'completed_at_pose
  'straight_search', 'blue_approach', 'next_direction')
 CALLS = (('lane', 'search_command'), ('lane', 'lane_command'), ('lane', 'lane_valid'), ('lane', 'left_exit_line'),
  ('lane', 'left_reference_command'), ('mission', 'resume_lane'), ('mission', 'dispatch'),
- ('mission', 'start_follow'), ('mission','begin_blue_action'), ('turn','exit_lane_confirmed'),
+ ('mission', 'start_follow'), ('mission','freeze_left_bay'), ('mission','begin_blue_action'), ('turn','exit_lane_confirmed'),
  ('motion', 'current_steering'), ('motion', 'stop'),
  ('obstacle', 'checked_command'), ('turn', 'front_straight_reference'),
  ('turn', 'right_blue_exit_tick'), ('turn', 'right_center_exit'),
@@ -116,7 +116,7 @@ def blue_approach_tick(ctx, now):
         x,y=local(ctx.pose,s['point'])
         heading=wrap(s['yaw']-ctx.pose[2])
         plane_distance=x*math.cos(heading)+y*math.sin(heading)
-        if (ctx.action == 'UTURN' or (ctx.action == 'LEFT' and ctx.cfg.get('left_timed_enabled',False)) or
+        if (ctx.action == 'UTURN' or (ctx.action == 'LEFT' and (ctx.cfg.get('left_timed_enabled',False) or (ctx.left_bay_selection or {}).get('target'))) or
                 (ctx.action == 'RIGHT' and ctx.cfg.get('right_timed_enabled',False))):
             remaining=plane_distance-ctx.cfg['wheelbase']*math.cos(heading)
             s['stop_reference']='front_axle'
@@ -128,6 +128,7 @@ def blue_approach_tick(ctx, now):
         s.update(remaining_m=remaining,heading_error_deg=math.degrees(heading),
                  stop_line_distance_m=plane_distance)
         if remaining<=1e-9:
+            ctx.call('mission','freeze_left_bay',now)
             if (ctx.action == 'UTURN' and
                     abs(heading) > math.radians(ctx.cfg['uturn_align_heading_deg'])):
                 return ctx.call('motion','stop','uturn_blue_heading_not_aligned')
@@ -284,7 +285,7 @@ def right_center_exit(ctx, now, progress):
 
 def left_lock_tick(ctx, now):
     """Keep lock until a fresh centered exit is measured, not a model endpoint."""
-    if ctx.cfg.get('left_timed_enabled',False):
+    if ctx.cfg.get('left_timed_enabled',False) or (ctx.left_lock or {}).get('bay_profile'):
         from robot.turn.timed_left import tick
         return tick(ctx,now)
     cfg,lock = ctx.cfg,ctx.left_lock

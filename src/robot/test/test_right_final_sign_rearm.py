@@ -72,13 +72,15 @@ class RightFinalSignRearmTests(unittest.TestCase):
         now = self.released_cache(c)
         c.observe_sign('RIGHT', .99, now+.05, now+.05)
         self.assertEqual(c.sign_count, 1)
+        self.assertEqual(c.next_direction, 'RIGHT')
+        self.assertEqual(c.sign_info['decision'], 'stored_next_direction')
         c.front_marker_stamp = now+.1
         self.assertGreater(c.tick(now+.1)[0], 0)
         self.assertEqual(c.right_lock['phase'], 'TIMED_TURN')
         self.assertEqual(c.sign_count, 1, 'cache must be consumed only once')
         c.observe_sign('RIGHT', .99, now+.15, now+.15)
         self.assertEqual(c.next_direction, 'RIGHT')
-        self.assertEqual(c.sign_info['decision'], 'stored_next_direction')
+        self.assertEqual(c.sign_info['decision'], 'next_direction_occupied')
 
     def test_pre_release_source_frame_cannot_revote_for_the_next_right(self):
         c = self.core()

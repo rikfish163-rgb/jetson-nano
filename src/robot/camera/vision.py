@@ -147,6 +147,27 @@ class GroundDetector(object):
                               minLineLength=minimum,maxLineGap=int(ppm*.025))
         if rows is None:
             return []
+        if rear:
+            # Thick white stripes produce many Hough duplicates. Deduplicate
+            # before the output budget, so one rail cannot hide the other one.
+            selected=[]
+            for row in sorted((r[0] for r in rows),
+                              key=lambda r:-((r[2]-r[0])**2+(r[3]-r[1])**2)):
+                ax,ay,bx,by=[float(value) for value in row]
+                size=math.hypot(bx-ax,by-ay)
+                if size==0:continue
+                ux,uy=(bx-ax)/size,(by-ay)/size
+                duplicate=False
+                for cx,cy,dx,dy,vx,vy,length in selected:
+                    if abs(ux*vx+uy*vy)<.99863:continue  # cos(3 degrees)
+                    if max(abs(vx*(ay-cy)-vy*(ax-cx)),abs(vx*(by-cy)-vy*(bx-cx)))>ppm*.015:continue
+                    lo,hi=sorted(((ax-cx)*vx+(ay-cy)*vy,(bx-cx)*vx+(by-cy)*vy))
+                    if min(hi,length)-max(lo,0.)>=.6*size:
+                        duplicate=True;break
+                if not duplicate:selected.append((ax,ay,bx,by,ux,uy,size))
+                if len(selected)>=80:break
+            return [[self.metric(ax,ay,True),self.metric(bx,by,True)]
+                    for ax,ay,bx,by,unused_ux,unused_uy,unused_length in selected]
         return [[self.metric(a-u_offset,b,rear),self.metric(c-u_offset,d,rear)]
                 for a,b,c,d in (row[0] for row in rows[:80])]
 

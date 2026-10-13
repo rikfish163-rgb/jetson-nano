@@ -191,11 +191,12 @@ class ExplicitStraightEntry(object):
             self.inner.debug.update(steering_reference=source,
                 left_seen=paired or source=='left_side',
                 right_seen=paired or source=='right_side',geometry_ready=True)
+            feedback_pose=self.inner.steering_pose(reference)
             if paired:
-                self.inner.debug['pair_local'] = [[local(pose,p) for p in side]
+                self.inner.debug['pair_local'] = [[local(feedback_pose,p) for p in side]
                                                   for side in reference['sides']]
             else:
-                self.inner.debug['side_local'] = [local(pose,p) for p in reference['side']]
+                self.inner.debug['side_local'] = [local(feedback_pose,p) for p in reference['side']]
         else:
             self.inner.debug.update(left_seen=False,right_seen=False,
                 geometry_ready=False,pair_local=None,side_local=None,
@@ -402,8 +403,8 @@ class WhiteParking(object):
         center = tuple((mids[0][i]+mids[1][i])/2 for i in (0,1))
         self.view = dict(theta=theta,center=center,stamp=stamp,width=width)
 
-    def errors(self, theta, center):
-        pose = self.pose
+    def errors(self, theta, center, pose=None):
+        pose = self.pose if pose is None else pose
         lateral = -(pose[0]-center[0])*math.sin(theta)+(pose[1]-center[1])*math.cos(theta)
         return wrap(theta-pose[2]),lateral
 
@@ -427,8 +428,8 @@ class WhiteParking(object):
         self.debug.update(phase=self.phase,reason=reason)
         return 0,0.0
 
-    def steer(self, theta, center, direction=1):
-        heading,lateral = self.errors(theta,center)
+    def steer(self, theta, center, direction=1, pose=None):
+        heading,lateral = self.errors(theta,center,pose=pose)
         physical = direction*2.5*heading-math.atan2(1.5*lateral,.30)
         physical = max(-self.cfg['max_steer'],min(self.cfg['max_steer'],physical))
         return physical/self.cfg['max_steer']*self.cfg.get('steering_command_scale_rad',self.cfg['max_steer'])

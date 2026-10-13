@@ -47,7 +47,7 @@ class UturnSignWindowTests(unittest.TestCase):
         self.assertEqual(c.sign_info['decision'],'uturn_wait_final_heading')
         self.assertIsNone(c.next_direction)
         c.observe_sign('STRAIGHT',.99,t+.02,t+.02)
-        self.assertIsNone(c.next_direction)
+        self.assertEqual(c.next_direction,'STRAIGHT')
         c.observe_sign('STRAIGHT',.99,t+.12,t+.12)
         self.assertEqual(c.next_direction,'STRAIGHT')
 

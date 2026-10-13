@@ -145,6 +145,217 @@ class ParkingApproachRun(StopRun):
                 self.reason = 'FORWARD_SEEK_LINES'
         return command
 
+class PReferenceApproachRun(StopRun):
+    """The P-associated stripe disappears; then the stopped lidar selects a bay."""
+    requires_end_confirmation = False
+
+    def __init__(self,base):
+        self.__dict__.update(base.__dict__)
+        self.reference=None
+        self.bay_armed=False
+        self.end_votes=0
+
+    def observe_scene(self,scene):
+        self.reference=scene.get('p_reference')
+
+    def observe(self,count,stamp,received,both_curved=False):
+        if self.finished or (self.stamp is not None and stamp <= self.stamp):
+            return
+        self.stamp,self.received=stamp,received
+        self.line_count,self.both_curved=count,both_curved
+        ref=self.reference
+        if ref is None:
+            return
+        was_armed=self.bay_armed
+        self.bay_armed=self.bay_armed or (ref['locked'] and ref['visible'])
+        self.end_votes=ref.get('missing_frames',0)
+        if was_armed and ref['locked'] and ref['ended']:
+            self.stop_candidate_since=received
+            self.abort('BAY_END_CONFIRMED')
+
+    def tick(self,now,ros_now):
+        if self.finished:return (0,0)
+        if (self.stamp is None or self.received is None or
+                not 0 <= ros_now-self.stamp <= self.camera_timeout or
+                not 0 <= now-self.received <= self.camera_timeout):
+            return self.abort('CAMERA_TIMEOUT')
+        if self.started is None:return (0,0)
+        if now-self.started >= self.max_seconds:return self.abort('MAX_RUN_TIMEOUT')
+        if self.reference is None:
+            self.reason='WAIT_P_REFERENCE_CAMERA'
+            return (0,0)
+        if not self.bay_armed and now-self.started >= self.seek_seconds:
+            return self.abort('NO_P_REFERENCE_LINE')
+        self.reason=self.reference['reason']
+        return (min(self.speed,16),self.steering)
+
+class TargetApproachRun(StopRun):
+    """Brake when this run's observed, locked P-before stripe leaves view."""
+    requires_end_confirmation = False
+    requires_lane_before_parking = False
+
+    def __init__(self,base,run):
+        self.__dict__.update(base.__dict__)
+        self.run,self.reference = run,None
+        self.scene,self.target = {},None
+        self.bay_armed,self.end_votes,self.lock_stamp = False,0,None
+
+    def observe_scene(self,scene):
+        self.scene = scene
+        self.reference = scene.get('p_reference')
+        self.target = scene.get('target_line')
+
+    def usable_target(self):
+        target = self.target
+        return (target is not None and target['run'] == self.run and target['valid'] and
+                (self.lock_stamp is None or
+                 (target['locked'] and target.get('locked_at') == self.lock_stamp)))
+
+    def observe(self,count,stamp,received,both_curved=False):
+        if self.finished or (self.stamp is not None and stamp <= self.stamp):
+            return
+        self.stamp,self.received = stamp,received
+        self.line_count,self.both_curved = count,both_curved
+        if not self.usable_target():
+            return
+        target = self.target
+        if not target['locked'] or target['visible'] is None:
+            return
+        if target['visible']:
+            self.bay_armed,self.seen = True,True
+            self.lock_stamp = target['locked_at']
+            self.seen_count = self.seen_frames
+        elif self.bay_armed:
+            # A new valid frame missing this SAME line is the entire trigger.
+            # Neither a road bend nor stationary confirmation is required.
+            self.stop_candidate_since,self.end_votes = received,1
+            self.abort('BAY_END_CONFIRMED')
+
+    def tick(self,now,ros_now):
+        if self.finished:return (0,0)
+        if (self.stamp is None or self.received is None or
+                not 0 <= now-self.received <= self.camera_timeout or
+                not 0 <= ros_now-self.stamp <= self.camera_timeout):
+            return self.abort('CAMERA_TIMEOUT')
+        if self.started is None:return (0,0)
+        if now-self.started >= self.max_seconds:return self.abort('MAX_RUN_TIMEOUT')
+        if not self.bay_armed and now-self.started >= self.seek_seconds:
+            return self.abort('NO_TARGET_LINE_LOCKED')
+        target = self.target
+        if (not self.usable_target() or
+                (target['locked'] and target['visible'] is None)):
+            self.reason = (target or {}).get('reason','WAIT_TARGET_METADATA')
+            return (0,0)
+        if target['locked'] and not self.bay_armed:
+            self.reason = 'WAIT_TARGET_VISIBLE'
+            return (0,0)
+        self.reason = 'TARGET_VISIBLE' if self.bay_armed else target['reason']
+        return (min(self.speed,16),0)
+
+
+def parking_sign_visible(data):
+    """All detected P boards count, even if the route gate rejects their size."""
+    if data.get('camera_source','front') != 'front' or data.get('startup_only') is True:
+        raise ValueError('P disappearance requires a front route image')
+    rows = data.get('detections')
+    if not isinstance(rows,list) or len(rows)>128:
+        raise ValueError('P disappearance requires full image detections')
+    visible = False
+    for row in rows:
+        if not isinstance(row,dict) or not isinstance(row.get('label'),(str,type(u''))):
+            raise ValueError('invalid P visibility candidate')
+        if not row['label'] or not 0 <= number(row.get('confidence')) <= 1:
+            raise ValueError('invalid P visibility confidence/label')
+        bounds = row.get('bounds')
+        if not isinstance(bounds,(list,tuple)) or len(bounds)!=4:
+            raise ValueError('missing P visibility bounds')
+        x,y,w,h = [number(v) for v in bounds]
+        if min(x,y)<0 or min(w,h)<=0 or max(x+w,y+h)>8192:
+            raise ValueError('invalid P visibility bounds')
+        visible = visible or row['label'].upper() in ('P','PARK','PARKING')
+    return visible
+
+
+class SignApproachRun(StopRun):
+    """Fresh accepted P at entry; the next valid P-free image brakes once."""
+    requires_end_confirmation = False
+    requires_lane_before_parking = False
+
+    def __init__(self,base,sign_stamp,started,sign_timeout):
+        self.__dict__.update(base.__dict__)
+        self.started = started
+        self.sign_stamp,self.sign_received = sign_stamp,started
+        self.sign_timeout,self.p_visible = sign_timeout,True
+        self.bay_armed,self.end_votes = True,0
+        self.sign_reason = 'P_VISIBLE'
+
+    def observe_sign(self,visible,stamp,received):
+        if self.finished or stamp<=self.sign_stamp:return False
+        self.sign_stamp,self.sign_received,self.p_visible = stamp,received,visible
+        self.sign_reason = 'P_VISIBLE' if visible else 'P_DISAPPEARED'
+        if not visible:
+            self.stop_candidate_since,self.end_votes = received,1
+            self.abort('BAY_END_CONFIRMED')
+        return True
+
+    def observe(self,count,stamp,received,both_curved=False):
+        if self.finished or (self.stamp is not None and stamp<=self.stamp):return
+        self.stamp,self.received = stamp,received
+
+    def tick(self,now,ros_now):
+        if self.finished:return (0,0)
+        if (self.stamp is None or self.received is None or
+                not 0 <= ros_now-self.stamp <= self.camera_timeout or
+                not 0 <= now-self.received <= self.camera_timeout):
+            return self.abort('CAMERA_TIMEOUT')
+        if (not 0 <= ros_now-self.sign_stamp <= self.sign_timeout or
+                not 0 <= now-self.sign_received <= self.sign_timeout):
+            return self.abort('P_SIGN_TIMEOUT')
+        if now-self.started >= self.max_seconds:return self.abort('P_SIGN_APPROACH_TIMEOUT')
+        self.reason = 'FORWARD_WAIT_P_DISAPPEARANCE'
+        return (min(self.speed,16),0)
+
+
+class CurveApproachRun(StopRun):
+    requires_end_confirmation = False
+    requires_lane_before_parking = False
+
+    def __init__(self,base):
+        self.__dict__.update(base.__dict__)
+        self.scene = {}
+        self.bay_armed,self.end_votes = False,0
+
+    def observe_scene(self,scene):
+        self.scene = scene
+
+    def observe(self,count,stamp,received,both_curved=False):
+        if self.finished or (self.stamp is not None and stamp <= self.stamp):
+            return
+        self.stamp,self.received = stamp,received
+        self.line_count,self.both_curved = count,both_curved
+        if self.scene.get('road_curved') is True and self.stop_candidate_since is None:
+            self.stop_candidate_since = received
+            self.bay_armed,self.end_votes = True,1
+
+    def tick(self,now,ros_now):
+        if self.finished:return (0,0)
+        if (self.stamp is None or self.received is None or
+                not 0 <= now-self.received <= self.camera_timeout or
+                not 0 <= ros_now-self.stamp <= self.camera_timeout):
+            return self.abort('CAMERA_TIMEOUT')
+        if self.started is None:return (0,0)
+        if self.stop_candidate_since is not None:
+            self.reason = 'ROAD_CURVE_STOPPED'
+            return (0,0)
+        if now-self.started >= self.max_seconds:
+            return self.abort('ROAD_CURVE_APPROACH_TIMEOUT')
+        if self.scene.get('road_curved') is None:
+            self.reason = 'WAIT_ROAD_CURVE_METADATA'
+            return (0,0)
+        self.reason = 'FORWARD_WAIT_ROAD_CURVE'
+        return (min(self.speed,16),0)
+
+
 class SequenceRun(object):
     """Wrap the saved visual stop; brake, settle, reverse once, then stop."""
     def __init__(self, approach, seconds=(1.5, .2, 3.4, .1, 2.1), reverse_speed=30,
@@ -209,14 +420,18 @@ class SequenceRun(object):
             if self.approach.stop_candidate_since is None:
                 self.reason = self.approach.reason
                 if self.lane_follower is not None and command[0] > 0:
+                    speed_cap=command[0]
                     command = self.lane_follower.command(ros_now)
+                    if isinstance(self.approach,(PReferenceApproachRun,TargetApproachRun,SignApproachRun,CurveApproachRun)):
+                        command=(min(speed_cap,command[0]),command[1])
                     if command[0] > 0:
                         self.lane_started = True
                         self.reason = 'P3_LANE_' + self.approach.reason
                     else:
                         self.reason = 'P3_WAIT_LANE'
                 return command
-            if self.lane_follower is not None and not self.lane_started:
+            if (self.lane_follower is not None and not self.lane_started and
+                    getattr(self.approach,'requires_lane_before_parking',True)):
                 return self.abort('NO_LANE_BEFORE_PARKING')
             # Brake on the first joint visual event. Validate while stationary;
             # an uncertain end must not drive onward or begin timed reversing.
@@ -291,6 +506,8 @@ def validate_settings(cfg):
         raise ValueError('invalid timed parking deadlines')
     if options['acquire_line_m'] < options['min_line_m']:
         raise ValueError('invalid timed parking line lengths')
+    finite(options.get('target_match_m',.12),'target_match_m',.03,.20)
+    finite(options.get('target_angle_deg',15.),'target_angle_deg',3.,30.)
     profiles = options.get('sequences',{})
     if not isinstance(profiles,dict) or set(profiles) != set(('P1','P2','P3')):
         raise ValueError('timed parking requires all three explicit profiles')
@@ -317,6 +534,22 @@ def validate_scene(data,cfg,now):
     if count != int(count) or not 0 <= count <= 128:
         raise ValueError('invalid bay line count')
     boolean(data.get('both_curved'))
+    if 'road_curved' in data:
+        boolean(data['road_curved'])
+        if data.get('stop_mode') != 'road_curve':
+            raise ValueError('invalid road curve stop source')
+        request = data.get('request_stamp')
+        if request is not None and number(request) > stamp:
+            raise ValueError('road curve evidence predates parking request')
+    if 'p_reference' in data:
+        ref=data['p_reference']
+        if not isinstance(ref,dict):raise ValueError('invalid P-line reference')
+        for key in ('locked','visible','ended'):boolean(ref.get(key))
+        if ref['ended'] and (not ref['locked'] or ref['visible']):
+            raise ValueError('invalid P-line disappearance')
+        if not isinstance(ref.get('reason'),str):
+            if not isinstance(ref.get('reason'),type(u'')):
+                raise ValueError('invalid P-line reference reason')
     lane = data.get('lane_observation')
     if not isinstance(lane,dict) or lane.get('frame') != cfg['lane_frame'] or number(lane.get('stamp')) != stamp:
         raise ValueError('parking evidence must use the SAME captured lane/image frame')
@@ -334,23 +567,50 @@ def validate_scene(data,cfg,now):
         if not previous < x <= 8 or abs(y) > 8:
             raise ValueError('unordered/unbounded paired lane')
         previous = x
+    target = data.get('target_line')
+    if target is not None:
+        from robot.parking.target_line import validate_target
+        validate_target(target)
+        if number(target['run']) > stamp or (target['locked'] and
+                not target['run'] <= number(target['locked_at']) <= stamp):
+            raise ValueError('target evidence predates the parking request')
     return stamp
 
 class TimedParking(SequenceRun):
-    def __init__(self,cfg,now,lane_follower=None):
+    def __init__(self,cfg,now,lane_follower=None,select_by_lidar=False,initial_sign_stamp=None):
+        self.select_by_lidar = select_by_lidar
+        self.selection = None
+        # A local placeholder validates all saved tables; AUTO cannot move.
+        cfg = dict(cfg,parking_slot='P3') if select_by_lidar else cfg
         options = validate_settings(cfg)
         self.cfg,self.slot,self.triggered_at = cfg,cfg['parking_slot'],now
         self.visual_stamp = None
         self.last_lines,self.last_both_curved = None,False
+        self.last_road_curved = None
+        self.road_curve_sides = []
+        self.target_line,self.target_id = None,None
         base = StopRun(speed=options['approach_speed_raw'],steering=0,
                        seen_frames=options['seen_frames'],seek_seconds=options['seek_seconds'],
                        max_seconds=options['max_seconds'],camera_timeout=cfg.get('ground_timeout',1.25),
                        end_verify_seconds=options['end_verify_seconds'])
-        approach = ParkingApproachRun(base,options['end_zero_frames'],options['end_zero_seconds'])
+        initial_sign_stamp = now if initial_sign_stamp is None else number(initial_sign_stamp)
+        approach = (SignApproachRun(base,initial_sign_stamp,now,cfg['sign_timeout'])
+                    if select_by_lidar else
+                    ParkingApproachRun(base,options['end_zero_frames'],options['end_zero_seconds']))
         stages = options['sequences'][self.slot]
         follower = lane_follower or LaneAdapter(cfg,options['approach_speed_raw'])
         SequenceRun.__init__(self,approach,tuple(s['seconds'] for s in stages),
                              30,options['parking_pause_seconds'],follower)
+        self.install_slot(self.slot)
+        if select_by_lidar:
+            from robot.parking.side_selection import validate_settings as validate_selection
+            validate_selection(cfg)
+            self.slot = 'AUTO'
+
+    def install_slot(self,slot):
+        self.slot = slot
+        stages = self.cfg['parking_timed']['sequences'][slot]
+        self.seconds = tuple(s['seconds'] for s in stages)
         self.motion_commands = [(s['speed'],s['steering']) for s in stages]
         self.stages = [(self.slot+'_STEP%d_' % (i+1)+
                         ('FORWARD' if s['speed']>0 else 'REVERSE')+
@@ -359,11 +619,39 @@ class TimedParking(SequenceRun):
     def abort(self,reason):
         if reason == 'P3_COMPLETE':
             reason = self.slot+'_COMPLETE'
+        if self.select_by_lidar and reason == 'NO_LINES_SEEN':
+            reason = 'NO_TARGET_LINE_LOCKED'
         return SequenceRun.abort(self,reason)
     def close(self):
         if isinstance(self.lane_follower,LaneAdapter):
             self.lane_follower.follower.core.close()
+    def observe_lane(self,data,now):
+        SequenceRun.observe_lane(self,data,now)
+        if (self.select_by_lidar and self.phase=='APPROACH' and not self.finished and
+                data['stamp']>=self.triggered_at and
+                (self.visual_stamp is None or data['stamp']>self.visual_stamp)):
+            self.visual_stamp = data['stamp']
+            self.approach.observe(0,data['stamp'],now)
+
+    def observe_sign(self,data,now):
+        if not self.select_by_lidar or self.finished or self.phase!='APPROACH':return None
+        stamp = number(data.get('stamp'))
+        if (stamp<self.triggered_at or stamp<=self.approach.sign_stamp or
+                not 0 <= now-stamp <= self.cfg['sign_timeout']):return None
+        visible = parking_sign_visible(data)
+        previous = self.approach.p_visible
+        if not self.approach.observe_sign(visible,stamp,now):return None
+        if visible != previous:
+            return dict(run=self.triggered_at,stamp=stamp,visible=visible,
+                        reason=self.approach.sign_reason)
+        return None
+
     def observe_visual(self,data,now):
+        if self.select_by_lidar:
+            # Old white/curve metadata has no authority over this automatic stop.
+            stamp=validate_scene(data,self.cfg,now)
+            self.observe_lane(data['lane_observation'],now)
+            return
         stamp = validate_scene(data,self.cfg,now)
         if self.finished or stamp < self.triggered_at or (self.visual_stamp is not None and stamp <= self.visual_stamp):
             return
@@ -372,15 +660,58 @@ class TimedParking(SequenceRun):
         self.observe_lane(data['lane_observation'],now)
         if self.started is None:
             self.start(now)
-        self.observe_scene(data)
+        scene = data
+        if self.select_by_lidar:
+            self.target_line = data.get('target_line')
+        self.observe_scene(scene)
         self.observe(self.last_lines,stamp,now,self.last_both_curved)
+    def reject_selection(self,reason):
+        if self.selection is not None:
+            self.selection.reject(reason)
+
+    def observe_selection(self,data,now):
+        if self.finished or self.phase != 'SELECT_SLOT' or self.selection is None:
+            return
+        self.selection.observe(data,now)
+
+    def tick(self,now,ros_now):
+        if self.select_by_lidar and not self.finished:
+            if self.phase == 'APPROACH':
+                command = SequenceRun.tick(self,now,ros_now)
+                if self.phase == 'HOLD' and not self.finished:
+                    # The first fresh P-free image starts lidar immediately.
+                    from robot.parking.side_selection import SideSelection
+                    self.selection = SideSelection(self.cfg,now)
+                    self.phase,self.reason = 'SELECT_SLOT','WAIT_LIDAR'
+                return command
+            if self.phase == 'SELECT_SLOT':
+                if now-self.selection.started >= self.selection.options['selection_timeout_s']:
+                    return self.abort('SIDE_SELECTION_TIMEOUT_STOPPED')
+                self.reason = self.selection.reason
+                if self.selection.slot is None:
+                    return (0,0)
+                if (self.selection.last_stamp is None or
+                        not 0 <= now-self.selection.last_stamp <= self.selection.options['scan_timeout_s']):
+                    return self.abort('SELECTED_SCAN_STALE_STOPPED')
+                self.install_slot(self.selection.slot)
+                # Keep the existing minimum stop before chassis motion, while
+                # lidar has already been selecting throughout that interval.
+                if now < self.deadline:
+                    self.reason = 'SELECTED_'+self.slot+'_STOP_HOLD'
+                    return (0,0)
+                # Skip visual HOLD confirmation; index -1 starts saved step 1.
+                self.phase,self.deadline = 'REVERSE',now
+        return SequenceRun.tick(self,now,ros_now)
+
     def command(self,now):
         if self.finished:
             return (0,0.)
-        if self.visual_stamp is None:
+        needs_front_vision=(not self.select_by_lidar or
+                            (self.phase=='APPROACH' and self.approach.stop_candidate_since is None))
+        if needs_front_vision and self.visual_stamp is None:
             self.reason = self.slot+'_WAIT_CAMERA'
             return (0,0.)
-        if not 0 <= now-self.visual_stamp <= self.cfg.get('ground_timeout',1.25):
+        if needs_front_vision and not 0 <= now-self.visual_stamp <= self.cfg.get('ground_timeout',1.25):
             self.abort('PARKING_CAMERA_TIMEOUT')
             return (0,0.)
         raw_speed,raw_steer = self.tick(now,now)
@@ -392,8 +723,18 @@ class TimedParking(SequenceRun):
                 raw_steer/self.cfg['steering_sign']/self.cfg['steering_raw_limit']*scale)
     def status(self,now):
         return dict(slot=self.slot,phase=self.phase,reason=self.reason,
+                    select_by_lidar=self.select_by_lidar,
+                    selection=self.selection.status() if self.selection is not None else None,
                     step=max(0,self.index+1),lines=self.last_lines,both_curved=self.last_both_curved,
+                    stop_mode='p_sign_disappearance' if self.select_by_lidar else 'saved_bay_lines',
+                    p_sign=(dict(visible=self.approach.p_visible,stamp=self.approach.sign_stamp,
+                                 reason=self.approach.sign_reason,
+                                 age_s=now-self.approach.sign_stamp) if self.select_by_lidar else None),
+                    road_curved=self.last_road_curved,
+                    road_curve_sides=self.road_curve_sides,
+                    target_line=self.target_line,
+                    p_reference=getattr(self.approach,'reference',None),
                     bay_armed=self.approach.bay_armed,end_votes=self.approach.end_votes,
                     camera_age_s=now-self.visual_stamp if self.visual_stamp is not None else None,
                     remaining_s=max(0.,self.deadline-now),finished=self.finished,
-                    sequence=self.cfg['parking_timed']['sequences'][self.slot])
+                    sequence=self.cfg['parking_timed']['sequences'].get(self.slot,[]))

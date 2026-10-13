@@ -6,6 +6,38 @@ from robot.master.controller import Controller
 
 
 class ParkingRouteSignScopeTests(unittest.TestCase):
+    def test_front_p_between_left_turns_does_not_occupy_route_queue(self):
+        self.check_front_p_between_left_turns(False)
+
+    def test_front_p_between_left_turns_with_side_lidar_enabled(self):
+        self.check_front_p_between_left_turns(True)
+
+    def check_front_p_between_left_turns(self, side_lidar):
+        for phase in ('MANEUVER', 'LANE'):
+            cfg=copy.deepcopy(CONFIG)
+            cfg.update(parking_mode='forward_center',parking_entry_style='S',
+                       parking_enabled=True,wait_green=False,
+                       parking_side_lidar_enabled=side_lidar)
+            c=Controller(cfg);self.addCleanup(c.close)
+            c.state=phase
+            c.action='LEFT' if phase=='MANEUVER' else None
+            c.last_completed_action='LEFT' if phase=='LANE' else None
+            c.action_started=1.
+            c.parking_route_ready=True
+            for stamp in (3.,3.1,3.2):c.observe_sign('PARKING',.97,stamp,stamp)
+            self.assertIsNone(c.pending)
+            self.assertIsNone(c.next_direction)
+            self.assertEqual(c.sign_info['decision'],'front_p_ignored_left_reverse_route')
+            for stamp in (4.,4.1):c.observe_sign('LEFT',.97,stamp,stamp)
+            if phase=='MANEUVER':
+                self.assertEqual(c.next_direction,'LEFT')
+                c.execute('mission','resume_lane')
+            self.assertEqual(c.pending,'LEFT')
+            for stamp in (4.2,4.6,5.,5.4,5.8,6.2,6.6):
+                c.observe_lane([],0.,stamp)
+                self.assertIsNone(c.execute('parking','turn_reverse_tick',stamp).value)
+            self.assertIsNone(c.parking_entry)
+
     def test_turn_and_its_exit_accept_next_direction_and_keep_red(self):
         for turn in ('LEFT','RIGHT'):
             for phase in ('MANEUVER','LANE'):

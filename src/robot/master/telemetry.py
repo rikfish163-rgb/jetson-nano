@@ -49,6 +49,26 @@ def active_planned_path(core):
     return core.follower.path[core.follower.index:]
 
 
+def parking_schedule_hint(core,now,enabled,pose_history=()):
+    task = getattr(core,'timed_parking',None)
+    selection = getattr(task,'selection',None) if task else None
+    hint = dict(stamp=now,enabled=enabled,state=core.state,action=core.action,
+                pending=core.pending,parking_side_pending=getattr(core,'parking_side_pending',False),
+                parking_timed=(dict(phase=task.phase,select_by_lidar=task.select_by_lidar,
+                    triggered_at=getattr(task,'triggered_at',None),
+                    selection=dict(started=selection.started) if selection else None) if task else None))
+    if (getattr(task,'select_by_lidar',False) or hint['parking_side_pending']):
+        # Only a bounded 1.5-second pose window, independent of full diagnostics.
+        # Original camera/sign stamps can be aligned despite processing latency.
+        samples = list(pose_history)[-30:]
+        pose = getattr(core,'pose',None)
+        if pose is not None and (not samples or samples[-1][0] < now):
+            samples.append((now,pose))
+        hint['pose_samples'] = samples
+        hint['pose_source'] = getattr(core,'cfg',{}).get('pose_mode','command_model')
+    return hint
+
+
 def controller_status(core, cfg, now, live, enabled, command, seq, lane_observation=None):
     turn_action = core.action or core.pending or core.last_completed_action
     status = dict(stamp=now,state=core.state,reason=core.reason,
@@ -63,12 +83,17 @@ def controller_status(core, cfg, now, live, enabled, command, seq, lane_observat
             finished=core.course_finished) if cfg.get('uturn_course_test',False) else None),
         live=live,enabled=enabled,pose_mode=cfg['pose_mode'],pose=core.pose,
         pending=core.pending,slot=core.slot,slot_age=now-core.slot_stamp,
+        left_bay_cache=core.left_bay_cache,left_bay_selection=core.left_bay_selection,
+        left_bays=getattr(core.scan,'left_bays',None) if core.scan else None,
         parking_candidates=core.parking_diagnostics,
+        parking_completed=core.parking_completed,
+        parking_side_pending=core.parking_side_pending,
         parking_detection=core.parking_detection,
         parking_entry=core.parking_entry.debug if core.parking_entry else None,
         turn_reverse_watch=core.turn_reverse_watch,
         parking_straight_travel=core.parking_straight_travel,
         parking_mode=cfg.get('parking_mode','reverse_plan'),
+        parking_entry_style=cfg.get('parking_entry_style') if cfg.get('parking_enabled',True) else None,
         parking_timed=core.timed_parking.status(now) if core.timed_parking else None,
         parking_front_age=now-core.parking_candidate_stamp,
         parking_approach_m=core.slot.get('approach_distance') if core.slot else None,

@@ -76,11 +76,13 @@ class ParkingWithoutSlotTests(unittest.TestCase):
             self.assertIsNone(e.bottom)  # sides cannot declare parking complete
             bottom=[[(-.8,-.13),(-.8,.25)]]
             e.observe(lines+bottom,13.3,c.pose)
-            self.assertIsNone(e.bottom)
+            self.assertIsNotNone(e.bottom)  # same paired-far-end evidence as front
+            self.assertEqual(e.bottom_source,'paired_far_end')
             e.observe(lines+bottom,13.4,c.pose)
             self.assertIsNotNone(e.bottom)
             remaining=e.remaining()
             c.set_pose((-remaining-.001,0.,0.),13.5)
+            e.observe(lines+bottom,13.5,c.pose)  # arrival needs a fresh measurement
             self.assertEqual(c.tick(13.5),(0,0.))
             self.assertEqual(c.state,'FINISHED')
             self.assertEqual(c.reason,'parking_at_bottom_clearance')

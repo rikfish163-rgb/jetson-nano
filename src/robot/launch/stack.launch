@@ -14,6 +14,7 @@
   <arg name="start_lidar" default="false"/>
   <arg name="lidar_enabled" default=""/>
   <arg name="straight_lidar_once" default=""/>
+  <arg name="timed_bypass_enabled" default=""/>
   <arg name="lidar_shape_filter" default="true"/>
   <arg name="start_sign" default="true"/>
   <arg name="sign_backend" default="yolo_trt"/>
@@ -36,6 +37,7 @@
   <arg name="parking_enabled" default=""/>
   <arg name="parking_lidar_enabled" default=""/>
   <arg name="parking_slot" default=""/>
+  <arg name="parking_side_lidar_enabled" default="$(eval arg('parking_slot') not in ('P1','P2','P3'))"/>
   <arg name="parking_mode" default="$(eval 'timed_sequence' if arg('parking_slot') in ('P1','P2','P3') else 'forward_center' if arg('parking_slot') in ('P4','P5') else '')"/>
   <arg name="parking_entry_style" default="$(eval 'S' if arg('parking_mode') == 'forward_center' else '')"/>
   <arg name="rear_after_path_loss" value="$(eval arg('parking_mode') == 'forward_center' and arg('parking_entry_style') == 'S')"/>
@@ -121,6 +123,7 @@
   <!-- Optional command-line overrides; blank values preserve the user's YAML. -->
   <param if="$(eval arg('lidar_enabled') != '')" name="/competition/config/lidar_enabled" value="$(arg lidar_enabled)" type="bool"/>
   <param if="$(eval arg('straight_lidar_once') != '')" name="/competition/config/straight_lidar_once" value="$(arg straight_lidar_once)" type="bool"/>
+  <param if="$(eval arg('timed_bypass_enabled') != '')" name="/competition/config/timed_bypass_enabled" value="$(arg timed_bypass_enabled)" type="bool"/>
   <param if="$(eval arg('lidar_shape_filter') != '')" name="/competition/config/lidar/shape_filter" value="$(arg lidar_shape_filter)" type="bool"/>
   <param if="$(eval arg('right_turn_full_lock') != '')" name="/competition/config/right_turn_full_lock" value="$(arg right_turn_full_lock)" type="bool"/>
   <param if="$(eval arg('right_exit_on_blue') != '')" name="/competition/config/right_exit_on_blue" value="$(arg right_exit_on_blue)" type="bool"/>
@@ -129,6 +132,7 @@
   <param if="$(eval arg('right_lock_heading_deg') != '')" name="/competition/config/right_lock_heading_deg" value="$(arg right_lock_heading_deg)" type="double"/>
   <param if="$(eval arg('parking_enabled') != '')" name="/competition/config/parking_enabled" value="$(arg parking_enabled)" type="bool"/>
   <param if="$(eval arg('parking_lidar_enabled') != '')" name="/competition/config/parking_lidar_enabled" value="$(arg parking_lidar_enabled)" type="bool"/>
+  <param name="/competition/config/parking_side_lidar_enabled" value="$(arg parking_side_lidar_enabled)" type="bool"/>
   <param if="$(eval arg('parking_slot') != '')" name="/competition/config/parking_slot" value="$(arg parking_slot)" type="str"/>
   <param if="$(eval arg('parking_mode') == 'forward_center')" name="/competition/config/parking_slot" value="" type="str"/>
   <param if="$(eval arg('parking_mode') != '')" name="/competition/config/parking_mode" value="$(arg parking_mode)" type="str"/>
@@ -224,11 +228,12 @@
       <param name="min_path_span" value="$(arg lane_min_span)"/>
     </node>
   </group>
+  <node if="$(arg parking_side_lidar_enabled)" pkg="robocup_competition" type="side_bay_node.py" name="parking_side_lidar" output="screen"/>
   <group if="$(arg start_lidar)">
     <include file="$(find ls01b_v2)/launch/ls01b_v2.launch"/>
   </group>
   <group if="$(arg start_ground)">
-    <node if="$(eval arg('parking_mode') == 'timed_sequence')" pkg="robocup_competition" type="timed_vision_node.py" name="parking_timed_vision" output="screen"/>
+    <node if="$(eval arg('parking_mode') == 'timed_sequence' or arg('parking_side_lidar_enabled'))" pkg="robocup_competition" type="timed_vision_node.py" name="parking_timed_vision" output="screen"/>
     <node if="$(eval arg('start_rear') and not arg('rear_after_path_loss'))" pkg="yihan_ros_pkg" type="rear_bev_node.py" name="rear_bev" output="screen">
       <param name="processing_hz" value="$(arg rear_fps)"/>
     </node>

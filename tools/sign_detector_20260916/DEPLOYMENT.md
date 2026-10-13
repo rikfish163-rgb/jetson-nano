@@ -16,7 +16,7 @@
 需要车动时，由用户在 Nano 上执行：
 
 ```bash
-bash /home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh
+bash /home/nano/robocup_ws/runall.sh
 ```
 
 脚本包含完整 source、ROS 环境和此前车辆参数：转向比例 0.1、直行距离 1.6m、循线速度 26、动作速度 28、右转倒车 0.25m 等。已有摄像头或控制器运行时会拒绝重复启动，请先在原启动终端 Ctrl+C。

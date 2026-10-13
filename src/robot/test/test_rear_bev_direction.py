@@ -38,11 +38,11 @@ class RearBevDirectionTests(unittest.TestCase):
 
     def test_measured_ground_board_maps_to_rear_axle_frame(self):
         # 2026-10-11 capture: 20 mm squares, 8 horizontal x 11 depth corners.
-        # Nearest inner row is 285 mm behind the lens ground projection;
+        # Recalibration: nearest inner row is 260 mm behind the lens ground projection;
         # the centred lens is 50 mm behind the rear axle. Raw image-right
         # is body-left. These are measured pixels, not inverse-H fixtures.
-        raw=np.array([[[472.66525,392.95432]],[[275.05731,395.17633]],
-                      [[430.16876,302.88577]],[[305.28677,303.38293]]],
+        raw=np.array([[[468.17034912,415.69619751]],[[278.30874634,416.76351929]],
+                      [[431.54248047,330.47018433]],[[310.51846313,330.99813843]]],
                      dtype=np.float64)
         rectified=cv2.undistortPoints(raw,
             np.array(self.cal['camera_matrix']),
@@ -50,7 +50,7 @@ class RearBevDirectionTests(unittest.TestCase):
             P=np.array(self.cal['rectified_camera_matrix']))
         bev=cv2.perspectiveTransform(rectified,
             np.array(self.cal['homography_rectified_to_bev'])).reshape(-1,2)
-        expected=[(-.335,.07),(-.335,-.07),(-.535,.07),(-.535,-.07)]
+        expected=[(-.31,.07),(-.31,-.07),(-.51,.07),(-.51,-.07)]
         for pixel,want in zip(bev,expected):
             actual=self.detector.metric(pixel[0],pixel[1],rear=True)
             for measured,target in zip(actual,want):

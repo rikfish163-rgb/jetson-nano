@@ -53,6 +53,10 @@ def validate_config(cfg):
         from robot.parking.timed_core import validate_settings
         for slot in ('P1','P2','P3'):
             validate_settings(dict(cfg,parking_slot=slot))
+    boolean(cfg.get('parking_side_lidar_enabled',False))
+    if cfg.get('parking_side_lidar_enabled',False):
+        from robot.parking.side_selection import validate_settings
+        validate_settings(cfg)
     if 'sign_route_gate' in cfg:
         from robot.signs.candidate_gate import validate_settings
         validate_settings(cfg['sign_route_gate'])
@@ -171,6 +175,7 @@ def validate_config(cfg):
     for key,default,low,high in (
             ('parking_bottom_clearance_m',.04,.01,.15),
             ('parking_p_reverse_s',0,0,10),
+            ('parking_rear_p_reverse_s',cfg.get('parking_p_reverse_s',0),0,10),
             ('parking_blue_max_travel_m',2.1,.1,2.1),
             ('parking_s_blue_distance_m',0.,0.,5.),
             ('parking_align_heading_deg',6,1,15),('parking_align_lateral_m',.035,.01,.08),
@@ -335,6 +340,40 @@ def validate_config(cfg):
         from robot.turn.blue_timed import validate_settings
         validate_settings(cfg['blue_stop_test'],cfg)
     boolean(cfg.get('left_timed_enabled',False))
+    bays=cfg.get('left_bay_choice',{})
+    if not isinstance(bays,dict):raise ValueError('left_bay_choice must be a mapping')
+    boolean(bays.get('enabled',False))
+    if bays.get('enabled',False):
+        value=number(bays.get('min_points',1))
+        if value!=int(value) or value<1:
+            raise ValueError('invalid left_bay_choice min_points')
+        if not .1<=number(bays.get('max_age_s',1.5))<=3.:
+            raise ValueError('invalid left_bay_choice max_age_s')
+        if number(bays.get('bay_spacing_m',.40))<=0:
+            raise ValueError('invalid left_bay_choice bay_spacing_m')
+        if number(bays.get('reference_match_radius_m',.20))<=0:
+            raise ValueError('invalid left_bay_choice reference_match_radius_m')
+        from robot.lidar.left_bays import DEFAULT_REFERENCE_CENTERS
+        centers=bays.get('reference_centers',DEFAULT_REFERENCE_CENTERS)
+        if not isinstance(centers,dict) or set(centers)!=set(('P4','P5')):
+            raise ValueError('invalid left_bay_choice reference_centers')
+        for center in centers.values():
+            if not isinstance(center,(list,tuple)) or len(center)!=2:
+                raise ValueError('invalid left_bay_choice reference center')
+            for coordinate in center:number(coordinate)
+        for key,default,low in (('p4_entry_s',1.5,0.),('p5_entry_s',0.,0.),
+                                ('turn_s',3.6,.05),('straight_s',1.6,.05)):
+            if not low<=number(bays.get(key,default))<=10.:
+                raise ValueError('invalid left_bay_choice '+key)
+        from robot.lidar.left_bays import DEFAULT_BOXES
+        boxes=bays.get('boxes',DEFAULT_BOXES)
+        if not isinstance(boxes,dict):raise ValueError('invalid left_bay_choice boxes')
+        for name in ('P4','P5'):
+            bounds=boxes.get(name)
+            if (not isinstance(bounds,(list,tuple)) or len(bounds)!=4 or
+                    not number(bounds[0])<number(bounds[1]) or
+                    not number(bounds[2])<number(bounds[3])):
+                raise ValueError('invalid left_bay_choice box '+name)
     if cfg.get('left_timed_enabled',False):
         for phase, seconds in (('entry',1.5),('turn',3.5)):
             speed=number(cfg.get('left_timed_'+phase+'_speed_raw',30))

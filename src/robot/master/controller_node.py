@@ -17,12 +17,14 @@ from std_msgs.msg import String,Float32,Bool
 from robot.master.controller import Controller
 from robot.parking.reverse_entry import reverse_after_turn_enabled
 from robot.lidar.scan import Scan
+from robot.lidar.left_bays import from_scan as measure_left_bays, observe as observe_left_bays
 from robot.motion.odometry import CommandOdometry
 from robot.motion import calibration as chassis
 from robot.common.geometry import wrap
 from robot.common.geometry import local
 from robot.common.geometry import world
 from robot.master.telemetry import controller_status
+from robot.master.telemetry import parking_schedule_hint
 from robot.master.telemetry import active_planned_path
 from robot.master.telemetry import active_scene_task
 from robot.common.contracts import decode
@@ -91,6 +93,8 @@ class Node(object):
                 raise RuntimeError('another /control/cmd publisher already exists; stop old controller first')
         self.output = rospy.Publisher('/control/cmd' if self.live else '/competition/control_preview',String,queue_size=1)
         self.status = rospy.Publisher('/competition/status',String,queue_size=1)
+        self.parking_hint_pub = rospy.Publisher('/competition/parking_hint',String,queue_size=1)
+        self.parking_hint_snapshot = None
         self.target_debug = rospy.Publisher('/competition/lane_target',String,queue_size=50)
         self.pathpub = rospy.Publisher('/competition/trajectory',Path,queue_size=1,latch=True)
         if self.cfg.get('lane_observation_topic'):
@@ -99,14 +103,16 @@ class Node(object):
             rospy.Subscriber(self.cfg['lane_path_topic'],Path,self.lane,queue_size=1)
             rospy.Subscriber(self.cfg['lane_confidence_topic'],Float32,self.conf,queue_size=1)
         rospy.Subscriber('/vision/left_boundary',Path,self.left_boundary,queue_size=1)
-        if self.cfg.get('lidar_enabled',True) or (self.cfg.get('parking_enabled',True) and self.cfg.get('parking_mode')!='forward_center'):
+        if self.cfg.get('left_bay_choice',{}).get('enabled',False) or self.cfg.get('lidar_enabled',True) or (self.cfg.get('parking_enabled',True) and self.cfg.get('parking_mode')!='forward_center'):
             rospy.Subscriber(self.cfg['scan_topic'],LaserScan,self.scan,queue_size=1)
         rospy.Subscriber('/competition/sign',String,self.sign,queue_size=1)
         if reverse_after_turn_enabled(self.cfg):
             rospy.Subscriber('/competition/rear_sign',String,self.rear_sign,queue_size=1)
         rospy.Subscriber('/competition/uturn_scene',String,self.uturn_scene,queue_size=1)
-        if self.cfg.get('parking_mode') == 'timed_sequence':
+        if self.cfg.get('parking_mode') == 'timed_sequence' or self.cfg.get('parking_side_lidar_enabled',False):
             rospy.Subscriber('/competition/parking_timed_scene',String,self.timed_parking_scene,queue_size=1)
+        if self.cfg.get('parking_side_lidar_enabled',False):
+            rospy.Subscriber('/competition/parking_side_bays',String,self.side_bays,queue_size=1)
         if self.cfg.get('parking_mode') in ('parallel_reverse','forward_plan'):
             # Ground observations build the scene in-process.  Keep the
             # existing subscriber for replay/external producers, while this
@@ -154,6 +160,19 @@ class Node(object):
                 self.core.observe_relative_scene(data,now)
             except (ValueError,KeyError,TypeError) as exc:
                 rospy.logwarn_throttle(2,'U-turn scene rejected: %s',str(exc))
+
+    def side_bays(self,msg):
+        with self.lock:
+            task = self.core.timed_parking
+            if task is None or task.phase != 'SELECT_SLOT':
+                return
+            try:
+                now = rospy.Time.now().to_sec()
+                data,stamp = decode(msg.data,now,self.cfg['parking_side_lidar']['scan_timeout_s'])
+                task.observe_selection(data,now)
+            except (ValueError,KeyError,TypeError) as exc:
+                task.reject_selection('INVALID_LIDAR_DATA')
+                rospy.logwarn_throttle(2,'Side parking lidar rejected: %s',str(exc))
 
     def timed_parking_scene(self,msg):
         with self.lock:
@@ -297,10 +316,16 @@ class Node(object):
             scan = Scan(msg.ranges,number(msg.angle_min),number(msg.angle_increment),
                         number(msg.range_min),number(msg.range_max),pose,self.cfg['lidar'],stamp)
             scan.completed_stamp=completed
+            bay_cfg=self.cfg.get('left_bay_choice',{})
+            if bay_cfg.get('enabled',False):
+                scan.left_bays=measure_left_bays(scan,bay_cfg)
             scan.processing_ms=(time.time()-started)*1000.
             with self.lock:
                 if self.core.scan is None or stamp > self.core.scan.stamp:
                     self.core.scan = scan
+                    if bay_cfg.get('enabled',False):
+                        observe_left_bays(self.core.left_bay_cache,scan.left_bays,stamp,
+                                          rospy.Time.now().to_sec(),bay_cfg)
         except (ValueError,KeyError,TypeError) as exc:
             rospy.logwarn_throttle(2,'scan rejected: %s',str(exc))
 
@@ -323,8 +348,6 @@ class Node(object):
                     return
                 if label!='PARKING' or not self.cfg['sign_confidence']<=confidence<=1.:
                     return
-                if entry.inner.sign_anchor is not None:
-                    return
                 source_pose=self.source_pose(stamp)
             bounds=data.get('sign_bounds')
             point=self.rear_parking_projector.position(bounds)
@@ -346,6 +369,7 @@ class Node(object):
         projection_ms = 0.0
         event_info = None
         projection = None
+        parking_event = None
         try:
             now = rospy.Time.now().to_sec()
             data,stamp = decode(msg.data,now,self.cfg['sign_timeout'])
@@ -364,6 +388,9 @@ class Node(object):
                         all(isinstance(d, dict) and d.get('label') for d in detections)):
                     right_visible = any(d['label'] in ('right', 'RIGHT') for d in detections)
                 self.core.observe_sign(label,confidence,stamp,now,right_visible=right_visible)
+                task = getattr(self.core,'timed_parking',None)
+                if self.core.state=='TIMED_PARKING' and task is not None and task.select_by_lidar:
+                    parking_event = task.observe_sign(data,now)
                 self.core.sign_info['right_visible'] = right_visible
                 decision = self.core.sign_info['decision']
                 if (label == 'PARKING' and confidence >= self.cfg['sign_confidence']
@@ -404,6 +431,8 @@ class Node(object):
                 if event != self.last_sign_event:
                     self.last_sign_event = event
                     event_info = dict(self.core.sign_info)
+            if parking_event is not None:
+                rospy.loginfo('parking_p_visibility %s',json.dumps(parking_event,allow_nan=False))
             if projection is not None:
                 projection_started = time.time()
                 # OpenCV and NumPy must not hold up command/scan callbacks.
@@ -600,6 +629,10 @@ class Node(object):
                 rospy.logerr_throttle(1,'control fault, stopped: %s',str(exc))
 
     def queue_control_event(self,now,enabled,command):
+        # Capture only small immutable values on every control decision, even
+        # when the state/event did not change. No full-controller copy needed.
+        self.parking_hint_snapshot = parking_schedule_hint(self.core,now,enabled,
+                                                         getattr(self,'history',()))
         task=self.core.timed_bypass
         key=(enabled,self.core.state,self.core.reason,
              task['phase'] if task else None,command[0]==0)
@@ -619,6 +652,8 @@ class Node(object):
             parking_entry=(self.core.parking_entry.debug
                            if self.core.parking_entry is not None else None),
             action=self.core.action,pending=self.core.pending,
+            parking_completed=self.core.parking_completed,
+            left_bay_selection=self.core.left_bay_selection,left_lock=self.core.left_lock,
             uturn_exit_straight=self.core.uturn_exit_straight,
             boundary_guard=self.core.left_fit_diagnostic if self.core.uturn_exit_straight else None,
             timed_bypass=task,uturn=self.core.uturn,blue_approach=self.core.blue_approach,
@@ -626,6 +661,12 @@ class Node(object):
             next_direction=self.core.next_direction,obstacle_check=self.core.obstacle_check)))
 
     def telemetry(self,event):
+        # Full diagnostics may skip a busy state lock. Parking sensor scheduling
+        # must still receive the latest control phase, before that lock attempt.
+        hint=getattr(self,'parking_hint_snapshot',None)
+        output=getattr(self,'parking_hint_pub',None)
+        if hint is not None and output is not None:
+            output.publish(String(data=json.dumps(hint,allow_nan=False)))
         events=getattr(self,'control_events',None)
         for unused in range(8):
             try:
@@ -660,6 +701,7 @@ class Node(object):
                 console['timed_bypass'] = status['timed_bypass']
                 console['parking_timed'] = status['parking_timed']
                 console['parking_entry'] = status['parking_entry']
+                console['parking_completed'] = status['parking_completed']
                 console['parking_straight_travel'] = status['parking_straight_travel']
                 console['uturn'] = status['uturn']
                 console['uturn_exit_straight'] = status['uturn_exit_straight']

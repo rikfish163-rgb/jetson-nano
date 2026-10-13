@@ -173,6 +173,31 @@ class SchedulingTests(unittest.TestCase):
         self.assertEqual([(m['source'],m['part']) for m in n.pub.messages],
                          [('rear','parking_lines')])
 
+    def test_rear_sign_mask_uses_fresh_box_before_line_extraction(self):
+        for sign_stamp,masked in ((9.8,True),(10.,True),(9.,False),(11.,False)):
+            n=self.ground()
+            n.cfg.update(parking_mode='forward_center',parking_entry_style='S')
+            bounds=[100,100,40,40]
+            calls=[]
+            class Mask:
+                def apply(self,white,box):
+                    calls.append(box)
+                    return np.ones((2,2),dtype=np.uint8)
+            n.rear_sign_mask=Mask()
+            n.detector.detect=lambda *a,**k:(dict(blue_lines=[]),None,
+                np.zeros((2,2),dtype=np.uint8))
+            def lines(white,**kwargs):
+                self.assertEqual(bool(white.any()),masked)
+                return []
+            n.detector.parking_lines=lines
+            n.status(type('Status',(object,),{'data':json.dumps(dict(state='PARKING',
+                parking_entry=dict(camera_source='rear',rear_sign=dict(
+                    stamp=sign_stamp,sign_bounds=bounds))))})())
+            n.rear(self.image(9.9));n.tick(None)
+            self.assertEqual(calls,[bounds] if masked else [])
+            n.status(type('Status',(object,),{'data':json.dumps(dict(state='STRAIGHT'))})())
+            self.assertIsNone(n.rear_sign_observation)
+
     def test_blue_geometry_resumes_after_s_parking_and_remains_during_pending_p(self):
         n=self.ground()
         n.cfg.update(parking_mode='forward_center',parking_entry_style='S')

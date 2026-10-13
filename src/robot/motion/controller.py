@@ -40,8 +40,9 @@ def stop(ctx, reason):
             approach['phase'] != 'STOP' and not reason.startswith('blue_stop_wait_')):
         ctx.state = 'FAULT'
     # Interrupted timed motion must never silently restart a partly executed turn.
-    if (ctx.action == 'LEFT' and ctx.cfg.get('left_timed_enabled',False) and
-            ctx.left_lock is not None and ctx.left_lock.get('phase') in ('TIMED_ENTRY','TIMED_TURN')):
+    if (ctx.action == 'LEFT' and ctx.left_lock is not None and
+            (ctx.cfg.get('left_timed_enabled',False) or ctx.left_lock.get('bay_profile')) and
+            ctx.left_lock.get('phase') in ('TIMED_ENTRY','TIMED_TURN','TIMED_STRAIGHT')):
         ctx.state = 'FAULT'
     if (ctx.action == 'RIGHT' and ctx.cfg.get('right_timed_enabled',False) and
             ctx.right_lock is not None and

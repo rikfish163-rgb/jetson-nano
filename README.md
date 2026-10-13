@@ -62,28 +62,27 @@ PYTHONDONTWRITEBYTECODE=1 python2 tools/module_workspace.py test lane --report-d
 
 ## 整车启动
 
-统一使用 `tools/sign_detector_20260916/run_yolo_vehicle.sh`。默认 raw 20，
-前瞻 1.0 m，命令转向映射 0.03；实际参数以脚本和 launch 为准。
+统一使用主目录的 `runall.sh`。日常参数只改 `src/robot/config/vehicle_tuning.yaml`。
+默认巡线 raw 40、前瞻 1.0 m、转向映射 0.03；入库按当前状态机自动分流，不需要写 `--S`。
+速度、动作时长、开关在 YAML 主体；相机帧率、模型路径等在同一文件的 `launch` 小节。
+参数优先级：模块默认值 < 此 YAML < 显式命令行参数。保存后重启整车生效。
+`runall.sh` 不再硬编码调参值；直接调用底层 launch 的历史调试命令不属于统一入口。
 
 以下会启动车辆，须由现场人员在 Nano 执行。先腾出赛道，准备接管，
 不得同时运行其他底盘控制器；出现异常轨迹立即急停并在启动终端 Ctrl+C。
 
 ```bash
 cd /home/nano/robocup_ws
-source /opt/ros/melodic/setup.bash
-source /home/nano/robocup_ws/devel/setup.bash
-PYTHONDONTWRITEBYTECODE=1 python2 tools/module_workspace.py check &&
-bash tools/sign_detector_20260916/run_yolo_vehicle.sh \
-  parking_mode:=forward_plan parking_slot:=P4 start_rear:=false
+bash runall.sh
 ```
 
-P1–P5 统一优先使用 `forward_plan`，将 `parking_slot` 改为现场确认的具体编号。
-前相机测量指定车位，规划器检查视觉几何限定的整车路径，执行中持续根据观测修正。
-测量缺失或目标不明确时停止，不自动切换成定时盲走。雷达占用与覆盖率仅作诊断，不否决入库。
-当前相机只输出车位几何，AUTO 需要输入明确目标编号，不能自动识别 P1–P5。
-无编号时按同类车位完整排序关联：侧方需三个，垂直需两个；驶入后保持同一目标。
-后相机不参与前进停车。需要原有后摄掉头的路线可显式设置 `start_rear:=true`。
-原 `reverse_plan`、`parallel_reverse`、`forward_white`、`forward_center` 保留为显式单项模式。
+例如巡线速度修改 `speed_raw.lane`，直行牌速度修改 `straight_speed_raw`，
+左右转时间修改 `left_timed_*_s` / `right_timed_*_s`，掉头修改 `uturn_trial_sequence`，
+避障修改 `timed_bypass_*`，侧方开关修改 `parking_side_lidar_enabled`。
+临时覆盖示例：`bash runall.sh lane_speed_raw:=30`，不会改写 YAML。
+不动车检查最终参数：`bash runall.sh --dump-params`；只检查节点清单：`bash runall.sh --nodes`。
+配置中 `parking_mode` / `parking_entry_style` 保留当前共用视觉控制设置；
+前摄 P、后摄 P 和侧方分流由状态机决定，本次统一参数不改变触发条件。
 
 雷达仅参与绕障目标检测；雷达缺失、过期、有效点不足、障碍和未知区域不再触发停车，
 绕障也不再先零速等待打舵。已删除雷达扫掠停车和入库雷达门槛，车辆不再具备雷达自动刹停保护。

@@ -1,4 +1,98 @@
-# 整车动作调试参数：正式 full/stack 启动与离线检查共同读取。
+# 整车统一参数：日常只修改此文件，然后重新运行主目录 bash runall.sh。
+# runall.sh 不再写死调参值；显式命令行 name:=value 仅覆盖本次启动。
+# launch 管进程/相机/识别启动设置，其余为控制参数；同一个参数不要写两处。
+
+# 零、启动与巡线。以下值迁移自原启动脚本和实际展开参数，保持原行为。
+launch:
+  live: true
+  enabled: true
+  start_actuators: true
+  start_rear: true
+  front_fps: 15
+  rear_fps: 8
+  lane_hz: 12
+  lane_window_height: 40
+  sign_backend: yolo_trt
+  sign_model: /home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine
+  sign_labels: /home/nano/robodata/models/20260915_10000/labels.json
+  sign_roi_mode: board
+  sign_capture: true
+  record_lane: false
+  debug_view: false
+  debug_port: 8080
+
+speed_raw:
+  lane: 40 # 普通巡线速度；不是下面的 straight_speed_raw（直行牌动作速度）。
+  action: 20 # 通用动作速度；分段动作的独立速度优先。
+  parking: 16
+lookahead: 1.0 # 巡线前瞻距离，米。
+lane_curvature_preview: true
+lane_curve_speed_raw: 30
+lane_min_path_span: 0.15
+steering_command_scale_rad: 0.03
+action_lookahead: 0.30
+wait_green: true
+startup_follow_lane: false # false先走起步直行段；true绿牌后直接巡线。
+startup_steering_raw: -3
+lidar_enabled: true
+lidar_timeout: 2.0
+lidar:
+  shape_filter: true
+ground_hz: 8.0
+ground_timeout: 1.25
+sign_hz: 3.0
+sign_ttl: 0.0
+
+# 停车控制配置。前摄/后摄/侧方仍按状态机自动分流，S是共用视觉控制配置。
+parking_enabled: true
+parking_lidar_enabled: false
+parking_slot: ''
+parking_mode: forward_center
+parking_entry_style: S
+parking_entry_speed_raw: 16
+parking_final_speed_raw: 12
+parking_bottom_clearance_m: 0.05
+parking_blue_max_travel_m: 2.1
+parking_divider_trigger_x: 0.33
+parking_lookahead: 0.15
+parking_observe_s: 0.8
+parking_prep_offset: 0.0
+parking_road_half_width: 0.6
+
+# 共用路口与几何参数；定时左右转实际时长仍由下方分段表控制。
+blue_default_straight: false
+marker_trigger_x: 0.36
+marker_memory_s: 8.0
+blue_aligned_advance_m: 0.36
+blue_align_duration_s: 1.0
+turn_entry: 0.45
+turn_radius: 0.65
+turn_angle_deg: 90.0
+turn_exit: 0.55
+left_turn_full_lock: true
+left_turn_entry: 0.12
+left_turn_radius: 0.65
+left_turn_exit: 0.30
+right_turn_full_lock: true
+right_exit_on_blue: true
+right_lock_min_angle_deg: 30.0
+right_lock_max_angle_deg: 120
+right_lock_heading_deg: 15
+right_turn_entry: 0.0
+right_reverse_entry_m: 0.25
+right_turn_radius: 0.55
+right_turn_exit: 0.25
+right_align_lookahead: 0.3
+right_left_capture_max_m: 0.8
+exit_yaw_tolerance: 0.22
+exit_lane_heading_tolerance: 1.0471975512
+exit_lateral_tolerance: 0.18
+uturn_reverse_speed_raw: 12
+uturn_brake_lead_m: 0.02
+uturn_reverse_max_distance: 1.0
+uturn_reverse_distance_m: 0.0
+uturn_relative_enabled: false
+
 # RAW速度：正数前进，负数倒车，0停车；不是厘米/秒。
 # RAW舵量：正数向左，负数向右，0回正；范围-22～22，不是车轮角度。
 # 时间单位为秒，距离单位为米，角度参数带deg时单位为度。
@@ -7,8 +101,12 @@
 # 本文件中的注释不改变参数值；动作实际结束还受视觉交接、数据有效性及状态机条件影响。
 
 # S入库：识别P后的退让时间，0关闭；换向前后另停车至少0.3秒。
-parking_p_reverse_s: 3.0 # S入库：确认P后先远离P一侧3秒；前摄倒车，后摄前进，速度沿用parking_entry_speed_raw。
-parking_s_blue_distance_m: 1.40 # 前摄S入库：前轮过已确认蓝线后累计净路程，前进加、倒退减；到达后停车，替代底线停车。
+parking_p_reverse_s: 3.0 # Front-camera P: reverse away for 3 seconds.
+parking_rear_p_reverse_s: 1.0 # Rear-camera P: move forward away for 1 second.
+parking_s_blue_distance_m: 1.70 # 前摄S入库：前轮过已确认蓝线后累计净路程，前进加、倒退减；到达后停车，替代底线停车。
+rear_bev:
+  bottom_reference_v: 318.0 # 后摄480x400鸟瞰图：用户实测底库线即将消失的位置，原图像素行。
+  bottom_reference_remaining_m: 0.20 # 底线位于参考行时还需沿入库方向走20cm；新视觉持续更新，丢线后扣净路程。
 
 # 一、蓝线接近与路口等待
 intersection_wait_s: 1.0 # 蓝线触发后的直行完成后，停车等待多少秒再开始路牌动作。
@@ -32,6 +130,22 @@ blue_stop_test: # 共用蓝线接近参数组：正式方向牌动作和独立�
 
 # 二、左转：先前进，再左转，最后交接视觉巡线
 left_timed_enabled: true # 是否使用左转固定动作序列。
+left_bay_choice:
+  enabled: false # 全局左转缓存后采样；蓝线触发时选择P4/P5动作，S倒库共用。
+  min_points: 1 # 任一框有点即参与选库，不要求连续多帧。
+  max_age_s: 1.5 # 蓝线触发时只使用新鲜雷达证据。
+  bay_spacing_m: 0.40 # 单根路牌竖线定位：上方障碍物=P4，下方障碍物=P5，现场两库间距约40cm。
+  reference_match_radius_m: 0.20 # 只匹配两个标定路牌位置附近20cm内的竖线中点，不要求同时出现两根。
+  reference_centers: # laser_link坐标[X前,Y左]，米；现场20帧的路牌中点。
+    P4: [1.00, 1.43]
+    P5: [0.61, 1.44]
+  boxes: # 未检出路牌时沿用的标定框：[X最小,X最大,Y最小,Y最大]，X前/Y左，单位米。
+    P4: [0.90, 1.20, 1.00, 1.30]
+    P5: [0.50, 0.80, 1.00, 1.30]
+  p5_entry_s: 0.0 # P4占用 -> P5：直接左转。
+  p4_entry_s: 1.8 # P5占用或双框都占用 -> P4：先直行1.8秒（用户指定双框也执行此路线）。
+  turn_s: 3.6 # 两路线均RAW 30、左舵22。
+  straight_s: 1.6 # 转后RAW 30回正直行；之后停车0.7秒并交回原视觉/倒库流程。
 left_timed_entry_s: 2.1 # 左转第1段（前进直行）的时长，秒。
 left_timed_entry_speed_raw: 30 # 左转第1段的RAW速度；正数前进。
 left_timed_entry_steering_raw: 0 # 左转第1段的RAW舵量；0回正，正左负右。
@@ -41,14 +155,14 @@ left_timed_turn_steering_raw: 22 # 左转第2段的RAW舵量；22为左满舵。
 
 # 三、右转：先倒车，再前进右转，再倒车、停车和视觉接线
 right_timed_enabled: true # 是否使用右转固定动作序列。
-right_timed_exit_reverse_s: 3.8 # 右转第3段（转弯后倒车）的时长，秒。
+right_timed_exit_reverse_s: 2.5 # 右转第3段（转弯后倒车）的时长，秒。
 right_timed_exit_reverse_speed_raw: -30 # 右转第3段RAW速度；负数倒车。
-right_timed_exit_reverse_steering_raw: -3 # 右转第3段RAW舵量；0表示回正倒车。
-right_timed_exit_stop_s: 0.2 # 右转第3段结束后的停车等待时长，秒。
-right_timed_reverse_s: 1.9 # 右转第1段（转弯前倒车）的时长，秒。
+right_timed_exit_reverse_steering_raw: 0 # 右转第3段RAW舵量；0表示回正倒车。
+right_timed_exit_stop_s: 2.0 # 右转第3段结束后的停车等待时长，秒。
+right_timed_reverse_s: 0.5 # 右转第1段（转弯前倒车）的时长，秒。
 right_timed_reverse_speed_raw: -30 # 右转第1段RAW速度；负数倒车。
 right_timed_reverse_steering_raw: 0 # 右转第1段RAW舵量；0表示回正倒车。
-right_timed_turn_s: 5.6 # 右转第2段（前进右转）的时长，秒。
+right_timed_turn_s: 4.1 # 右转第2段（前进右转）的时长，秒。
 right_timed_turn_speed_raw: 30 # 右转第2段RAW速度；正数前进。
 right_timed_turn_steering_raw: -22 # 右转第2段RAW舵量；-22为右满舵。
 right_timed_exit_speed_raw: 20 # 右转固定动作后的视觉出口对齐/找线RAW速度；这段没有固定时长。
@@ -66,11 +180,11 @@ uturn_trial_resume_lane: true # 定时掉头完成后是否进入恢复行驶流
 uturn_trial_entry_m: 0.0 # 掉头动作表之前额外回正前进的估算距离，米；0表示不添加该段。
 uturn_trial_pause_s: 0.3 # 首段前、前进/倒车换挡前、最后收尾的停车秒数；换挡等待时预置下一段舵量。
 uturn_trial_sequence: # 掉头分段动作表，按下列顺序执行；speed=RAW速度，steering=RAW舵量，seconds=该段秒数。
-- {speed: 30, steering: -3, seconds: 1.3} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-- {speed: 30, steering: 22, seconds: 2.9} # 第2段：前进，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-- {speed: -30, steering: -22, seconds: 2.2} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: 30, steering: -3, seconds: 1.4} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: 30, steering: 22, seconds: 3.5} # 第2段：前进，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: -30, steering: -22, seconds: 1.8} # 第3段：倒车，向右打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
 - {speed: 30, steering: 22, seconds: 3.6} # 第4段：前进，向左打舵；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
-- {speed: -30, steering: -3, seconds: 2.0} # 第5段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
+- {speed: -30, steering: -3, seconds: 1.8} # 第5段：倒车，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。
 uturn_trial_exit_max_s: 0.0 # 动作表完成后额外出口角度修正的时间上限，秒；0关闭该修正，不代表恢复行驶只能持续0秒。
 uturn_exit_speed_raw: 30 # 掉头后恢复行驶的RAW速度；无边线时的回正前进也使用它。
 uturn_exit_curve_speed_raw: 30 # 掉头出口尚未居中/对正时的RAW速度上限，实际不超过uturn_exit_speed_raw。
@@ -78,11 +192,13 @@ uturn_exit_curve_speed_raw: 30 # 掉头出口尚未居中/对正时的RAW速度�
 # 六、定时避障：左绕出 -> 右转回 -> 左转修正 -> 恢复正常巡线
 # 三段按时间完成，画面里的车道不会提前结束任何一段；红牌/急停停车时暂停计时。
 timed_bypass_left_speed_raw: 30 # 第1段：前进RAW速度。
+timed_bypass_enabled: true # 正常运行开启；启动加 --no-bypass 或 timed_bypass_enabled:=false 可关闭绕障动作，雷达选库仍工作。
+straight_lidar_once: true # 本次程序运行只避障一次，完成后不再触发；重启程序重新计数。
 timed_bypass_left_steering_raw: 22 # 第1段：左满舵。
-timed_bypass_left_s: 1.4 # 第1段：向左绕出，秒。
+timed_bypass_left_s: 1.6 # 第1段：向左绕出，秒。
 timed_bypass_right_speed_raw: 30 # 第2段：前进RAW速度。
 timed_bypass_right_steering_raw: -22 # 第2段：右满舵。
-timed_bypass_right_s: 3.7 # 第2段：向右转回，固定秒数。
+timed_bypass_right_s: 3.5 # 第2段：向右转回，固定秒数。
 timed_bypass_return_left_speed_raw: 30 # 第3段：前进RAW速度。
 timed_bypass_return_left_steering_raw: 22 # 第3段：左满舵。
 timed_bypass_return_left_s: 1.0 # 第3段：向左转修正，秒；结束后立即交回正常巡线。
@@ -91,20 +207,30 @@ timed_bypass_speed_raw: 30 # 未单独指定分段速度时的默认RAW速度；
 timed_bypass_trigger_distance_m: 0.85 # 目标到后轴参考点的触发距离上限，米。
 
 # 七、P1/P2/P3定时停车
-parking_timed: # P1/P2/P3定时停车参数组：先沿车位找末端，再执行所选车位动作表。
+parking_side_lidar_enabled: true # 仅普通巡线新确认的P牌进入侧方；动作中缓存P仍走原逻辑。
+parking_side_lidar:
+  min_points: 10 # 每框达到此点数视为大量点；框1选P1，框2选P2，两框均少于阈值选P3。
+  confirm_frames: 3 # 连续不同且新鲜雷达帧的同一结果；两框同时达阈值时停车。
+  scan_timeout_s: 2.0 # 原始雷达采集时间到使用时间的最大允许间隔，秒。
+  selection_timeout_s: 15.0 # 停稳后选库最长等待；超时保持停止并报故障。
+  min_valid_rays: 30 # 少于此有效距离点数时不允许判定P3。
+  processing_hz: 5.0 # 仅SELECT_SLOT阶段运行直线/选库计算，不进入主控scan回调。
+parking_timed: # 自动侧方识别P后，前摄新画面中P牌消失即停车选库；手动单库测试沿用原找白线流程。
   acquire_line_m: 0.12 # 新车位横线首次被接受的最小长度，米；已跟踪到的线可按min_line_m继续接受。
   angle_deg: 25.0 # 车位白线相对车辆横向的角度容差，度；越大允许越斜的横线。
-  approach_speed_raw: 30 # 沿车位区域前进、寻找末端时的RAW速度，方向由视觉控制。
+  approach_speed_raw: 30 # 单库测试找线RAW速度；自动侧方沿用现有最高16的接近限速，方向由视觉控制。
   curve_min_curvature: 0.45 # 判断道路边线弯曲的最小曲率幅值，单位1/米；越大要求弯曲越明显。
   curve_min_turn_deg: 10.0 # 判断道路边线弯曲的最小方向变化量，度；与曲率条件共同使用。
-  end_verify_seconds: 2.0 # 出现车位末端候选并停车后，等待确认的最长秒数；超时保持停止。
-  end_zero_frames: 2 # 已看见车位线后，线数为0且满足两侧道路弯曲条件的连续新帧数量要求。
-  end_zero_seconds: 0.1 # 末端零车位线确认还须跨越的最短时间，秒；与end_zero_frames同时满足。
-  max_seconds: 30.0 # 寻找车位末端的接近阶段总超时，秒；不包含后续固定入库动作表。
+  end_verify_seconds: 2.0 # 仅手动单库测试：停车后等待白线末端确认的最长秒数；自动侧方不使用此确认。
+  end_zero_frames: 2 # 仅手动单库测试：零白线且双侧弯曲的确认帧数；自动侧方P牌消失首次触发即停。
+  end_zero_seconds: 0.1 # 仅手动单库测试：末端零白线确认最短时间，秒。
+  max_seconds: 30.0 # 自动侧方等待P牌消失、手动单库寻找白线末端的接近总超时，秒。
   min_line_m: 0.08 # 车位白线候选的最小长度，米；新目标还需满足acquire_line_m。
-  parking_pause_seconds: 0.5 # 车位末端停车到启动入库动作表之间的最短停留秒数，仍需通过末端确认。
-  seek_seconds: 15.0 # 接近阶段开始后，首次确认看见车位线的超时，秒。
-  seen_frames: 2 # 连续多少张新图像看到车位线，才记为已经看见过车位。
+  parking_pause_seconds: 0.5 # 停车到入库动作表的最短停留秒数；自动侧方同时开始雷达识库，不等待白线二次确认。
+  seek_seconds: 15.0 # 仅手动单库/旧白线工具首次看到白线的超时，秒；自动侧方不使用。
+  seen_frames: 2 # 仅手动单库/旧白线工具看见白线的确认帧数；自动侧方不使用。
+  target_match_m: 0.12 # 旧白线工具的跟踪距离容差，米；自动侧方不使用。
+  target_angle_deg: 15.0 # 旧白线工具的跟踪方向角容差，度；自动侧方不使用。
   sequences: # 按车位编号选择的固定动作表；每行speed为RAW速度、steering为RAW舵量、seconds为秒数。
     P1: # 启动参数parking_slot:=P1时使用，以下五段依次执行。
     - {speed: 30, steering: 0, seconds: 4.0} # 第1段：前进，舵机回正；speed/steering/seconds分别为RAW速度/RAW舵量/持续秒数。

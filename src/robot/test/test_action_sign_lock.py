@@ -342,7 +342,7 @@ class ActionSignLockTests(unittest.TestCase):
             self.assertEqual(c.state,'LANE')
             self.assertIsNone(c.pending)
             c.observe_sign(label,.99,1.3,1.3)
-            self.assertIsNone(c.pending)
+            self.assertEqual(c.pending,label)
             c.observe_sign(label,.99,1.4,1.4)
             self.assertEqual(c.pending,label)
             for t in (1.5,1.6,1.7):frame(t)

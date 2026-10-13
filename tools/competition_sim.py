@@ -86,7 +86,7 @@ SOURCE_HASH_PATHS = {
     'lane_config': os.path.join(SRC, 'robot', 'lane', 'config.yaml'),
     'obstacle_config': os.path.join(SRC, 'robot', 'obstacle', 'config.yaml'),
     'vehicle_launch_script': os.path.join(
-        ROOT, 'tools', 'sign_detector_20260916', 'run_yolo_vehicle.sh'),
+        ROOT, 'runall.sh'),
     'simulator': os.path.abspath(__file__),
 }
 

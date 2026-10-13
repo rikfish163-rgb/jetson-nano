@@ -36,9 +36,9 @@ class CurrentTurnTests(unittest.TestCase):
         return encode_command(speed, steer, c.cfg, 0)
 
     def test_launcher_enables_current_left_profile(self):
-        root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-        with open(os.path.join(root, 'tools/sign_detector_20260916/run_yolo_vehicle.sh')) as f:
-            self.assertIn('left_turn_full_lock:=true', f.read())
+        root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        cfg=load_config(os.path.join(root,'src/robot/config'))
+        self.assertTrue(cfg['left_turn_full_lock'])
 
     def test_left_entry_then_full_lock_at_selected_action_speed(self):
         for speed in (20, 24):

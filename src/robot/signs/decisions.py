@@ -2,10 +2,12 @@
 from __future__ import division
 
 from robot.common.geometry import _isfinite
+from robot.lidar.left_bays import arm as arm_left_bays
+from robot.parking.reverse_entry import reverse_after_turn_enabled
 
 
 
-FIELDS = ('action', 'action_started', 'route_action_started', 'route_sign_last_seen',
+FIELDS = ('parking_side_pending', 'left_bay_cache', 'action', 'action_started', 'route_action_started', 'route_sign_last_seen',
  'right_sign_locked', 'right_sign_rearmed_at', 'estop',
  'route_sign_rearmed', 'cfg', 'completed_at_pose', 'course_stop_pending', 'direction_window',
  'green_start_window', 'last_completed_action', 'marker', 'next_direction',
@@ -78,12 +80,26 @@ def observe_sign(ctx, label, confidence, stamp, now, right_visible=None):
     if label != 'GREEN' or not ctx.cfg['sign_confidence'] <= confidence <= 1.0:
         ctx.green_start_window = []
     if (label == 'PARKING' and
-            (ctx.state in ('WAIT_GREEN', 'STARTUP_STRAIGHT') or not ctx.parking_route_ready)):
+            (ctx.state in ('WAIT_GREEN', 'STARTUP_STRAIGHT') or
+             (not ctx.parking_route_ready and not
+              (ctx.cfg.get('parking_side_lidar_enabled',False) and
+               ctx.cfg.get('parking_mode') != 'timed_sequence' and
+               ctx.state == 'LANE' and ctx.action is None)))):
         # Green startup and its first lane leg cannot arm parking. Only a
         # completed junction action opens a new, fresh parking vote sequence.
         ctx.sign_label, ctx.sign_count = '', 0
         ctx.direction_window, ctx.uturn_sign_window = [], []
         ctx.sign_info.update(votes=0, decision='parking_wait_route_action')
+        return
+    if (label == 'PARKING' and reverse_after_turn_enabled(ctx.cfg) and
+            (ctx.action == 'LEFT' or
+             (ctx.action is None and ctx.last_completed_action == 'LEFT' and
+              ctx.state in ('LANE','GAP','WAIT_OBSTACLE')))):
+        # This route uses rear P after path loss. A front P between two
+        # left turns must not occupy either slot and hide the second LEFT.
+        ctx.sign_label,ctx.sign_count = '',0
+        ctx.direction_window,ctx.uturn_sign_window = [],[]
+        ctx.sign_info.update(votes=0,decision='front_p_ignored_left_reverse_route')
         return
     if (label in route_labels and ctx.action == 'UTURN' and
             ctx.cfg.get('uturn_trial_enabled',False)):
@@ -139,6 +155,8 @@ def observe_sign(ctx, label, confidence, stamp, now, right_visible=None):
             ctx.sign_info.update(votes=count,decision=decision)
             if count >= votes_required:
                 ctx.next_direction,ctx.next_direction_at = label,now
+                if label == 'LEFT' and ctx.cfg.get('left_bay_choice',{}).get('enabled',False):
+                    ctx.left_bay_cache = arm_left_bays(now,stamp)
                 if label == 'RIGHT':
                     ctx.right_sign_locked = True
                 ctx.sign_info['decision'] = 'stored_next_direction'
@@ -194,6 +212,12 @@ def observe_sign(ctx, label, confidence, stamp, now, right_visible=None):
             if ctx.sign_count < ctx.cfg.get('direction_sign_votes',2):
                 return
         if label == 'PARKING':
+            lane_p = (ctx.cfg.get('parking_side_lidar_enabled',False) and
+                      ctx.cfg.get('parking_mode') != 'timed_sequence' and
+                      ctx.state == 'LANE' and ctx.action is None)
+            if ctx.parking_side_pending != lane_p:
+                previous_count = 0
+            ctx.parking_side_pending = lane_p
             ctx.sign_count = previous_count+1 if previous_label == label else 1
             ctx.sign_info.update(votes=ctx.sign_count,decision='parking_voting')
             if ctx.sign_count < ctx.cfg.get('parking_sign_votes',3):
@@ -202,6 +226,10 @@ def observe_sign(ctx, label, confidence, stamp, now, right_visible=None):
         # fresh post-action observations; consumed-marker filtering prevents
         # executing again at the previous blue line.
         ctx.pending, ctx.pending_at = label, now
+        if label != 'PARKING':
+            ctx.parking_side_pending = False
+        if ctx.cfg.get('left_bay_choice',{}).get('enabled',False):
+            ctx.left_bay_cache = arm_left_bays(now,stamp) if label == 'LEFT' else None
         ctx.route_action_started = now
         ctx.route_sign_rearmed = False
         ctx.right_sign_rearmed_at = None

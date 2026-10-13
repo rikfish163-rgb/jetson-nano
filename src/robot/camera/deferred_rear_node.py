@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Start rear USB capture only after a fresh, confirmed path-loss handoff."""
+"""Warm rear capture during a parking-capable turn, before path-loss handoff."""
 import json
 import threading
 
@@ -24,6 +24,12 @@ class DeferredRearCamera(object):
             requested=(data.get('state')=='PARKING' and data.get('action')=='PARKING'
                 and data.get('enabled') is True and data.get('action_source')=='turn_path_loss'
                 and (data.get('parking_entry') or {}).get('camera_source')=='rear')
+            prewarm=(data.get('enabled') is True and data.get('state')=='MANEUVER'
+                and data.get('action') in ('LEFT','RIGHT')
+                and data.get('parking_mode')=='forward_center'
+                and data.get('parking_entry_style')=='S'
+                and not data.get('parking_completed',False))
+            requested=requested or prewarm
             if not requested or stamp<self.started_at or not 0<=now-stamp<=self.timeout:return
         except (KeyError,ValueError,TypeError,AttributeError):
             return
@@ -55,7 +61,7 @@ def main():
         except Exception:
             launch.shutdown()
             raise
-        rospy.loginfo('rear_camera_start: confirmed turn_path_loss; starting rear USB and BEV')
+        rospy.loginfo('rear_camera_start: rear entry prewarm or confirmed path loss; starting rear USB and BEV')
         return launch
     camera=DeferredRearCamera(start,rospy.Time.now().to_sec())
     def status(msg):
@@ -63,7 +69,7 @@ def main():
         except (ValueError,TypeError):pass
     rospy.Subscriber('/competition/status',String,status,queue_size=1)
     rospy.on_shutdown(camera.shutdown)
-    rospy.loginfo('rear_camera_wait: USB capture remains OFF until confirmed turn_path_loss')
+    rospy.loginfo('rear_camera_wait: USB capture remains OFF until S turn prewarm or confirmed path loss')
     rate=rospy.Rate(10)
     while not rospy.is_shutdown():
         camera.tick(rospy.Time.now().to_sec())

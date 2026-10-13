@@ -62,3 +62,11 @@ class GreenVisualStartTests(unittest.TestCase):
         c=self.core()
         c.cfg['startup_follow_lane']='true'
         with self.assertRaises(ValueError):validate_config(c.cfg)
+
+    def test_immediate_lane_start_accepts_direction_sign(self):
+        c=self.core();self.release(c)
+        c.observe_sign('LEFT',.99,1.3,1.3)
+        c.observe_sign('LEFT',.99,1.4,1.4)
+        self.assertEqual(c.state,'LANE')
+        self.assertEqual(c.pending,'LEFT')
+        self.assertIsNone(c.startup_started)

@@ -36,6 +36,37 @@ class FixedBypassSequenceTests(unittest.TestCase):
         c.observe_lane(self.PATH,.8,.2)
         c.scan = _SyntheticScan(.2,[(.8,0.)])
         self.assertEqual(c.execute('obstacle','begin_timed_bypass',.2).value,(30,.03))
+
+    def test_disabled_bypass_keeps_lane_and_lidar_available(self):
+        c=self.core();c.cfg['timed_bypass_enabled']=False
+        for now in (0.,.1,.2,.3):
+            c.observe_lane(self.PATH,.8,now)
+            c.scan=_SyntheticScan(now,[(.8,0.)])
+            self.assertGreater(c.tick(now)[0],0)
+            self.assertEqual(c.state,'LANE')
+            self.assertIsNone(c.timed_bypass)
+            self.assertIsNone(c.timed_bypass_candidate)
+        self.assertTrue(c.cfg['lidar_enabled'])
+        self.assertTrue(c.cfg['left_bay_choice']['enabled'])
+
+    def test_default_run_allows_only_one_completed_bypass(self):
+        c=self.core()
+        self.assertTrue(c.cfg['timed_bypass_enabled'])
+        self.assertTrue(c.cfg['straight_lidar_once'])
+        c.state='TIMED_BYPASS';c.action='BYPASS'
+        c.timed_bypass=dict(phase='RETURN_LEFT',last=1.,
+                           elapsed_s=c.cfg['timed_bypass_return_left_s']-.1,
+                           trigger_world=(.8,0.))
+        self.tick(c,1.2)
+        self.assertTrue(c.timed_bypass_completed)
+        # A different world-space target must also be ignored later in the run.
+        c.pose=(5.,0.,0.)
+        for now in (2.,2.1,2.2,2.3):
+            c.observe_lane(self.PATH,.8,now)
+            c.scan=_SyntheticScan(now,[(5.8,0.)])
+            self.assertGreater(c.tick(now)[0],0)
+            self.assertIsNone(c.timed_bypass)
+            self.assertTrue(c.timed_bypass_completed)
     def test_fixed_three_arcs_and_immediate_normal_lane_handoff(self):
         c = self.core(); self.start(c)
         for i in range(1,15):

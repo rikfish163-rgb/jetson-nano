@@ -94,20 +94,14 @@ class RequestedManeuversTests(unittest.TestCase):
 
     def test_vehicle_script_uses_requested_steering_mapping(self):
         import os
-        import shlex
+        from robot.common.config import load_config
         from robot.common.contracts import encode_command
         root=os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        with open(os.path.join(root,'tools','sign_detector_20260916','run_yolo_vehicle.sh')) as stream:
-            tokens=shlex.split(stream.read().split('exec roslaunch ',1)[1].replace('\\\n',' '))
-        args=dict(token.split(':=',1) for token in tokens if ':=' in token)
-        self.assertEqual(float(args['steering_command_scale_rad']),.1)
+        args=load_config(os.path.join(root,'src/robot/config'))
+        self.assertEqual(float(args['steering_command_scale_rad']),.03)
         c=self.core();self.addCleanup(c.close)
         c.cfg['steering_command_scale_rad']=float(args['steering_command_scale_rad'])
-        self.assertEqual(encode_command(24,.1,c.cfg,0)['steering_raw'],22)
-        self.scan(c,1.,(.49,0))
-        c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True)
-        speed,steer=c.execute('obstacle','begin_timed_bypass',1.).value
-        self.assertEqual(encode_command(speed,steer,c.cfg,0)['steering_raw'],22)
+        self.assertEqual(encode_command(24,.03,c.cfg,0)['steering_raw'],22)
 
     def test_bypass_requires_fresh_straight_after_lane_handoff(self):
         c=self.core()

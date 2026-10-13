@@ -16,10 +16,11 @@ from robot.parking.forward import ForwardParking
 from robot.common.lidar_policy import lidar_guard_disabled_reason
 from robot.motion.calibration import speed_gain
 from robot.parking.reverse_entry import reverse_after_turn_route
+from robot.lidar.left_bays import decide as decide_left_bay
 
 
 
-FIELDS = ('action', 'action_source', 'action_started', 'route_action_started',
+FIELDS = ('parking_side_pending', 'parking_completed', 'left_bay_cache', 'left_bay_selection', 'action', 'action_source', 'action_started', 'route_action_started',
  'right_sign_locked', 'right_sign_rearmed_at',
  'route_sign_last_seen', 'route_sign_rearmed', 'right_completed_count', 'right_handoff_slow', 'cfg', 'completed_at_pose',
  'consumed_marker', 'course_finished', 'course_stop_pending', 'direction_window', 'estop',
@@ -29,7 +30,7 @@ FIELDS = ('action', 'action_source', 'action_started', 'route_action_started',
  'parallel_parking', 'parking_candidates', 'parking_entry', 'parking_sign', 'parking_front_frames', 'parking_route_ready',
  'parking_marker', 'parking_trigger_at', 'parking_trigger_pose', 'pending', 'pending_at',
  'pose', 'pose_stamp', 'reason', 'red', 'left_lock', 'right_lock', 'right_tail_origin', 'sign_count', 'sign_info',
- 'sign_label', 'startup_started', 'startup_origin', 'startup_blue_point', 'startup_curve_lock',
+ 'sign_label', 'sign_stamp', 'startup_started', 'startup_origin', 'startup_blue_point', 'startup_curve_lock',
  'state', 'straight_search', 'parking_straight_travel', 'turn_reverse_watch', 'timed_uturn', 'timed_parking', 'uturn', 'uturn_exit_straight',
  'uturn_sign_window', 'wait_until', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen', 'lane_recovery',
  'blue_approach', 'blue_prealign', 'front_blue_image_lines', 'blue_clear_since', 'blue_clear_frames', 'front_blue_lines', 'lane_curve_lock', 'lane_preview', 'lane_speed_state')
@@ -42,11 +43,14 @@ CALLS = (('lane', 'search_command'), ('lane', 'lane_command'), ('mission', 'disp
  ('parking', 'explicit_parking_tick'), ('parking', 'turn_reverse_tick'), ('turn', 'exit_lane_confirmed'),
  ('turn', 'straight_search_tick'), ('turn', 'blue_approach_tick'), ('uturn', 'course_blue_stop'),
  ('uturn', 'startup_tick'), ('uturn', 'uturn_phase'), ('uturn', 'uturn_tick'))
-OPERATIONS = ('close', 'set_pose', 'start_follow', 'resume_lane', 'dispatch', 'begin_blue_action', 'begin_startup', 'tick')
+OPERATIONS = ('close', 'set_pose', 'start_follow', 'resume_lane', 'dispatch', 'freeze_left_bay', 'begin_blue_action', 'begin_startup', 'tick')
 
 def initial_state(cfg):
     state = {}
     state['cfg'] = cfg
+    state['left_bay_cache'] = None
+    state['left_bay_selection'] = None
+    state['parking_completed'] = False
     state['pose'] = (0.0, 0.0, 0.0)
     state['pose_stamp'] = -1.0
     state['state'] = 'WAIT_GREEN' if cfg['wait_green'] else 'LANE'
@@ -92,6 +96,7 @@ def initial_state(cfg):
     state['direction_window'] = []
     state['uturn_sign_window'] = []
     state['sign_info'] = dict(label='',confidence=0.0,votes=0,stamp=-1.0,decision='not_observed')
+    state['parking_side_pending'] = False
     state['pending'] = None
     state['pending_at'] = 0.0
     state['parking_route_ready'] = not cfg['wait_green']
@@ -250,7 +255,12 @@ def start_follow(ctx, path, action, now):
     ctx.exit_count, ctx.exit_stamp = 0, -1.0
     ctx.right_tail_origin = None
     ctx.left_lock = (dict(origin=ctx.pose,phase='ENTRY',progress_deg=0.)
-                      if action == 'LEFT' and (ctx.cfg.get('left_turn_full_lock',False) or ctx.cfg.get('left_timed_enabled',False)) else None)
+                      if action == 'LEFT' and (ctx.cfg.get('left_turn_full_lock',False) or ctx.cfg.get('left_timed_enabled',False) or
+                         (ctx.left_bay_selection or {}).get('target')) else None)
+    if (ctx.left_lock is not None and ctx.left_bay_selection is not None and
+            ctx.left_bay_selection.get('target') and
+            ctx.left_bay_selection.get('blue_stamp') == (ctx.last_blue_trigger or {}).get('stamp')):
+        ctx.left_lock['bay_profile'] = dict(ctx.left_bay_selection)
     ctx.right_lock = (dict(origin=ctx.pose,phase='ENTRY',last_seen=now,
                             last_pose=ctx.pose,lost_steer=None)
                        if action == 'RIGHT' and (ctx.cfg.get('right_turn_full_lock',False) or ctx.cfg.get('right_timed_enabled',False)) else None)
@@ -298,6 +308,7 @@ def resume_lane(ctx):
     ctx.action, ctx.follower = None,None
     ctx.action_source = None
     ctx.pending,ctx.pending_at = pending,pending_at
+    ctx.parking_side_pending = False
     ctx.route_action_started = pending_at if pending is not None else None
     ctx.route_sign_rearmed = False
     ctx.right_sign_rearmed_at = None
@@ -324,6 +335,18 @@ def resume_lane(ctx):
 def dispatch(ctx, now):
     if ctx.action is not None:
         return None
+    if (ctx.pending == 'PARKING' and ctx.parking_side_pending and
+            ctx.cfg.get('parking_side_lidar_enabled',False) and
+            ctx.cfg.get('parking_enabled',True)):
+        from robot.parking.timed_core import TimedParking
+        ctx.timed_parking = TimedParking(ctx.cfg,now,select_by_lidar=True,
+                                        initial_sign_stamp=ctx.sign_stamp)
+        ctx.state,ctx.action,ctx.action_source = 'TIMED_PARKING','PARKING','lane_p'
+        ctx.action_started = now
+        ctx.pending,ctx.pending_at,ctx.parking_side_pending = None,0.,False
+        ctx.marker,ctx.parking_marker,ctx.marker_candidate = None,None,None
+        ctx.blue_approach,ctx.blue_prealign = None,None
+        return ctx.call('motion','stop','SIDE_WAIT_CAMERA')
     if ctx.pending == 'PARKING' and reverse_after_turn_route(ctx):
         return None  # this route enters on path loss, not the front P anchor
     if (ctx.pending == 'PARKING' and ctx.cfg.get('parking_enabled',True) and
@@ -392,6 +415,10 @@ def dispatch(ctx, now):
     if not lines:
         return None  # A marker center alone cannot establish body heading.
     yaw = min(lines,key=lambda line:distance(line['point'],ctx.marker[0]))['yaw']
+    ctx.left_bay_selection = None
+    if action == 'LEFT' and ctx.cfg.get('left_bay_choice',{}).get('enabled',False):
+        ctx.left_bay_selection = dict(target=None,status='waiting_blue_stop',
+                                      sign_at=ctx.pending_at,blue_stamp=now)
     ctx.last_blue_trigger = dict(stamp=now, observed_stamp=ctx.marker[1],
         observation_age_s=now-ctx.marker[1], point_local=[x,y],
         point_world=list(ctx.marker[0]), action=action or 'STRAIGHT',
@@ -420,7 +447,7 @@ def dispatch(ctx, now):
             travelled_m=max(0.,past),travel_source=ctx.cfg['pose_mode'])
     ctx.blue_approach = dict(point=ctx.consumed_marker,yaw=yaw,
         observed_stamp=ctx.last_blue_trigger['observed_stamp'],started=now,
-        origin=ctx.pose,phase='STOP_LINE' if (action in ('STRAIGHT','UTURN') or (action=='LEFT' and ctx.cfg.get('left_timed_enabled',False)) or (action=='RIGHT' and ctx.cfg.get('right_timed_enabled',False))) else 'ALIGN',
+        origin=ctx.pose,phase='STOP_LINE' if (action in ('STRAIGHT','UTURN') or (action=='LEFT' and (ctx.cfg.get('left_timed_enabled',False) or (ctx.left_bay_selection or {}).get('target'))) or (action=='RIGHT' and ctx.cfg.get('right_timed_enabled',False))) else 'ALIGN',
         align_frames=0,align_stamp=-1.,
         image_timed=ctx.cfg.get('blue_timed_enabled',False) and action in ('LEFT','RIGHT','STRAIGHT','UTURN'))
     early=ctx.blue_prealign
@@ -447,9 +474,43 @@ def dispatch(ctx, now):
     return ctx.call('turn','blue_approach_tick',now)
 
 
+def freeze_left_bay(ctx,now):
+    """Select from a scan captured after the blue stationary wait finishes."""
+    if ctx.action!='LEFT' or not ctx.cfg.get('left_bay_choice',{}).get('enabled',False):
+        return None
+    previous=ctx.left_bay_selection or {}
+    if previous.get('frozen'):return previous
+    task=ctx.blue_approach or {}
+    ready_at=task.get('stop_until') if task.get('phase')=='STOP' else None
+    cache=ctx.left_bay_cache
+    waiting=dict(target=None,status='waiting_stopped_scan',
+                 sign_at=previous.get('sign_at',ctx.pending_at),
+                 blue_stamp=(ctx.last_blue_trigger or {}).get('stamp'),
+                 stationary_after=ready_at)
+    if (ready_at is None or now<ready_at or cache is None or
+            cache['stamp']<=ready_at):
+        ctx.left_bay_selection=waiting
+        return waiting
+    # The current stopped scan is authoritative. Never carry occupied evidence
+    # from the moving approach or the braking/wait interval into this decision.
+    current=dict(cache,occupied_evidence=None)
+    selection=decide_left_bay(current,now,
+        previous.get('sign_at',ctx.pending_at),ctx.cfg['left_bay_choice'])
+    if selection['status']=='no_fresh_evidence':
+        ctx.left_bay_selection=waiting
+        return waiting
+    ctx.left_bay_selection=selection
+    ctx.left_bay_selection.update(frozen=True,decision_stamp=now,stationary_after=ready_at,
+        blue_stamp=(ctx.last_blue_trigger or {}).get('stamp'))
+    return ctx.left_bay_selection
+
+
 def begin_blue_action(ctx, now):
     """Called once after the entry stop and stationary wait."""
     action = ctx.action
+    selection=freeze_left_bay(ctx,now)
+    if selection is not None and not selection.get('frozen',False):
+        return ctx.call('motion','stop','blue_stop_wait_left_bay_scan')
     ctx.right_handoff_slow = False
     parking_anchor = (ctx.blue_approach or {}).get('parking_anchor')
     ctx.blue_approach = None
@@ -473,7 +534,7 @@ def begin_blue_action(ctx, now):
         ctx.call('uturn', 'uturn_phase', 'WAIT_START',now)
         ctx.wait_until = now  # The shared BLUE_STOP already waited.
         return ctx.call('motion', 'stop', 'uturn_wait_start')
-    path = ([tuple(ctx.pose)+(1,0.)] if ((action=='LEFT' and ctx.cfg.get('left_timed_enabled',False)) or
+    path = ([tuple(ctx.pose)+(1,0.)] if ((action=='LEFT' and (ctx.cfg.get('left_timed_enabled',False) or (ctx.left_bay_selection or {}).get('target'))) or
                 (action=='RIGHT' and ctx.cfg.get('right_timed_enabled',False)))
             else intersection_path(ctx.pose,action,ctx.cfg))
     ctx.call('mission', 'start_follow', path,action,now)
@@ -484,6 +545,7 @@ def begin_blue_action(ctx, now):
 
 
 def begin_startup(ctx, now):
+    ctx.parking_completed = False
     ctx.turn_reverse_watch = None
     ctx.lane_speed_state = None
     ctx.lane_curve_lock = None
@@ -524,6 +586,8 @@ def _interrupt_explicit_parking(ctx,reason):
 
 
 def _parking_distance_guard(ctx, command=None):
+    if ctx.timed_parking is not None or (ctx.pending == 'PARKING' and ctx.parking_side_pending):
+        return None
     cfg=ctx.cfg
     if (getattr(ctx.parking_entry, 'camera_source', 'front') == 'rear' or
             reverse_after_turn_route(ctx)):
@@ -557,6 +621,7 @@ def _parking_distance_guard(ctx, command=None):
                     entry.inner.reason=entry.inner.finish_reason=reason
                     entry.debug['phase']='FINISHED'
                 ctx.state='FINISHED'
+                ctx.parking_completed=True
                 return ctx.call('motion','stop',reason)
             return None
         # S finishes at the observed bottom clearance, never at a travel cap.
@@ -624,6 +689,9 @@ def _tick(ctx, now):
             ctx.state = 'FAULT'
         return ctx.call('motion', 'stop', 'emergency_stop')
     if ctx.state == 'FINISHED':
+        if (ctx.left_lock is not None and ctx.left_lock.get('phase')=='FINISHED'
+                and ctx.left_lock.get('bay_profile')):
+            return ctx.call('motion','stop','left_bay_'+ctx.left_lock['bay_profile']['target']+'_complete')
         if ctx.reason=='parking_blue_net_distance_reached':
             return ctx.call('motion','stop',ctx.reason)
         if ctx.timed_parking is not None:
@@ -658,7 +726,8 @@ def _tick(ctx, now):
         # Missing lidar suppresses new bypass triggers, not an active timed
         # action. Ordinary lane driving is slowed by checked_command below.
         ctx.obstacle_check = dict(kind='unknown',reason='scan_missing_or_stale')
-    reverse_command = ctx.call('parking', 'turn_reverse_tick', now)
+    reverse_command = (None if ctx.pending == 'PARKING' and ctx.parking_side_pending
+                       else ctx.call('parking', 'turn_reverse_tick', now))
     if reverse_command is not None:
         return reverse_command
     if ctx.state == 'TIMED_PARKING':
@@ -666,7 +735,8 @@ def _tick(ctx, now):
         command = task.command(now)
         ctx.reason = task.reason
         if task.finished:
-            ctx.state = 'FINISHED' if task.reason == cfg['parking_slot']+'_COMPLETE' else 'FAULT'
+            ctx.parking_completed = task.reason == task.slot+'_COMPLETE'
+            ctx.state = 'FINISHED' if ctx.parking_completed else 'FAULT'
             return ctx.call('motion','stop',task.reason)
         result = ctx.call('obstacle','checked_command',command,now,False)
         if command[0] and result != command:

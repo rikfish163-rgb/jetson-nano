@@ -60,6 +60,46 @@ class RightReverseParkingTests(unittest.TestCase):
         self.arm_reverse(core)
         self.assertIsNone(core.parking_entry)
 
+    def test_action_exit_cannot_arm_reverse_even_after_visible_lane(self):
+        for turn in ('LEFT','RIGHT'):
+            for phase in ('WAIT_LANE','ALIGN_LANE'):
+                core=self.core(turn);core.state='MANEUVER';core.action=turn
+                setattr(core,turn.lower()+'_lock',dict(phase=phase,exit_started=7.))
+                self.arm_reverse(core)
+                self.assertIsNone(core.parking_entry)
+                self.assertIsNone(core.turn_reverse_watch)
+
+    def test_lane_state_without_acquiring_lane_cannot_reverse(self):
+        core=self.core('LEFT')
+        for stamp in (8.,8.4,8.8,9.2,9.6,10.,10.4):
+            self.frame(core,stamp,False);self.gate(core,stamp)
+        self.assertIsNone(core.parking_entry)
+        self.assertFalse(core.turn_reverse_watch['acquired'])
+        self.frame(core,11.,True);self.gate(core,11.)
+        for stamp in (11.1,11.5,11.9,12.3,12.7,13.):
+            self.frame(core,stamp,False);self.gate(core,stamp)
+            self.assertIsNone(core.parking_entry)
+        self.frame(core,13.1,False);self.gate(core,13.1)
+        self.assertIsInstance(core.parking_entry,ReverseStraightEntry)
+
+    def test_new_action_discards_previous_lane_acquisition(self):
+        core=self.core('LEFT')
+        self.frame(core,8.,True);self.gate(core,8.)
+        core.state,core.action='MANEUVER','LEFT'
+        core.left_lock=dict(phase='WAIT_LANE',exit_started=9.)
+        self.frame(core,9.1,False);self.gate(core,9.1)
+        core.execute('mission','resume_lane')
+        for stamp in (10.,10.4,10.8,11.2,11.6,12.,12.4):
+            self.frame(core,stamp,False);self.gate(core,stamp)
+        self.assertIsNone(core.parking_entry)
+
+    def test_completed_parking_blocks_reverse_after_either_turn(self):
+        for previous in ('LEFT','RIGHT'):
+            core=self.core(previous);core.parking_completed=True
+            self.arm_reverse(core)
+            self.assertIsNone(core.parking_entry)
+            self.assertIsNone(core.turn_reverse_watch)
+
     def test_front_p_after_left_does_not_dispatch_forward_parking(self):
         core=self.core('LEFT');core.pending='PARKING'
         self.assertIsNone(core.dispatch(10.))
@@ -154,7 +194,8 @@ class RightReverseParkingTests(unittest.TestCase):
         self.assertEqual(entry.command(10.5,(0.,0.,0.)),(-12,0.))
         self.assertIsNone(entry.parking_started)
         self.assertTrue(entry.observe_sign('PARKING',.99,10.6,10.6,anchor=(-.9,0.)))
-        self.assertFalse(entry.observe_sign('PARKING',.99,10.7,10.7))
+        self.assertTrue(entry.observe_sign('PARKING',.99,10.7,10.7))
+        self.assertEqual(entry.inner.sign_anchor,(-.9,0.))
         self.assertEqual(entry.parking_started,10.6)
 
     def test_rear_sign_callback_checks_camera_and_never_queues_front_route(self):
@@ -223,12 +264,12 @@ class RightReverseParkingTests(unittest.TestCase):
         self.assertIsNone(core.dispatch(10.))
         self.assertIsNone(core.parking_entry)
 
-    def test_right_exit_alignment_can_arm_before_lane_handoff(self):
+    def test_right_exit_alignment_cannot_arm_before_lane_handoff(self):
         core = self.core(None)
         core.state, core.action = 'MANEUVER', 'RIGHT'
         core.right_lock = dict(phase='ALIGN_LANE', exit_started=7.)
         self.arm_reverse(core)
-        self.assertIsInstance(core.parking_entry, ReverseStraightEntry)
+        self.assertIsNone(core.parking_entry)
 
     def lines(self, depth=.8, offset=0.):
         return [[(-.3, -.19+offset), (-depth, -.19+offset)],
@@ -266,13 +307,14 @@ class RightReverseParkingTests(unittest.TestCase):
             self.assertIsNone(entry.remaining())
             self.assertNotEqual(entry.status,'FINISHED')
 
-    def test_single_frame_bottom_near_side_ends_cannot_finish(self):
+    def test_paired_bottom_is_measured_but_detection_alone_cannot_finish(self):
         entry=ReverseStraightEntry(self.cfg(),(0.,0.,0.),10.)
         entry.observe(self.lines(),10.1,(0.,0.,0.))
-        self.assertIsNone(entry.bottom)
+        self.assertIsNotNone(entry.bottom)
+        self.assertEqual(entry.bottom_source,'paired_far_end')
         entry.observe(self.lines()[:2],10.2,(0.,0.,0.))
-        self.assertLess(entry.command(10.5,(-.8,0.,0.))[0],0)
-        self.assertIsNone(entry.bottom)
+        self.assertLess(entry.command(10.5,(0.,0.,0.))[0],0)
+        self.assertNotEqual(entry.status,'FINISHED')
 
     def test_rear_geometry_produces_negative_speed_after_gear_pause(self):
         entry = ReverseStraightEntry(self.cfg(), (0.,0.,0.), 10.)

@@ -70,6 +70,7 @@ modules:
     - speed_raw_limit
     - speed_sign
     - steering_raw_limit
+    - steering_command_scale_rad
     - steering_sign
     - tire_radius
     - track
@@ -134,10 +135,13 @@ modules:
     - exit_yaw_tolerance
     - intersection_wait_s
     - left_turn_entry
+    - left_turn_radius
+    - left_turn_exit
     - left_turn_full_lock
     - left_lock_min_angle_deg
     - left_lock_heading_deg
     - left_timed_enabled
+    - left_bay_choice
     - left_timed_entry_speed_raw
     - left_timed_entry_steering_raw
     - left_timed_entry_s
@@ -167,6 +171,8 @@ modules:
     - right_lock_min_angle_deg
     - right_reverse_entry_m
     - right_turn_entry
+    - right_turn_radius
+    - right_turn_exit
     - right_turn_full_lock
     - speed_raw.action
     - straight_align_distance
@@ -214,6 +220,7 @@ modules:
     - uturn_replan_cooldown_s
     - uturn_replan_limit
     - uturn_reverse_max_distance
+    - uturn_reverse_distance_m
     - uturn_reverse_speed_raw
     - uturn_reverse_yaw_rad
     - uturn_tracking_error_max
@@ -232,6 +239,8 @@ modules:
     title: 倒车入库与垂直停车
     parameters:
     - parking_timed
+    - parking_side_lidar_enabled
+    - parking_side_lidar
     - parking_align_heading_deg
     - parking_align_lateral_m
     - parking_align_stable_s
@@ -244,6 +253,7 @@ modules:
     - parking_enabled
     - parking_entry_speed_raw
     - parking_p_reverse_s
+    - parking_rear_p_reverse_s
     - parking_entry_timeout_s
     - parking_final_max_m
     - parking_final_speed_raw
