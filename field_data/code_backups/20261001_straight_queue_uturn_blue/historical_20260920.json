@@ -1,0 +1,114 @@
+[
+  {
+    "archive": "/home/nano/refactor_backups/before-straight-blue-advance-8vbcOp/before.tar.gz", 
+    "time": "2026-09-20 01:52", 
+    "timed_blue_advance": false, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-blue-stop-line-bEFr8I/before.tar.gz", 
+    "gap_hard_cap_025": false, 
+    "gap_hard_cap_060": false, 
+    "signs_ignore_during_action": true, 
+    "straight_tail_queue": false, 
+    "time": "2026-09-20 02:35", 
+    "timed_blue_advance": false, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-blue-heading-align-qI642o/before.tar.gz", 
+    "gap_hard_cap_025": false, 
+    "gap_hard_cap_060": false, 
+    "signs_ignore_during_action": true, 
+    "straight_tail_queue": false, 
+    "time": "2026-09-20 03:18", 
+    "timed_blue_advance": false, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-straight-distance-only-yMZZrj/before.tar.gz", 
+    "gap_hard_cap_025": false, 
+    "gap_hard_cap_060": false, 
+    "signs_ignore_during_action": true, 
+    "straight_tail_queue": false, 
+    "time": "2026-09-20 03:45", 
+    "timed_blue_advance": true, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-blue-align-latch-PFf43z/before.tar.gz", 
+    "gap_hard_cap_025": false, 
+    "gap_hard_cap_060": false, 
+    "signs_ignore_during_action": true, 
+    "straight_tail_queue": false, 
+    "time": "2026-09-20 17:19", 
+    "timed_blue_advance": true, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-blue-align-timer-HG3oq4/before.tar.gz", 
+    "gap_hard_cap_025": false, 
+    "gap_hard_cap_060": false, 
+    "signs_ignore_during_action": true, 
+    "straight_tail_queue": false, 
+    "time": "2026-09-20 17:25", 
+    "timed_blue_advance": true, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-restore-speed-dGsiCF/before.tar.gz", 
+    "time": "2026-09-20 17:40"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-right-blue-offset-vzWzpe/before.tar.gz", 
+    "gap_hard_cap_025": false, 
+    "gap_hard_cap_060": false, 
+    "signs_ignore_during_action": true, 
+    "straight_tail_queue": false, 
+    "time": "2026-09-20 17:48", 
+    "timed_blue_advance": true, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-parking-bottom-clearance-tPCezp/before.tar.gz", 
+    "time": "2026-09-20 19:58"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-left-lock-lidar-srgtCv/before.tar.gz", 
+    "gap_hard_cap_025": false, 
+    "gap_hard_cap_060": false, 
+    "signs_ignore_during_action": true, 
+    "straight_tail_queue": false, 
+    "time": "2026-09-20 21:26", 
+    "timed_blue_advance": true, 
+    "uturn_stop_line": false
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-parking-bottom-tracking-BIUMPc/before.tar.gz", 
+    "time": "2026-09-20 21:38"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-all-speed-18-ACGb7e/before.tar.gz", 
+    "time": "2026-09-20 23:11"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-restore-slow-speeds-WIeDBt/before.tar.gz", 
+    "time": "2026-09-20 23:16"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-speed20-bypass-left-VLrrU5/before.tar.gz", 
+    "time": "2026-09-20 23:26"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-left-radius-065-7seY4H/before.tar.gz", 
+    "time": "2026-09-20 23:30"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-bypass-right-78-932AhW/before.tar.gz", 
+    "time": "2026-09-20 23:53"
+  }, 
+  {
+    "archive": "/home/nano/refactor_backups/before-parking-clearance09-2e0sAf/before.tar.gz", 
+    "time": "2026-09-20 23:59"
+  }
+]

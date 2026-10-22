@@ -1,0 +1,21 @@
+test_both_turns_keep_estop_red_and_front_loss_stops (test_turn_current_model.CurrentTurnTests) ... ok
+test_launcher_enables_current_left_profile (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_counts_distinct_images_and_resets_after_camera_gap (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_does_not_straighten_at_estimated_arc_end_without_exit (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_entry_then_full_lock_at_selected_action_speed (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_rejects_entry_lane_crossing_lane_and_outside_path (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_visual_exit_can_handoff_before_large_model_arc_endpoint (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_without_exit_stops_at_angle_limit (test_turn_current_model.CurrentTurnTests) ... ok
+test_right_blue_confirmation_resets_across_image_gap (test_turn_current_model.CurrentTurnTests) ... ok
+test_right_new_blue_requires_distinct_frames_then_straight (test_turn_current_model.CurrentTurnTests) ... ok
+test_right_uses_bounded_current_command_scale (test_turn_current_model.CurrentTurnTests) ... ok
+test_camera_loss_estop_and_red_still_stop (test_right_blue_exit.RightBlueTests) ... ok
+test_fresh_new_blue_starts_straight_without_stop_or_distance_wait (test_right_blue_exit.RightBlueTests) ... ok
+test_missing_left_and_past_angle_keep_lock_within_deadline (test_right_blue_exit.RightBlueTests) ... ok
+test_old_entry_line_stale_candidate_and_short_tick_do_not_exit (test_right_blue_exit.RightBlueTests) ... ok
+test_reverse_entry_finishes_before_new_blue_can_exit (test_right_blue_exit.RightBlueTests) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 6.638s
+
+OK

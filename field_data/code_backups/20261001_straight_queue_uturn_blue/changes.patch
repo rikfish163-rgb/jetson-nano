@@ -1,0 +1,458 @@
+--- src/robot/camera/observations.py
++++ src/robot/camera/observations.py
+@@ -12,7 +12,7 @@
+ 
+ FIELDS = ('cfg', 'action', 'right_lock', 'consumed_marker', 'front_blue_lines', 'front_marker_stamp', 'front_markers',
+  'ground_stamp', 'ground_stamps', 'lane', 'lane_boundaries', 'lane_confidence',
+- 'lane_stamp', 'left_boundary', 'left_boundary_stamp', 'marker', 'blue_consumed', 'marker_candidate', 'pending',
++ 'lane_stamp', 'left_boundary', 'left_boundary_stamp', 'marker', 'blue_consumed', 'marker_candidate', 'pending', 'next_direction',
+  'parking_candidate_stamp', 'parking_candidates', 'parking_detection', 'parking_entry',
+  'parking_front_frames', 'parking_lines', 'parking_lines_stamp', 'parking_marker',
+  'parking_trigger_at', 'parallel_parking', 'parallel_scene', 'pose', 'rear_blue_lines', 'rear_marker_stamp', 'rear_markers',
+@@ -217,13 +217,17 @@
+                     ctx.consumed_marker=point
+         exit_blue = (ctx.action == 'RIGHT' and ctx.right_lock is not None and
+                      ctx.cfg.get('right_exit_on_blue', False))
++        next_straight = ctx.action == 'STRAIGHT' and ctx.next_direction == 'STRAIGHT'
++        if next_straight:
++            markers = [p for p in markers if ctx.consumed_marker is not None and
++                       distance(p, ctx.consumed_marker) >= ctx.cfg['marker_rearm_distance']]
+         if (ctx.pending == 'PARKING' and ctx.cfg.get('parking_mode') != 'forward_center') or exit_blue:
+             # Preserve the existing explicit parking and right-exit handlers.
+             special = [p for p in markers if not ctx.consumed_marker or
+                        distance(p,ctx.consumed_marker) >= ctx.cfg['marker_rearm_distance']]
+             if special:
+                 ctx.marker = (min(special,key=lambda p: distance(p,ctx.pose)),stamp)
+-        elif ctx.action is not None:
++        elif ctx.action is not None and not next_straight:
+             ctx.blue_consumed = True
+             ctx.blue_clear_since,ctx.blue_clear_frames = None,0
+             ctx.marker_candidate = None
+@@ -236,7 +240,7 @@
+             ctx.blue_clear_frames += 1
+             if ctx.blue_clear_frames >= 3 and stamp-ctx.blue_clear_since >= .30-1e-9:
+                 ctx.blue_consumed = False
+-        elif not ctx.blue_consumed:
++        elif not ctx.blue_consumed or next_straight:
+             ctx.blue_clear_since,ctx.blue_clear_frames = None,0
+             point = min(markers,key=lambda p: distance(p,ctx.pose))
+             previous = ctx.marker_candidate
+@@ -247,7 +251,8 @@
+             ctx.marker_candidate = dict(point=point,stamp=stamp,count=count,since=since)
+             if count >= 3 and stamp-since >= .15:
+                 ctx.marker = (point,stamp)
+-                if ctx.pending is None and not ctx.cfg.get('blue_default_straight',False):
++                if (ctx.pending is None and not next_straight and
++                        not ctx.cfg.get('blue_default_straight',False)):
+                     ctx.blue_consumed=True
+                     ctx.marker=None
+         else:
+--- src/robot/master/controller_node.py
++++ src/robot/master/controller_node.py
+@@ -474,7 +474,8 @@
+         # telemetry thread, even when a busy state lock prevents full status.
+         self.control_events.append(copy.deepcopy(dict(stamp=now,
+             state=self.core.state,reason=self.core.reason,command=command,
+-            timed_bypass=task,uturn=self.core.uturn,obstacle_check=self.core.obstacle_check)))
++            timed_bypass=task,uturn=self.core.uturn,blue_approach=self.core.blue_approach,
++            next_direction=self.core.next_direction,obstacle_check=self.core.obstacle_check)))
+ 
+     def telemetry(self,event):
+         events=getattr(self,'control_events',None)
+--- src/robot/master/state_machine.py
++++ src/robot/master/state_machine.py
+@@ -207,9 +207,15 @@
+         # Reuse the existing bounded reversal transition at the visual handoff.
+         # Same-side steering remains immediate; ordinary lane tuning is intact.
+         ctx.lane_recovery=dict(stamp=ctx.pose_stamp)
+-    pending, pending_at = ((ctx.pending,ctx.pending_at)
+-                           if ctx.action == 'BYPASS' and ctx.pending is not None
+-                           else (None,0.0))
++    next_straight = (ctx.action == 'STRAIGHT' and ctx.next_direction == 'STRAIGHT'
++                     and ctx.next_direction_at >= ctx.action_started)
++    marker, candidate = ctx.marker, ctx.marker_candidate
++    if next_straight:
++        pending, pending_at = 'STRAIGHT', ctx.next_direction_at
++    elif ctx.action == 'BYPASS' and ctx.pending is not None:
++        pending, pending_at = ctx.pending, ctx.pending_at
++    else:
++        pending, pending_at = None, 0.0
+     ctx.last_completed_action = ctx.action if ctx.action_source != 'blue_default' else None
+     ctx.completed_at_pose = ctx.pose
+     ctx.state = 'LANE'
+@@ -221,6 +227,9 @@
+     ctx.exit_pose = None
+     ctx.marker, ctx.parking_marker = None,None
+     ctx.marker_candidate = None
++    if next_straight:
++        ctx.marker, ctx.marker_candidate = marker, candidate
++        ctx.blue_consumed = False
+     ctx.blue_approach = None
+     ctx.blue_clear_since, ctx.blue_clear_frames = None, 0
+     ctx.sign_label, ctx.sign_count = '',0
+@@ -304,7 +313,7 @@
+         yaw = wrap(yaw+math.pi)
+     ctx.blue_approach = dict(point=ctx.consumed_marker,yaw=yaw,
+         observed_stamp=ctx.last_blue_trigger['observed_stamp'],started=now,
+-        origin=ctx.pose,phase='STOP_LINE' if action=='STRAIGHT' else 'ALIGN',
++        origin=ctx.pose,phase='STOP_LINE' if action in ('STRAIGHT','UTURN') else 'ALIGN',
+         align_frames=0,align_stamp=-1.)
+     if (action == 'PARKING' and ctx.parking_sign is not None and
+             ctx.pending_at-ctx.cfg['sign_timeout'] <= ctx.parking_sign['stamp'] <= now):
+@@ -317,7 +326,7 @@
+ 
+ 
+ def begin_blue_action(ctx, now):
+-    """Called once after the shared bumper stop and stationary wait."""
++    """Called once after the entry stop and stationary wait."""
+     action = ctx.action
+     parking_anchor = (ctx.blue_approach or {}).get('parking_anchor')
+     ctx.blue_approach = None
+--- src/robot/signs/decisions.py
++++ src/robot/signs/decisions.py
+@@ -1,14 +1,14 @@
+ """signs module: explicit context input; coordinator applies returned updates."""
+ from __future__ import division
+ 
+-from robot.common.geometry import _isfinite
++from robot.common.geometry import _isfinite, local
+ 
+ 
+ 
+-FIELDS = ('action', 'cfg', 'completed_at_pose', 'course_stop_pending', 'direction_window',
++FIELDS = ('action', 'action_started', 'cfg', 'completed_at_pose', 'course_stop_pending', 'direction_window',
+  'green_start_window', 'last_completed_action', 'marker', 'next_direction',
+  'next_direction_at', 'park_line_side', 'parking_marker', 'parking_route_ready', 'pending', 'pending_at', 'pose',
+- 'red', 'sign_count', 'sign_info', 'sign_label', 'sign_stamp', 'state',
++ 'red', 'sign_count', 'sign_info', 'sign_label', 'sign_stamp', 'state', 'straight_search',
+  'uturn_sign_window')
+ CALLS = (('mission', 'begin_startup'),)
+ OPERATIONS = ('observe_sign',)
+@@ -44,6 +44,28 @@
+         return
+     bypass_straight = (label == 'STRAIGHT' and ctx.state == 'TIMED_BYPASS'
+                        and ctx.action == 'BYPASS' and ctx.pending is None)
++    straight_active = (ctx.action == 'STRAIGHT' and ctx.state == 'MANEUVER'
++                       and ctx.straight_search is not None)
++    if straight_active:
++        # The next board can enter view before the mandatory 1.25 m ends.
++        # Queue consecutive STRAIGHT votes in the latter part of that segment;
++        # a distinct, confirmed blue line is still required to execute them.
++        minimum = max(1.25, ctx.cfg.get('straight_distance', 1.25))
++        travelled = local(ctx.straight_search['origin'], ctx.pose)[0]
++        if (label == 'STRAIGHT' and ctx.cfg['sign_confidence'] <= confidence <= 1.0
++                and stamp > ctx.action_started and travelled >= .6*minimum):
++            if ctx.next_direction == 'STRAIGHT':
++                ctx.sign_info.update(votes=0, decision='next_straight_latched')
++                return
++            ctx.direction_window.append(('STRAIGHT', stamp))
++            required = int(ctx.cfg.get('direction_sign_votes', 2))
++            ctx.direction_window = ctx.direction_window[-required:]
++            ctx.sign_info.update(votes=len(ctx.direction_window), decision='next_straight_voting')
++            if len(ctx.direction_window) == required:
++                ctx.next_direction, ctx.next_direction_at = 'STRAIGHT', now
++                ctx.sign_info['decision'] = 'next_straight_pending'
++            return
++        ctx.direction_window = []
+     directions=('LEFT','RIGHT','STRAIGHT','UTURN')
+     if ctx.action is None and ctx.pending in directions:
+         # Before blue commits an action, fresh consecutive observations may
+@@ -71,7 +93,8 @@
+         # Do not carry observations made during one action into the next.
+         ctx.sign_label,ctx.sign_count = '',0
+         ctx.direction_window,ctx.uturn_sign_window = [],[]
+-        ctx.next_direction,ctx.next_direction_at = None,0.0
++        if not straight_active:
++            ctx.next_direction,ctx.next_direction_at = None,0.0
+         ctx.sign_info.update(votes=0,decision='action_sign_ignored')
+         return
+     threshold = ctx.cfg.get('red_sign_confidence',.8) if label == 'RED' else ctx.cfg['sign_confidence']
+--- src/robot/test/blue_test_helpers.py
++++ src/robot/test/blue_test_helpers.py
+@@ -23,7 +23,8 @@
+     advance=c.cfg['blue_aligned_advance_m']
+     c.pose=tuple(world(endpoint,(-advance,0)))+(endpoint[2],)
+     c.pose_stamp=now-.5
+-    line_x=(advance+c.cfg['wheelbase']+c.cfg['front_overhang']+.02
++    line_x=(advance+c.cfg['wheelbase'] if action=='UTURN' else
++            advance+c.cfg['wheelbase']+c.cfg['front_overhang']+.02
+             if action=='STRAIGHT' else .9)
+     for t in (now-.39,now-.29,now-.19,now-.14,now-.09):
+         c.set_pose(c.pose,t)
+@@ -31,7 +32,7 @@
+             markers=[dict(kind='junction',x=line_x,y=0.,length=.6)],
+             blue_lines=[dict(x=line_x,y=0.,yaw=0.,length=.6)]),t)
+         c.tick(t)
+-    assert c.blue_approach['phase']==('STOP_LINE' if action=='STRAIGHT' else 'ADVANCE'), c.blue_approach
++    assert c.blue_approach['phase']==('STOP_LINE' if action in ('STRAIGHT','UTURN') else 'ADVANCE'), c.blue_approach
+     c.set_pose(endpoint,now-.05)
+     c.tick(now-.05)
+     assert c.state=='BLUE_STOP', c.state
+--- src/robot/turn/controller.py
++++ src/robot/turn/controller.py
+@@ -18,9 +18,9 @@
+  'follow_left_boundary', 'front_blue_lines', 'front_marker_stamp', 'lane', 'lane_source',
+  'lane_stamp', 'last_completed_action', 'left_boundary_stamp', 'left_reference', 'marker',
+  'parking_marker', 'pose', 'reason', 'left_lock', 'right_lock', 'right_tail_origin', 'state',
+- 'straight_search', 'blue_approach')
++ 'straight_search', 'blue_approach', 'next_direction')
+ CALLS = (('lane', 'lane_command'), ('lane', 'lane_valid'), ('lane', 'left_exit_line'),
+- ('lane', 'left_reference_command'), ('mission', 'resume_lane'),
++ ('lane', 'left_reference_command'), ('mission', 'resume_lane'), ('mission', 'dispatch'),
+  ('mission', 'start_follow'), ('mission','begin_blue_action'), ('turn','exit_lane_confirmed'),
+  ('motion', 'current_steering'), ('motion', 'stop'),
+  ('obstacle', 'checked_command'), ('turn', 'front_straight_reference'),
+@@ -89,13 +89,16 @@
+ 
+ 
+ def blue_approach_tick(ctx, now):
+-    """Stop STRAIGHT at the measured line; other actions retain timed entry."""
++    """Stop STRAIGHT and UTURN at the measured line before starting an action."""
+     s = ctx.blue_approach
+     if s['phase'] == 'STOP':
+         if now < s['stop_until']:
+             return ctx.call('motion','stop','blue_stop_wait_'+ctx.action.lower())
+         if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25):
+             return ctx.call('motion','stop','blue_stop_front_stale')
++        if (ctx.action == 'UTURN' and
++                abs(wrap(s['yaw']-ctx.pose[2])) > math.radians(ctx.cfg['uturn_align_heading_deg'])):
++            return ctx.call('motion','stop','uturn_blue_heading_not_aligned')
+         return ctx.call('mission','begin_blue_action',now)
+     s.update(point_local=local(ctx.pose,s['point']),
+              observation_age_s=now-s['observed_stamp'])
+@@ -105,26 +108,34 @@
+     if now-s['started'] > ctx.cfg['action_timeout']:
+         return ctx.call('motion','stop','blue_approach_timeout')
+     if s['phase']=='STOP_LINE':
+-        # Stop the front of the body at the measured transverse plane. A
+-        # fixed entry distance cannot place the car at different line ranges.
++        # Project the required vehicle reference onto the transverse plane.
++        # UTURN places its front axle on blue; STRAIGHT retains bumper clearance.
+         x,y=local(ctx.pose,s['point'])
+         heading=wrap(s['yaw']-ctx.pose[2])
+         plane_distance=x*math.cos(heading)+y*math.sin(heading)
+-        front=ctx.cfg['wheelbase']+ctx.cfg['front_overhang']
+-        body_extent=front*math.cos(heading)+ctx.cfg['body_width']/2*abs(math.sin(heading))
+-        remaining=plane_distance-body_extent-.02
++        if ctx.action == 'UTURN':
++            remaining=plane_distance-ctx.cfg['wheelbase']*math.cos(heading)
++            s['stop_reference']='front_axle'
++        else:
++            front=ctx.cfg['wheelbase']+ctx.cfg['front_overhang']
++            body_extent=front*math.cos(heading)+ctx.cfg['body_width']/2*abs(math.sin(heading))
++            remaining=plane_distance-body_extent-.02
++            s['stop_reference']='front_bumper'
+         s.update(remaining_m=remaining,heading_error_deg=math.degrees(heading),
+                  stop_line_distance_m=plane_distance)
+         if remaining<=1e-9:
++            if (ctx.action == 'UTURN' and
++                    abs(heading) > math.radians(ctx.cfg['uturn_align_heading_deg'])):
++                return ctx.call('motion','stop','uturn_blue_heading_not_aligned')
+             s.update(phase='STOP',stop_until=now+ctx.cfg.get('intersection_wait_s',1.),stop_pose=ctx.pose)
+             ctx.state='BLUE_STOP'
+-            return ctx.call('motion','stop','blue_stop_wait_straight')
+-        reference=right_blue_reference(ctx,now)
++            return ctx.call('motion','stop','blue_stop_wait_'+ctx.action.lower())
++        reference=right_blue_reference(ctx,now) if ctx.action == 'STRAIGHT' else None
+         s['right_blue']=reference
+         steer=right_blue_steering(ctx,reference) if reference else steering_for_heading(heading,ctx.cfg)
+         ctx.lane_source='straight_right_blue' if reference else 'blue_stop_normal'
+         result=ctx.call('obstacle','checked_command',(ctx.cfg['straight_speed_raw'],steer),now,False)
+-        if result[0]:ctx.reason='straight_approach_stop_line'
++        if result[0]:ctx.reason=ctx.action.lower()+'_approach_stop_line'
+         return result
+     if s['phase'] == 'ALIGN':
+         reference=ctx.call('turn','front_straight_reference',now,s['point'])
+@@ -192,6 +203,13 @@
+              phase='STRAIGHT_DISTANCE')
+     if travelled >= minimum:
+         s['phase'] = 'WAIT_EXIT'
++        if (ctx.next_direction == 'STRAIGHT' and ctx.marker is not None and
++                ctx.call('turn','front_straight_reference',now,ctx.marker[0]) is not None):
++            ctx.call('mission','resume_lane')
++            result=ctx.call('mission','dispatch',now)
++            if result is not None:
++                return result
++            return ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,True)
+         if not ctx.call('turn', 'handoff_lane_confirmed', now):
+             if now-s['started'] >= s['timeout_s']:
+                 ctx.state = 'FAULT'
+--- /dev/null
++++ src/robot/test/test_straight_queue_uturn_blue.py
+@@ -0,0 +1,176 @@
++"""Replay the missed second STRAIGHT and stop UTURN at the front axle."""
++import math
++import os
++import unittest
++
++from robot.common.config import load_config
++from robot.common.geometry import local
++from robot.master.controller import Controller
++
++
++class StraightQueueUturnBlueTests(unittest.TestCase):
++    def core(self):
++        cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
++        cfg.update(wait_green=False, lidar_enabled=False, sign_ttl=0,
++                   intersection_wait_s=1., straight_speed_raw=20)
++        core = Controller(cfg)
++        self.addCleanup(core.close)
++        return core
++
++    def straight(self, x=1.10, stamp=18.):
++        core = self.core()
++        core.start_follow([(0, 0, 0, 1, 0), (1.25, 0, 0, 1, 0)], 'STRAIGHT', 10.)
++        core.consumed_marker = (.35, 0.)
++        core.blue_consumed = True
++        core.set_pose((x, 0, 0), stamp)
++        return core
++
++    def ground(self, core, stamp, x=None, yaw=0., lane=True):
++        core.observe_lane([(.4, 0), (.6, 0), (.8, 0)] if lane else [], .9 if lane else .1146, stamp)
++        core.observe_ground(dict(source='front', part='markers', slots=[],
++            markers=[] if x is None else [dict(kind='junction', x=x, y=0., length=.6)],
++            blue_lines=[] if x is None else [dict(x=x, y=0., yaw=yaw, length=.6)]), stamp)
++
++    def votes(self, core, start=18.):
++        core.observe_sign('STRAIGHT', .8415427, start, start)
++        core.observe_sign('STRAIGHT', .9305515, start+.2, start+.2)
++
++    def test_late_second_straight_is_queued_without_interrupting_current_action(self):
++        core = self.straight()
++        self.votes(core)
++        self.assertEqual(core.next_direction, 'STRAIGHT')
++        self.assertEqual(core.action, 'STRAIGHT')
++        self.assertIsNone(core.pending)
++        self.assertEqual(core.sign_info['decision'], 'next_straight_pending')
++        # One wrong LEFT frame and blank frames cannot replace confirmed STRAIGHT.
++        core.observe_sign('LEFT', .82, 18.3, 18.3)
++        core.observe_sign('', 0., 18.4, 18.4)
++        self.assertEqual(core.next_direction, 'STRAIGHT')
++
++    def test_same_early_board_duplicate_or_interrupted_votes_do_not_queue(self):
++        core = self.straight(.2, 11.)
++        self.votes(core, 11.)
++        self.assertIsNone(core.next_direction)
++        core.set_pose((1.10, 0, 0), 18.)
++        core.observe_sign('STRAIGHT', .99, 18., 18.)
++        core.observe_sign('STRAIGHT', .99, 18., 18.1)
++        self.assertIsNone(core.next_direction)
++        core.observe_sign('', 0., 18.2, 18.2)
++        core.observe_sign('STRAIGHT', .99, 18.3, 18.3)
++        self.assertIsNone(core.next_direction)
++
++    def test_confirmed_next_blue_hands_over_at_125_without_waiting_for_white(self):
++        core = self.straight()
++        self.votes(core)
++        for stamp in (18.3, 18.5, 18.7):
++            self.ground(core, stamp, .8, lane=False)
++        self.assertIsNotNone(core.marker)
++        self.assertEqual(core.action, 'STRAIGHT')
++        self.assertEqual(core.tick(18.7)[0], 20)
++        core.set_pose((1.25, 0, 0), 18.8)
++        self.ground(core, 18.8, .65, lane=False)
++        self.assertGreater(core.tick(18.8)[0], 0)
++        self.assertEqual(core.state, 'BLUE_APPROACH')
++        self.assertEqual(core.action, 'STRAIGHT')
++        self.assertEqual(core.last_blue_trigger['action'], 'STRAIGHT')
++        self.assertAlmostEqual(core.last_blue_trigger['point_world'][0], 1.90)
++
++    def test_old_blue_or_longitudinal_paint_cannot_dispatch_queued_straight(self):
++        for x, yaw in ((.01, 0.), (.8, math.pi/2)):
++            core = self.straight()
++            core.consumed_marker = (1.10+x, 0.) if x == .01 else (.35, 0.)
++            self.votes(core)
++            for stamp in (18.3, 18.5, 18.7):
++                self.ground(core, stamp, x, yaw, lane=False)
++            self.assertIsNone(core.marker)
++            core.set_pose((1.25, 0, 0), 18.8)
++            self.assertEqual(core.tick(18.8)[0], 0)
++            self.assertEqual(core.state, 'MANEUVER')
++
++    def test_next_straight_survives_white_handoff_until_its_blue_line(self):
++        core = self.straight()
++        self.votes(core)
++        core.set_pose((1.25, 0, 0), 18.3)
++        for stamp in (18.3, 18.5, 18.7):
++            self.ground(core, stamp)
++            core.tick(stamp)
++        self.assertEqual(core.state, 'LANE')
++        self.assertIsNone(core.action)
++        self.assertEqual(core.pending, 'STRAIGHT')
++        for stamp in (18.8, 18.9, 19.):
++            self.ground(core, stamp, .65, lane=False)
++            core.tick(stamp)
++        self.assertEqual(core.state, 'BLUE_APPROACH')
++        self.assertEqual(core.action, 'STRAIGHT')
++        self.assertGreater(core.tick(19.01)[0], 0)
++
++    def arm_uturn(self, x, yaw=0.):
++        core = self.core()
++        core.pending, core.pending_at = 'UTURN', .9
++        for stamp in (1., 1.2, 1.4):
++            self.ground(core, stamp, x, yaw)
++            core.tick(stamp)
++        self.assertEqual(core.action, 'UTURN')
++        self.assertEqual(core.blue_approach['phase'], 'STOP_LINE')
++        return core
++
++    def test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper(self):
++        for x in (.65, 1.10):
++            core = self.arm_uturn(x)
++            stop_x = x-core.cfg['wheelbase']
++            core.set_pose((stop_x-.03, 0, 0), 1.5)
++            self.ground(core, 1.5)
++            self.assertGreater(core.tick(1.5)[0], 0)
++            core.set_pose((stop_x, 0, 0), 1.6)
++            self.ground(core, 1.6)
++            self.assertEqual(core.tick(1.6), (0, 0.))
++            self.assertEqual(core.state, 'BLUE_STOP')
++            self.assertEqual(core.blue_approach['stop_reference'], 'front_axle')
++            self.assertAlmostEqual(local(core.pose, core.blue_approach['point'])[0], core.cfg['wheelbase'])
++            self.ground(core, 2.5)
++            self.assertEqual(core.tick(2.5), (0, 0.))
++            self.ground(core, 2.61)
++            self.assertEqual(core.tick(2.61), (0, 0.))
++            self.assertEqual(core.state, 'UTURN')
++
++    def test_uturn_does_not_start_with_front_axle_heading_misaligned(self):
++        core = self.arm_uturn(.9, math.radians(15))
++        core.set_pose((.9-core.cfg['wheelbase'], 0, 0), 1.5)
++        self.ground(core, 1.5)
++        core.tick(1.5)
++        self.ground(core, 2.6)
++        self.assertEqual(core.tick(2.6)[0], 0)
++        self.assertNotEqual(core.state, 'UTURN')
++        self.assertEqual(core.reason, 'uturn_blue_heading_not_aligned')
++
++    def test_uturn_visual_updates_move_target_plane_and_stale_stream_stops(self):
++        core = self.arm_uturn(.9)
++        core.set_pose((.1, 0, 0), 1.5)
++        # New visual geometry corrects the target from world x=.9 to x=1.0.
++        self.ground(core, 1.5, .9)
++        self.assertGreater(core.tick(1.5)[0], 0)
++        self.assertAlmostEqual(core.blue_approach['point'][0], 1.)
++        core.set_pose((.9-core.cfg['wheelbase'], 0, 0), 1.6)
++        self.ground(core, 1.6)
++        self.assertEqual(core.tick(1.6)[0], 20)
++        core.set_pose((1.-core.cfg['wheelbase'], 0, 0), 1.7)
++        self.ground(core, 1.7)
++        self.assertEqual(core.tick(1.7)[0], 0)
++        self.assertEqual(core.state, 'BLUE_STOP')
++        self.assertEqual(core.tick(3.1)[0], 0)
++        self.assertEqual(core.reason, 'blue_stop_front_stale')
++
++    def test_red_overrides_queued_blue_handoff(self):
++        core = self.straight()
++        self.votes(core)
++        for stamp in (18.3, 18.5, 18.7):
++            self.ground(core, stamp, .8)
++        core.set_pose((1.25, 0, 0), 18.8)
++        core.observe_sign('RED', .99, 18.8, 18.8)
++        self.assertEqual(core.tick(18.8)[0], 0)
++        self.assertEqual(core.action, 'STRAIGHT')
++        self.assertEqual(core.state, 'MANEUVER')
++
++
++if __name__ == '__main__':
++    unittest.main()

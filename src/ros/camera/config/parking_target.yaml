@@ -1,0 +1,58 @@
+# P4/P5 target-selection and LaserScan zone parameters.
+#
+# All positions are in base_link: x forward, y left.  The slot candidate is
+# extracted from the white bay lines.  The blue start line is an independent
+# trigger and is never used as the bay geometry or occupancy reference.  The
+# occupancy zone is measured from the selected white bay candidate by
+# zone_start/end_offset_m.  These values are provisional map priors and must
+# be measured on the actual field before target_zone_calibrated is set true.
+
+slot_candidate_topic: /perception/parking_slot_candidate
+start_line_topic: /perception/parking_start_line
+# Compatibility alias for old launch/replay callers.
+candidate_topic: /perception/parking_slot_candidate
+scan_topic: /scan
+sign_topic: /camera_hts/receive
+output_topic: /perception/parking_target
+input_timeout_s: 0.50
+scan_timeout_s: 0.35
+
+slot_width_m: 0.38
+slot_length_m: 0.45
+zone_start_offset_m: 0.08
+zone_end_offset_m: 0.53
+safety_margin_m: 0.05
+
+# Keep this larger than the bay range but smaller than distant background
+# returns.  The global parking_lidar adapter remains a separate chassis
+# clearance gate.
+obstacle_max_distance_m: 2.00
+min_scan_samples: 8
+
+# Measure these three extrinsics from laser_link to base_link.  The default
+# is an explicit provisional identity, not a completed calibration.
+lidar_to_base_x_m: 0.0
+lidar_to_base_y_m: 0.0
+lidar_yaw_rad: 0.0
+
+# One visible white bay edge is allowed to identify a bay only inside a unique
+# band.  When both white candidates are visible, depth order is authoritative:
+# nearest=P5, farthest=P4.  The overlap is intentional until the field
+# distance is measured; a one-candidate frame in the overlap stays ambiguous.
+slot_distance_bands:
+  P5: [0.55, 0.82]
+  P4: [0.78, 1.05]
+
+preferred_slot_id: AUTO
+fallback_order: nearest_clear
+# When both blue start lines are visible, associate P5 with the nearer line
+# and P4 with the farther line.  This is trigger association only; it never
+# changes the white-line slot identity.
+start_line_selection_mode: near_far
+# Do not hard-code the entry turn.  The selected candidate's calibrated
+# parking_side (or its signed lateral position in base_link) determines the
+# mirror: positive raw steering is left and negative raw steering is right.
+parking_side: AUTO
+slot_parking_sides: {}
+side_inference_deadband_m: 0.05
+zone_calibrated: false

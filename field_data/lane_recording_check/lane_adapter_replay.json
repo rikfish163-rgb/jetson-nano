@@ -1,0 +1,51 @@
+{
+  "note": "Recorder receive times approximate adapter arrival; normal LANE/GAP ticks only. No motion.", 
+  "runs": [
+    {
+      "run": "20260929_224831_28947", 
+      "observations": 580, 
+      "versions": {
+        "after": {
+          "reasons": {}, 
+          "accepted": 580, 
+          "stale_ticks": 0, 
+          "rejected": 0, 
+          "normal_ticks": 727
+        }, 
+        "before": {
+          "reasons": {
+            "(2, 'lane observation rejected: %s', ('lane path has insufficient points or forward span',))": 18, 
+            "(2, 'lane observation rejected: %s', ('lane boundary span',))": 33
+          }, 
+          "accepted": 529, 
+          "stale_ticks": 16, 
+          "rejected": 51, 
+          "normal_ticks": 727
+        }
+      }
+    }, 
+    {
+      "run": "20260929_225212_31193", 
+      "observations": 402, 
+      "versions": {
+        "after": {
+          "reasons": {}, 
+          "accepted": 402, 
+          "stale_ticks": 0, 
+          "rejected": 0, 
+          "normal_ticks": 224
+        }, 
+        "before": {
+          "reasons": {
+            "(2, 'lane observation rejected: %s', ('lane path has insufficient points or forward span',))": 4, 
+            "(2, 'lane observation rejected: %s', ('lane boundary span',))": 51
+          }, 
+          "accepted": 347, 
+          "stale_ticks": 5, 
+          "rejected": 55, 
+          "normal_ticks": 224
+        }
+      }
+    }
+  ]
+}

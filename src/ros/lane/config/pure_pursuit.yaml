@@ -1,0 +1,8 @@
+# Safe defaults for the first lane-control integration trial.
+wheelbase: 0.29
+lookahead_distance: 0.60
+target_speed: 0.0
+min_confidence: 0.55
+path_timeout: 0.25
+max_steering_rad: 0.35
+angel_gain: 1.0

@@ -1,0 +1,100 @@
+{
+  "confidence": 0.962012529373169, 
+  "detections": [
+    {
+      "bounds": [
+        565, 
+        59, 
+        75, 
+        114
+      ], 
+      "confidence": 0.962012529373169, 
+      "label": "straight", 
+      "scores": {
+        "green": 1.4981983440520708e-05, 
+        "left": 0.0004143643891438842, 
+        "park": 0.00014324087533168495, 
+        "red": 9.902537385642063e-06, 
+        "right": 0.00019885876099579036, 
+        "straight": 0.962012529373169, 
+        "uturn": 0.00011691299005178735
+      }
+    }
+  ], 
+  "inference_ms": 99.08413887023926, 
+  "input_mode": "full_frame_yolo", 
+  "label": "STRAIGHT", 
+  "range_reason": "route_confirmed", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          565, 
+          59, 
+          75, 
+          114
+        ], 
+        "reason": "#1 straight 0.96"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        565, 
+        59, 
+        75, 
+        114
+      ], 
+      "confidence": 0.962012529373169, 
+      "label": "straight", 
+      "scores": {
+        "green": 1.4981983440520708e-05, 
+        "left": 0.0004143643891438842, 
+        "park": 0.00014324087533168495, 
+        "red": 9.902537385642063e-06, 
+        "right": 0.00019885876099579036, 
+        "straight": 0.962012529373169, 
+        "uturn": 0.00011691299005178735
+      }
+    }
+  ], 
+  "route_gate": {
+    "center_ratio": 0.94140625, 
+    "confidence_threshold": 0.8, 
+    "enabled": true, 
+    "frames": 16, 
+    "left_center_ratio": 0.3, 
+    "min_height_ratio": 0.04, 
+    "required_frames": 2, 
+    "small_target": false, 
+    "track_id": 14
+  }, 
+  "scores": {
+    "GREEN": 1.4981983440520708e-05, 
+    "LEFT": 0.0004143643891438842, 
+    "PARKING": 0.00014324087533168495, 
+    "RED": 9.902537385642063e-06, 
+    "RIGHT": 0.00019885876099579036, 
+    "STRAIGHT": 0.962012529373169, 
+    "UTURN": 0.00011691299005178735
+  }, 
+  "sign_bounds": [
+    565, 
+    59, 
+    75, 
+    114
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.31666666666666665, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.11639070510864258, 
+  "stamp": 1791547709.9426553, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "STRAIGHT"
+}

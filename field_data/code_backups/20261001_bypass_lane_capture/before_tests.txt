@@ -1,0 +1,228 @@
+test_aligned_sparse_lane_can_handoff_without_being_already_centered (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_alternating_detected_lanes_reset_confirmation (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_default_right_minimum_is_four_point_five_seconds (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_far_sideways_or_low_confidence_path_cannot_handoff (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_heading_estimate_cannot_replace_visual_confirmation (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_invalid_search_limit_rejected (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_missing_lane_continues_search_past_five_seconds (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_no_lane_stops_search_at_six_second_limit (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_repeated_source_image_does_not_confirm_exit (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_safety_stop_pauses_minimum_motion_timer (test_bypass_lane_capture.BypassLaneCaptureTests) ... ok
+test_single_valid_frame_at_old_five_second_endpoint_does_not_handoff (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_stable_lane_cannot_end_right_before_minimum (test_bypass_lane_capture.BypassLaneCaptureTests) ... ok
+test_stopped_search_can_handoff_after_three_new_lane_frames (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_three_fresh_consistent_frames_handoff_after_minimum (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_trigger_still_ahead_cannot_complete_bypass (test_bypass_lane_capture.BypassLaneCaptureTests) ... FAIL
+test_world_frame_consistency_allows_vehicle_motion_during_capture (test_bypass_lane_capture.BypassLaneCaptureTests) ... ERROR
+
+======================================================================
+ERROR: test_world_frame_consistency_allows_vehicle_motion_during_capture (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 100, in test_world_frame_consistency_allows_vehicle_motion_during_capture
+    command=self.tick(c,[local(c.pose,p) for p in road],now)
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 30, in tick
+    return c.execute('obstacle','timed_bypass_tick',stamp).value
+  File "/home/nano/robocup_ws/src/robot/master/controller.py", line 28, in execute
+    result = self._runtime.execute(module, operation, self._state_data, *args, **kwargs)
+  File "/home/nano/robocup_ws/src/robot/master/runtime.py", line 90, in execute
+    value = invoke(module, operation, *args, **kwargs)
+  File "/home/nano/robocup_ws/src/robot/master/runtime.py", line 88, in invoke
+    return getattr(implementation, name)(ctx, *values, **options)
+  File "/home/nano/robocup_ws/src/robot/obstacle/controller.py", line 101, in timed_bypass_tick
+    if task['phase']=='SETTLE_LEFT':
+TypeError: 'NoneType' object has no attribute '__getitem__'
+
+======================================================================
+FAIL: test_aligned_sparse_lane_can_handoff_without_being_already_centered (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 121, in test_aligned_sparse_lane_can_handoff_without_being_already_centered
+    for now in (1.1,1.2):self.assertEqual(self.tick(c,path,now,.329595),(26,-.03))
+AssertionError: Tuples differ: (16, -0.03) != (26, -0.03)
+
+First differing element 0:
+16
+26
+
+- (16, -0.03)
+?  ^
+
++ (26, -0.03)
+?  ^
+
+
+======================================================================
+FAIL: test_alternating_detected_lanes_reset_confirmation (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 92, in test_alternating_detected_lanes_reset_confirmation
+    1.1+i*.1),(26,-.03))
+AssertionError: Tuples differ: (16, -0.03) != (26, -0.03)
+
+First differing element 0:
+16
+26
+
+- (16, -0.03)
+?  ^
+
++ (26, -0.03)
+?  ^
+
+
+======================================================================
+FAIL: test_default_right_minimum_is_four_point_five_seconds (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 34, in test_default_right_minimum_is_four_point_five_seconds
+    self.assertEqual(cfg['timed_bypass_right_s'],4.5)
+AssertionError: 5.0 != 4.5
+
+======================================================================
+FAIL: test_far_sideways_or_low_confidence_path_cannot_handoff (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 110, in test_far_sideways_or_low_confidence_path_cannot_handoff
+    self.assertEqual(self.tick(c,path,now,confidence),(26,-.03))
+AssertionError: Tuples differ: (16, -0.02386363636363636) != (26, -0.03)
+
+First differing element 0:
+16
+26
+
+- (16, -0.02386363636363636)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_heading_estimate_cannot_replace_visual_confirmation (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 138, in test_heading_estimate_cannot_replace_visual_confirmation
+    self.assertEqual(self.tick(c,[],1.1,0.),(26,-.03))
+AssertionError: Tuples differ: (0, 0.0) != (26, -0.03)
+
+First differing element 0:
+0
+26
+
+- (0, 0.0)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_invalid_search_limit_rejected (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 145, in test_invalid_search_limit_rejected
+    with self.assertRaises(ValueError):validate_config(c.cfg)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_lane_continues_search_past_five_seconds (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 63, in test_missing_lane_continues_search_past_five_seconds
+    self.assertEqual(self.tick(c,[],1.1,0.),(26,-.03))
+AssertionError: Tuples differ: (0, 0.0) != (26, -0.03)
+
+First differing element 0:
+0
+26
+
+- (0, 0.0)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_no_lane_stops_search_at_six_second_limit (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 68, in test_no_lane_stops_search_at_six_second_limit
+    self.assertEqual(self.tick(c,[],1.1,0.),(26,-.03))
+AssertionError: Tuples differ: (0, 0.0) != (26, -0.03)
+
+First differing element 0:
+0
+26
+
+- (0, 0.0)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_repeated_source_image_does_not_confirm_exit (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 85, in test_repeated_source_image_does_not_confirm_exit
+    self.assertEqual(self.tick(c,self.CENTER,now,source_stamp=1.1),(26,-.03))
+AssertionError: Tuples differ: (16, -0.02386363636363636) != (26, -0.03)
+
+First differing element 0:
+16
+26
+
+- (16, -0.02386363636363636)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_single_valid_frame_at_old_five_second_endpoint_does_not_handoff (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 58, in test_single_valid_frame_at_old_five_second_endpoint_does_not_handoff
+    self.assertEqual(self.tick(c,self.CENTER,1.1),(26,-.03))
+AssertionError: Tuples differ: (16, -0.02386363636363636) != (26, -0.03)
+
+First differing element 0:
+16
+26
+
+- (16, -0.02386363636363636)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_stopped_search_can_handoff_after_three_new_lane_frames (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 78, in test_stopped_search_can_handoff_after_three_new_lane_frames
+    self.assertEqual(self.tick(c,self.CENTER,now),(0,0.))
+AssertionError: Tuples differ: (16, 0.006136363636363637) != (0, 0.0)
+
+First differing element 0:
+16
+0
+
+- (16, 0.006136363636363637)
++ (0, 0.0)
+
+======================================================================
+FAIL: test_three_fresh_consistent_frames_handoff_after_minimum (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 46, in test_three_fresh_consistent_frames_handoff_after_minimum
+    self.assertEqual(self.tick(c,self.CENTER,now),(26,-.03))
+AssertionError: Tuples differ: (16, -0.02386363636363636) != (26, -0.03)
+
+First differing element 0:
+16
+26
+
+- (16, -0.02386363636363636)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_trigger_still_ahead_cannot_complete_bypass (test_bypass_lane_capture.BypassLaneCaptureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_lane_capture.py", line 116, in test_trigger_still_ahead_cannot_complete_bypass
+    self.assertEqual(self.tick(c,self.CENTER,now),(26,-.03))
+AssertionError: Tuples differ: (16, -0.02386363636363636) != (26, -0.03)
+
+First differing element 0:
+16
+26
+
+- (16, -0.02386363636363636)
++ (26, -0.03)
+
+----------------------------------------------------------------------
+Ran 16 tests in 7.621s
+
+FAILED (failures=13, errors=1)

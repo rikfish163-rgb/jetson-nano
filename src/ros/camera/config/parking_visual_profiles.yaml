@@ -1,0 +1,64 @@
+# Per-slot visual pose mappings for the P4/P5 reverse-parking route.
+#
+# These values are deliberately conservative placeholders.  They describe
+# image/lane/rear-BEV geometry only; parking.yaml remains the authority for the
+# motion-state thresholds and calibration lock.  Replace the values after
+# measuring each slot in base_link and keep both profiles explicit.
+slot_profiles:
+  P4:
+    lane_yaw_sign: -1.0
+    lane_slot_yaw_bias_rad: 0.0
+    lane_slot_lateral_offset_m: 0.0
+    candidate_yaw_gain: 1.0
+    candidate_yaw_bias_rad: 0.0
+    candidate_lateral_gain: 1.0
+    candidate_lateral_bias_m: 0.0
+    exit_candidate_yaw_gain: 1.0
+    exit_candidate_yaw_bias_rad: 0.0
+    exit_candidate_lateral_gain: 1.0
+    exit_candidate_lateral_bias_m: 0.0
+    rear_expected_slot_width_m: 0.38
+    rear_vehicle_center_x_m: 0.0
+    rear_reference_distance_m: 0.0
+    rear_stop_line_bias_m: 0.0
+    rear_yaw_sign: 1.0
+    rear_line_color: white
+    rear_single_side_mode: false
+    rear_single_side_lateral_sign: 1.0
+    # The front metric BEV contains white transverse bay edges.  P4 is
+    # selected by depth and requires both candidates to be visible so a
+    # partial frame cannot be mistaken for the far bay.  Blue start-line
+    # visibility is supplied by a separate detector and is not part of this
+    # slot mapping.
+    front_candidate_order: farthest
+    front_min_candidate_count: 2
+  P5:
+    # 2026-09-05 speed-sign correction invalidated the earlier reverse-motion
+    # inference.  For the intended forward manoeuvre, right steering must move
+    # vehicle_yaw_error toward the controller's negative target.
+    lane_yaw_sign: -1.0
+    lane_slot_yaw_bias_rad: 0.0
+    lane_slot_lateral_offset_m: 0.0
+    candidate_yaw_gain: 1.0
+    candidate_yaw_bias_rad: 0.0
+    candidate_lateral_gain: 1.0
+    candidate_lateral_bias_m: 0.0
+    exit_candidate_yaw_gain: 1.0
+    exit_candidate_yaw_bias_rad: 0.0
+    exit_candidate_lateral_gain: 1.0
+    exit_candidate_lateral_bias_m: 0.0
+    rear_expected_slot_width_m: 0.38
+    rear_vehicle_center_x_m: 0.0
+    rear_reference_distance_m: 0.0
+    rear_stop_line_bias_m: 0.0
+    rear_yaw_sign: 1.0
+    rear_line_color: white
+    # P5's visible geometry is white bay-line geometry.  The detector uses the
+    # measured 0.38 m slot width to infer centre; the blue start line is outside
+    # the bay and is not a rear parking-line source.
+    rear_single_side_mode: true
+    rear_single_side_lateral_sign: 1.0
+    # P5 is the near white bay candidate.  It may remain visible after the far
+    # bay leaves the front FOV, so one legal candidate is sufficient here.
+    front_candidate_order: nearest
+    front_min_candidate_count: 1

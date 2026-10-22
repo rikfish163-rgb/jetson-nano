@@ -9,7 +9,7 @@
   <depend>ackermann_msgs</depend>
   <exec_depend>python-numpy</exec_depend><exec_depend>python-opencv</exec_depend>
   <exec_depend>python-yaml</exec_depend><exec_depend>python-rospkg</exec_depend>
-  <exec_depend>yihan_ros_pkg</exec_depend>
+  <exec_depend>yihan_ros_pkg</exec_depend><exec_depend>hts_ros_pkg</exec_depend>
   <exec_depend>usb_cam</exec_depend><exec_depend>ls01b_v2</exec_depend>
   <exec_depend>ackermann_drive_teleop</exec_depend><exec_depend>base_controller</exec_depend>
   <exec_depend>rosgraph</exec_depend>

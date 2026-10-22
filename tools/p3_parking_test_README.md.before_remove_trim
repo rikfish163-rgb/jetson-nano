@@ -1,0 +1,80 @@
+# P3 单独测试：自动巡线入场停车 + 五段倒车
+
+入场复用整车的前摄车道检测和自动巡线控制器，默认前进速度 30。
+转角根据当前车道实时修正，--steering -3 是叠加在巡线输出上的硬件修正值；不再固定转角直行。
+巡线无效时先零速等待；保留原巡线的短暂丢线保持（最多约 0.25 秒）和原入场超时。
+单纯丢失车道不会开始倒车。配置仅在测试进程内加载/覆盖，整车源代码、配置和 launch 不修改。
+停车点仍复用已经实车验证的横线/双侧弯道检测。
+第一次检测到横线为零且左右车道边线均弯曲时发零速，保持 0.5 秒后进入五段倒车。
+本测试使用该首次停车触发作为 P3 倒车起点；不额外等待原停车脚本的持续视觉确认。
+这是手动放车的 P3 动作试验，不会识别或验证库位编号，也不测量最终是否停正。
+
+倒车五段连续执行，中间不停车：
+1. 速度 -30、转角 0、1.7 秒。
+2. 速度 -30、转角 +22、0.3 秒。
+3. 速度 -30、转角 -22、3.1 秒。
+4. 速度 -30、转角 0、0.2 秒。
+5. 速度 -30、转角 +22、2.1 秒。
+最后发零速并退出，只执行一次。
+
+## 启动
+
+先停止整车控制和其他运动测试。若旧的 parking_line_stop_test.launch 正在运行，
+可以直接复用该终端一，只停止旧的 Python 测试，再在终端二执行 P3 命令；不要重复启动底盘或前摄。
+
+Nano 终端一：
+
+```bash
+cd /home/nano/robocup_ws
+source /opt/ros/melodic/setup.bash
+source devel/setup.bash
+export ROS_MASTER_URI=http://127.0.0.1:11311
+export ROS_IP=127.0.0.1
+unset ROS_HOSTNAME
+roslaunch robocup_competition p3_parking_test.launch
+```
+
+Nano 终端二：
+
+```bash
+cd /home/nano/robocup_ws
+source /opt/ros/melodic/setup.bash
+source devel/setup.bash
+export ROS_MASTER_URI=http://127.0.0.1:11311
+export ROS_IP=127.0.0.1
+unset ROS_HOSTNAME
+python2 tools/p3_parking_test.py --execute \
+  --speed 30 \
+  --steering -3 \
+  --step1-seconds 1.7 \
+  --step2-seconds 0.3 \
+  --step3-seconds 3.1 \
+  --step4-seconds 0.2 \
+  --step5-seconds 2.1
+```
+
+启动后停着倒计时 3 秒，再沿车道巡线前进。车放在库位旁车道内，前摄需要看到有效车道线，库位默认在右侧。
+每次摆好车后，重新执行终端二命令。空格、x、q、Ctrl+C 会停车。
+此测试没有自动避障。底盘反馈、命令独占、急停和相机新鲜度检查贯穿全部阶段；
+摄像头/底盘失联等故障会结束测试，不能因为故障停车就自动开始倒车。
+
+## 调参
+
+- --step1-seconds 1.7：第一段直线倒车时间。
+- --step2-seconds 0.3：新插入的第二段 +22 转角倒车时间。
+- --step3-seconds 3.1：第三段 -22 转角倒车时间。
+- --step4-seconds 0.2：第四段直线倒车时间。
+- --step5-seconds 2.1：第五段 +22 转角倒车时间。
+- 时间可调 0.05～10 秒，互相独立。
+- --reverse-speed 30：五段倒车速度的正数幅值，实际输出负数。
+- --parking-pause-seconds 0.5：入场停车后的零速保持时间，范围 0.3～3 秒。
+- --speed 30：入场巡线前进速度。
+- --steering -3：巡线输出转角的硬件修正量；0 表示不叠加修正。只作用于入场，不改变五段倒车角度。
+- 仍支持原停车测试全部视觉参数。
+- 默认值在 tools/p3_parking_test.py 的 arguments() 中。
+
+不带 --execute 仅打印动作参数，不发布命令。--observe 只检测图像。
+状态话题 /parking_p3/status。巡线入场日志为 P3_LANE_FORWARD_*；巡线输出零速时为 P3_WAIT_LANE。
+停车后日志阶段：
+P3_STOP_HOLD → P3_STEP1_REVERSE_STRAIGHT → P3_STEP2_REVERSE_LEFT →
+P3_STEP3_REVERSE_RIGHT → P3_STEP4_REVERSE_STRAIGHT → P3_STEP5_REVERSE_LEFT → P3_COMPLETE。

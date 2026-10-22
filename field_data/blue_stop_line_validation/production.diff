@@ -1,0 +1,667 @@
+--- before/src/robot/camera/observations.py
++++ after/src/robot/camera/observations.py
+@@ -16,7 +16,7 @@
+  'parking_candidate_stamp', 'parking_candidates', 'parking_detection', 'parking_entry',
+  'parking_front_frames', 'parking_lines', 'parking_lines_stamp', 'parking_marker',
+  'parking_trigger_at', 'pose', 'rear_blue_lines', 'rear_marker_stamp', 'rear_markers',
+- 'slot', 'slot_locked', 'slot_stamp')
++ 'slot', 'slot_locked', 'slot_stamp', 'blue_approach', 'blue_clear_since', 'blue_clear_frames')
+ CALLS = ()
+ OPERATIONS = ('observe_lane', 'observe_left_boundary', 'observe_ground')
+ 
+@@ -80,47 +80,75 @@
+                     ctx.parking_marker = (p,stamp)
+         if m['kind'] != 'junction':
+             continue  # short scoring ticks never dispatch a turn
++        if not 0 < m['x'] <= ctx.cfg.get('straight_align_distance',1.6) or abs(m['y']) > ctx.cfg['lane_width']:
++            continue
++        if m.get('length',ctx.cfg['blue']['long_min']) < ctx.cfg['blue']['long_min']:
++            continue
++        measured = [line for line in data.get('blue_lines',[])
++                    if math.hypot(line['x']-m['x'],line['y']-m['y']) < .05]
++        if measured:
++            line = min(measured,key=lambda line:math.hypot(line['x']-m['x'],line['y']-m['y']))
++            normal = (line['yaw']+math.pi/2)%math.pi-math.pi/2
++            if abs(normal) > math.radians(60):
++                continue  # longitudinal blue is alignment paint, not a stop line
++            # The finite stripe must reach the car's forward corridor. A long
++            # transverse segment wholly in the neighbouring lane is not ours.
++            if abs(m['y']/math.cos(normal)) > line['length']/2+ctx.cfg['body_width']/2:
++                continue
+         p = world(ctx.pose, (m['x'], m['y']))
+         markers.append(p)
+     if channel[0] == 'front' and channel[1] in ('all','markers'):
++        approach = ctx.blue_approach
++        if approach is not None and approach['phase'] == 'APPROACH':
++            nx,ny = math.cos(approach['yaw']),math.sin(approach['yaw'])
++            matches = [p for p in markers if
++                abs((p[0]-approach['point'][0])*nx+(p[1]-approach['point'][1])*ny) < .15
++                and distance(p,approach['point']) < .40]
++            if matches:
++                point = min(matches,key=lambda p:distance(p,approach['point']))
++                lines = [line for line in ctx.front_blue_lines if distance(line['point'],point) < .05]
++                yaw = min(lines,key=lambda line:distance(line['point'],point))['yaw'] if lines else approach['yaw']
++                if math.cos(yaw-approach['yaw']) < 0: yaw=wrap(yaw+math.pi)
++                if abs(wrap(yaw-approach['yaw'])) < math.radians(25):
++                    approach.update(point=point,yaw=yaw,observed_stamp=stamp)
++                    ctx.consumed_marker=point
+         exit_blue = (ctx.action == 'RIGHT' and ctx.right_lock is not None and
+                      ctx.cfg.get('right_exit_on_blue', False))
+-        if ctx.pending == 'PARKING' or exit_blue:
++        if (ctx.pending == 'PARKING' and ctx.cfg.get('parking_mode') != 'forward_center') or exit_blue:
+             # Preserve the existing explicit parking and right-exit handlers.
+             special = [p for p in markers if not ctx.consumed_marker or
+                        distance(p,ctx.consumed_marker) >= ctx.cfg['marker_rearm_distance']]
+             if special:
+                 ctx.marker = (min(special,key=lambda p: distance(p,ctx.pose)),stamp)
+-        elif not markers:
+-            ctx.blue_consumed = False
+-            ctx.marker_candidate = None
+-            # Keep only the confirmed near marker for the brief blind region.
+         elif ctx.action is not None:
+             ctx.blue_consumed = True
++            ctx.blue_clear_since,ctx.blue_clear_frames = None,0
+             ctx.marker_candidate = None
++            ctx.marker = None
++        elif not markers:
++            ctx.marker_candidate = None
++            ctx.marker = None
++            if ctx.blue_clear_since is None:
++                ctx.blue_clear_since = stamp
++            ctx.blue_clear_frames += 1
++            if ctx.blue_clear_frames >= 3 and stamp-ctx.blue_clear_since >= .30-1e-9:
++                ctx.blue_consumed = False
+         elif not ctx.blue_consumed:
++            ctx.blue_clear_since,ctx.blue_clear_frames = None,0
+             point = min(markers,key=lambda p: distance(p,ctx.pose))
+-            straight = (ctx.pending == 'STRAIGHT' or
+-                        (ctx.pending is None and ctx.cfg.get('blue_default_straight',False)))
+-            if straight:
+-                # GroundDetector already classifies sufficiently long paint as
+-                # junction. Straight advances from this observation, not from
+-                # a projected marker crossing the camera's near blind region.
++            previous = ctx.marker_candidate
++            matched = (previous is not None and 0 < stamp-previous['stamp'] <= .5
++                       and distance(point,previous['point']) <= .15)
++            count = previous['count']+1 if matched else 1
++            since = previous['since'] if matched else stamp
++            ctx.marker_candidate = dict(point=point,stamp=stamp,count=count,since=since)
++            if count >= 3 and stamp-since >= .15:
+                 ctx.marker = (point,stamp)
+-                ctx.marker_candidate = None
+-            else:
+-                x,y = local(ctx.pose,point)
+-                previous = ctx.marker_candidate
+-                matched = (previous is not None and 0 < stamp-previous['stamp'] <= .5
+-                           and distance(point,previous['point']) <= .15)
+-                count = previous['count']+1 if matched else 1
+-                since = previous['since'] if matched else stamp
+-                ctx.marker_candidate = dict(point=point,stamp=stamp,count=count,since=since)
+-                fresh_trigger = -.05 < x <= ctx.cfg['marker_trigger_x']
+-                confirmed_near = (count >= 3 and stamp-since >= .15 and
+-                                  x <= ctx.cfg['marker_trigger_x']+.30)
+-                if fresh_trigger or confirmed_near:
+-                    ctx.marker = (point,stamp)
++                if ctx.pending is None and not ctx.cfg.get('blue_default_straight',False):
++                    ctx.blue_consumed=True
++                    ctx.marker=None
++        else:
++            ctx.blue_clear_since,ctx.blue_clear_frames = None,0
+     auto = ctx.cfg['parking_slot'] == 'AUTO'
+     profile_name = ('P1' if ctx.slot_locked and ctx.slot['kind'] == 'parallel' else 'P4') if auto else ctx.cfg['parking_slot']
+     profile = ctx.cfg['slots'][profile_name]
+--- before/src/robot/common/contracts.py
++++ after/src/robot/common/contracts.py
+@@ -177,7 +177,6 @@
+     if not 0 <= number(cfg.get('uturn_reverse_distance_m',0)) <= 3:
+         raise ValueError('uturn_reverse_distance_m must be in [0,3]')
+     for key,default,upper in (('straight_wait_s',1.0,60),
+-                              ('straight_blue_advance_m',.36,2),
+                               ('straight_search_max_distance',.8,3),
+                               ('straight_search_timeout',10.0,60),
+                               ('straight_search_heading_deg',20,45)):
+--- before/src/robot/config/competition.yaml
++++ after/src/robot/config/competition.yaml
+@@ -61,8 +61,8 @@
+ gap_max_distance: 0.80
+ gap_max_seconds: 4.0
+ marker_trigger_x: 0.36
+-# Low-level opt-out; full.launch enables straight fallback when no sign is cached.
+-blue_default_straight: true
++# An unassigned blue line does not invent a straight instruction.
++blue_default_straight: false
+ marker_rearm_distance: 0.70
+ marker_memory_s: 8.0
+ lane_width: 0.60
+@@ -73,7 +73,6 @@
+ intersection_wait_s: 0.0 # set explicitly in full.launch for stop/wait/turn tests
+ turn_angle_deg: 90.0
+ straight_distance: 1.25 # minimum forward displacement before lane takeover; floor 1.25 m
+-straight_blue_advance_m: 0.36 # advance after observing a long blue, before stop/straight
+ straight_wait_s: 1.0
+ straight_speed_raw: 26 # same command as the proven startup setting; verify wheel motion
+ straight_search_max_distance: 2.20 # bounded allowance for the 1.6 m blue-line spacing
+--- before/src/robot/config/workspace_modules.yaml
++++ after/src/robot/config/workspace_modules.yaml
+@@ -132,7 +132,6 @@
+     - straight_align_distance
+     - straight_align_tolerance_deg
+     - straight_blue_clearance
+-    - straight_blue_advance_m
+     - straight_distance
+     - straight_search_heading_deg
+     - straight_search_max_distance
+--- before/src/robot/lane/controller.py
++++ after/src/robot/lane/controller.py
+@@ -36,11 +36,12 @@
+                for a,b in zip(points,points[1:]))
+ 
+ 
+-def lane_command(ctx, now):
+-    if (ctx.action is not None or ctx.pending == 'PARKING' or
++def lane_command(ctx, now, approach=False):
++    ordinary = ctx.action is None or approach
++    if (not ordinary or
+             ctx.follow_left_boundary or ctx.right_tail_origin is not None):
+         ctx.lane_recovery = None
+-    if ctx.pending == 'PARKING' and ctx.action is None:
++    if ctx.pending == 'PARKING' and ctx.action is None and ctx.cfg.get('parking_mode') != 'forward_center':
+         return ctx.call('lane', 'park_line_command', now)
+     left = None
+     if ctx.follow_left_boundary:
+@@ -59,13 +60,13 @@
+         ctx.state = 'LANE'
+         return ctx.call('lane', 'left_reference_command', left,now)
+     if left is None and not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']:
+-        if ctx.gap_origin is not None and ctx.action is None and ctx.lane_recovery is None:
++        if ctx.gap_origin is not None and ordinary and ctx.lane_recovery is None:
+             ctx.lane_recovery = dict(stamp=now)
+         return ctx.call('motion', 'stop', 'lane_stream_stale')
+     if left is None and (ctx.follow_left_boundary or not ctx.call('lane', 'lane_valid', now)):
+         if ctx.gap_origin is None:
+             return ctx.call('motion', 'stop', 'no_initial_lane')
+-        if ctx.action is None and ctx.lane_recovery is None:
++        if ordinary and ctx.lane_recovery is None:
+             ctx.lane_recovery = dict(stamp=now)
+         if ctx.state != 'GAP':
+             ctx.gap_steer = ctx.call('motion', 'current_steering', now)
+@@ -78,7 +79,7 @@
+     candidates = left['points'] if left else [local(ctx.pose,p) for p in ctx.lane]
+     candidates = [p for p in candidates if p[0] > 0.05]
+     if not candidates:
+-        if (ctx.gap_origin is not None and ctx.action is None and left is None
++        if (ctx.gap_origin is not None and ordinary and left is None
+                 and ctx.lane_recovery is None):
+             ctx.lane_recovery = dict(stamp=now)
+         return ctx.call('motion', 'stop', 'lane_behind_vehicle')
+@@ -89,7 +90,7 @@
+     # existing turn when an observed nearer target agrees with its direction.
+     near_lookahead=ctx.cfg.get('lane_curve_lookahead_m',ctx.cfg['lookahead'])
+     scale=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+-    if (ctx.action is None and left is None and near_lookahead<ctx.cfg['lookahead']
++    if (ordinary and left is None and near_lookahead<ctx.cfg['lookahead']
+             and abs(steer)>.35*scale):
+         nx,ny=min(candidates,key=lambda p:abs(math.hypot(*p)-near_lookahead))
+         near_steer=math.atan2(2*ctx.cfg['wheelbase']*ny,max(.0025,nx*nx+ny*ny))
+@@ -97,7 +98,7 @@
+             steer=near_steer
+     steer = max(-ctx.cfg['max_steer'],min(ctx.cfg['max_steer'],steer))
+     speed = ctx.cfg['speed_raw']['lane']
+-    if ctx.action is None and left is None:
++    if ordinary and left is None:
+         # Slow translation, not steering, to reduce travel during visual delay.
+         # Use the unfiltered demand AND current command: crossing zero during
+         # a recovery reversal must not be mistaken for a straight section.
+@@ -107,7 +108,7 @@
+         blend = max(0.,(demand-.35)/.65)
+         curve_speed = min(speed,ctx.cfg.get('lane_curve_speed_raw',speed))
+         speed -= (speed-curve_speed)*blend
+-    if ctx.lane_recovery is not None and ctx.action is None and left is None:
++    if ctx.lane_recovery is not None and ordinary and left is None:
+         steer = recovery_steering(ctx,steer,now)
+     ctx.gap_origin, ctx.gap_start, ctx.gap_steer = ctx.pose, now, steer
+     return speed, steer
+--- before/src/robot/launch/full.launch
++++ after/src/robot/launch/full.launch
+@@ -41,7 +41,7 @@
+   <arg name="sign_roi_mode" default="board"/>
+   <arg name="sign_ttl" default="0"/>
+   <arg name="wait_green" default="true"/>
+-  <arg name="blue_default_straight" default="true"/>
++  <arg name="blue_default_straight" default="false"/>
+   <arg name="marker_trigger_x" default=""/>
+   <arg name="marker_memory_s" default=""/>
+   <arg name="intersection_wait_s" default=""/>
+@@ -62,7 +62,6 @@
+   <arg name="right_turn_angle_deg" default=""/>
+   <arg name="right_turn_exit" default=""/>
+   <arg name="straight_distance" default=""/>
+-  <arg name="straight_blue_advance_m" default=""/>
+   <arg name="lane_speed_raw" default=""/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+@@ -130,7 +129,6 @@
+     <arg name="right_turn_angle_deg" value="$(arg right_turn_angle_deg)"/>
+     <arg name="right_turn_exit" value="$(arg right_turn_exit)"/>
+     <arg name="straight_distance" value="$(arg straight_distance)"/>
+-    <arg name="straight_blue_advance_m" value="$(arg straight_blue_advance_m)"/>
+     <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+     <arg name="action_speed_raw" value="$(arg action_speed_raw)"/>
+     <arg name="straight_speed_raw" value="$(arg straight_speed_raw)"/>
+--- before/src/robot/launch/stack.launch
++++ after/src/robot/launch/stack.launch
+@@ -68,7 +68,6 @@
+   <arg name="right_turn_angle_deg" default=""/>
+   <arg name="right_turn_exit" default=""/>
+   <arg name="straight_distance" default=""/>
+-  <arg name="straight_blue_advance_m" default=""/>
+   <arg name="lane_speed_raw" default=""/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+@@ -145,7 +144,6 @@
+   <param if="$(eval arg('right_turn_angle_deg') != '')" name="/competition/config/right_turn_angle_deg" value="$(arg right_turn_angle_deg)" type="double"/>
+   <param if="$(eval arg('right_turn_exit') != '')" name="/competition/config/right_turn_exit" value="$(arg right_turn_exit)" type="double"/>
+   <param if="$(eval arg('straight_distance') != '')" name="/competition/config/straight_distance" value="$(arg straight_distance)" type="double"/>
+-  <param if="$(eval arg('straight_blue_advance_m') != '')" name="/competition/config/straight_blue_advance_m" value="$(arg straight_blue_advance_m)" type="double"/>
+   <param if="$(eval arg('lane_speed_raw') != '')" name="/competition/config/speed_raw/lane" value="$(arg lane_speed_raw)" type="int"/>
+   <param if="$(eval arg('action_speed_raw') != '')" name="/competition/config/speed_raw/action" value="$(arg action_speed_raw)" type="int"/>
+   <param if="$(eval arg('straight_speed_raw') != '')" name="/competition/config/straight_speed_raw" value="$(arg straight_speed_raw)" type="int"/>
+--- before/src/robot/master/state_machine.py
++++ after/src/robot/master/state_machine.py
+@@ -25,16 +25,17 @@
+  'parking_marker', 'parking_trigger_at', 'parking_trigger_pose', 'pending', 'pending_at',
+  'pose', 'pose_stamp', 'reason', 'red', 'right_lock', 'right_tail_origin', 'sign_count',
+  'sign_label', 'startup_started', 'startup_origin', 'startup_blue_point', 'state', 'straight_search', 'timed_uturn', 'uturn',
+- 'uturn_sign_window', 'wait_until', 'timed_bypass', 'timed_bypass_completed', 'lane_recovery')
++ 'uturn_sign_window', 'wait_until', 'timed_bypass', 'timed_bypass_completed', 'lane_recovery',
++ 'blue_approach', 'blue_clear_since', 'blue_clear_frames', 'front_blue_lines')
+ CALLS = (('lane', 'lane_command'), ('mission', 'dispatch'), ('mission', 'resume_lane'),
+  ('mission', 'start_follow'), ('motion', 'follow_path_tick'), ('motion', 'stop'),
+  ('obstacle', 'checked_command'), ('obstacle', 'scan_ready'), ('obstacle', 'timed_bypass_tick'),
+  ('lane', 'park_line_command'),
+  ('parallel_parking', 'parallel_parking_tick'), ('parking', 'auto_parking_tick'),
+  ('parking', 'start_parking'), ('turn', 'exit_lane_confirmed'),
+- ('turn', 'straight_search_tick'), ('uturn', 'course_blue_stop'),
++ ('turn', 'straight_search_tick'), ('turn', 'blue_approach_tick'), ('uturn', 'course_blue_stop'),
+  ('uturn', 'startup_tick'), ('uturn', 'uturn_phase'), ('uturn', 'uturn_tick'))
+-OPERATIONS = ('close', 'set_pose', 'start_follow', 'resume_lane', 'dispatch', 'begin_startup', 'tick')
++OPERATIONS = ('close', 'set_pose', 'start_follow', 'resume_lane', 'dispatch', 'begin_blue_action', 'begin_startup', 'tick')
+ 
+ def initial_state(cfg):
+     state = {}
+@@ -80,6 +81,9 @@
+     state['obstacle_check'] = dict(kind='not_checked')
+     state['marker'] = None
+     state['blue_consumed'] = False
++    state['blue_approach'] = None
++    state['blue_clear_since'] = None
++    state['blue_clear_frames'] = 0
+     state['marker_candidate'] = None
+     state['last_blue_trigger'] = None
+     state['parking_marker'] = None
+@@ -181,6 +185,8 @@
+     ctx.exit_pose = None
+     ctx.marker, ctx.parking_marker = None,None
+     ctx.marker_candidate = None
++    ctx.blue_approach = None
++    ctx.blue_clear_since, ctx.blue_clear_frames = None, 0
+     ctx.sign_label, ctx.sign_count = '',0
+     ctx.direction_window = []
+     ctx.uturn_sign_window = []
+@@ -193,10 +199,12 @@
+ 
+ 
+ def dispatch(ctx, now):
++    if ctx.action is not None:
++        return None
+     if ((ctx.marker is not None or ctx.parking_marker is not None) and
+             not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25)):
+         return ctx.call('motion', 'stop', 'junction_front_stale')
+-    if ctx.pending == 'PARKING':
++    if ctx.pending == 'PARKING' and ctx.cfg.get('parking_mode') != 'forward_center':
+         ctx.action_source = 'sign'
+         auto = ctx.cfg['parking_slot'] == 'AUTO'
+         parallel = ctx.cfg.get('parking_mode') == 'parallel_reverse'
+@@ -226,10 +234,6 @@
+             ctx.parking_candidates = []
+             return ctx.call('motion', 'stop', 'long_blue_stop_observe_bays')
+         return ctx.call('parking', 'start_parking', now)
+-    # Exit-blue and parking/uturn phases have their own handlers.
+-    # Never restart an already executing junction action.
+-    if ctx.action is not None:
+-        return None
+     action = ctx.pending
+     fallback = action is None and ctx.cfg.get('blue_default_straight',False)
+     if action is None and not fallback:
+@@ -240,8 +244,7 @@
+     if not ctx.marker or not 0 <= now-ctx.marker[1] <= min(ctx.cfg['marker_memory_s'],2.5):
+         return None
+     x,y = local(ctx.pose,ctx.marker[0])
+-    if action != 'STRAIGHT' and not fallback and (
+-            not -.12 <= x <= ctx.cfg['marker_trigger_x'] or abs(y) > ctx.cfg['lane_width']):
++    if not 0 < x <= ctx.cfg.get('straight_align_distance',1.6) or abs(y) > ctx.cfg['lane_width']:
+         return None
+     ctx.last_blue_trigger = dict(stamp=now, observed_stamp=ctx.marker[1],
+         observation_age_s=now-ctx.marker[1], point_local=[x,y],
+@@ -254,12 +257,35 @@
+     ctx.action_source = 'blue_default' if fallback else 'sign'
+     if fallback:
+         action = 'STRAIGHT'
+-    if action == 'STRAIGHT':
+-        ctx.call('mission', 'start_follow', intersection_path(ctx.pose,action,ctx.cfg),action,now)
+-        ctx.straight_search.update(phase='BLUE_APPROACH',approach_origin=ctx.pose,
+-            approach_distance_m=ctx.cfg.get('straight_blue_advance_m',.36),
+-            approach_travelled_m=0.,approach_last_pose=ctx.pose)
+-        return ctx.call('turn', 'straight_search_tick', now)
++    # Reserve one visual event; the maneuver starts only at the bumper stop.
++    lines = [line for line in ctx.front_blue_lines
++             if distance(line['point'],ctx.consumed_marker) < .15]
++    yaw = min(lines,key=lambda line:distance(line['point'],ctx.consumed_marker))['yaw'] if lines else ctx.pose[2]
++    if math.cos(yaw-ctx.pose[2]) < 0:
++        yaw = wrap(yaw+math.pi)
++    ctx.blue_approach = dict(point=ctx.consumed_marker,yaw=yaw,
++        observed_stamp=ctx.last_blue_trigger['observed_stamp'],started=now,
++        origin=ctx.pose,phase='APPROACH',target_front_m=ctx.cfg['wheelbase']+ctx.cfg['front_overhang'])
++    if (action == 'PARKING' and ctx.parking_sign is not None and
++            ctx.pending_at-ctx.cfg['sign_timeout'] <= ctx.parking_sign['stamp'] <= now):
++        ctx.blue_approach['parking_anchor'] = ctx.parking_sign['point']
++    ctx.action,ctx.pending,ctx.action_started = action,None,now
++    ctx.state = 'BLUE_APPROACH'
++    return ctx.call('turn','blue_approach_tick',now)
++
++
++def begin_blue_action(ctx, now):
++    """Called once after the shared bumper stop and stationary wait."""
++    action = ctx.action
++    parking_anchor = (ctx.blue_approach or {}).get('parking_anchor')
++    ctx.blue_approach = None
++    if action == 'PARKING':
++        ctx.parking_entry = ForwardParking(ctx.cfg,ctx.pose,now)
++        ctx.parking_entry.sign_anchor = parking_anchor
++        if ctx.parking_sign is not None and 0 <= now-ctx.parking_sign['stamp'] <= ctx.cfg['sign_timeout']:
++            ctx.parking_entry.sign_anchor = ctx.parking_sign['point']
++        ctx.state,ctx.action_started = 'PARKING',now
++        return ctx.call('motion','stop','parking_blue_entry')
+     if action == 'UTURN':
+         ctx.timed_uturn = None
+         ctx.state, ctx.action, ctx.action_started = 'UTURN',action,now
+@@ -268,14 +294,12 @@
+                           target_yaw=wrap(ctx.pose[2]+math.pi),
+                           reverse_origin=None)
+         ctx.call('uturn', 'uturn_phase', 'WAIT_START',now)
+-        ctx.wait_until = now+ctx.cfg.get('intersection_wait_s',0.0)
++        ctx.wait_until = now  # The shared BLUE_STOP already waited.
+         return ctx.call('motion', 'stop', 'uturn_wait_start')
+-    wait = ctx.cfg.get('intersection_wait_s', 0.0)
+-    if wait > 0:
+-        ctx.state, ctx.action = 'INTERSECTION_WAIT', action
+-        ctx.wait_until = now+wait
+-        return ctx.call('motion', 'stop', 'blue_stop_wait_'+action.lower())
+     ctx.call('mission', 'start_follow', intersection_path(ctx.pose,action,ctx.cfg),action,now)
++    if action == 'STRAIGHT':
++        ctx.straight_search['phase'] = 'STRAIGHT_DISTANCE'
++        return ctx.call('turn','straight_search_tick',now)
+     return 0, 0.0
+ 
+ 
+@@ -316,12 +340,8 @@
+         return ctx.call('motion', 'stop', 'scan_missing_or_stale')
+     if ctx.state=='TIMED_BYPASS':
+         return ctx.call('obstacle','timed_bypass_tick',now)
+-    if ctx.pending=='PARKING' and cfg.get('parking_mode')=='forward_center':
+-        ctx.parking_entry=ForwardParking(cfg,ctx.pose,now)
+-        if ctx.parking_sign is not None and 0<=now-ctx.parking_sign['stamp']<=cfg['sign_timeout']:
+-            ctx.parking_entry.sign_anchor=ctx.parking_sign['point']
+-        ctx.pending=None;ctx.action='PARKING';ctx.state='PARKING'
+-        ctx.action_started=now
++    if ctx.state in ('BLUE_APPROACH','BLUE_STOP'):
++        return ctx.call('turn','blue_approach_tick',now)
+     if ctx.course_stop_pending and ctx.call('uturn', 'course_blue_stop', now):
+         return ctx.call('motion', 'stop', 'uturn_course_exit_blue_stop')
+     if ctx.state == 'PARALLEL_PARKING':
+--- before/src/robot/master/telemetry.py
++++ after/src/robot/master/telemetry.py
+@@ -116,7 +116,11 @@
+         marker_local=local(core.pose,core.marker[0]) if core.marker else None,
+         marker_age=now-core.marker[1] if core.marker else None,
+         last_blue_trigger=core.last_blue_trigger,
+-        wait_remaining=max(0,core.wait_until-now) if core.state == 'INTERSECTION_WAIT' else 0,
++        blue_approach=core.blue_approach,
++        blue_consumed=core.blue_consumed,
++        wait_remaining=(max(0,core.blue_approach['stop_until']-now)
++            if core.state == 'BLUE_STOP' and core.blue_approach is not None else
++            max(0,core.wait_until-now) if core.state == 'INTERSECTION_WAIT' else 0),
+         action=core.action,
+         action_source=core.action_source,
+         blue_default_straight=cfg.get('blue_default_straight',False),
+--- before/src/robot/obstacle/controller.py
++++ after/src/robot/obstacle/controller.py
+@@ -14,9 +14,9 @@
+ 
+ 
+ FIELDS = ('action', 'cfg', 'follower', 'issued_steer', 'obstacle_check', 'parallel_parking', 'timed_bypass', 'timed_bypass_completed',
+- 'parking_entry', 'pose', 'reason', 'relative_uturn', 'retry_at', 'scan', 'state', 'lane_recovery')
++ 'parking_entry', 'pose', 'reason', 'relative_uturn', 'retry_at', 'scan', 'state', 'lane_recovery', 'exit_count', 'exit_stamp')
+ CALLS = (('mission', 'start_follow'), ('motion', 'stop'), ('obstacle', 'scan_ready'),
+- ('lane', 'forward_lane_ready'), ('lane', 'lane_command'), ('obstacle', 'checked_command'),
++ ('lane', 'forward_lane_ready'), ('lane', 'lane_command'), ('turn','handoff_lane_confirmed'), ('mission','resume_lane'), ('obstacle', 'checked_command'),
+  ('obstacle', 'begin_timed_bypass'), ('obstacle', 'timed_bypass_tick'),
+  ('obstacle', 'sweep_clear'))
+ OPERATIONS = ('scan_ready', 'sweep_clear', 'checked_command', 'begin_timed_bypass', 'timed_bypass_tick')
+@@ -36,6 +36,7 @@
+     if not hit:return None
+     phase='SETTLE_LEFT' if ctx.cfg.get('timed_bypass_settle_s',0.)>0 else 'LEFT'
+     ctx.timed_bypass=dict(phase=phase,elapsed_s=0.,last=None,trigger_point=min(hit,key=lambda p:math.hypot(*p)))
++    ctx.exit_count,ctx.exit_stamp=0,-1.
+     ctx.state='TIMED_BYPASS';ctx.action='BYPASS'
+     return ctx.call('obstacle','timed_bypass_tick',now)
+ 
+@@ -59,12 +60,17 @@
+             task['phase']=('LEFT' if task['phase']=='SETTLE_LEFT' else
+                            'RIGHT' if task['phase']=='LEFT' else 'REACQUIRE')
+             task['elapsed_s']=0.
++    # Observe the exit during the final 0.3 s without shortening the timed
++    # maneuver. An already confirmed exit can take over without a stop.
++    if task['phase']=='RIGHT' and task['elapsed_s'] >= 5.7:
++        ctx.call('turn','handoff_lane_confirmed',now)
+     if task['phase']=='REACQUIRE':
+         ctx.lane_recovery=None
+-        # Always release the maneuver after the timed motion. Normal lane safety
+-        # and junction dispatch take over; do not trap sign handling in BYPASS.
++        if not ctx.call('turn','handoff_lane_confirmed',now):
++            return ctx.call('motion','stop','bypass_wait_exit_lane')
+         ctx.timed_bypass_completed=True
+-        ctx.timed_bypass=None;ctx.action=None;ctx.state='LANE'
++        ctx.timed_bypass=None
++        ctx.call('mission','resume_lane')
+         return ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,False)
+     steer=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     if task['phase']=='SETTLE_LEFT':
+--- before/src/robot/turn/controller.py
++++ after/src/robot/turn/controller.py
+@@ -17,16 +17,17 @@
+  'follow_left_boundary', 'front_blue_lines', 'front_marker_stamp', 'lane', 'lane_source',
+  'lane_stamp', 'last_completed_action', 'left_boundary_stamp', 'left_reference', 'marker',
+  'parking_marker', 'pose', 'reason', 'right_lock', 'right_tail_origin', 'state',
+- 'straight_search')
++ 'straight_search', 'blue_approach')
+ CALLS = (('lane', 'lane_command'), ('lane', 'lane_valid'), ('lane', 'left_exit_line'),
+  ('lane', 'left_reference_command'), ('mission', 'resume_lane'),
+- ('mission', 'start_follow'), ('motion', 'current_steering'), ('motion', 'stop'),
++ ('mission', 'start_follow'), ('mission','begin_blue_action'), ('turn','exit_lane_confirmed'),
++ ('motion', 'current_steering'), ('motion', 'stop'),
+  ('obstacle', 'checked_command'), ('turn', 'front_straight_reference'),
+  ('turn', 'right_blue_exit_tick'), ('turn', 'right_center_exit'),
+  ('turn', 'straight_heading_command'))
+-OPERATIONS = ('front_straight_reference', 'straight_heading_command', 'straight_search_tick',
++OPERATIONS = ('front_straight_reference', 'straight_heading_command', 'straight_search_tick', 'blue_approach_tick',
+  'right_center_exit', 'right_blue_exit_tick', 'right_lock_tick', 'direction_exit_reached',
+- 'exit_lane_confirmed')
++ 'exit_lane_confirmed', 'handoff_lane_confirmed')
+ 
+ def front_straight_reference(ctx, now, target=None):
+     """Blue yaw is the measured normal, not the stripe tangent."""
+@@ -76,44 +77,66 @@
+     return min(candidates,key=lambda item:item[:2])[2] if candidates else None
+ 
+ 
++def blue_approach_tick(ctx, now):
++    """Follow the lane to the observed stripe plane, then stop the bumper."""
++    s = ctx.blue_approach
++    if s['phase'] == 'STOP':
++        if now < s['stop_until']:
++            return ctx.call('motion','stop','blue_stop_wait_'+ctx.action.lower())
++        if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25):
++            return ctx.call('motion','stop','blue_stop_front_stale')
++        return ctx.call('mission','begin_blue_action',now)
++    # The normal defines a line, not a point to chase. This also works when
++    # its contour center moves sideways or the car approaches obliquely.
++    nx,ny = math.cos(s['yaw']),math.sin(s['yaw'])
++    front = s['target_front_m']
++    bumper = (ctx.pose[0]+front*math.cos(ctx.pose[2]),
++              ctx.pose[1]+front*math.sin(ctx.pose[2]))
++    remaining = (s['point'][0]-bumper[0])*nx+(s['point'][1]-bumper[1])*ny
++    s.update(remaining_m=remaining,point_local=local(ctx.pose,s['point']),
++             observation_age_s=now-s['observed_stamp'])
++    if remaining <= 1e-9:
++        s.update(phase='STOP',stop_until=now+ctx.cfg.get('intersection_wait_s',1.),stop_pose=ctx.pose)
++        ctx.state='BLUE_STOP'
++        return ctx.call('motion','stop','blue_stop_wait_'+ctx.action.lower())
++    if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25):
++        return ctx.call('motion','stop','blue_approach_front_stale')
++    # Only extrapolate into the camera's near blind region; disappearing far
++    # paint must be seen again instead of driving towards a stale hypothesis.
++    camera=ctx.cfg['front_camera']
++    blind_x=(camera['origin_v']-camera['bev_height'])/camera['pixels_per_m']
++    if now-s['observed_stamp'] > ctx.cfg['sensor_timeout'] and s['point_local'][0] > blind_x+.10:
++        return ctx.call('motion','stop','blue_approach_target_lost')
++    if now-s['started'] > ctx.cfg['action_timeout']:
++        return ctx.call('motion','stop','blue_approach_timeout')
++    ctx.state=s.get('lane_state','LANE')
++    command=ctx.call('lane','lane_command',now,approach=True)
++    s['lane_state']=ctx.state
++    ctx.state='BLUE_APPROACH'
++    if remaining < .20:
++        command=(min(command[0],ctx.cfg['speed_raw']['gap']),command[1])
++    result=ctx.call('obstacle','checked_command',command,now,False)
++    if result[0]:ctx.reason='blue_approach_lane'
++    return result
++
++
+ def straight_search_tick(ctx, now):
+-    """Advance after seeing blue, stop, then count the straight separately."""
++    """Count straight distance from the stopped pose; confirm lane handoff."""
+     s = ctx.straight_search
+-    if s['phase'] == 'BLUE_APPROACH':
+-        travelled = s['approach_travelled_m']+distance(s['approach_last_pose'],ctx.pose)
+-        s['approach_last_pose'] = ctx.pose
+-        s['approach_travelled_m'] = travelled
+-        if travelled >= s['approach_distance_m']-1e-9:
+-            s.update(phase='BLUE_STOP',stop_until=now+ctx.cfg.get('intersection_wait_s',1.))
+-            return ctx.call('motion','stop','straight_blue_stop')
+-        if (not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25)
+-                and not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']):
+-            return ctx.call('motion','stop','straight_advance_front_stale')
+-        if ctx.call('lane','lane_valid',now):
+-            command = ctx.call('lane','lane_command',now)
+-            ctx.state = 'MANEUVER'
+-        else:
+-            command = (ctx.cfg['speed_raw']['gap'],ctx.call('motion','current_steering',now))
+-            ctx.lane_source = 'straight_advance_hold_steer'
+-        result = ctx.call('obstacle','checked_command',command,now,False)
+-        if result[0]:ctx.reason = 'straight_blue_advance'
+-        return result
+-    if s['phase'] == 'BLUE_STOP':
+-        if now < s['stop_until']:
+-            return ctx.call('motion','stop','straight_blue_stop')
+-        if (not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25)
+-                and not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']):
+-            return ctx.call('motion','stop','straight_advance_front_stale')
+-        # Neither the advance nor the stationary wait counts as straight travel.
+-        s.update(origin=ctx.pose,started=now,phase='STRAIGHT_DISTANCE')
+     travelled = local(s['origin'],ctx.pose)[0]
+     minimum = max(1.25,ctx.cfg.get('straight_distance',1.25))
+     s.update(elapsed_s=now-s['started'],travelled_m=travelled,
+              minimum_distance_m=minimum,
+              phase='STRAIGHT_DISTANCE' if travelled < minimum else 'REACQUIRE_LANE')
+-    if travelled >= minimum:
++    if travelled >= minimum and ctx.call('turn','exit_lane_confirmed',now):
+         ctx.call('mission', 'resume_lane')
+         return ctx.call('obstacle', 'checked_command', ctx.call('lane', 'lane_command', now),now,True)
++    if travelled >= max(minimum,s['max_distance_m'])-1e-9:
++        return ctx.call('motion','stop','straight_exit_distance_limit')
++    if now-s['started'] >= s['timeout_s']:
++        return ctx.call('motion','stop','straight_exit_timeout')
++    if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25) and not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']:
++        return ctx.call('motion','stop','straight_front_stale')
+     # A missing side stripe means zero steering, not a stop or an old correction.
+     reference = right_blue_reference(ctx,now) if ctx.action_source == 'sign' else None
+     s['right_blue'] = reference
+@@ -125,7 +148,7 @@
+     if reference is not None:
+         ctx.lane_source = 'straight_right_blue'
+     command = ctx.call('obstacle', 'checked_command',
+-        (s['speed_raw'],steer),now,False)
++        (min(s['speed_raw'],ctx.cfg['speed_raw']['gap']) if travelled >= minimum else s['speed_raw'],steer),now,False)
+     if command[0]:
+         ctx.reason = 'straight_align_right_blue' if reference is not None else 'straight_continue'
+     return command
+@@ -323,3 +346,22 @@
+             exit_candidate(ctx.pose, ctx.exit_pose, ctx.lane, ctx.action, ctx.cfg))
+         ctx.exit_count = ctx.exit_count + 1 if ctx.exit_reason == 'ok' else 0
+     return ctx.exit_count >= ctx.cfg['exit_frames']
++
++
++def handoff_lane_confirmed(ctx, now):
++    """Timed maneuvers have no measured endpoint; use the near visual tangent.
++
++    Permit curved exits; reject a crossing or laterally unrelated path. Count
++    distinct camera frames, never repeated controller ticks on one image.
++    """
++    if not ctx.call('lane','lane_valid',now):
++        ctx.exit_count=0
++        ctx.exit_reason='stale_or_invalid_lane'
++        return False
++    if ctx.lane_stamp > ctx.exit_stamp:
++        if ctx.lane_stamp-ctx.exit_stamp > ctx.cfg['sensor_timeout']:
++            ctx.exit_count=0
++        ctx.exit_stamp=ctx.lane_stamp
++        ctx.exit_reason=exit_candidate(ctx.pose,ctx.pose,ctx.lane,'STRAIGHT',ctx.cfg)
++        ctx.exit_count=ctx.exit_count+1 if ctx.exit_reason=='ok' else 0
++    return ctx.exit_count >= ctx.cfg['exit_frames']
+--- before/src/robot/uturn/controller.py
++++ after/src/robot/uturn/controller.py
+@@ -26,7 +26,7 @@
+  'rear_blue_lines', 'rear_marker_stamp', 'rear_markers', 'reason', 'relative_future',
+  'relative_replan_future', 'relative_scene', 'relative_uturn', 'right_tail_origin',
+  'startup_started', 'startup_origin', 'startup_blue_point', 'state', 'timed_uturn', 'uturn', 'wait_until')
+-CALLS = (('lane', 'lane_command'), ('lane', 'lane_valid'), ('mission', 'dispatch'),
++CALLS = (('lane', 'lane_command'), ('lane', 'lane_valid'), ('turn','handoff_lane_confirmed'), ('mission', 'dispatch'),
+  ('mission', 'resume_lane'), ('motion', 'stop'), ('obstacle', 'checked_command'),
+  ('turn', 'direction_exit_reached'), ('turn', 'exit_lane_confirmed'),
+  ('uturn', 'relative_uturn_tick'), ('uturn', 'uturn_align_first'),
+@@ -327,7 +327,7 @@
+         if not cfg.get('uturn_trial_resume_lane',False):
+             ctx.state='FINISHED'
+             return ctx.call('motion', 'stop', 'uturn_trial_complete_stop')
+-        if not ctx.call('lane', 'lane_valid', now):return ctx.call('motion', 'stop', 'uturn_trial_wait_lane')
++        if not ctx.call('turn','handoff_lane_confirmed',now):return ctx.call('motion', 'stop', 'uturn_trial_wait_lane')
+         ctx.timed_uturn=None
+         ctx.call('mission', 'resume_lane')
+         if cfg.get('uturn_course_test',False):
+--- before/tools/sign_detector_20260916/run_yolo_vehicle.sh
++++ after/tools/sign_detector_20260916/run_yolo_vehicle.sh
+@@ -18,11 +18,11 @@
+   live:=true enabled:=true start_actuators:=true start_rear:=false \
+   lidar_enabled:=true parking_enabled:=true parking_mode:=forward_center wait_green:=true \
+   lane_hz:=12 lane_window_height:=40 lane_min_span:=0.15 \
+-  lane_speed_raw:=24 action_speed_raw:=28 straight_speed_raw:=24 \
++  lane_speed_raw:=24 action_speed_raw:=24 straight_speed_raw:=24 \
+   lookahead:=0.55 action_lookahead:=0.30 steering_command_scale_rad:=0.1 \
+   sign_backend:=yolo_trt \
+   sign_model:=/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine \
+-  sign_ttl:=0 blue_default_straight:=true marker_trigger_x:=0.36 \
++  sign_ttl:=0 blue_default_straight:=false marker_trigger_x:=0.36 \
+   intersection_wait_s:=1.0 straight_distance:=1.25 \
+   left_turn_entry:=0.12 left_turn_radius:=0.65 left_turn_exit:=0.30 \
+   right_turn_full_lock:=true right_exit_on_blue:=true right_lock_min_angle_deg:=30 \

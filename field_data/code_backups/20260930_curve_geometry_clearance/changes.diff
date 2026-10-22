@@ -1,0 +1,254 @@
+--- preview.before.py
++++ src/robot/lane/preview.py
+@@ -22,6 +22,27 @@
+     if residual > .02:
+         return None
+     measured = max(-3., min(3., float(2*a/(1+b*b)**1.5)))
++    xs = np.linspace(points[0][0],points[-1][0],64)
++    reference = [(float(v),float(a*(v-middle)**2+b*(v-middle)+c)) for v in xs]
++    model, radius = 'quadratic', None
++    # Fit an actual circular arc when supported by the paint. A quadratic's
++    # curvature evaluated at its midpoint varies with slope even on a circle.
++    origin = np.mean(xy,axis=0)
++    q = xy-origin
++    matrix = np.column_stack((2*q[:,0],2*q[:,1],np.ones(len(q))))
++    fit,unused,rank,unused_s = np.linalg.lstsq(matrix,np.sum(q*q,axis=1),rcond=-1)
++    squared = float(fit[2]+np.dot(fit[:2],fit[:2]))
++    if rank == 3 and squared > 0:
++        candidate_radius = math.sqrt(squared)
++        center = origin+fit[:2]
++        arc_residual = float(np.sqrt(np.mean((np.sqrt(np.sum((xy-center)**2,axis=1))-candidate_radius)**2)))
++        if (.30 <= candidate_radius <= 6. and arc_residual <= .006 and
++                np.all(np.abs(xs-center[0]) < candidate_radius)):
++            direction = 1. if center[1] > origin[1] else -1.
++            measured = direction/candidate_radius
++            radius,model = candidate_radius,'circle'
++            reference = [(float(v),float(center[1]-direction*math.sqrt(
++                squared-(v-center[0])**2))) for v in xs]
+     measurement_variance = .04+(4*residual/(points[-1][0]-points[0][0])**2)**2
+     dt = stamp-previous['stamp'] if previous is not None else 0.
+     if previous is None or not 0 < dt <= timeout:
+@@ -33,7 +54,8 @@
+         estimate = previous['curvature']+gain*(measured-previous['curvature'])
+         variance = (1-gain)*predicted_variance
+     return dict(stamp=stamp, curvature=estimate, variance=variance,
+-                measured_curvature=measured, residual_m=residual)
++                measured_curvature=measured, residual_m=residual,
++                reference_curve=reference,model=model,radius_m=radius)
+ 
+ 
+ def preview_steering(ctx, points, steer):
+@@ -47,15 +69,22 @@
+         return steer
+     scale = ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     x,y = forward[-1]
++    if ctx.lane_preview is not None:
++        # Target the fitted curve rather than a noisy last paint sample.
++        x,y = ctx.lane_preview['reference_curve'][-1]
+     # The arc through the measured far center already includes the bend.
+     # Adding its lateral displacement again as a proportional error caused
+     # full-lock saturation even when the vehicle was centered on that arc.
+     curvature = 2*y/(x*x+y*y)
+     desired_curvature = curvature
++    turn_progress = 0.
+     if ctx.lane_preview is not None:
+-        # At curve entry the far center can still be almost straight ahead.
+-        # Blend the measured curve shape, rather than adding a second angle.
+-        desired_curvature = .5*(curvature+ctx.lane_preview['curvature'])
++        shape = ctx.lane_preview['curvature']
++        # Once the measured center continues into the bend, its fitted
++        # curvature owns feedforward. A far exit point must not halve it.
++        turn_progress = max(0.,min(1.,shape*y/.02)) if abs(shape) >= .35 else 0.
++        shape_weight = .5+.5*turn_progress
++        desired_curvature = shape_weight*shape+(1-shape_weight)*curvature
+     physical = math.atan(ctx.cfg['wheelbase']*desired_curvature)
+     near_x,near_y = forward[0]
+     if abs(curvature*near_x) < 1:
+@@ -68,7 +97,14 @@
+             # previous full-lock-per-10cm gain could cancel an approaching
+             # bend, or reverse it, even with only 6cm of lateral offset.
+             correction_curvature = 2*error/(near_x*near_x+error*error)
+-            physical += 1.25*math.atan(ctx.cfg['wheelbase']*correction_curvature)
++            correction = 1.25*math.atan(ctx.cfg['wheelbase']*correction_curvature)
++            if turn_progress > 0:
++                # Do not cancel a well-supported bend using one near offset.
++                # A new straight fit or opposite-side center still admits
++                # full countersteer; this is not a persistent direction lock.
++                limit = abs(physical)*(1-.8*turn_progress)
++                correction = max(-limit,min(limit,correction))
++            physical += correction
+     physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
+     return physical/ctx.cfg['max_steer']*scale
+ 
+--- obstacle.before.py
++++ src/robot/obstacle/controller.py
+@@ -243,9 +243,39 @@
+             horizon = min(horizon,max(.02,remaining))
+     path = [bicycle(ctx.pose,d*horizon*i/16,physical,ctx.cfg['wheelbase']) for i in range(1,17)]
+     if ctx.call('obstacle', 'sweep_clear', path,ctx.cfg['lidar']['unknown_is_obstacle'],report=True):
++        if active_timed_bypass:
++            ctx.timed_bypass.pop('side_clearance',None)
+         ctx.reason = 'tracking_'+ctx.state.lower()
+         ctx.issued_steer = steer
+         return speed,steer
++    if active_timed_bypass and speed > 0 and ctx.obstacle_check['kind'] == 'obstacle':
++        hit = ctx.obstacle_check.get('point_local')
++        # A side point entering the inflated turning sweep can still leave
++        # room for a checked straight/shallower sweep. Never bypass a point
++        # in the current actual body or unresolved lidar coverage.
++        body_cfg = dict(ctx.cfg,obstacle_margin=0.)
++        side = (hit is not None and abs(hit[1]) > ctx.cfg['body_width']/2+.01 and
++                -ctx.cfg['rear_overhang'] <= hit[0] <= ctx.cfg['wheelbase']+ctx.cfg['front_overhang'])
++        if side and not collision(ctx.pose,ctx.scan.obstacles,body_cfg):
++            task = ctx.timed_bypass
++            clearance = task.get('side_clearance')
++            if clearance is None:
++                clearance = dict(since=now,origin=ctx.pose)
++                task['side_clearance'] = clearance
++            # The recorded point starts 22.6 cm ahead of the rear axle. A
++            # 15 cm cap would stop before it clears the rotating rear sweep.
++            if now-clearance['since'] <= 1.5 and distance(ctx.pose,clearance['origin']) <= .25:
++                for alternative in (steer*.5,0.,-steer*.5):
++                    angle = command_to_model_steering(alternative,ctx.cfg)
++                    safe_path = [bicycle(ctx.pose,horizon*i/16,angle,ctx.cfg['wheelbase'])
++                                 for i in range(1,17)]
++                    if ctx.call('obstacle','sweep_clear',safe_path,True):
++                        task['last'] = None  # Alternate motion is not timed full-lock turning.
++                        ctx.obstacle_check.update(kind='side_clearance',
++                            requested_steer=steer,applied_steer=alternative)
++                        ctx.reason = 'bypass_side_clearance'
++                        ctx.issued_steer = alternative
++                        return speed,alternative
+     if allow_bypass:
+         ctx.state = 'WAIT_OBSTACLE'
+         if now >= ctx.retry_at and ctx.cfg['bypass_enabled']:
+--- /dev/null
++++ src/robot/test/test_curve_exit_geometry.py
+@@ -0,0 +1,56 @@
++"""Measured exit curvature and continuously sampled geometric references."""
++import os
++import math
++import unittest
++from robot.common.config import load_config
++from robot.common.contracts import encode_command
++from robot.master.controller import Controller
++
++
++class CurveExitGeometryTests(unittest.TestCase):
++    EXIT=[(.635766,.043666),(.706168,.036871),(.792309,.020260),
++          (.865871,-.001026),(.948253,-.032443)]
++
++    def core(self):
++        cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
++        cfg.update(wait_green=False,lidar_enabled=False,lane_curvature_preview=True,
++                   steering_command_scale_rad=.03,lane_curve_speed_raw=16)
++        cfg['speed_raw']['lane']=24
++        c=Controller(cfg);self.addCleanup(c.close)
++        return c
++
++    def raw(self,c,path,stamp=1.):
++        c.observe_lane(path,.8,stamp)
++        speed,steer=c.lane_command(stamp)
++        self.assertEqual(speed,16)
++        return encode_command(speed,steer,c.cfg,0)['steering_raw']
++
++    def test_recorded_exit_does_not_cancel_measured_right_bend(self):
++        c=self.core()
++        self.assertLessEqual(self.raw(c,self.EXIT),-8)
++        self.assertIsNone(c.lane_curve_lock)
++
++    def test_mirrored_exit_retains_same_geometric_angle(self):
++        right=self.raw(self.core(),self.EXIT)
++        left=self.raw(self.core(),[(x,-y) for x,y in self.EXIT])
++        self.assertEqual(left,-right)
++
++    def test_centered_circle_uses_ackermann_radius_and_smooth_reference(self):
++        c=self.core();r=.65
++        path=[(x,math.sqrt(r*r-x*x)-r) for x in (.25,.35,.45,.5,.55)]
++        raw=self.raw(c,path)
++        required=math.atan(c.cfg['wheelbase']/r)/c.cfg['max_steer']*22
++        self.assertAlmostEqual(abs(raw),required,delta=1.)
++        curve=c.lane_preview['reference_curve']
++        self.assertGreaterEqual(len(curve),40)
++        self.assertTrue(all(abs(math.hypot(x,y+r)-r)<.001 for x,y in curve))
++
++    def test_straight_current_path_can_release_bend_and_countersteer(self):
++        c=self.core();self.raw(c,self.EXIT)
++        for i in range(1,15):
++            raw=self.raw(c,[(.5,.06),(.7,.06),(.9,.06),(1.1,.06)],1.+i*.1)
++        self.assertGreater(raw,0)
++
++
++if __name__=='__main__':
++    unittest.main()
+--- /dev/null
++++ src/robot/test/test_bypass_side_clearance.py
+@@ -0,0 +1,68 @@
++"""Blocked timed steering may only continue on a fully checked safe sweep."""
++import os
++import unittest
++from robot.common.config import load_config
++from robot.master.controller import Controller
++from test_continuous_obstacles import _SyntheticScan
++
++
++class BypassSideClearanceTests(unittest.TestCase):
++    POINT=(.225952906,-.156749123)
++
++    def core(self):
++        cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
++        cfg.update(wait_green=False,lidar_enabled=True,timed_bypass_enabled=True,
++                   steering_command_scale_rad=.03)
++        cfg['speed_raw']['action']=24
++        c=Controller(cfg);self.addCleanup(c.close)
++        c.state='TIMED_BYPASS';c.action='BYPASS'
++        c.timed_bypass=dict(phase='RIGHT',last=1.,elapsed_s=1.515)
++        return c
++
++    def test_recorded_side_return_uses_safe_sweep_at_action_speed(self):
++        c=self.core();c.scan=_SyntheticScan(1.05,obstacles=[self.POINT])
++        speed,steer=c.execute('obstacle','timed_bypass_tick',1.05).value
++        self.assertEqual(speed,24)
++        self.assertGreater(steer,-.03)
++        self.assertEqual(c.reason,'bypass_side_clearance')
++        before=c.timed_bypass['elapsed_s']
++        c.scan=_SyntheticScan(1.1,obstacles=[self.POINT])
++        c.execute('obstacle','timed_bypass_tick',1.1)
++        self.assertEqual(c.timed_bypass['elapsed_s'],before)
++
++    def test_actual_body_collision_or_unknown_space_still_stops(self):
++        for obstacles,kind in [([(.20,0)],'FREE'),([self.POINT],'UNKNOWN')]:
++            c=self.core();c.scan=_SyntheticScan(1.05,obstacles=obstacles,classification=kind)
++            self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.05).value[0],0)
++
++    def test_safe_clearance_cannot_extend_motion_without_bound(self):
++        c=self.core();c.scan=_SyntheticScan(1.05,obstacles=[self.POINT])
++        c.execute('obstacle','timed_bypass_tick',1.05)
++        c.scan=_SyntheticScan(2.6,obstacles=[self.POINT])
++        self.assertEqual(c.execute('obstacle','timed_bypass_tick',2.6).value[0],0)
++
++    def test_recorded_point_clears_while_vehicle_advances(self):
++        from robot.common.geometry import bicycle
++        from robot.common.contracts import command_to_model_steering
++        c=self.core();resumed=False
++        for i in range(1,30):
++            now=1.+i*.05
++            c.scan=_SyntheticScan(now,obstacles=[self.POINT])
++            speed,steer=c.execute('obstacle','timed_bypass_tick',now).value
++            self.assertEqual(speed,24)
++            if steer==-.03:
++                resumed=True
++                break
++            c.set_pose(bicycle(c.pose,speed*.008*.05,
++                command_to_model_steering(steer,c.cfg),c.cfg['wheelbase']),now)
++        self.assertTrue(resumed)
++
++    def test_new_clear_scan_resumes_original_right_phase(self):
++        c=self.core();c.scan=_SyntheticScan(1.05,obstacles=[self.POINT])
++        c.execute('obstacle','timed_bypass_tick',1.05)
++        c.scan=_SyntheticScan(1.1)
++        self.assertEqual(c.execute('obstacle','timed_bypass_tick',1.1).value,(24,-.03))
++
++
++if __name__=='__main__':
++    unittest.main()

@@ -1,0 +1,6 @@
+<launch>
+  <arg name="port" default="8080"/>
+  <node pkg="yihan_ros_pkg" type="ros_flask_viewer.py" name="competition_viewer" output="screen">
+    <param name="port" value="$(arg port)" type="int"/>
+  </node>
+</launch>

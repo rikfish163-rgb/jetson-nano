@@ -1,0 +1,27 @@
+<launch>
+  <arg name="live" default="false"/>
+  <arg name="test_config" default="$(find robocup_competition)/turn/blue_stop_test.yaml"/>
+  <arg name="speed_raw" default=""/>
+  <arg name="trigger_row_ratio" default=""/>
+  <arg name="forward_seconds" default=""/>
+  <rosparam command="load" file="$(arg test_config)" param="/competition_controller/blue_stop_test"/>
+  <param if="$(eval arg('speed_raw') != '')" name="/competition_controller/blue_stop_test/speed_raw" value="$(arg speed_raw)" type="int"/>
+  <param if="$(eval arg('trigger_row_ratio') != '')" name="/competition_controller/blue_stop_test/trigger_row_ratio" value="$(arg trigger_row_ratio)" type="double"/>
+  <param if="$(eval arg('forward_seconds') != '')" name="/competition_controller/blue_stop_test/forward_seconds" value="$(arg forward_seconds)" type="double"/>
+  <include file="$(find robocup_competition)/launch/stack.launch">
+    <arg name="controller_type" value="blue_stop_test.py"/>
+    <arg name="live" value="$(arg live)"/>
+    <arg name="enabled" value="false"/>
+    <arg name="start_actuators" value="$(arg live)"/>
+    <arg name="start_cameras" value="true"/>
+    <arg name="start_lane" value="false"/>
+    <arg name="start_lidar" value="true"/>
+    <arg name="lidar_enabled" value="true"/>
+    <arg name="start_sign" value="false"/>
+    <arg name="start_ground" value="true"/>
+    <arg name="ground_hz" value="12"/>
+    <arg name="start_rear" value="false"/>
+    <arg name="parking_enabled" value="false"/>
+    <arg name="wait_green" value="false"/>
+  </include>
+</launch>

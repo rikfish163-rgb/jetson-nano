@@ -1,0 +1,74 @@
+{
+  "commands": 350, 
+  "output_topic": "/competition/control_preview", 
+  "windows": {
+    "resumed": {
+      "reasons": [
+        "tracking_lane"
+      ], 
+      "count": 30, 
+      "speeds": [
+        20
+      ]
+    }, 
+    "before_green": {
+      "reasons": [
+        "waiting_green"
+      ], 
+      "count": 8, 
+      "speeds": [
+        0
+      ]
+    }, 
+    "driving": {
+      "reasons": [
+        "startup_straight_distance"
+      ], 
+      "count": 16, 
+      "speeds": [
+        20
+      ]
+    }, 
+    "lane_after_startup": {
+      "reasons": [
+        "tracking_lane"
+      ], 
+      "count": 18, 
+      "speeds": [
+        20
+      ]
+    }, 
+    "obstacle": {
+      "reasons": [
+        "lidar_obstacle_in_sweep"
+      ], 
+      "count": 10, 
+      "speeds": [
+        0
+      ]
+    }, 
+    "disabled": {
+      "reasons": [
+        "tracking_lane"
+      ], 
+      "count": 10, 
+      "speeds": [
+        0
+      ]
+    }, 
+    "invalid_scan": {
+      "reasons": [
+        "scan_missing_or_stale"
+      ], 
+      "count": 12, 
+      "speeds": [
+        0
+      ]
+    }
+  }, 
+  "telemetry_delay_s": 0.35, 
+  "p95_interval_s": 0.05904984474182129, 
+  "max_interval_s": 0.12051200866699219, 
+  "final_state": "LANE", 
+  "intervals_above_bridge_timeout": 0
+}

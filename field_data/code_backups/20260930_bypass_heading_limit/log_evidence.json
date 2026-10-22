@@ -1,0 +1,150 @@
+{
+  "events": [
+    {
+      "obstacle_check": {
+        "kind": "not_checked"
+      },
+      "timed_bypass": {
+        "trigger_world": [
+          1.9246826177388394,
+          -2.093657471458864
+        ],
+        "phase": "SETTLE_LEFT",
+        "trigger_point": [
+          0.747176814973777,
+          0.1536012414676941
+        ],
+        "last": 1790760202.990601,
+        "elapsed_s": 0.0
+      },
+      "stamp": 1790760202.990601,
+      "reason": "bypass_settle_left",
+      "state": "TIMED_BYPASS",
+      "command": [
+        0,
+        0.03
+      ]
+    },
+    {
+      "obstacle_check": {
+        "round_clusters": [],
+        "scan_stamp": 1790760203.1517117,
+        "kind": "clear",
+        "mode": "raw_collision_guard",
+        "target_filter": "line_reject"
+      },
+      "timed_bypass": {
+        "trigger_world": [
+          1.9246826177388394,
+          -2.093657471458864
+        ],
+        "phase": "LEFT",
+        "trigger_point": [
+          0.747176814973777,
+          0.1536012414676941
+        ],
+        "last": 1790760203.40087,
+        "elapsed_s": 0.0
+      },
+      "stamp": 1790760203.40087,
+      "reason": "bypass_left_2s",
+      "state": "TIMED_BYPASS",
+      "command": [
+        24,
+        0.03
+      ]
+    },
+    {
+      "obstacle_check": {
+        "round_clusters": [],
+        "scan_stamp": 1790760205.050807,
+        "kind": "clear",
+        "mode": "raw_collision_guard",
+        "target_filter": "line_reject"
+      },
+      "timed_bypass": {
+        "last": 1790760205.410153,
+        "trigger_world": [
+          1.9246826177388394,
+          -2.093657471458864
+        ],
+        "elapsed_s": 2.0092828273773193,
+        "right_entry": {
+          "extra_left_s": 0.009282827377319336,
+          "scan_stamp": 1790760205.050807,
+          "horizon_m": 0.384,
+          "clear": false
+        },
+        "phase": "LEFT",
+        "trigger_point": [
+          0.747176814973777,
+          0.1536012414676941
+        ]
+      },
+      "stamp": 1790760205.410153,
+      "reason": "bypass_extend_left_for_clearance",
+      "state": "TIMED_BYPASS",
+      "command": [
+        24,
+        0.03
+      ]
+    },
+    {
+      "obstacle_check": {
+        "round_clusters": [],
+        "scan_stamp": 1790760205.751758,
+        "kind": "clear",
+        "mode": "raw_collision_guard",
+        "target_filter": "line_reject"
+      },
+      "timed_bypass": {
+        "last": 1790760206.087889,
+        "trigger_world": [
+          1.9246826177388394,
+          -2.093657471458864
+        ],
+        "elapsed_s": 0.0,
+        "right_entry": {
+          "extra_left_s": 0.687018871307373,
+          "scan_stamp": 1790760205.751758,
+          "horizon_m": 0.384,
+          "clear": true
+        },
+        "phase": "RIGHT",
+        "trigger_point": [
+          0.747176814973777,
+          0.1536012414676941
+        ]
+      },
+      "stamp": 1790760206.087889,
+      "reason": "bypass_right_6s",
+      "state": "TIMED_BYPASS",
+      "command": [
+        24,
+        -0.03
+      ]
+    },
+    {
+      "obstacle_check": {
+        "round_clusters": [],
+        "scan_stamp": 1790760209.8508883,
+        "kind": "clear",
+        "mode": "raw_collision_guard",
+        "target_filter": "line_reject"
+      },
+      "timed_bypass": null,
+      "stamp": 1790760210.291724,
+      "reason": "bypass_visual_lane_handoff",
+      "state": "LANE",
+      "command": [
+        16,
+        -0.026126230867549335
+      ]
+    }
+  ],
+  "left_s": 2.687018871307373,
+  "right_s": 4.2038350105285645,
+  "model_radius_m": 0.5211689906079838,
+  "model_extra_right_heading_deg": 32.0168229711386,
+  "caveat": "Instruction-based bicycle estimate; not measured wheel angle or physical trajectory."
+}

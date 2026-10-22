@@ -1,0 +1,339 @@
+{
+  "run": "/home/hetaisheng/jetson-nano/field_data/lane_runs/20260930_043930_8446",
+  "first_positive_command": 1790714399.560303,
+  "last_recorded_command": 1790714442.008416,
+  "driving_interval_s": 42.44811296463013,
+  "controller_zero_speed_episodes": 43,
+  "controller_zero_speed_s": 6.011674642562866,
+  "seconds_by_reason": {
+    "startup_straight_distance": 12.513813734054565,
+    "scan_missing_or_stale": 3.535067319869995,
+    "tracking_lane": 23.711540460586548,
+    "lane_stream_stale": 1.5914645195007324,
+    "tracking_gap": 0.21108412742614746,
+    "lane_unreliable": 0.8851428031921387
+  },
+  "episodes": [
+    {
+      "start": 1790714401.102887,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714401.417164
+    },
+    {
+      "start": 1790714401.52939,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714401.768106
+    },
+    {
+      "start": 1790714402.021194,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714402.083438
+    },
+    {
+      "start": 1790714403.432244,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714403.528596
+    },
+    {
+      "start": 1790714403.867545,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714404.031649
+    },
+    {
+      "start": 1790714404.377036,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714404.486833
+    },
+    {
+      "start": 1790714404.830181,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714405.034123
+    },
+    {
+      "start": 1790714406.336296,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714406.468005
+    },
+    {
+      "start": 1790714406.704462,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714406.861025
+    },
+    {
+      "start": 1790714407.266206,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714407.351049
+    },
+    {
+      "start": 1790714407.5491,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714407.617577
+    },
+    {
+      "start": 1790714409.92538,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714410.036174
+    },
+    {
+      "start": 1790714410.44685,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714410.938681
+    },
+    {
+      "start": 1790714412.010944,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714412.12366
+    },
+    {
+      "start": 1790714414.8701,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714414.980678
+    },
+    {
+      "start": 1790714415.172791,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714415.326211
+    },
+    {
+      "start": 1790714415.695217,
+      "reasons": [
+        "lane_stream_stale",
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714415.836658
+    },
+    {
+      "start": 1790714416.153733,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714416.196828
+    },
+    {
+      "start": 1790714416.815885,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714416.845216
+    },
+    {
+      "start": 1790714418.692372,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714418.76468
+    },
+    {
+      "start": 1790714418.938587,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714419.14628
+    },
+    {
+      "start": 1790714419.332755,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714419.398417
+    },
+    {
+      "start": 1790714419.873101,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714419.924517
+    },
+    {
+      "start": 1790714420.078202,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714420.141684
+    },
+    {
+      "start": 1790714420.264355,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714420.382214
+    },
+    {
+      "start": 1790714420.506571,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714420.623221
+    },
+    {
+      "start": 1790714421.129841,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714421.217898
+    },
+    {
+      "start": 1790714421.512914,
+      "reasons": [
+        "lane_stream_stale",
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714421.693587
+    },
+    {
+      "start": 1790714422.345231,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714422.409614
+    },
+    {
+      "start": 1790714422.736948,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714422.804045
+    },
+    {
+      "start": 1790714423.733484,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714423.826209
+    },
+    {
+      "start": 1790714426.143419,
+      "reasons": [
+        "lane_stream_stale",
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714426.36989
+    },
+    {
+      "start": 1790714426.584101,
+      "reasons": [
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714426.667762
+    },
+    {
+      "start": 1790714427.010549,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714427.104764
+    },
+    {
+      "start": 1790714427.663932,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714427.726157
+    },
+    {
+      "start": 1790714430.134379,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714430.174275
+    },
+    {
+      "start": 1790714434.444451,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714434.509344
+    },
+    {
+      "start": 1790714436.118582,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714436.194021
+    },
+    {
+      "start": 1790714437.602729,
+      "reasons": [
+        "lane_unreliable"
+      ],
+      "end": 1790714437.822476
+    },
+    {
+      "start": 1790714438.232024,
+      "reasons": [
+        "lane_stream_stale"
+      ],
+      "end": 1790714438.382104
+    },
+    {
+      "start": 1790714438.782452,
+      "reasons": [
+        "lane_unreliable"
+      ],
+      "end": 1790714439.393495
+    },
+    {
+      "start": 1790714439.714016,
+      "reasons": [
+        "lane_stream_stale",
+        "scan_missing_or_stale"
+      ],
+      "end": 1790714440.031433
+    },
+    {
+      "start": 1790714440.385715,
+      "reasons": [
+        "lane_unreliable"
+      ],
+      "end": 1790714440.440068
+    }
+  ],
+  "recorded_chassis_status_count": 852,
+  "recorded_chassis_zero_speed_status_count": 189,
+  "recorded_chassis_timeout_count": 0,
+  "recorded_serial_closed_count": 0,
+  "console_bridge_timeout_warning_count": 2,
+  "console_state_count": 44,
+  "invalid_console_state_count": 1,
+  "sampled_lidar_processing_ms": {
+    "median": 257.2169303894043,
+    "max": 382.7710151672363
+  },
+  "limits": [
+    "No raw scan arrival history or actual wheel speed measurements.",
+    "Command intervals are sampled records, not measured physical stop durations.",
+    "Console states are sparse; their stamp gaps do not measure raw lidar frequency."
+  ]
+}

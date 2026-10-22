@@ -1,0 +1,52 @@
+test_bypass_does_not_enable_parking_but_keeps_completed_route_permission (test_startup_parking_gate.StartupParkingGateTests) ... FAIL
+test_green_clears_a_preexisting_parking_pending (test_startup_parking_gate.StartupParkingGateTests) ... FAIL
+test_new_green_start_resets_previous_route_permission (test_startup_parking_gate.StartupParkingGateTests) ... FAIL
+test_only_completed_junction_actions_enable_fresh_parking_votes (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_recorded_parking_votes_cannot_replace_startup_or_center_handoff (test_startup_parking_gate.StartupParkingGateTests) ... FAIL
+test_startup_route_sign_and_red_green_priority_are_preserved (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_waiting_parking_sign_keeps_center_lane_until_blue_trigger (test_startup_parking_gate.StartupParkingGateTests) ... FAIL
+
+======================================================================
+FAIL: test_bypass_does_not_enable_parking_but_keeps_completed_route_permission (test_startup_parking_gate.StartupParkingGateTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_parking_gate.py", line 92, in test_bypass_does_not_enable_parking_but_keeps_completed_route_permission
+    self.assertIsNone(core.pending)
+AssertionError: 'PARKING' is not None
+
+======================================================================
+FAIL: test_green_clears_a_preexisting_parking_pending (test_startup_parking_gate.StartupParkingGateTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_parking_gate.py", line 65, in test_green_clears_a_preexisting_parking_pending
+    self.assertIsNone(core.pending)
+AssertionError: 'PARKING' is not None
+
+======================================================================
+FAIL: test_new_green_start_resets_previous_route_permission (test_startup_parking_gate.StartupParkingGateTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_parking_gate.py", line 125, in test_new_green_start_resets_previous_route_permission
+    self.assertIsNone(core.pending)
+AssertionError: 'PARKING' is not None
+
+======================================================================
+FAIL: test_recorded_parking_votes_cannot_replace_startup_or_center_handoff (test_startup_parking_gate.StartupParkingGateTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_parking_gate.py", line 47, in test_recorded_parking_votes_cannot_replace_startup_or_center_handoff
+    self.assertIsNone(core.pending)
+AssertionError: 'PARKING' is not None
+
+======================================================================
+FAIL: test_waiting_parking_sign_keeps_center_lane_until_blue_trigger (test_startup_parking_gate.StartupParkingGateTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_parking_gate.py", line 106, in test_waiting_parking_sign_keeps_center_lane_until_blue_trigger
+    self.assertEqual(speed, 30)
+AssertionError: 12 != 30
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.150s
+
+FAILED (failures=5)

@@ -1,0 +1,6669 @@
+{
+  "kind": "saved_images_interpolated_command_poses_not_counterfactual_motion", 
+  "after": {
+    "parking_center_between_sides": 31, 
+    "parking_missing_white_straight": 23
+  }, 
+  "events": [
+    {
+      "stamp": 1789919490.6749432, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919490.674943209_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.10751877629551, 
+            0.009905540972847682
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.10751877629551, 
+            0.009905540972847682
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919490.8783638, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919490.878363848_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.10751877629551, 
+            0.009905540972847682
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.10751877629551, 
+            0.009905540972847682
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919491.0757864, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919491.075786352_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.10751877629551, 
+            0.009905540972847682
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.10751877629551, 
+            0.009905540972847682
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919491.2754931, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919491.275493145_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.0917827628347467, 
+            0.009285339268966686
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.0917827628347467, 
+            0.009285339268966686
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919491.4747367, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919491.474736691_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.0669629263227223, 
+            0.008326058652736612
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.0669629263227223, 
+            0.008326058652736612
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919491.6756792, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919491.675679207_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.041931008532913, 
+            0.007382060839726368
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.041931008532913, 
+            0.007382060839726368
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919491.8763435, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919491.876343489_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.0169333268050744, 
+            0.00646288371310999
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            2.0169333268050744, 
+            0.00646288371310999
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919492.0749354, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919492.074935436_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.992193404174799, 
+            0.00557633400054891
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.992193404174799, 
+            0.00557633400054891
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919492.208285, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919492.208285093_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.9755809326201266, 
+            0.004993952849517425
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.9755809326201266, 
+            0.004993952849517425
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "APPROACH", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919492.4747472, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919492.474747181_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.3920550847457629, 
+          "pair_local": [
+            [
+              [
+                1.205, 
+                0.22249999999999998
+              ], 
+              [
+                1.5, 
+                0.21000000000000008
+              ]
+            ], 
+            [
+              [
+                1.2849999999999997, 
+                -0.17750000000000032
+              ], 
+              [
+                1.5, 
+                -0.1775000000000002
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.9423850448723652, 
+            0.0038613113944806488
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.2060511738389947, 
+          "center": [
+            1.4684198281672212, 
+            1.722198324442772
+          ], 
+          "sides": [
+            [
+              [
+                1.4212698322902024, 
+                1.4491820403876927
+              ], 
+              [
+                1.2511337331524373, 
+                1.6905012434573705
+              ]
+            ], 
+            [
+              [
+                1.6893143295165245, 
+                1.7566753695945039
+              ], 
+              [
+                1.5581000208657247, 
+                1.9269921485838117
+              ]
+            ]
+          ], 
+          "width": 0.3920550847457629
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.3920550847457629, 
+          "pair_local": [
+            [
+              [
+                1.205, 
+                0.22249999999999998
+              ], 
+              [
+                1.5, 
+                0.21000000000000008
+              ]
+            ], 
+            [
+              [
+                1.2849999999999997, 
+                -0.17750000000000032
+              ], 
+              [
+                1.5, 
+                -0.1775000000000002
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.9423850448723652, 
+            0.0038613113944806488
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.2060511738389947, 
+          "center": [
+            1.4684198281672212, 
+            1.722198324442772
+          ], 
+          "sides": [
+            [
+              [
+                1.4212698322902024, 
+                1.4491820403876927
+              ], 
+              [
+                1.2511337331524373, 
+                1.6905012434573705
+              ]
+            ], 
+            [
+              [
+                1.6893143295165245, 
+                1.7566753695945039
+              ], 
+              [
+                1.5581000208657247, 
+                1.9269921485838117
+              ]
+            ]
+          ], 
+          "width": 0.3920550847457629
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919492.677227, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919492.677227020_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.38976923076923087, 
+          "pair_local": [
+            [
+              [
+                1.1900000000000002, 
+                -0.17499999999999988
+              ], 
+              [
+                1.5, 
+                -0.18000000000000016
+              ]
+            ], 
+            [
+              [
+                1.175, 
+                0.21750000000000003
+              ], 
+              [
+                1.5, 
+                0.20750000000000002
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.9171596512024514, 
+            0.003028342310518073
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.2042638232634713, 
+          "center": [
+            1.4824785933281128, 
+            1.7049024414387746
+          ], 
+          "sides": [
+            [
+              [
+                1.7294790018665234, 
+                1.699645216073175
+              ], 
+              [
+                1.5441292529775716, 
+                1.9481818745097172
+              ]
+            ], 
+            [
+              [
+                1.4278256083543743, 
+                1.448077173224715
+              ], 
+              [
+                1.2372751468010588, 
+                1.7115454286214866
+              ]
+            ]
+          ], 
+          "width": 0.38976923076923087
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.39480314960629925, 
+          "pair_local": [
+            [
+              [
+                1.1950000000000003, 
+                -0.1849999999999999
+              ], 
+              [
+                1.5, 
+                -0.18500000000000016
+              ]
+            ], 
+            [
+              [
+                1.1825, 
+                0.21500000000000002
+              ], 
+              [
+                1.5, 
+                0.20500000000000007
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.9171596512024514, 
+            0.003028342310518073
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.2119619284176766, 
+          "center": [
+            1.4848978845512002, 
+            1.709925162157113
+          ], 
+          "sides": [
+            [
+              [
+                1.7343444440144562, 
+                1.7097113708854714
+              ], 
+              [
+                1.5480886607992042, 
+                1.9512352480050492
+              ]
+            ], 
+            [
+              [
+                1.4252252520221924, 
+                1.4555429717048298
+              ], 
+              [
+                1.239254850711875, 
+                1.7130721153691526
+              ]
+            ]
+          ], 
+          "width": 0.39480314960629925
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919492.875403, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919492.875402927_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.3880463576158941, 
+          "pair_local": [
+            [
+              [
+                1.1374999999999997, 
+                0.22750000000000015
+              ], 
+              [
+                1.5, 
+                0.19500000000000017
+              ]
+            ], 
+            [
+              [
+                1.1225, 
+                -0.16249999999999992
+              ], 
+              [
+                1.5, 
+                -0.19000000000000006
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8924701144310836, 
+            0.002236246729262148
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1470994607491636, 
+          "center": [
+            1.4831443136637816, 
+            1.7034365397950137
+          ], 
+          "sides": [
+            [
+              [
+                1.427443870045388, 
+                1.4314736143681954
+              ], 
+              [
+                1.2316680192999927, 
+                1.7382867761864536
+              ]
+            ], 
+            [
+              [
+                1.7453327400929324, 
+                1.6579060906164038
+              ], 
+              [
+                1.536433266549659, 
+                1.9735380122487747
+              ]
+            ]
+          ], 
+          "width": 0.3880463576158941
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.3971026490066226, 
+          "pair_local": [
+            [
+              [
+                1.1225, 
+                -0.16249999999999992
+              ], 
+              [
+                1.5, 
+                -0.19000000000000006
+              ]
+            ], 
+            [
+              [
+                1.3175, 
+                0.21999999999999986
+              ], 
+              [
+                1.4999999999999998, 
+                0.20750000000000024
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8924701144310836, 
+            0.002236246729262148
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1576196734392235, 
+          "center": [
+            1.4297559943876703, 
+            1.7759196463774003
+          ], 
+          "sides": [
+            [
+              [
+                1.7453327400929324, 
+                1.6579060906164038
+              ], 
+              [
+                1.536433266549659, 
+                1.9735380122487747
+              ]
+            ], 
+            [
+              [
+                1.3233932644951407, 
+                1.578544078719903
+              ], 
+              [
+                1.2217730437399386, 
+                1.730648749041573
+              ]
+            ]
+          ], 
+          "width": 0.3971026490066226
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919493.0766225, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919493.076622486_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.3877009916245261, 
+          "pair_local": [
+            [
+              [
+                1.1350000000000002, 
+                0.21500000000000014
+              ], 
+              [
+                1.4175, 
+                0.19000000000000017
+              ]
+            ], 
+            [
+              [
+                1.22, 
+                -0.17750000000000055
+              ], 
+              [
+                1.5, 
+                -0.20999999999999996
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8673488716856395, 
+            0.0034446326874522093
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1256374059064176, 
+          "center": [
+            1.4782538496726503, 
+            1.7313976236617439
+          ], 
+          "sides": [
+            [
+              [
+                1.4240429142364845, 
+                1.4575872811194668
+              ], 
+              [
+                1.2713583396315011, 
+                1.6965824080105714
+              ]
+            ], 
+            [
+              [
+                1.6829927382531098, 
+                1.7645502082650086
+              ], 
+              [
+                1.537774331880095, 
+                2.006144629662693
+              ]
+            ]
+          ], 
+          "width": 0.3877009916245261
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.4152751572327045, 
+          "pair_local": [
+            [
+              [
+                1.1025000000000003, 
+                -0.1800000000000001
+              ], 
+              [
+                1.5, 
+                -0.21500000000000008
+              ]
+            ], 
+            [
+              [
+                1.3075, 
+                0.21500000000000008
+              ], 
+              [
+                1.5, 
+                0.2024999999999999
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8673488716856395, 
+            0.0034446326874522093
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1512224147858574, 
+          "center": [
+            1.429346562942069, 
+            1.801020433416641
+          ], 
+          "sides": [
+            [
+              [
+                1.7567137025050739, 
+                1.6730203255503422
+              ], 
+              [
+                1.5417341739179604, 
+                2.009197440013035
+              ]
+            ], 
+            [
+              [
+                1.3187209571496932, 
+                1.5942018314258235
+              ], 
+              [
+                1.2110873637561985, 
+                1.7542877757594963
+              ]
+            ]
+          ], 
+          "width": 0.4152751572327045
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919493.2117028, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919493.211702824_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.3892216981132076, 
+          "pair_local": [
+            [
+              [
+                1.1025000000000003, 
+                0.21000000000000008
+              ], 
+              [
+                1.5000000000000004, 
+                0.1874999999999999
+              ]
+            ], 
+            [
+              [
+                1.2624999999999997, 
+                -0.185
+              ], 
+              [
+                1.5, 
+                -0.20499999999999985
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8503368879714968, 
+            0.009353313007154918
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.154071630273135, 
+          "center": [
+            1.4373934098075474, 
+            1.800258129013435
+          ], 
+          "sides": [
+            [
+              [
+                1.4398472405826637, 
+                1.4510316465565483
+              ], 
+              [
+                1.216021803051944, 
+                1.7802954822782717
+              ]
+            ], 
+            [
+              [
+                1.6561623059223112, 
+                1.8182274968968046
+              ], 
+              [
+                1.5276355475472705, 
+                2.0189440193397865
+              ]
+            ]
+          ], 
+          "width": 0.3892216981132076
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.3945967741935483, 
+          "pair_local": [
+            [
+              [
+                1.1124999999999998, 
+                0.20999999999999996
+              ], 
+              [
+                1.5, 
+                0.19500000000000006
+              ]
+            ], 
+            [
+              [
+                1.2624999999999997, 
+                -0.185
+              ], 
+              [
+                1.5, 
+                -0.20499999999999985
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8503368879714968, 
+            0.009353313007154918
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.162979893574276, 
+          "center": [
+            1.4352597186173024, 
+            1.7986240474297819
+          ], 
+          "sides": [
+            [
+              [
+                1.4337670230779118, 
+                1.4589708502379577
+              ], 
+              [
+                1.2100674002908869, 
+                1.7757353191497072
+              ]
+            ], 
+            [
+              [
+                1.6561623059223112, 
+                1.8182274968968046
+              ], 
+              [
+                1.5276355475472705, 
+                2.0189440193397865
+              ]
+            ]
+          ], 
+          "width": 0.3945967741935483
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919493.4751081, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919493.475108147_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.3897499999999998, 
+          "pair_local": [
+            [
+              [
+                1.0425000000000002, 
+                0.19499999999999984
+              ], 
+              [
+                1.4925, 
+                0.1874999999999999
+              ]
+            ], 
+            [
+              [
+                1.065, 
+                -0.1925
+              ], 
+              [
+                1.3500000000000003, 
+                -0.2025
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8171109000489594, 
+            0.020561721977727876
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.07741794938343538
+        ], 
+        "view": {
+          "theta": 2.1922442771576023, 
+          "center": [
+            1.5305657531841261, 
+            1.6944463154318345
+          ], 
+          "sides": [
+            [
+              [
+                1.472422942379372, 
+                1.4436474833437996
+              ], 
+              [
+                1.20703311412924, 
+                1.8071368078931807
+              ]
+            ], 
+            [
+              [
+                1.767964309014053, 
+                1.6952777688972378
+              ], 
+              [
+                1.604072026347138, 
+                1.9286536881396228
+              ]
+            ]
+          ], 
+          "width": 0.3897499999999998
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.398426966292135, 
+          "pair_local": [
+            [
+              [
+                1.0550000000000002, 
+                -0.2025
+              ], 
+              [
+                1.5000000000000002, 
+                -0.21750000000000014
+              ]
+            ], 
+            [
+              [
+                1.1100000000000003, 
+                0.18999999999999995
+              ], 
+              [
+                1.5, 
+                0.18500000000000016
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.8171109000489594, 
+            0.020561721977727876
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.03478770675142208
+        ], 
+        "view": {
+          "theta": 2.194855703096184, 
+          "center": [
+            1.4790182682487758, 
+            1.7777031909601428
+          ], 
+          "sides": [
+            [
+              [
+                1.7819718434634726, 
+                1.6933312389980784
+              ], 
+              [
+                1.5255800404816229, 
+                2.0573549241666624
+              ]
+            ], 
+            [
+              [
+                1.4357055681093893, 
+                1.5005077016578197
+              ], 
+              [
+                1.2045044954664648, 
+                1.8146272075926804
+              ]
+            ]
+          ], 
+          "width": 0.398426966292135
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919493.6130838, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919493.613083839_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.39273012907608695, 
+          "pair_local": [
+            [
+              [
+                1.04, 
+                0.20499999999999996
+              ], 
+              [
+                1.5, 
+                0.16500000000000004
+              ]
+            ], 
+            [
+              [
+                1.0350000000000004, 
+                -0.1900000000000001
+              ], 
+              [
+                1.355, 
+                -0.21250000000000002
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.7996798249792239, 
+            0.026267355161994188
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.13637034321945, 
+          "center": [
+            1.5310666752885935, 
+            1.7040161214754623
+          ], 
+          "sides": [
+            [
+              [
+                1.4576557099720986, 
+                1.4519395758056177
+              ], 
+              [
+                1.213441737350792, 
+                1.8438063077139537
+              ]
+            ], 
+            [
+              [
+                1.776528458113462, 
+                1.68511369635242
+              ], 
+              [
+                1.602381352867726, 
+                1.9545186624063708
+              ]
+            ]
+          ], 
+          "width": 0.39273012907608695
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.39789893617021266, 
+          "pair_local": [
+            [
+              [
+                1.0299999999999998, 
+                -0.19250000000000028
+              ], 
+              [
+                1.4999999999999996, 
+                -0.2250000000000001
+              ]
+            ], 
+            [
+              [
+                1.1500000000000004, 
+                0.2
+              ], 
+              [
+                1.5, 
+                0.17000000000000004
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.7996798249792239, 
+            0.026267355161994188
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1375659626895165, 
+          "center": [
+            1.4616190890750191, 
+            1.8113114739847012
+          ], 
+          "sides": [
+            [
+              [
+                1.7815298222215445, 
+                1.6826164264314087
+              ], 
+              [
+                1.5253139405940526, 
+                2.077976606522736
+              ]
+            ], 
+            [
+              [
+                1.3956060385547913, 
+                1.5429057138845987
+              ], 
+              [
+                1.2094433757707501, 
+                1.8408041243958924
+              ]
+            ]
+          ], 
+          "width": 0.39789893617021266
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919493.8754659, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919493.875465870_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.39255653266331647, 
+          "pair_local": [
+            [
+              [
+                1.0024999999999997, 
+                0.19249999999999973
+              ], 
+              [
+                1.5, 
+                0.15000000000000002
+              ]
+            ], 
+            [
+              [
+                1.1475, 
+                -0.2099999999999998
+              ], 
+              [
+                1.5, 
+                -0.24500000000000022
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.7664835867759916, 
+            0.03680332195552527
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1165228762406434, 
+          "center": [
+            1.462719713584253, 
+            1.851568414256205
+          ], 
+          "sides": [
+            [
+              [
+                1.4742711343185488, 
+                1.4602634931338307
+              ], 
+              [
+                1.2121795413461731, 
+                1.8852581953281082
+              ]
+            ], 
+            [
+              [
+                1.7112968207358548, 
+                1.816423673359533
+              ], 
+              [
+                1.5295198624208455, 
+                2.1204604925537605
+              ]
+            ]
+          ], 
+          "width": 0.39255653266331647
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.39546052631578943, 
+          "pair_local": [
+            [
+              [
+                1.0724999999999998, 
+                0.18999999999999978
+              ], 
+              [
+                1.5, 
+                0.15249999999999997
+              ]
+            ], 
+            [
+              [
+                1.1475, 
+                -0.2099999999999998
+              ], 
+              [
+                1.5, 
+                -0.24500000000000022
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.7664835867759916, 
+            0.03680332195552527
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.115386608292065, 
+          "center": [
+            1.461553189181627, 
+            1.8507038244103946
+          ], 
+          "sides": [
+            [
+              [
+                1.4345981976018172, 
+                1.5179896405219098
+              ], 
+              [
+                1.2101710583013967, 
+                1.8837695731937687
+              ]
+            ], 
+            [
+              [
+                1.7112968207358548, 
+                1.816423673359533
+              ], 
+              [
+                1.5295198624208455, 
+                2.1204604925537605
+              ]
+            ]
+          ], 
+          "width": 0.39546052631578943
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919494.075799, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919494.075798988_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "width_m": 0.3970717592592592, 
+          "pair_local": [
+            [
+              [
+                0.9599999999999999, 
+                -0.2049999999999999
+              ], 
+              [
+                1.4999999999999998, 
+                -0.2599999999999999
+              ]
+            ], 
+            [
+              [
+                0.9749999999999996, 
+                0.18749999999999972
+              ], 
+              [
+                1.1574999999999998, 
+                0.17500000000000016
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.7410969924744368, 
+            0.04457028586223011
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1189018934308734, 
+          "center": [
+            1.5935692797269179, 
+            1.659277201582204
+          ], 
+          "sides": [
+            [
+              [
+                1.807767052072022, 
+                1.6846734180093974
+              ], 
+              [
+                1.5326312578074164, 
+                2.152567951760738
+              ]
+            ], 
+            [
+              [
+                1.4824539747914192, 
+                1.4645537874667665
+              ], 
+              [
+                1.384560070122632, 
+                1.6190830190985144
+              ]
+            ]
+          ], 
+          "width": 0.3970717592592592
+        }
+      }, 
+      "before": {
+        "debug": {
+          "width_m": 0.3908912037037036, 
+          "pair_local": [
+            [
+              [
+                0.9799999999999998, 
+                0.1700000000000001
+              ], 
+              [
+                1.4975, 
+                0.1449999999999999
+              ]
+            ], 
+            [
+              [
+                0.9599999999999999, 
+                -0.2049999999999999
+              ], 
+              [
+                1.4999999999999998, 
+                -0.2599999999999999
+              ]
+            ]
+          ], 
+          "bottom_local": null, 
+          "sign_anchor_local": [
+            1.7410969924744368, 
+            0.04457028586223011
+          ], 
+          "sign_association": true, 
+          "line_age_s": 0.0, 
+          "bottom_source": null, 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": false, 
+          "sides_behind_sign_rejected": 0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.08057872306537583
+        ], 
+        "view": {
+          "theta": 2.1289294171836053, 
+          "center": [
+            1.5081701016798756, 
+            1.8105717966977894
+          ], 
+          "sides": [
+            [
+              [
+                1.4936045814971446, 
+                1.4789382919801037
+              ], 
+              [
+                1.2075939531200133, 
+                1.9109442762619406
+              ]
+            ], 
+            [
+              [
+                1.807767052072022, 
+                1.6846734180093974
+              ], 
+              [
+                1.5326312578074164, 
+                2.152567951760738
+              ]
+            ]
+          ], 
+          "width": 0.3908912037037036
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919494.2083864, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919494.208386421_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                1.0499999999999998, 
+                0.17749999999999966
+              ], 
+              [
+                1.4674999999999998, 
+                0.12749999999999984
+              ]
+            ], 
+            [
+              [
+                0.945, 
+                -0.2099999999999999
+              ], 
+              [
+                1.4875000000000003, 
+                -0.26750000000000007
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.4675, 
+              0.057499999999999885
+            ], 
+            [
+              1.4825000000000002, 
+              -0.21500000000000008
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.7242768090462288, 
+            0.04957854461019129
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.1340596330275228, 
+          "line_age_s": 0.0, 
+          "width_m": 0.3957546082949307, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 1.0940596330275227, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.088324917744372, 
+          "center": [
+            1.4954103510874235, 
+            1.8465113028722977
+          ], 
+          "sides": [
+            [
+              [
+                1.4382818702910434, 
+                1.5465326504886
+              ], 
+              [
+                1.2327415459908702, 
+                1.9133560754311458
+              ]
+            ], 
+            [
+              [
+                1.8132629887788092, 
+                1.6899565354508466
+              ], 
+              [
+                1.5401473165903832, 
+                2.1622068182512537
+              ]
+            ]
+          ], 
+          "width": 0.3957546082949307
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.945, 
+                -0.2099999999999999
+              ], 
+              [
+                1.4875000000000003, 
+                -0.26750000000000007
+              ]
+            ], 
+            [
+              [
+                1.0625, 
+                0.1775000000000001
+              ], 
+              [
+                1.475, 
+                0.135
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.4675, 
+              0.057499999999999885
+            ], 
+            [
+              1.4825000000000002, 
+              -0.21500000000000008
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.7242768090462288, 
+            0.04957854461019129
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.1340596330275228, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4005645161290323, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 1.0940596330275227, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0965922875385763, 
+          "center": [
+            1.488432590558306, 
+            1.8537996502133312
+          ], 
+          "sides": [
+            [
+              [
+                1.8132629887788092, 
+                1.6899565354508466
+              ], 
+              [
+                1.5401473165903832, 
+                2.1622068182512537
+              ]
+            ], 
+            [
+              [
+                1.4309182832683522, 
+                1.5566335210530244
+              ], 
+              [
+                1.2222628714386006, 
+                1.9149984455561861
+              ]
+            ]
+          ], 
+          "width": 0.4005645161290323
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919494.4750047, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919494.475004673_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "pair_local": [
+            [
+              [
+                0.9049999999999999, 
+                -0.2224999999999998
+              ], 
+              [
+                1.2149999999999999, 
+                -0.2499999999999999
+              ]
+            ], 
+            [
+              [
+                1.0075, 
+                0.16750000000000004
+              ], 
+              [
+                1.435, 
+                0.11499999999999999
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.4335893400633966, 
+              0.065628292168747
+            ], 
+            [
+              1.4503121248146282, 
+              -0.2067714113372664
+            ]
+          ], 
+          "bottom_age_s": 0.2666182518005371, 
+          "sign_anchor_local": [
+            1.6904111049615507, 
+            0.05933065816432781
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.100251427595372, 
+          "line_age_s": 0.0, 
+          "width_m": 0.39555514289756644, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 1.060251427595372, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.09136761576277597
+        ], 
+        "view": {
+          "theta": 2.089034836452901, 
+          "center": [
+            1.5657388605943394, 
+            1.7563701985149305
+          ], 
+          "sides": [
+            [
+              [
+                1.831880725181633, 
+                1.6937517368593253
+              ], 
+              [
+                1.6731753080346254, 
+                1.961462103801277
+              ]
+            ], 
+            [
+              [
+                1.4554306665530563, 
+                1.549212457220394
+              ], 
+              [
+                1.2484037567481214, 
+                1.9269059289889954
+              ]
+            ]
+          ], 
+          "width": 0.39555514289756644
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "pair_local": [
+            [
+              [
+                0.8924999999999994, 
+                -0.23999999999999988
+              ], 
+              [
+                1.4599999999999993, 
+                -0.27999999999999947
+              ]
+            ], 
+            [
+              [
+                0.9274999999999999, 
+                0.17749999999999982
+              ], 
+              [
+                1.4349999999999998, 
+                0.1250000000000001
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.4335893400633966, 
+              0.065628292168747
+            ], 
+            [
+              1.4503121248146282, 
+              -0.2067714113372664
+            ]
+          ], 
+          "bottom_age_s": 0.2666182518005371, 
+          "sign_anchor_local": [
+            1.6904111049615507, 
+            0.05933065816432781
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.100251427595372, 
+          "line_age_s": 0.0, 
+          "width_m": 0.41160242290748883, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 1.060251427595372, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.018659049887933737
+        ], 
+        "view": {
+          "theta": 2.1076533414878726, 
+          "center": [
+            1.5342230345769492, 
+            1.8199292201835746
+          ], 
+          "sides": [
+            [
+              [
+                1.8533864172638586, 
+                1.6938239037804845
+              ], 
+              [
+                1.554457098459376, 
+                2.1778667865492407
+              ]
+            ], 
+            [
+              [
+                1.494030127142471, 
+                1.4784305270248543
+              ], 
+              [
+                1.2402859724254307, 
+                1.9210662733749821
+              ]
+            ]
+          ], 
+          "width": 0.41160242290748883
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919494.609457, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919494.609457016_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.9049999999999999, 
+                0.16750000000000004
+              ], 
+              [
+                1.4025000000000003, 
+                0.12249999999999994
+              ]
+            ], 
+            [
+              [
+                0.8850000000000001, 
+                -0.22750000000000004
+              ], 
+              [
+                1.2475000000000005, 
+                -0.26
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.4049999999999998, 
+              0.12249999999999994
+            ], 
+            [
+              1.3975, 
+              -0.29999999999999993
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.6733126687415942, 
+            0.064086871440034
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.0706952662721891, 
+          "line_age_s": 0.0, 
+          "width_m": 0.3966566019753943, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 1.030695266272189, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.022322635063145913
+        ], 
+        "view": {
+          "theta": 2.101401296054675, 
+          "center": [
+            1.5813899988250586, 
+            1.7451468686701817
+          ], 
+          "sides": [
+            [
+              [
+                1.506979984397418, 
+                1.481503252019086
+              ], 
+              [
+                1.254360042528529, 
+                1.9124492056723945
+              ]
+            ], 
+            [
+              [
+                1.8399938535238687, 
+                1.6948732662418706
+              ], 
+              [
+                1.6556889506820867, 
+                2.008711126909575
+              ]
+            ]
+          ], 
+          "width": 0.3966566019753943
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.9049999999999999, 
+                0.16250000000000003
+              ], 
+              [
+                1.41, 
+                0.11999999999999966
+              ]
+            ], 
+            [
+              [
+                0.885, 
+                -0.23249999999999998
+              ], 
+              [
+                1.4325, 
+                -0.2800000000000001
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.4049999999999998, 
+              0.12249999999999994
+            ], 
+            [
+              1.3975, 
+              -0.29999999999999993
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.6733126687415942, 
+            0.064086871440034
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.0706952662721891, 
+          "line_age_s": 0.0, 
+          "width_m": 0.39739155251141545, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 1.030695266272189, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.009386997237330302
+        ], 
+        "view": {
+          "theta": 2.105961681754571, 
+          "center": [
+            1.5432071188013776, 
+            1.8177240827065382
+          ], 
+          "sides": [
+            [
+              [
+                1.5110481665300852, 
+                1.4844101221805222
+              ], 
+              [
+                1.2520338283527088, 
+                1.9200049139521131
+              ]
+            ], 
+            [
+              [
+                1.8440620356565358, 
+                1.6977801364033067
+              ], 
+              [
+                1.5644074832396193, 
+                2.1708613464640045
+              ]
+            ]
+          ], 
+          "width": 0.39739155251141545
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919494.8747199, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919494.874719858_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "pair_local": [
+            [
+              [
+                0.8774999999999998, 
+                0.15749999999999992
+              ], 
+              [
+                1.1999999999999997, 
+                0.13000000000000023
+              ]
+            ], 
+            [
+              [
+                0.8425000000000001, 
+                -0.2324999999999999
+              ], 
+              [
+                1.1925000000000001, 
+                -0.27
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.3708665395936621, 
+              0.12987642329092675
+            ], 
+            [
+              1.3660246782818293, 
+              -0.29266239904263913
+            ]
+          ], 
+          "bottom_age_s": 0.2652628421783447, 
+          "sign_anchor_local": [
+            1.6395413815542876, 
+            0.07315243283862594
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.0380032121957445, 
+          "line_age_s": 0.0, 
+          "width_m": 0.3971947674418604, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9980032121957445, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.01922839696869766
+        ], 
+        "view": {
+          "theta": 2.0890097120724724, 
+          "center": [
+            1.5971569673698605, 
+            1.7462487226408527
+          ], 
+          "sides": [
+            [
+              [
+                1.514629909527763, 
+                1.4953478561837765
+              ], 
+              [
+                1.3512664049676093, 
+                1.7747666554400625
+              ]
+            ], 
+            [
+              [
+                1.853536789776503, 
+                1.691478237614258
+              ], 
+              [
+                1.6824993571967055, 
+                1.9991346151794098
+              ]
+            ]
+          ], 
+          "width": 0.3971947674418604
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                1.045, 
+                -0.04000000000000031
+              ], 
+              [
+                1.3749999999999998, 
+                -0.04499999999999993
+              ]
+            ], 
+            [
+              [
+                1.19, 
+                0.28750000000000003
+              ], 
+              [
+                1.3899999999999997, 
+                0.2975
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.3799999999999997, 
+              0.30999999999999994
+            ], 
+            [
+              1.37, 
+              0.020000000000000018
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.6395413815542876, 
+            0.07315243283862594
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.0351724137931035, 
+          "line_age_s": 0.0, 
+          "width_m": 0.3357234848484848, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9951724137931035, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.202344091898036, 
+          "center": [
+            1.3084147989366306, 
+            1.8454978372074264
+          ], 
+          "sides": [
+            [
+              [
+                1.579521430395962, 
+                1.7460500510672923
+              ], 
+              [
+                1.3934473462137267, 
+                2.018632947074621
+              ]
+            ], 
+            [
+              [
+                1.2283075887538322, 
+                1.675835469682959
+              ], 
+              [
+                1.1048860390209894, 
+                1.8335285927465323
+              ]
+            ]
+          ], 
+          "width": 0.3357234848484848
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919495.0755062, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919495.075506210_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "pair_local": [
+            [
+              [
+                0.8475, 
+                0.1575000000000002
+              ], 
+              [
+                1.3575, 
+                0.09500000000000008
+              ]
+            ], 
+            [
+              [
+                0.8100000000000004, 
+                -0.23750000000000018
+              ], 
+              [
+                1.2200000000000002, 
+                -0.2875000000000002
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.3450057010727476, 
+              0.1351775818160016
+            ], 
+            [
+              1.3421760072809072, 
+              -0.28737950643722393
+            ]
+          ], 
+          "bottom_age_s": 0.4660491943359375, 
+          "sign_anchor_local": [
+            1.613947614073272, 
+            0.07973365314010383
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.0132968800893711, 
+          "line_age_s": 0.0, 
+          "width_m": 0.39946183046389316, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9732968800893711, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.008686057607194875
+        ], 
+        "view": {
+          "theta": 2.0585131254350335, 
+          "center": [
+            1.5952461892703085, 
+            1.7738522996067982
+          ], 
+          "sides": [
+            [
+              [
+                1.5193470833101537, 
+                1.4937462223374862
+              ], 
+              [
+                1.2787016749022801, 
+                1.9477242365762901
+              ]
+            ], 
+            [
+              [
+                1.8647150124974758, 
+                1.6890722152029036
+              ], 
+              [
+                1.6710539948089143, 
+                2.0538946517769587
+              ]
+            ]
+          ], 
+          "width": 0.39946183046389316
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.8100000000000003, 
+                -0.23999999999999996
+              ], 
+              [
+                1.36, 
+                -0.3074999999999999
+              ]
+            ], 
+            [
+              [
+                1.0725, 
+                0.1350000000000003
+              ], 
+              [
+                1.3574999999999997, 
+                0.09999999999999987
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.3600000000000003, 
+              0.08999999999999964
+            ], 
+            [
+              1.3324999999999998, 
+              -0.3224999999999998
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.613947614073272, 
+            0.07973365314010383
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 1.016, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40720454545454543, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.976, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.002095391347816833
+        ], 
+        "view": {
+          "theta": 2.0580037448400557, 
+          "center": [
+            1.5087670499502304, 
+            1.934525509704753
+          ], 
+          "sides": [
+            [
+              [
+                1.8667650439762409, 
+                1.6905030789057318
+              ], 
+              [
+                1.6073258792806424, 
+                2.180143324210435
+              ]
+            ], 
+            [
+              [
+                1.40901963336448, 
+                1.6911268287518066
+              ], 
+              [
+                1.27460161194475, 
+                1.9448625091706333
+              ]
+            ]
+          ], 
+          "width": 0.40720454545454543
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919495.2747588, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919495.274758816_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "pair_local": [
+            [
+              [
+                0.8225, 
+                0.15000000000000002
+              ], 
+              [
+                1.3425000000000002, 
+                0.08749999999999991
+              ]
+            ], 
+            [
+              [
+                1.1250000000000002, 
+                -0.28250000000000003
+              ], 
+              [
+                1.3200000000000003, 
+                -0.315
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.3193237871313088, 
+              0.14019770384534647
+            ], 
+            [
+              1.3184909540640346, 
+              -0.282368038245848
+            ]
+          ], 
+          "bottom_age_s": 0.6653017997741699, 
+          "sign_anchor_local": [
+            1.5885247021816065, 
+            0.08602530190965474
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9888109645567222, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40067307692307685, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9488109645567222, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.007656555851511926
+        ], 
+        "view": {
+          "theta": 2.0329761264387094, 
+          "center": [
+            1.504254788875015, 
+            1.9704674524750208
+          ], 
+          "sides": [
+            [
+              [
+                1.5272686421061576, 
+                1.5001700886370164
+              ], 
+              [
+                1.2830865915007803, 
+                1.9635073051026843
+              ]
+            ], 
+            [
+              [
+                1.7111295206631434, 
+                1.9948999920552892
+              ], 
+              [
+                1.6270170438636429, 
+                2.173803153700503
+              ]
+            ]
+          ], 
+          "width": 0.40067307692307685
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "pair_local": [
+            [
+              [
+                0.7799999999999997, 
+                -0.24500000000000005
+              ], 
+              [
+                1.3275000000000001, 
+                -0.3325
+              ]
+            ], 
+            [
+              [
+                0.8174999999999999, 
+                0.15749999999999997
+              ], 
+              [
+                1.3425000000000002, 
+                0.09249999999999992
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.3345314091076486, 
+              0.0950914832889076
+            ], 
+            [
+              1.3089810196738185, 
+              -0.3175338644537866
+            ]
+          ], 
+          "bottom_age_s": 0.19925260543823242, 
+          "sign_anchor_local": [
+            1.5885247021816065, 
+            0.08602530190965474
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9912126171526795, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4176751467710371, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9512126171526795, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.02220507115429249
+        ], 
+        "view": {
+          "theta": 2.0345599590456853, 
+          "center": [
+            1.5767687521438476, 
+            1.8382475092063852
+          ], 
+          "sides": [
+            [
+              [
+                1.876398064739961, 
+                1.6897482947984506
+              ], 
+              [
+                1.637150955265256, 
+                2.189921585376825
+              ]
+            ], 
+            [
+              [
+                1.5239406515981933, 
+                1.4917930677358309
+              ], 
+              [
+                1.2789730509890473, 
+                1.9606649848430493
+              ]
+            ]
+          ], 
+          "width": 0.4176751467710371
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919495.476552, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919495.476552010_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.7899999999999999, 
+                0.14500000000000007
+              ], 
+              [
+                1.3049999999999997, 
+                0.08999999999999997
+              ]
+            ], 
+            [
+              [
+                0.9224999999999998, 
+                -0.2624999999999998
+              ], 
+              [
+                1.2925, 
+                -0.31999999999999973
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.31, 
+              0.07999999999999996
+            ], 
+            [
+              1.2799999999999998, 
+              -0.33500000000000013
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.5627543382983808, 
+            0.09215412645884402
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9655421686746987, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4023422330097086, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9255421686746986, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.05916601041834091
+        ], 
+        "view": {
+          "theta": 2.040290858828177, 
+          "center": [
+            1.5518625417035015, 
+            1.8938506501962058
+          ], 
+          "sides": [
+            [
+              [
+                1.5370590659539791, 
+                1.4990732590362539
+              ], 
+              [
+                1.2917292250744787, 
+                1.9552127872225742
+              ]
+            ], 
+            [
+              [
+                1.7986184875629898, 
+                1.8384832897771848
+              ], 
+              [
+                1.6372076229905965, 
+                2.1763483261422882
+              ]
+            ]
+          ], 
+          "width": 0.4023422330097086
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.7899999999999999, 
+                0.14750000000000013
+              ], 
+              [
+                1.3049999999999997, 
+                0.09499999999999953
+              ]
+            ], 
+            [
+              [
+                0.9224999999999998, 
+                -0.2624999999999998
+              ], 
+              [
+                1.2925, 
+                -0.31999999999999973
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.31, 
+              0.07999999999999996
+            ], 
+            [
+              1.2799999999999998, 
+              -0.33500000000000013
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.5627543382983808, 
+            0.09215412645884402
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9655421686746987, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4063834951456308, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9255421686746986, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.056202469006628786
+        ], 
+        "view": {
+          "theta": 2.0426777733373878, 
+          "center": [
+            1.5501946739081314, 
+            1.8927099631532458
+          ], 
+          "sides": [
+            [
+              [
+                1.5349955178107584, 
+                1.4976619585506696
+              ], 
+              [
+                1.2876021287880377, 
+                1.952390186251406
+              ]
+            ], 
+            [
+              [
+                1.7986184875629898, 
+                1.8384832897771848
+              ], 
+              [
+                1.6372076229905965, 
+                2.1763483261422882
+              ]
+            ]
+          ], 
+          "width": 0.4063834951456308
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919495.6760514, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919495.676051378_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "pair_local": [
+            [
+              [
+                0.7650000000000002, 
+                0.1474999999999999
+              ], 
+              [
+                1.285, 
+                0.09250000000000003
+              ]
+            ], 
+            [
+              [
+                0.7399999999999998, 
+                -0.2500000000000002
+              ], 
+              [
+                1.0350000000000001, 
+                -0.285
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.2845615723367247, 
+              0.08462289648837129
+            ], 
+            [
+              1.256525454324256, 
+              -0.33051440138642957
+            ]
+          ], 
+          "bottom_age_s": 0.19949936866760254, 
+          "sign_anchor_local": [
+            1.5372555749990031, 
+            0.09797277802891269
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9407424534491434, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40220420469361146, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.9007424534491434, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.11631524506314311
+        ], 
+        "view": {
+          "theta": 2.0541774545620055, 
+          "center": [
+            1.6390348241037924, 
+            1.732031895518432
+          ], 
+          "sides": [
+            [
+              [
+                1.5363640924435655, 
+                1.4994965781204201
+              ], 
+              [
+                1.2903921505917813, 
+                1.9609321682320435
+              ]
+            ], 
+            [
+              [
+                1.879541505181299, 
+                1.7016364143393987
+              ], 
+              [
+                1.7431448458500087, 
+                1.9655416081557844
+              ]
+            ]
+          ], 
+          "width": 0.40220420469361146
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.7174999999999998, 
+                -0.26
+              ], 
+              [
+                1.2549999999999997, 
+                -0.31750000000000034
+              ]
+            ], 
+            [
+              [
+                0.7650000000000002, 
+                0.1474999999999999
+              ], 
+              [
+                1.285, 
+                0.09250000000000003
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.2675, 
+              0.032500000000000084
+            ], 
+            [
+              1.25, 
+              -0.3400000000000001
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.5372555749990031, 
+            0.09797277802891269
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9303355704697986, 
+          "line_age_s": 0.0, 
+          "width_m": 0.41287723613595717, 
+          "bottom_source": "paired_far_end", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.8903355704697986, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0599422446138367, 
+          "center": [
+            1.5914213652690965, 
+            1.8326349661912822
+          ], 
+          "sides": [
+            [
+              [
+                1.9004360055488254, 
+                1.6886106761878992
+              ], 
+              [
+                1.6467236182323135, 
+                2.1659392051091824
+              ]
+            ], 
+            [
+              [
+                1.5363640924435655, 
+                1.4994965781204201
+              ], 
+              [
+                1.2903921505917813, 
+                1.9609321682320435
+              ]
+            ]
+          ], 
+          "width": 0.41287723613595717
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919495.816963, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919495.816962957_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.7400000000000001, 
+                0.14250000000000002
+              ], 
+              [
+                1.05, 
+                0.1150000000000001
+              ]
+            ], 
+            [
+              [
+                0.715, 
+                -0.24749999999999972
+              ], 
+              [
+                1.2500000000000002, 
+                -0.32249999999999984
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.2575000000000003, 
+              0.13250000000000006
+            ], 
+            [
+              1.245, 
+              -0.2049999999999999
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.5192332768239072, 
+            0.1019385052803169
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9181481481481482, 
+          "line_age_s": 0.0, 
+          "width_m": 0.401483644859813, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.8781481481481481, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.04862228386339, 
+          "center": [
+            1.6370180946312947, 
+            1.7456947173629525
+          ], 
+          "sides": [
+            [
+              [
+                1.545465505252971, 
+                1.4974008083208121
+              ], 
+              [
+                1.3953593704258125, 
+                1.7700258223735414
+              ]
+            ], 
+            [
+              [
+                1.8830919170232536, 
+                1.6942088520464775
+              ], 
+              [
+                1.6468948692675323, 
+                2.180069896617332
+              ]
+            ]
+          ], 
+          "width": 0.401483644859813
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.7775000000000001, 
+                0.4875
+              ], 
+              [
+                1.12, 
+                0.4575000000000001
+              ]
+            ], 
+            [
+              [
+                0.8725, 
+                0.1150000000000001
+              ], 
+              [
+                1.2575000000000003, 
+                0.07499999999999984
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.255, 
+              0.15249999999999997
+            ], 
+            [
+              1.2375000000000003, 
+              -0.3425
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.5192332768239072, 
+            0.1019385052803169
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.9153661616161617, 
+          "line_age_s": 0.0, 
+          "width_m": 0.3661965589155369, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.8753661616161617, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0671220592553454, 
+          "center": [
+            1.2840515435488231, 
+            1.6304490522182071
+          ], 
+          "sides": [
+            [
+              [
+                1.2382138652000645, 
+                1.3360698451277564
+              ], 
+              [
+                1.0720528725235492, 
+                1.6370628259641125
+              ]
+            ], 
+            [
+              [
+                1.4943756024057755, 
+                1.6227097139383462
+              ], 
+              [
+                1.3128059969135055, 
+                1.9645539450749585
+              ]
+            ]
+          ], 
+          "width": 0.3661965589155369
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919496.0752695, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919496.075269461_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.7050000000000003, 
+                0.12999999999999984
+              ], 
+              [
+                1.2274999999999998, 
+                0.07500000000000018
+              ]
+            ], 
+            [
+              [
+                1.0124999999999997, 
+                -0.2974999999999998
+              ], 
+              [
+                1.2, 
+                -0.33
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.2375000000000003, 
+              0.34750000000000014
+            ], 
+            [
+              1.2, 
+              -0.34500000000000003
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4861731081917897, 
+            0.10889818927084494
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.8821841155234655, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4015131578947368, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.8421841155234655, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0180410016628985, 
+          "center": [
+            1.5393572631366854, 
+            1.9727916122150164
+          ], 
+          "sides": [
+            [
+              [
+                1.5586464407176346, 
+                1.5040963030821943
+              ], 
+              [
+                1.3156725241086198, 
+                1.9699234446783824
+              ]
+            ], 
+            [
+              [
+                1.7449358015190801, 
+                1.9966496241066174
+              ], 
+              [
+                1.668380404192841, 
+                2.1708672212092686
+              ]
+            ]
+          ], 
+          "width": 0.4015131578947368
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.8, 
+                0.1175000000000001
+              ], 
+              [
+                1.2274999999999998, 
+                0.0724999999999999
+              ]
+            ], 
+            [
+              [
+                0.7574999999999996, 
+                0.485
+              ], 
+              [
+                1.0949999999999998, 
+                0.4675000000000001
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 0, 
+          "bottom_local": [
+            [
+              1.2375000000000003, 
+              0.34750000000000014
+            ], 
+            [
+              1.2, 
+              -0.34500000000000003
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4861731081917897, 
+            0.10889818927084494
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.8821841155234655, 
+          "line_age_s": 0.0, 
+          "width_m": 0.37317446393762177, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.8421841155234655, 
+          "sides_behind_sign_rejected": 1, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0780521120689457, 
+          "center": [
+            1.2924692313028452, 
+            1.6185406446976103
+          ], 
+          "sides": [
+            [
+              [
+                1.5165527442624736, 
+                1.5901740047170585
+              ], 
+              [
+                1.3177559034005526, 
+                1.9713053023866673
+              ]
+            ], 
+            [
+              [
+                1.233787569389218, 
+                1.351623473636331
+              ], 
+              [
+                1.061820433814292, 
+                1.6425526820052316
+              ]
+            ]
+          ], 
+          "width": 0.37317446393762177
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919496.4128253, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919496.412825346_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.6624999999999999, 
+                0.13750000000000007
+              ], 
+              [
+                1.185, 
+                0.07499999999999951
+              ]
+            ], 
+            [
+              [
+                0.7999999999999999, 
+                -0.2775000000000002
+              ], 
+              [
+                1.1550000000000002, 
+                -0.33249999999999963
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.1925, 
+              0.3499999999999998
+            ], 
+            [
+              1.1575, 
+              -0.3375000000000003
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4429297697041406, 
+            0.1173884817241353
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.8385727272727272, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4048205741626793, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7985727272727272, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0799121434066692
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0120221603761155, 
+          "center": [
+            1.5828801173168607, 
+            1.8969582667982885
+          ], 
+          "sides": [
+            [
+              [
+                1.5537519212070854, 
+                1.5019650789573395
+              ], 
+              [
+                1.3207981443492864, 
+                1.973817850325366
+              ]
+            ], 
+            [
+              [
+                1.8263357845725663, 
+                1.8437680740184552
+              ], 
+              [
+                1.6785629081570945, 
+                2.171202307103357
+              ]
+            ]
+          ], 
+          "width": 0.4048205741626793
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.6625, 
+                0.1275000000000004
+              ], 
+              [
+                1.1875000000000002, 
+                0.06500000000000006
+              ]
+            ], 
+            [
+              [
+                0.7224999999999999, 
+                0.4724999999999999
+              ], 
+              [
+                1.0375, 
+                0.46
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.1925, 
+              0.3499999999999998
+            ], 
+            [
+              1.1575, 
+              -0.3375000000000003
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4429297697041406, 
+            0.1173884817241353
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.8385727272727272, 
+          "line_age_s": 0.0, 
+          "width_m": 0.364642857142857, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7985727272727272, 
+          "sides_behind_sign_rejected": 2, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 0.9920846998476363
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0692438509132627, 
+          "center": [
+            1.3123146573664914, 
+            1.6042178254230446
+          ], 
+          "sides": [
+            [
+              [
+                1.5621294217527875, 
+                1.5074256178141516
+              ], 
+              [
+                1.3278105101807853, 
+                1.9813727643186037
+              ]
+            ], 
+            [
+              [
+                1.2403424197851822, 
+                1.369302030528344
+              ], 
+              [
+                1.0788073214777247, 
+                1.6400189712889846
+              ]
+            ]
+          ], 
+          "width": 0.364642857142857
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919496.5432627, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919496.543262720_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.815, 
+                0.12499999999999989
+              ], 
+              [
+                1.1625, 
+                0.07000000000000006
+              ]
+            ], 
+            [
+              [
+                0.735, 
+                -0.2725000000000004
+              ], 
+              [
+                1.0625000000000007, 
+                -0.31750000000000034
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.1550000000000002, 
+              0.3424999999999998
+            ], 
+            [
+              1.1325, 
+              -0.35249999999999987
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4262091812155375, 
+            0.12048574261292389
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.8100269784172663, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4059098522708551, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7700269784172663, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0799121434066692
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 1.9985735716848139, 
+          "center": [
+            1.5923775984703321, 
+            1.8760505799157583
+          ], 
+          "sides": [
+            [
+              [
+                1.472821749697139, 
+                1.6512282664708524
+              ], 
+              [
+                1.3301384558292482, 
+                1.9728223081616296
+              ]
+            ], 
+            [
+              [
+                1.8499740470933859, 
+                1.8000986616766594
+              ], 
+              [
+                1.7097655937606615, 
+                2.099469401085249
+              ]
+            ]
+          ], 
+          "width": 0.4059098522708551
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.715, 
+                0.48249999999999976
+              ], 
+              [
+                1.015, 
+                0.46000000000000013
+              ]
+            ], 
+            [
+              [
+                0.6650000000000001, 
+                0.13
+              ], 
+              [
+                1.1000000000000003, 
+                0.06999999999999995
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.1550000000000002, 
+              0.3424999999999998
+            ], 
+            [
+              1.1325, 
+              -0.35249999999999987
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4262091812155375, 
+            0.12048574261292389
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.8100269784172663, 
+          "line_age_s": 0.0, 
+          "width_m": 0.3688362068965517, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7700269784172663, 
+          "sides_behind_sign_rejected": 3, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 0.9920846998476363
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0392834137999847, 
+          "center": [
+            1.3098013628552507, 
+            1.6052509218819238
+          ], 
+          "sides": [
+            [
+              [
+                1.227069603593335, 
+                1.3729979074419094
+              ], 
+              [
+                1.0829189972913533, 
+                1.6370563341257989
+              ]
+            ], 
+            [
+              [
+                1.5501435233517806, 
+                1.5225956760479729
+              ], 
+              [
+                1.3641046850198995, 
+                1.9203576031251182
+              ]
+            ]
+          ], 
+          "width": 0.3688362068965517
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919496.7421272, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919496.742127180_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.6149999999999998, 
+                0.13999999999999982
+              ], 
+              [
+                1.135, 
+                0.07500000000000001
+              ]
+            ], 
+            [
+              [
+                0.7549999999999999, 
+                -0.27749999999999986
+              ], 
+              [
+                1.1074999999999995, 
+                -0.33249999999999996
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.1449999999999998, 
+              0.30999999999999994
+            ], 
+            [
+              1.0874999999999995, 
+              -0.34999999999999987
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4007071744495119, 
+            0.12501091263185105
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.7775378787878784, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40546875, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7375378787878784, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0799121434066692
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.001032783630971, 
+          "center": [
+            1.5890775838521907, 
+            1.8940887555764054
+          ], 
+          "sides": [
+            [
+              [
+                1.5557077112718258, 
+                1.4971087218711692
+              ], 
+              [
+                1.3298998487122844, 
+                1.9700102012580405
+              ]
+            ], 
+            [
+              [
+                1.8317089291067825, 
+                1.8402261620481741
+              ], 
+              [
+                1.6878465088908468, 
+                2.1666995209147335
+              ]
+            ]
+          ], 
+          "width": 0.40546875
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.6125, 
+                0.12999999999999956
+              ], 
+              [
+                1.1324999999999996, 
+                0.06500000000000017
+              ]
+            ], 
+            [
+              [
+                0.7, 
+                0.47999999999999987
+              ], 
+              [
+                0.9800000000000001, 
+                0.4600000000000002
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.1449999999999998, 
+              0.30999999999999994
+            ], 
+            [
+              1.0874999999999995, 
+              -0.34999999999999987
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.4007071744495119, 
+            0.12501091263185105
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.7775378787878784, 
+          "line_age_s": 0.0, 
+          "width_m": 0.36843750000000003, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7375378787878784, 
+          "sides_behind_sign_rejected": 6, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 0.9920846998476363
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0427326818446594, 
+          "center": [
+            1.3115752181735059, 
+            1.6079080840767406
+          ], 
+          "sides": [
+            [
+              [
+                1.565476338650527, 
+                1.5003986943841383
+              ], 
+              [
+                1.3396684760909856, 
+                1.973300173771009
+              ]
+            ], 
+            [
+              [
+                1.223574380395987, 
+                1.3852496564302281
+              ], 
+              [
+                1.0893556947365814, 
+                1.631796496644946
+              ]
+            ]
+          ], 
+          "width": 0.36843750000000003
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919496.9444864, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919496.944486380_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.57, 
+                -0.26249999999999996
+              ], 
+              [
+                0.9775, 
+                -0.3125
+              ]
+            ], 
+            [
+              [
+                0.74, 
+                0.1275000000000001
+              ], 
+              [
+                1.105, 
+                0.06499999999999989
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.11, 
+              0.3625000000000001
+            ], 
+            [
+              1.08, 
+              -0.24499999999999988
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.374746337547434, 
+            0.12937147459479903
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.7561728395061729, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4050955437431717, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7161728395061728, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.0799121434066692
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 1.9899121830306876, 
+          "center": [
+            1.610551980316314, 
+            1.851301325071638
+          ], 
+          "sides": [
+            [
+              [
+                1.906305300194702, 
+                1.6969152165522088
+              ], 
+              [
+                1.730338918453437, 
+                2.0678492841395464
+              ]
+            ], 
+            [
+              [
+                1.4858974961709326, 
+                1.6316673942443944
+              ], 
+              [
+                1.343244735761356, 
+                1.9734003893553844
+              ]
+            ]
+          ], 
+          "width": 0.4050955437431717
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.685, 
+                0.46999999999999986
+              ], 
+              [
+                0.9475, 
+                0.46500000000000064
+              ]
+            ], 
+            [
+              [
+                0.6725000000000001, 
+                0.135
+              ], 
+              [
+                0.9675, 
+                0.07999999999999952
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 1, 
+          "bottom_local": [
+            [
+              1.11, 
+              0.3625000000000001
+            ], 
+            [
+              1.08, 
+              -0.24499999999999988
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.374746337547434, 
+            0.12937147459479903
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.7561728395061729, 
+          "line_age_s": 0.0, 
+          "width_m": 0.35930084745762736, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.7161728395061728, 
+          "sides_behind_sign_rejected": 6, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 0.9920846998476363
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0334488232250507, 
+          "center": [
+            1.3096434181292018, 
+            1.6102069868855287
+          ], 
+          "sides": [
+            [
+              [
+                1.2260823624003383, 
+                1.4018253914168695
+              ], 
+              [
+                1.0897502657459814, 
+                1.6262018817669661
+              ]
+            ], 
+            [
+              [
+                1.51570593053612, 
+                1.5706431593807249
+              ], 
+              [
+                1.4042002229638868, 
+                1.8492404981670378
+              ]
+            ]
+          ], 
+          "width": 0.35930084745762736
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919497.1449351, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919497.144935131_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.5550000000000004, 
+                0.13999999999999996
+              ], 
+              [
+                1.0225000000000002, 
+                0.09000000000000008
+              ]
+            ], 
+            [
+              [
+                0.565, 
+                -0.2575000000000002
+              ], 
+              [
+                1.0400000000000003, 
+                -0.32499999999999996
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0850000000000004, 
+              0.3225
+            ], 
+            [
+              1.0425000000000002, 
+              -0.255
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.3490217067391401, 
+            0.13344809333021745
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.722435064935065, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4044718195890799, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.682435064935065, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.007188951477066, 
+          "center": [
+            1.6269250430141853, 
+            1.8139404227444083
+          ], 
+          "sides": [
+            [
+              [
+                1.5608575058431708, 
+                1.490650891892443
+              ], 
+              [
+                1.3547709375228105, 
+                1.913243575641153
+              ]
+            ], 
+            [
+              [
+                1.8922672943822345, 
+                1.7103638911903754
+              ], 
+              [
+                1.6970193581297741, 
+                2.1486098191682124
+              ]
+            ]
+          ], 
+          "width": 0.4044718195890799
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.6899999999999997, 
+                0.10999999999999999
+              ], 
+              [
+                1.0575, 
+                0.07
+              ]
+            ], 
+            [
+              [
+                0.6675, 
+                0.4575000000000002
+              ], 
+              [
+                0.9075, 
+                0.4650000000000003
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0850000000000004, 
+              0.3225
+            ], 
+            [
+              1.0425000000000002, 
+              -0.255
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.3490217067391401, 
+            0.13344809333021745
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.722435064935065, 
+          "line_age_s": 0.0, 
+          "width_m": 0.36343829719387766, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.682435064935065, 
+          "sides_behind_sign_rejected": 3, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.09230241856475, 
+          "center": [
+            1.3128273185997, 
+            1.6227954280462915
+          ], 
+          "sides": [
+            [
+              [
+                1.5145280914007955, 
+                1.6209527927129086
+              ], 
+              [
+                1.3531131076900325, 
+                1.9535207602528604
+              ]
+            ], 
+            [
+              [
+                1.2321163582109484, 
+                1.4172223017286016
+              ], 
+              [
+                1.0982207623849867, 
+                1.6165416922013067
+              ]
+            ]
+          ], 
+          "width": 0.36343829719387766
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919497.2753723, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919497.275372267_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.565, 
+                -0.2574999999999999
+              ], 
+              [
+                1.0200000000000002, 
+                -0.32999999999999996
+              ]
+            ], 
+            [
+              [
+                0.5375000000000002, 
+                0.13999999999999993
+              ], 
+              [
+                1.05, 
+                0.0849999999999998
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0625, 
+              0.3724999999999999
+            ], 
+            [
+              1.0125000000000002, 
+              -0.345
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.3322780975388544, 
+            0.13597108811336212
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6981794425087109, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40638414634146325, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.6581794425087109, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 1.9954390658032877, 
+          "center": [
+            1.6221452793486553, 
+            1.8284077360260258
+          ], 
+          "sides": [
+            [
+              [
+                1.8841391709059596, 
+                1.7235978768466458
+              ], 
+              [
+                1.7050676804383635, 
+                2.1481148391717264
+              ]
+            ], 
+            [
+              [
+                1.5613053367143135, 
+                1.4900581254099352
+              ], 
+              [
+                1.3369746332213852, 
+                1.9541238378584718
+              ]
+            ]
+          ], 
+          "width": 0.40638414634146325
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.5375000000000002, 
+                0.13999999999999993
+              ], 
+              [
+                1.05, 
+                0.0849999999999998
+              ]
+            ], 
+            [
+              [
+                0.6650000000000003, 
+                0.4525
+              ], 
+              [
+                0.8849999999999998, 
+                0.4650000000000001
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0625, 
+              0.3724999999999999
+            ], 
+            [
+              1.0125000000000002, 
+              -0.345
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.3322780975388544, 
+            0.13597108811336212
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6981794425087109, 
+          "line_age_s": 0.0, 
+          "width_m": 0.3442378048780489, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.6581794425087109, 
+          "sides_behind_sign_rejected": 2, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.1027421271170765, 
+          "center": [
+            1.31126224100232, 
+            1.6140959384295914
+          ], 
+          "sides": [
+            [
+              [
+                1.5613053367143135, 
+                1.4900581254099352
+              ], 
+              [
+                1.3369746332213852, 
+                1.9541238378584718
+              ]
+            ], 
+            [
+              [
+                1.22865028293102, 
+                1.4330220386539687
+              ], 
+              [
+                1.101704269423567, 
+                1.6131357795361274
+              ]
+            ]
+          ], 
+          "width": 0.3442378048780489
+        }
+      }
+    }, 
+    {
+      "stamp": 1789919497.4782994, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919497.478299379_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.59, 
+                0.135
+              ], 
+              [
+                1.015, 
+                0.06999999999999995
+              ]
+            ], 
+            [
+              [
+                0.5700000000000001, 
+                -0.2624999999999996
+              ], 
+              [
+                0.9774999999999999, 
+                -0.3349999999999999
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0325000000000002, 
+              0.3799999999999999
+            ], 
+            [
+              0.9824999999999999, 
+              -0.345
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.3062244039336903, 
+            0.13969285297419143
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6680172413793102, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40589678816311786, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.6280172413793101, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 1.9592305606068976, 
+          "center": [
+            1.6205785717790553, 
+            1.8464807031129453
+          ], 
+          "sides": [
+            [
+              [
+                1.5242503334667188, 
+                1.5595072951300881
+              ], 
+              [
+                1.3565807748046472, 
+                1.9554074329149418
+              ]
+            ], 
+            [
+              [
+                1.8731282276124872, 
+                1.75105484791115
+              ], 
+              [
+                1.7210257315883433, 
+                2.135992934755288
+              ]
+            ]
+          ], 
+          "width": 0.40589678816311786
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0325000000000002, 
+              0.3799999999999999
+            ], 
+            [
+              0.9824999999999999, 
+              -0.345
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.3062244039336903, 
+            0.13969285297419143
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6680172413793102, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.6280172413793101, 
+          "sides_behind_sign_rejected": 3, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919497.6808803, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919497.680880308_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.5350000000000001, 
+                0.12499999999999989
+              ], 
+              [
+                0.9800000000000002, 
+                0.08499999999999991
+              ]
+            ], 
+            [
+              [
+                0.5824999999999999, 
+                -0.2775
+              ], 
+              [
+                0.9499999999999998, 
+                -0.32250000000000006
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0025, 
+              0.3899999999999999
+            ], 
+            [
+              0.9525000000000001, 
+              -0.34250000000000025
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.2802107899996895, 
+            0.1431613347132955
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6376877133105804, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40421348314606736, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5976877133105803, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0125968349504775, 
+          "center": [
+            1.6178301770153702, 
+            1.85343409144455
+          ], 
+          "sides": [
+            [
+              [
+                1.5479184795679535, 
+                1.5399531164042595
+              ], 
+              [
+                1.3503958713012716, 
+                1.9407146654874106
+              ]
+            ], 
+            [
+              [
+                1.866839996870733, 
+                1.790056226743361
+              ], 
+              [
+                1.7139341033432454, 
+                2.127252071505067
+              ]
+            ]
+          ], 
+          "width": 0.40421348314606736
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 2, 
+          "bottom_local": [
+            [
+              1.0025, 
+              0.3899999999999999
+            ], 
+            [
+              0.9525000000000001, 
+              -0.34250000000000025
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.2802107899996895, 
+            0.1431613347132955
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6376877133105804, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5976877133105803, 
+          "sides_behind_sign_rejected": 2, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919497.8766942, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919497.876694202_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.5825, 
+                -0.2775000000000001
+              ], 
+              [
+                0.925, 
+                -0.3250000000000001
+              ]
+            ], 
+            [
+              [
+                0.5400000000000001, 
+                0.13250000000000006
+              ], 
+              [
+                0.9525000000000001, 
+                0.07500000000000012
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.9725000000000001, 
+              0.40000000000000013
+            ], 
+            [
+              0.9275000000000001, 
+              -0.25
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.2550636553954195, 
+            0.14627950024285807
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6065, 
+          "line_age_s": 0.0, 
+          "width_m": 0.4039545454545456, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5665, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 1.9755705678992372, 
+          "center": [
+            1.6136867984789742, 
+            1.8643911999493186
+          ], 
+          "sides": [
+            [
+              [
+                1.854760433774693, 
+                1.8098474046183326
+              ], 
+              [
+                1.7184787758437166, 
+                2.127636343556717
+              ]
+            ], 
+            [
+              [
+                1.5256761459881607, 
+                1.5616342270228816
+              ], 
+              [
+                1.3617912877015665, 
+                1.9445235755615722
+              ]
+            ]
+          ], 
+          "width": 0.4039545454545456
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.9725000000000001, 
+              0.40000000000000013
+            ], 
+            [
+              0.9275000000000001, 
+              -0.25
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.2550636553954195, 
+            0.14627950024285807
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.6065, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5665, 
+          "sides_behind_sign_rejected": 2, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919498.0765793, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919498.076579332_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.535, 
+                0.125
+              ], 
+              [
+                0.925, 
+                0.08250000000000002
+              ]
+            ], 
+            [
+              [
+                0.5925000000000002, 
+                -0.2875000000000001
+              ], 
+              [
+                0.8875, 
+                -0.3200000000000003
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.9450000000000001, 
+              0.41500000000000026
+            ], 
+            [
+              0.8925000000000003, 
+              -0.3375
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.229392839899051, 
+            0.14922484157172722
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.5776744186046514, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40641025641025647, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5376744186046514, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 1.999847721185959, 
+          "center": [
+            1.6097590726697837, 
+            1.8745675890927096
+          ], 
+          "sides": [
+            [
+              [
+                1.5211765597333173, 
+                1.5829366106373575
+              ], 
+              [
+                1.3577621498900887, 
+                1.9395904773703416
+              ]
+            ], 
+            [
+              [
+                1.8458917087967348, 
+                1.8437479830288286
+              ], 
+              [
+                1.722586098404801, 
+                2.113705343450567
+              ]
+            ]
+          ], 
+          "width": 0.40641025641025647
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.9450000000000001, 
+              0.41500000000000026
+            ], 
+            [
+              0.8925000000000003, 
+              -0.3375
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.229392839899051, 
+            0.14922484157172722
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.5776744186046514, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5376744186046514, 
+          "sides_behind_sign_rejected": 2, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919498.275124, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919498.275124073_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.5374999999999999, 
+                0.12250000000000003
+              ], 
+              [
+                0.8949999999999999, 
+                0.08499999999999996
+              ]
+            ], 
+            [
+              [
+                0.5974999999999999, 
+                -0.29250000000000037
+              ], 
+              [
+                0.8625, 
+                -0.3174999999999999
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.9, 
+              0.15500000000000003
+            ], 
+            [
+              0.85, 
+              -0.33750000000000024
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.203894996613068, 
+            0.15191280638313037
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.5420812182741116, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40730769230769237, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5020812182741116, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 2.0049856672476536, 
+          "center": [
+            1.6035013174858765, 
+            1.8874984568346274
+          ], 
+          "sides": [
+            [
+              [
+                1.5086525738273198, 
+                1.6079147190777447
+              ], 
+              [
+                1.3591414639571728, 
+                1.934807557826771
+              ]
+            ], 
+            [
+              [
+                1.8354735079292706, 
+                1.8706181203361385
+              ], 
+              [
+                1.7222385788351395, 
+                2.1115078271171615
+              ]
+            ]
+          ], 
+          "width": 0.40730769230769237
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.9, 
+              0.15500000000000003
+            ], 
+            [
+              0.85, 
+              -0.33750000000000024
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.203894996613068, 
+            0.15191280638313037
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.5420812182741116, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.5020812182741116, 
+          "sides_behind_sign_rejected": 5, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919498.4751577, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919498.475157738_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.8875, 
+              0.44
+            ], 
+            [
+              0.8399999999999996, 
+              -0.2099999999999998
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.1782084670909931, 
+            0.15438150830592007
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.5165769230769226, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.4765769230769226, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.8875, 
+              0.44
+            ], 
+            [
+              0.8399999999999996, 
+              -0.2099999999999998
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.1782084670909931, 
+            0.15438150830592007
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.5165769230769226, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.4765769230769226, 
+          "sides_behind_sign_rejected": 2, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919498.6777532, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919498.677753210_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "pair_local": [
+            [
+              [
+                0.5375000000000002, 
+                0.12000000000000002
+              ], 
+              [
+                0.8325, 
+                0.07249999999999995
+              ]
+            ], 
+            [
+              [
+                0.605, 
+                -0.30000000000000016
+              ], 
+              [
+                0.8000000000000003, 
+                -0.31499999999999995
+              ]
+            ]
+          ], 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.85, 
+              0.2475000000000001
+            ], 
+            [
+              0.7899999999999998, 
+              -0.3349999999999998
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.15219729599008, 
+            0.15663696512462405
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.48214592274678103, 
+          "line_age_s": 0.0, 
+          "width_m": 0.40093220338983054, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.44214592274678105, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_center_between_sides", 
+        "command": [
+          16, 
+          -0.12620454545454543
+        ], 
+        "view": {
+          "theta": 1.9763130113314877, 
+          "center": [
+            1.5977232868628055, 
+            1.909288461397983
+          ], 
+          "sides": [
+            [
+              [
+                1.4836911304479594, 
+                1.6528395224588959
+              ], 
+              [
+                1.3772348220889603, 
+                1.9320317580432216
+              ]
+            ], 
+            [
+              [
+                1.8135828298987975, 
+                1.9214055602102058
+              ], 
+              [
+                1.7290147744818267, 
+                2.097752502352655
+              ]
+            ]
+          ], 
+          "width": 0.40093220338983054
+        }
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.85, 
+              0.2475000000000001
+            ], 
+            [
+              0.7899999999999998, 
+              -0.3349999999999998
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.15219729599008, 
+            0.15663696512462405
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.48214592274678103, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.44214592274678105, 
+          "sides_behind_sign_rejected": 4, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919498.8749733, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919498.874973297_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.8349999999999999, 
+              0.43250000000000005
+            ], 
+            [
+              0.7675000000000001, 
+              -0.33250000000000024
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.1268821228300365, 
+            0.15859597677173798
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.45625000000000004, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.41625000000000006, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.8349999999999999, 
+              0.43250000000000005
+            ], 
+            [
+              0.7675000000000001, 
+              -0.33250000000000024
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.1268821228300365, 
+            0.15859597677173798
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.45625000000000004, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.41625000000000006, 
+          "sides_behind_sign_rejected": 9, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919499.0756197, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919499.075619698_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.8049999999999999, 
+              0.4424999999999999
+            ], 
+            [
+              0.7375000000000002, 
+              -0.3200000000000001
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.101134771409225, 
+            0.16034959230271872
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.42520491803278704, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.38520491803278706, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.8049999999999999, 
+              0.4424999999999999
+            ], 
+            [
+              0.7375000000000002, 
+              -0.3200000000000001
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.101134771409225, 
+            0.16034959230271872
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.42520491803278704, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.38520491803278706, 
+          "sides_behind_sign_rejected": 11, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919499.2789087, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919499.278908730_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.7699999999999999, 
+              0.30250000000000005
+            ], 
+            [
+              0.7050000000000001, 
+              -0.33000000000000007
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.0750579002635685, 
+            0.16188014341445295
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.39658102766798414, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.35658102766798416, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.7699999999999999, 
+              0.30250000000000005
+            ], 
+            [
+              0.7050000000000001, 
+              -0.33000000000000007
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.0750579002635685, 
+            0.16188014341445295
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.39658102766798414, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.35658102766798416, 
+          "sides_behind_sign_rejected": 17, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.265192744269048
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919499.4792714, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919499.479271412_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.7374999999999999, 
+              0.27249999999999996
+            ], 
+            [
+              0.6750000000000002, 
+              -0.3275000000000001
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.050890079192317, 
+            0.1619089479269341
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.36661458333333335, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.3266145833333334, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.7374999999999999, 
+              0.27249999999999996
+            ], 
+            [
+              0.6750000000000002, 
+              -0.3275000000000001
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.050890079192317, 
+            0.1619089479269341
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.36661458333333335, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.3266145833333334, 
+          "sides_behind_sign_rejected": 19, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919499.6769638, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919499.676963806_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.7175, 
+              0.4374999999999999
+            ], 
+            [
+              0.6624999999999998, 
+              -0.19249999999999998
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.0270763994949146, 
+            0.1619089479269341
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.33882936507936484, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.29882936507936486, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.7175, 
+              0.4374999999999999
+            ], 
+            [
+              0.6624999999999998, 
+              -0.19249999999999998
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.0270763994949146, 
+            0.1619089479269341
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.33882936507936484, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.29882936507936486, 
+          "sides_behind_sign_rejected": 19, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919499.878645, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919499.878644943_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.6975, 
+              0.43749999999999983
+            ], 
+            [
+              0.6300000000000001, 
+              -0.19500000000000023
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.0027822428197954, 
+            0.16190894792693394
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.3080039525691701, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.26800395256917015, 
+          "sides_behind_sign_rejected": 0, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.6975, 
+              0.43749999999999983
+            ], 
+            [
+              0.6300000000000001, 
+              -0.19500000000000023
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            1.0027822428197954, 
+            0.16190894792693394
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.3080039525691701, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.26800395256917015, 
+          "sides_behind_sign_rejected": 15, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919500.0762558, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919500.076255798_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.6424999999999998, 
+              0.17749999999999996
+            ], 
+            [
+              0.5824999999999997, 
+              -0.25499999999999995
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            0.9789783851861338, 
+            0.1619089479269341
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.27122832369942174, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.23122832369942173, 
+          "sides_behind_sign_rejected": 15, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.6424999999999998, 
+              0.17749999999999996
+            ], 
+            [
+              0.5824999999999997, 
+              -0.25499999999999995
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            0.9789783851861338, 
+            0.1619089479269341
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.27122832369942174, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.23122832369942173, 
+          "sides_behind_sign_rejected": 15, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2423156816411172
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919500.2776318, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919500.277631760_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.615, 
+              0.18749999999999983
+            ], 
+            [
+              0.5624999999999999, 
+              -0.24249999999999994
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            0.9547209894513299, 
+            0.161908947926934
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.24745639534883715, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.20745639534883714, 
+          "sides_behind_sign_rejected": 23, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "live_bottom", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.615, 
+              0.18749999999999983
+            ], 
+            [
+              0.5624999999999999, 
+              -0.24249999999999994
+            ]
+          ], 
+          "bottom_age_s": 0.0, 
+          "sign_anchor_local": [
+            0.9547209894513299, 
+            0.161908947926934
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.24745639534883715, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.20745639534883714, 
+          "sides_behind_sign_rejected": 23, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919500.4765596, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919500.476559639_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.5910374959332894, 
+              0.18749999999999986
+            ], 
+            [
+              0.5385374959332893, 
+              -0.24249999999999997
+            ]
+          ], 
+          "bottom_age_s": 0.1989278793334961, 
+          "sign_anchor_local": [
+            0.9307584853846191, 
+            0.16190894792693394
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.21776568524800705, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.17776568524800704, 
+          "sides_behind_sign_rejected": 22, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.5910374959332894, 
+              0.18749999999999986
+            ], 
+            [
+              0.5385374959332893, 
+              -0.24249999999999997
+            ]
+          ], 
+          "bottom_age_s": 0.1989278793334961, 
+          "sign_anchor_local": [
+            0.9307584853846191, 
+            0.16190894792693394
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.21776568524800705, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.17776568524800704, 
+          "sides_behind_sign_rejected": 22, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919500.67468, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919500.674679995_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.5671722647609918, 
+              0.1874999999999998
+            ], 
+            [
+              0.5146722647609918, 
+              -0.24250000000000002
+            ]
+          ], 
+          "bottom_age_s": 0.3970482349395752, 
+          "sign_anchor_local": [
+            0.9068932542123216, 
+            0.1619089479269339
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.18819550100293272, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.14819550100293272, 
+          "sides_behind_sign_rejected": 28, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.5671722647609918, 
+              0.1874999999999998
+            ], 
+            [
+              0.5146722647609918, 
+              -0.24250000000000002
+            ]
+          ], 
+          "bottom_age_s": 0.3970482349395752, 
+          "sign_anchor_local": [
+            0.9068932542123216, 
+            0.1619089479269339
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.18819550100293272, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.14819550100293272, 
+          "sides_behind_sign_rejected": 28, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919500.8803952, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919500.880395174_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.5423921744060769, 
+              0.18749999999999975
+            ], 
+            [
+              0.48989217440607685, 
+              -0.24250000000000005
+            ]
+          ], 
+          "bottom_age_s": 0.6027634143829346, 
+          "sign_anchor_local": [
+            0.8821131638574067, 
+            0.16190894792693383
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.15749176165449535, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.11749176165449535, 
+          "sides_behind_sign_rejected": 37, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.5423921744060769, 
+              0.18749999999999975
+            ], 
+            [
+              0.48989217440607685, 
+              -0.24250000000000005
+            ]
+          ], 
+          "bottom_age_s": 0.6027634143829346, 
+          "sign_anchor_local": [
+            0.8821131638574067, 
+            0.16190894792693383
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.15749176165449535, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.11749176165449535, 
+          "sides_behind_sign_rejected": 37, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919501.0748231, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919501.074823141_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.518971721892112, 
+              0.18749999999999972
+            ], 
+            [
+              0.466471721892112, 
+              -0.24250000000000005
+            ]
+          ], 
+          "bottom_age_s": 0.7971913814544678, 
+          "sign_anchor_local": [
+            0.8586927113434418, 
+            0.16190894792693383
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.1284726798387341, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.08847267983873408, 
+          "sides_behind_sign_rejected": 18, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.518971721892112, 
+              0.18749999999999972
+            ], 
+            [
+              0.466471721892112, 
+              -0.24250000000000005
+            ]
+          ], 
+          "bottom_age_s": 0.7971913814544678, 
+          "sign_anchor_local": [
+            0.8586927113434418, 
+            0.16190894792693383
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.1284726798387341, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.08847267983873408, 
+          "sides_behind_sign_rejected": 18, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }, 
+    {
+      "stamp": 1789919501.2794788, 
+      "frame": "field_data/sign_capture/20260920_234812_23760/1789919501.279478788_PARKING_frame.png", 
+      "after": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.4943192609268551, 
+              0.18749999999999956
+            ], 
+            [
+              0.44181926092685514, 
+              -0.24250000000000022
+            ]
+          ], 
+          "bottom_age_s": 1.0018470287322998, 
+          "sign_anchor_local": [
+            0.834040250378185, 
+            0.16190894792693367
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.09792707952276734, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.05792707952276734, 
+          "sides_behind_sign_rejected": 5, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }, 
+      "before": {
+        "debug": {
+          "distance_source": "measured_bottom_plus_pose", 
+          "visual_motion_samples": 3, 
+          "bottom_local": [
+            [
+              0.4943192609268551, 
+              0.18749999999999956
+            ], 
+            [
+              0.44181926092685514, 
+              -0.24250000000000022
+            ]
+          ], 
+          "bottom_age_s": 1.0018470287322998, 
+          "sign_anchor_local": [
+            0.834040250378185, 
+            0.16190894792693367
+          ], 
+          "sign_association": true, 
+          "bumper_clearance_m": 0.09792707952276734, 
+          "line_age_s": 0.0, 
+          "bottom_source": "tracked_bottom", 
+          "bottom_target_aligned": true, 
+          "phase": "CENTER", 
+          "bottom_seen": true, 
+          "remaining_m": 0.05792707952276734, 
+          "sides_behind_sign_rejected": 5, 
+          "target_clearance_m": 0.04, 
+          "visual_motion_scale": 1.2390487245478325
+        }, 
+        "reason": "parking_missing_white_straight", 
+        "command": [
+          16, 
+          0.0
+        ], 
+        "view": null
+      }
+    }
+  ], 
+  "before": {
+    "parking_center_between_sides": 25, 
+    "parking_missing_white_straight": 29
+  }
+}

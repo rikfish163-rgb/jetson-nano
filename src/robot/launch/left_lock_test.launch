@@ -1,0 +1,33 @@
+<launch>
+  <!-- Isolated test. Start explicitly with live:=true enabled:=true. -->
+  <arg name="live" default="false"/>
+  <arg name="enabled" default="false"/>
+  <arg name="lock_speed_raw" default="18"/>
+  <arg name="lane_speed_raw" default="20"/>
+  <arg name="max_seconds" default="12"/>
+  <arg name="line_frames" default="3"/>
+  <arg name="lookahead" default="0.55"/>
+  <param name="/competition_controller/left_lock_speed_raw" value="$(arg lock_speed_raw)" type="int"/>
+  <param name="/competition_controller/left_lock_max_seconds" value="$(arg max_seconds)" type="double"/>
+  <param name="/competition_controller/left_lock_line_frames" value="$(arg line_frames)" type="int"/>
+  <include file="$(find robocup_competition)/launch/stack.launch">
+    <arg name="controller_type" value="left_lock_test.py"/>
+    <arg name="live" value="$(arg live)"/>
+    <arg name="enabled" value="$(arg enabled)"/>
+    <arg name="start_actuators" value="$(arg live)"/>
+    <arg name="start_cameras" value="true"/>
+    <arg name="start_lane" value="true"/>
+    <arg name="start_lidar" value="true"/>
+    <arg name="start_sign" value="false"/>
+    <arg name="start_ground" value="false"/>
+    <arg name="start_rear" value="false"/>
+    <arg name="parking_enabled" value="false"/>
+    <arg name="wait_green" value="false"/>
+    <arg name="front_fps" value="15"/>
+    <arg name="lane_hz" value="12"/>
+    <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+    <arg name="lookahead" value="$(arg lookahead)"/>
+    <arg name="exit_lateral_tolerance" value="0.18"/>
+    <arg name="exit_lane_heading_tolerance" value="1.0472"/>
+  </include>
+</launch>

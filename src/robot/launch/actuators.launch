@@ -1,0 +1,12 @@
+<launch>
+  <!-- Hardware-only bring-up for the explicit, bounded bench probe. -->
+  <node pkg="ackermann_drive_teleop" type="testloop.py" name="ackermann_control_bridge" output="screen">
+    <param name="control_topic" value="/control/cmd"/>
+    <param name="command_topic" value="/ackermann_cmd"/>
+    <param name="command_timeout" value="0.25"/>
+  </node>
+  <node pkg="base_controller" type="base_controller" name="base_controller" output="screen">
+    <param name="command_topic" value="/ackermann_cmd"/>
+    <param name="command_timeout" value="0.25"/>
+  </node>
+</launch>

@@ -1,0 +1,12 @@
+{
+  "state": {
+    "state": "PARALLEL_PARKING",
+    "action_started": 10.0,
+    "wait_until": 11.0
+  },
+  "operation": "parallel_parking_tick",
+  "args": [
+    10.0
+  ],
+  "module": "parallel_parking"
+}

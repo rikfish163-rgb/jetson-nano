@@ -1,0 +1,10 @@
+{
+  "src/robot/config/competition.yaml": "cb2d65c98e9e7e4af61cb709323c41573972471a367e6b606059d52186a6ca38",
+  "src/robot/config/maneuvers.yaml": "6895652147be7720858fc2640f81abf45171ee435c399dcee510fc2b72e73b48",
+  "src/robot/uturn/controller.py": "38a9fafcf2b6ee113d689a2b1bd23e6f051810c6a1e551e33bd9a6fb2756a17f",
+  "src/robot/uturn/config.yaml": "236cd7a87565a46033c4464d8a1a119e0e052d57c71a8eec25cb83950a4cf367",
+  "src/robot/lane/preview.py": "d5a6179794c213ab136bf09aca47c4b611d522518444871c2ce047f8f84892e3",
+  "src/robot/lane/config.yaml": "27fc9df276c2fdbe09e3c01168ca53192b5265c3a62caa6cb69a4b9603e00ee0",
+  "src/robot/turn/controller.py": "8f92db5ecfa9d5223db4d82c37b0a4ba47ff7b161c4e1a9332a38b76d2405c5f",
+  "tools/sign_detector_20260916/run_yolo_vehicle.sh": "54a91d5bba89ae2fd3e236aad101776ff304758fe23271d16bd3bde62355ceda"
+}

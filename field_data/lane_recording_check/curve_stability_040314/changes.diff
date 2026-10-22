@@ -1,0 +1,618 @@
+--- before/src/robot/common/geometry.py
++++ src/robot/common/geometry.py
+@@ -2,6 +2,7 @@
+ from __future__ import division
+ 
+ import math
++import numpy as np
+ 
+ try:
+     _isfinite = math.isfinite
+@@ -76,6 +77,10 @@
+     c,s = math.cos(pose[2]),math.sin(pose[2])
+     lo,hi = -cfg['rear_overhang']-margin,cfg['wheelbase']+cfg['front_overhang']+margin
+     half = cfg['body_width']/2+margin
++    if isinstance(obstacles, np.ndarray):
++        dx,dy = obstacles[:,0]-pose[0],obstacles[:,1]-pose[1]
++        x,y = c*dx+s*dy,-s*dx+c*dy
++        return bool(np.any((x >= lo) & (x <= hi) & (np.abs(y) <= half)))
+     for p in obstacles:
+         dx,dy = p[0]-pose[0],p[1]-pose[1]
+         x,y = c*dx+s*dy,-s*dx+c*dy
+--- before/src/robot/obstacle/controller.py
++++ src/robot/obstacle/controller.py
+@@ -1,6 +1,7 @@
+ """obstacle module: explicit context input; coordinator applies returned updates."""
+ from __future__ import division
+ import math
++import numpy as np
+ 
+ from robot.common.geometry import bicycle
+ from robot.common.geometry import collision
+@@ -139,12 +140,14 @@
+     # Shape filtering selects bypass targets; every raw return still protects
+     # the imminent vehicle footprint, including non-target walls or objects.
+     obstacles = ctx.scan.obstacles
++    # Convert once per sweep, not once per pose. Do not cache mutable scans.
++    obstacle_array = np.asarray(obstacles,dtype=float).reshape(-1,2)
+     if filtered:
+         if report:
+             ctx.obstacle_check.update(mode='raw_collision_guard',
+                 target_filter=ctx.scan.shape_mode,round_clusters=ctx.scan.round_clusters)
+     for p in path:
+-        if collision(p, obstacles,ctx.cfg):
++        if collision(p, obstacle_array,ctx.cfg):
+             if report:
+                 hit = next(q for q in obstacles if collision(p,[q],ctx.cfg))
+                 # Spatial support is an observation count, not a probability.
+--- before/src/robot/lane/record_run.py
++++ src/robot/lane/record_run.py
+@@ -24,8 +24,9 @@
+     cv2.putText(canvas, '%s raw=%s' % (event['state'],event['command']['steering_raw']),
+                 (10,45),0,.55,(255,255,255),1)
+     cv2.circle(canvas,pixel((0,0)),6,(255,255,255),-1)
+-    if not selection:
+-        cv2.putText(canvas,'No new lane target: '+event.get('reason',''),(10,75),0,.5,(255,255,255),1)
++    if not selection or not selection.get('path'):
++        reason = (selection or {}).get('reason',event.get('reason',''))
++        cv2.putText(canvas,'No new lane target: '+reason,(10,75),0,.5,(255,255,255),1)
+         return canvas
+     points = selection['path']
+     for a,b in zip(points,points[1:]):
+@@ -45,7 +46,7 @@
+         cv2.putText(canvas,'orange=rejected left target; right-curve guard',(10,135),0,.5,(0,165,255),1)
+     cv2.line(canvas,pixel((0.,0.)),pixel((1.8,0.)),(130,130,130),1)
+     cv2.putText(canvas,'red=selected  grey=vehicle centerline',(10,75),0,.5,(255,255,255),1)
+-    cv2.putText(canvas,selection['selection'],(10,95),0,.5,(255,255,255),1)
++    cv2.putText(canvas,selection.get('selection',selection.get('reason','')),(10,95),0,.5,(255,255,255),1)
+     if selection.get('target') is not None:
+         target_x=float(selection['target'][0])
+         lateral=float(selection['target'][1])
+@@ -107,6 +108,7 @@
+ 
+     def worker(self):
+         streams={}
++        last_target_source=None
+         try:
+             while not self.done or not self.queue.empty():
+                 try:key,msg,received=self.queue.get(timeout=.2)
+@@ -129,9 +131,14 @@
+                     row=json.dumps(dict(received=received,data=data),allow_nan=False)+'\n'
+                     streams[key].write(row)
+                     self.bytes+=len(row)
+-                    if key=='target':
++                    # Keep every numeric command; render only once per visual
++                    # source with a selected path, never 20 Hz waiting screens.
++                    source=data.get('source_stamp')
++                    if (key=='target' and (data.get('selection') or {}).get('path')
++                            and source is not None and source != last_target_source):
+                         name='%d_%d_target'%(int(round(data['source_stamp']*1e9)),int(round(data['stamp']*1e9)))
+                         self.save_image(name,selection_image(data))
++                        last_target_source=source
+                 self.counts[key]=self.counts.get(key,0)+1
+                 if sum(self.counts.values())%100==0:self.summary()
+         except Exception as exc:
+--- before/src/robot/lane/controller.py
++++ src/robot/lane/controller.py
+@@ -6,6 +6,7 @@
+ from robot.common.geometry import local
+ from robot.common.contracts import model_to_command_steering
+ from vehicle_control.pure_pursuit import PurePursuit
++from robot.lane.preview import preview_steering, lane_speed
+ 
+ 
+ 
+@@ -13,7 +14,7 @@
+  'gap_steer', 'lane', 'lane_boundaries', 'lane_confidence', 'lane_source', 'lane_stamp',
+  'left_boundary', 'left_boundary_stamp', 'left_fit_diagnostic', 'left_reference',
+  'park_line_side', 'pending', 'pose', 'right_lock', 'right_tail_origin', 'state', 'lane_recovery',
+- 'startup_curve_lock', 'lane_target', 'lane_curve_lock')
++ 'startup_curve_lock', 'lane_target', 'lane_curve_lock', 'lane_preview')
+ CALLS = (('lane', 'lane_valid'), ('lane', 'left_exit_line'), ('lane', 'left_reference_command'),
+  ('lane', 'park_line_command'), ('motion', 'current_steering'), ('motion', 'stop'))
+ OPERATIONS = ('lane_valid', 'forward_lane_ready', 'lane_command', 'park_line_command', 'left_reference_command',
+@@ -21,8 +22,14 @@
+ 
+ 
+ def lane_valid(ctx, now):
+-    return (0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout'] and len(ctx.lane) >= 2
+-            and ctx.lane_confidence >= ctx.cfg['lane_min_confidence'])
++    if not (0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout'] and
++            ctx.lane_confidence >= ctx.cfg['lane_min_confidence']):
++        return False
++    if not ctx.cfg.get('lane_curvature_preview',False):
++        return len(ctx.lane) >= 2
++    points = sorted(local(ctx.pose,p) for p in ctx.lane)
++    points = [p for p in points if p[0] > .05]
++    return len(points) >= 2 and points[-1][0]-points[0][0] >= ctx.cfg.get('lane_min_path_span',.15)-1e-9
+ 
+ 
+ def forward_lane_ready(ctx, now):
+@@ -120,7 +127,7 @@
+             now-ctx.gap_start > ctx.cfg['gap_max_seconds']):
+         return ctx.call('motion', 'stop', 'gap_limit_wait_for_lane')
+     ctx.state = 'GAP'
+-    return ctx.cfg['speed_raw']['gap'], ctx.gap_steer
++    return lane_speed(ctx, ctx.cfg['speed_raw']['gap']), ctx.gap_steer
+ 
+ 
+ def lane_command(ctx, now, approach=False):
+@@ -131,9 +138,15 @@
+     ctx.follow_left_boundary = False
+     ctx.lane_source = 'center'
+     if not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']:
++        ctx.lane_preview = None
+         return ctx.call('motion', 'stop', 'lane_stream_stale')
+     if not ctx.lane:
+         return lane_gap_command(ctx, now)
++    if ctx.cfg.get('lane_curvature_preview',False) and not ctx.call('lane', 'lane_valid', now):
++        ctx.lane_preview = None
++        ctx.lane_target = dict(stamp=now,source_stamp=ctx.lane_stamp,path=[],
++            target=None,valid=False,reason='lane_unreliable',selection='lane_unreliable')
++        return ctx.call('motion', 'stop', 'lane_unreliable')
+     candidates = [local(ctx.pose,p) for p in ctx.lane]
+     forward = [(i,p) for i,p in enumerate(candidates) if p[0] > 0.]
+     if not forward:
+@@ -142,12 +155,15 @@
+     offset = target[1]  # y-left = (BEV midpoint u - target u) / 400.
+     fraction = max(-1.,min(1.,offset/ctx.cfg.get('lane_lateral_full_scale_m',.075)))
+     steer = fraction*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
++    steer = preview_steering(ctx, candidates, steer)
+     steer, rejected = right_curve_command(ctx, candidates, steer)
+     ctx.lane_target = dict(stamp=now, source_stamp=ctx.lane_stamp,
+         path=candidates, target=target, target_index=target_index,
+         intersection=None, line_x=None, lateral_offset_m=offset,
+-        angle=steer, valid=True, reason='ok',
++        angle=steer, valid=True, reason='ok',curvature_preview=ctx.lane_preview,
+         selection='right_curve_full_lock' if ctx.lane_curve_lock else 'topmost_lateral_offset')
++    if ctx.lane_preview is not None and ctx.lane_curve_lock is None:
++        ctx.lane_target['selection'] = 'topmost_with_curvature_preview'
+     if rejected:
+         ctx.lane_source = 'right_curve_hold'
+         ctx.lane_target.update(target=None,rejected_target=target,valid=False,
+@@ -157,12 +173,13 @@
+         return command
+     ctx.state = 'LANE'
+     ctx.gap_origin, ctx.gap_start, ctx.gap_steer = ctx.pose, now, steer
+-    return ctx.cfg['speed_raw']['lane'], steer
++    return lane_speed(ctx, ctx.cfg['speed_raw']['lane']), steer
+ 
+ 
+ def park_line_command(ctx, now):
+     """Follow the observed paint itself while awaiting the parking marker."""
+     ctx.lane_curve_lock = None
++    ctx.lane_preview = None
+     if (not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout'] or
+             (ctx.cfg.get('parking_mode')!='forward_center' and
+              ctx.lane_confidence < ctx.cfg['lane_min_confidence'])):
+--- before/src/robot/master/state_machine.py
++++ src/robot/master/state_machine.py
+@@ -27,7 +27,7 @@
+  'sign_label', 'startup_started', 'startup_origin', 'startup_blue_point', 'startup_curve_lock',
+  'state', 'straight_search', 'timed_uturn', 'uturn',
+  'uturn_sign_window', 'wait_until', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen', 'lane_recovery',
+- 'blue_approach', 'blue_clear_since', 'blue_clear_frames', 'front_blue_lines', 'lane_curve_lock')
++ 'blue_approach', 'blue_clear_since', 'blue_clear_frames', 'front_blue_lines', 'lane_curve_lock', 'lane_preview')
+ CALLS = (('lane', 'lane_command'), ('mission', 'dispatch'), ('mission', 'resume_lane'),
+  ('mission', 'start_follow'), ('motion', 'follow_path_tick'), ('motion', 'stop'),
+  ('obstacle', 'checked_command'), ('obstacle', 'scan_ready'), ('obstacle', 'timed_bypass_tick'),
+@@ -70,6 +70,7 @@
+     state['lane'] = []
+     state['lane_target'] = None
+     state['lane_curve_lock'] = None
++    state['lane_preview'] = None
+     state['lane_stamp'] = -1.0
+     state['lane_confidence'] = 0.0
+     state['lane_boundaries'] = {}
+@@ -153,6 +154,7 @@
+ 
+ 
+ def start_follow(ctx, path, action, now):
++    ctx.lane_preview = None
+     ctx.lane_curve_lock = None
+     ctx.lane_recovery = None
+     ctx.startup_curve_lock = None
+@@ -188,6 +190,7 @@
+ 
+ 
+ def resume_lane(ctx):
++    ctx.lane_preview = None
+     ctx.lane_curve_lock = None
+     ctx.startup_curve_lock = None
+     if ctx.action=='LEFT':
+--- before/src/robot/motion/controller.py
++++ src/robot/motion/controller.py
+@@ -37,7 +37,7 @@
+         ctx.timed_uturn.pause()
+     ctx.reason = reason
+     steer = 0.0
+-    if (reason in ('lane_stream_stale', 'scan_missing_or_stale') and
++    if (reason in ('lane_stream_stale', 'scan_missing_or_stale', 'lane_unreliable') and
+             ctx.action is None and ctx.state in ('LANE', 'GAP') and
+             ctx.lane_curve_lock is not None):
+         # Stop propulsion without straightening the wheels while the car
+--- before/src/robot/common/contracts.py
++++ src/robot/common/contracts.py
+@@ -202,6 +202,10 @@
+         raise ValueError('lane_min_path_span must be 0.05..0.30 m')
+     if not .01 <= number(cfg.get('lane_lateral_full_scale_m',.075)) <= 2.:
+         raise ValueError('lane_lateral_full_scale_m must be 0.01..2.0 m')
++    boolean(cfg.get('lane_curvature_preview',False))
++    curve_speed = number(cfg.get('lane_curve_speed_raw',12))
++    if curve_speed != int(curve_speed) or not 1 <= curve_speed <= 20:
++        raise ValueError('lane_curve_speed_raw must be an integer in [1,20]')
+     for name in ('wait_green','bypass_enabled','parking_blue_required','planner_require_initial_forward'):
+         boolean(cfg[name])
+     boolean(cfg['lidar']['unknown_is_obstacle'])
+--- before/src/robot/config/competition.yaml
++++ src/robot/config/competition.yaml
+@@ -15,6 +15,8 @@
+ raw_to_mps: {forward: 0.008, reverse: 0.007}
+ lookahead: 1.0
+ lane_lateral_full_scale_m: 0.075 # ordinary lane: lateral offset at raw +/-22
++lane_curvature_preview: false # full vehicle script enables measured-curve feedforward
++lane_curve_speed_raw: 12
+ action_lookahead: 0.30
+ lidar_timeout: 0.8 # independent of the 0.5 s visual timeout; final-ray timestamp
+ left_turn_full_lock: false # true overrides the configured radius with the full-lock model arc
+--- before/src/robot/config/workspace_modules.yaml
++++ src/robot/config/workspace_modules.yaml
+@@ -76,6 +76,8 @@
+     - gap_max_distance
+     - gap_max_seconds
+     - lane_confidence_topic
++    - lane_curvature_preview
++    - lane_curve_speed_raw
+     - lane_frame
+     - lane_min_confidence
+     - lane_min_path_span
+--- before/src/robot/lane/config.yaml
++++ src/robot/lane/config.yaml
+@@ -1,2 +1,2 @@
+-# 使用原 PurePursuit；前瞻与速度沿用公共配置和完整启动脚本。
++# 普通巡线使用最远点偏移；整车脚本显式启用曲率预判和弯道降速。
+ {}
+--- before/src/robot/lane/README.md
++++ src/robot/lane/README.md
+@@ -1,4 +1,24 @@
+ # 寻线
++
++## 2026-09-30 实车压外线修复
++
++整车脚本现在显式启用 `lane_curvature_preview:=true lane_curve_speed_raw:=12`。
++在原最远点横偏控制上叠加 `atan(wheelbase * curvature)` 的物理转角前馈，
++再映射到原命令单位；原路径点、最远目标点和 raw ±22 限幅保留。
++曲率来自当前观测区间的二次拟合：至少四个不同前向位置，跨度至少 0.30 m，
++拟合均方根残差不超过 0.02 m，不向未观测区域外推路径。
++一维卡尔曼滤波只更新不同的源图像帧，图像间隔超过视觉超时后重新初始化。
++这不是车速或舵机反馈闭环，物理最大转角仍待实测。
++
++曲率绝对值达到 0.4/m 或右弯锁有效时，普通巡线和 GAP 速度上限为 raw=12，
++直线路径保持 lane_speed_raw=20。退出确认仍按原始新图像判据，不用滤波预测代替。
++启用此模式时要求置信度至少 lane_min_confidence，并至少有两点、跨度 0.15 m。
++不可靠图像停车但不刷新 GAP 预算；已确认右弯时保持舵角、停止速度。
++雷达和视觉超时门槛、原始雷达点碰撞保护均保留。
++
++`lane_curvature_preview:=false` 可选择下面记录的原最远点控制行为。
++
++## 原最远点控制与右弯锁
+ 
+ 普通循线每帧只取目标路径最靠上的点（车体坐标 x_forward 最大），
+ 按该点到车体中线的横向偏移直接比例控制。鸟瞰图宽 480px，中线 u=240px，
+--- before/src/robot/launch/full.launch
++++ src/robot/launch/full.launch
+@@ -67,6 +67,8 @@
+   <arg name="blue_aligned_advance_m" default=""/>
+   <arg name="blue_align_duration_s" default=""/>
+   <arg name="lane_speed_raw" default=""/>
++  <arg name="lane_curvature_preview" default="false"/>
++  <arg name="lane_curve_speed_raw" default="12"/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+   <arg name="startup_steering_raw" default=""/>
+@@ -139,6 +141,8 @@
+     <arg name="blue_aligned_advance_m" value="$(arg blue_aligned_advance_m)"/>
+     <arg name="blue_align_duration_s" value="$(arg blue_align_duration_s)"/>
+     <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
++    <arg name="lane_curvature_preview" value="$(arg lane_curvature_preview)"/>
++    <arg name="lane_curve_speed_raw" value="$(arg lane_curve_speed_raw)"/>
+     <arg name="action_speed_raw" value="$(arg action_speed_raw)"/>
+     <arg name="straight_speed_raw" value="$(arg straight_speed_raw)"/>
+     <arg name="startup_steering_raw" value="$(arg startup_steering_raw)"/>
+--- before/src/robot/launch/stack.launch
++++ src/robot/launch/stack.launch
+@@ -73,6 +73,8 @@
+   <arg name="blue_aligned_advance_m" default=""/>
+   <arg name="blue_align_duration_s" default=""/>
+   <arg name="lane_speed_raw" default=""/>
++  <arg name="lane_curvature_preview" default="false"/>
++  <arg name="lane_curve_speed_raw" default="12"/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+   <arg name="startup_steering_raw" default=""/>
+@@ -155,6 +157,8 @@
+   <param if="$(eval arg('blue_aligned_advance_m') != '')" name="/competition/config/blue_aligned_advance_m" value="$(arg blue_aligned_advance_m)" type="double"/>
+   <param if="$(eval arg('blue_align_duration_s') != '')" name="/competition/config/blue_align_duration_s" value="$(arg blue_align_duration_s)" type="double"/>
+   <param if="$(eval arg('lane_speed_raw') != '')" name="/competition/config/speed_raw/lane" value="$(arg lane_speed_raw)" type="int"/>
++  <param name="/competition/config/lane_curvature_preview" value="$(arg lane_curvature_preview)" type="bool"/>
++  <param name="/competition/config/lane_curve_speed_raw" value="$(arg lane_curve_speed_raw)" type="int"/>
+   <param if="$(eval arg('action_speed_raw') != '')" name="/competition/config/speed_raw/action" value="$(arg action_speed_raw)" type="int"/>
+   <param if="$(eval arg('straight_speed_raw') != '')" name="/competition/config/straight_speed_raw" value="$(arg straight_speed_raw)" type="int"/>
+   <param if="$(eval arg('startup_steering_raw') != '')" name="/competition/config/startup_steering_raw" value="$(arg startup_steering_raw)" type="int"/>
+--- before/tools/sign_detector_20260916/run_yolo_vehicle.sh
++++ tools/sign_detector_20260916/run_yolo_vehicle.sh
+@@ -19,6 +19,7 @@
+   lidar_enabled:=true parking_enabled:=true parking_mode:=reverse_plan wait_green:=true \
+   lane_hz:=12 lane_window_height:=40 lane_min_span:=0.15 record_lane:=true \
+   lane_speed_raw:=20 action_speed_raw:=20 straight_speed_raw:=20 \
++  lane_curvature_preview:=true lane_curve_speed_raw:=12 \
+   startup_steering_raw:=0 \
+   lookahead:=1.0 action_lookahead:=0.30 steering_command_scale_rad:=0.03 \
+   sign_backend:=yolo_trt \
+--- before/src/robot/lane/preview.py
++++ src/robot/lane/preview.py
+@@ -0,0 +1,58 @@
++"""Measured-path curvature feedforward with a scalar, frame-based Kalman filter."""
++from __future__ import division
++import math
++import numpy as np
++
++
++def curvature_preview(points, stamp, previous, timeout):
++    points = sorted(p for p in points if .05 < p[0] <= 1.5)
++    if len(set(x for x,y in points)) < 4 or points[-1][0]-points[0][0] < .30:
++        return None
++    if previous is not None and stamp == previous['stamp']:
++        return previous
++    xy = np.asarray(points, dtype=float)
++    if not np.all(np.isfinite(xy)):
++        return None
++    # Centering x avoids ill-conditioning; evaluate only inside observed span.
++    middle = float(np.mean(xy[:,0]))
++    x = xy[:,0]-middle
++    a,b,c = np.polyfit(x, xy[:,1], 2)
++    residual = float(np.sqrt(np.mean((xy[:,1]-(a*x*x+b*x+c))**2)))
++    if residual > .02:
++        return None
++    measured = max(-3., min(3., float(2*a/(1+b*b)**1.5)))
++    measurement_variance = .04+(4*residual/(points[-1][0]-points[0][0])**2)**2
++    dt = stamp-previous['stamp'] if previous is not None else 0.
++    if previous is None or not 0 < dt <= timeout:
++        estimate, variance = measured, measurement_variance
++    else:
++        # Random-walk curvature: each new image adds process uncertainty.
++        predicted_variance = previous['variance']+.5*dt
++        gain = predicted_variance/(predicted_variance+measurement_variance)
++        estimate = previous['curvature']+gain*(measured-previous['curvature'])
++        variance = (1-gain)*predicted_variance
++    return dict(stamp=stamp, curvature=estimate, variance=variance,
++                measured_curvature=measured, residual_m=residual)
++
++
++def preview_steering(ctx, points, steer):
++    if not ctx.cfg.get('lane_curvature_preview', False) or ctx.action is not None:
++        ctx.lane_preview = None
++        return steer
++    ctx.lane_preview = curvature_preview(points, ctx.lane_stamp, ctx.lane_preview,
++                                         ctx.cfg['sensor_timeout'])
++    if ctx.lane_preview is None:
++        return steer
++    scale = ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
++    physical = steer/scale*ctx.cfg['max_steer']
++    physical += math.atan(ctx.cfg['wheelbase']*ctx.lane_preview['curvature'])
++    physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
++    return physical/ctx.cfg['max_steer']*scale
++
++
++def lane_speed(ctx, speed):
++    if ctx.cfg.get('lane_curvature_preview',False) and (
++            ctx.lane_curve_lock is not None or
++            ctx.lane_preview is not None and abs(ctx.lane_preview['curvature']) >= .4):
++        return min(speed, ctx.cfg.get('lane_curve_speed_raw',12))
++    return speed
+--- before/src/robot/test/test_lane_preview.py
++++ src/robot/test/test_lane_preview.py
+@@ -0,0 +1,90 @@
++"""Recorded curve entry, frame-based filtering and retained input protection."""
++import math
++import os
++import unittest
++from robot.common.config import load_config
++from robot.common.contracts import encode_command
++from robot.master.controller import Controller
++from robot.lane.preview import curvature_preview
++
++
++class LanePreviewTests(unittest.TestCase):
++    ENTRY = [(.591923201,-.004454907), (.671884314,.007609418),
++             (.751295300,.014575017), (.830439446,.016596653),
++             (.909614227,.012993243), (.989110911,.002449286)]
++
++    def setUp(self):
++        cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
++        cfg.update(wait_green=False, lidar_enabled=False, steering_command_scale_rad=.03,
++                   lane_curvature_preview=True, lane_curve_speed_raw=12)
++        self.c = Controller(cfg)
++        self.addCleanup(self.c.close)
++
++    def command(self, points, stamp=1., confidence=.9, now=None):
++        self.c.observe_lane(points, confidence, stamp)
++        speed, steer = self.c.lane_command(stamp if now is None else now)
++        return speed, encode_command(speed, steer, self.c.cfg, 0)['steering_raw']
++
++    def test_recorded_entry_turns_right_before_far_offset_grows(self):
++        speed, raw = self.command(self.ENTRY)
++        self.assertLessEqual(raw, -4)
++        self.assertEqual(speed, 12)
++
++    def test_mirrored_left_curve_is_symmetric(self):
++        self.assertGreaterEqual(self.command([(x,-y) for x,y in self.ENTRY])[1], 4)
++
++    def test_bend_lock_and_gap_slow_down(self):
++        self.assertEqual(self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)]), (12,-22))
++        self.assertEqual(self.command([], 1.1), (12,-22))
++
++    def test_straight_retains_lane_speed(self):
++        self.assertEqual(self.command([(.5,0),(.7,0),(.9,0),(1.1,0)]), (20,0))
++
++    def test_unreliable_and_single_point_do_not_refresh_gap(self):
++        self.command(self.ENTRY)
++        origin = self.c.gap_start
++        self.assertEqual(self.command(self.ENTRY, 1.1, .1)[0], 0)
++        self.assertEqual(self.c.gap_start, origin)
++        self.assertEqual(self.command([(.7,0)], 1.2)[0], 0)
++
++    def test_stale_frame_stops_speed(self):
++        self.command(self.ENTRY)
++        self.assertEqual(self.command(self.ENTRY, 1., now=1.6)[0], 0)
++
++    def test_low_confidence_stop_keeps_bend_wheel_angle(self):
++        path = [(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)]
++        self.command(path)
++        self.assertEqual(self.command(path, 1.1, .1), (0,-22))
++
++    def test_filter_does_not_count_control_ticks_as_observations(self):
++        self.command(self.ENTRY)
++        before = dict(self.c.lane_preview)
++        self.command(self.ENTRY, now=1.05)
++        self.assertEqual(self.c.lane_preview, before)
++
++    def test_curvature_jitter_is_reduced_without_holding_opposite_bend(self):
++        raw, filtered = [], []
++        for i in range(40):
++            k = -.8 + (.2 if i%2 else -.2)
++            points = [(x, .5*k*(x-.7)**2) for x in (.5,.6,.7,.8,.9,1.)]
++            self.command(points, 1.+i*.1)
++            raw.append(self.c.lane_preview['measured_curvature'])
++            filtered.append(self.c.lane_preview['curvature'])
++        def variance(values):
++            mean = sum(values)/len(values)
++            return sum((v-mean)**2 for v in values)/len(values)
++        self.assertLess(variance(filtered[10:]), .5*variance(raw[10:]))
++        # A real sign change must be admitted promptly, not filtered forever.
++        for i in range(5):
++            self.command([(x,.4*(x-.7)**2) for x in (.5,.6,.7,.8,.9,1.)], 5.+i*.1)
++        self.assertGreater(self.c.lane_preview['curvature'], .35)
++
++    def test_long_source_gap_reinitializes_filter(self):
++        previous = curvature_preview(self.ENTRY,1.,None,.5)
++        mirror = [(x,-y) for x,y in self.ENTRY]
++        current = curvature_preview(mirror,2.,previous,.5)
++        self.assertAlmostEqual(current['curvature'],current['measured_curvature'])
++
++    def test_degenerate_and_inconsistent_paths_do_not_invent_curve(self):
++        self.assertIsNone(curvature_preview([(.5,0),(.5,.01),(.9,0),(.9,.01)],1.,None,.5))
++        self.assertIsNone(curvature_preview([(.5,0),(.6,.3),(.7,-.3),(.8,0),(.9,0)],1.,None,.5))
+--- before/src/robot/test/test_lane_recorder.py
++++ src/robot/test/test_lane_recorder.py
+@@ -0,0 +1,58 @@
++"""Rendering rejected observations must not end the numeric recording."""
++import imp
++import os
++import unittest
++import json
++import shutil
++import tempfile
++import Queue
++
++recorder = imp.load_source('lane_recorder_test_module', os.path.join(
++    os.path.dirname(__file__), '../lane/record_run.py'))
++
++
++class LaneRecorderTests(unittest.TestCase):
++    def test_worker_keeps_numeric_stream_after_rejection_and_skips_duplicates(self):
++        worker = recorder.Recorder.__new__(recorder.Recorder)
++        worker.path = tempfile.mkdtemp(prefix='lane-recorder-test-')
++        self.addCleanup(shutil.rmtree,worker.path)
++        worker.queue = Queue.Queue()
++        worker.counts = {}
++        worker.sources = dict(front=set(),bev=set(),observation=set())
++        worker.done,worker.disabled,worker.bytes,worker.dropped = True,None,0,0
++        worker.limit,worker.reserve = 1024*1024,0
++        images = []
++        worker.save_image = lambda name,frame: images.append(name)
++        for stamp,source,selection in (
++                (1.,.9,None),
++                (1.1,1.,dict(valid=False,reason='lane_unreliable',target=None)),
++                (1.2,1.1,dict(path=[(.5,0),(.8,-.1)],selection='test')),
++                (1.3,1.1,dict(path=[(.5,0),(.8,-.1)],selection='test')),
++                (1.4,1.3,dict(path=[(.5,0),(.8,-.1)],selection='test'))):
++            event = dict(stamp=stamp,source_stamp=source,state='LANE',
++                         command=dict(steering_raw=-22),selection=selection)
++            msg = type('Message',(),dict(data=json.dumps(event)))()
++            worker.queue.put(('target',msg,stamp))
++        worker.worker()
++        self.assertIsNone(worker.disabled)
++        self.assertEqual(worker.counts['target'],5)
++        self.assertEqual(len(images),2)
++        with open(os.path.join(worker.path,'target.jsonl')) as stream:
++            self.assertEqual(len(stream.readlines()),5)
++
++    def test_rejected_observation_without_path_renders(self):
++        event = dict(state='LANE', reason='lane_unreliable',
++                     command=dict(steering_raw=0), selection=dict(
++                         valid=False, reason='lane_unreliable', target=None))
++        self.assertEqual(recorder.selection_image(event).shape, (600, 640, 3))
++
++    def test_missing_selection_renders(self):
++        event = dict(state='WAIT_GREEN', reason='waiting_green',
++                     command=dict(steering_raw=0), selection=None)
++        self.assertEqual(recorder.selection_image(event).shape, (600, 640, 3))
++
++    def test_valid_path_renders(self):
++        event = dict(state='LANE', command=dict(steering_raw=-10),
++                     selection=dict(path=[(.5, .02), (.8, -.08)],
++                                    selection='metric_pure_pursuit', target=(.8, -.08)))
++        self.assertEqual(recorder.selection_image(event).shape, (600, 640, 3))
+--- before/src/robot/test/test_vector_collision.py
++++ src/robot/test/test_vector_collision.py
+@@ -0,0 +1,49 @@
++"""Array acceleration retains the scalar footprint and every raw return."""
++import math
++import os
++import random
++import unittest
++import numpy as np
++from robot.common.config import load_config
++from robot.common.geometry import collision, world
++from robot.master.controller import Controller
++
++
++class VectorCollisionTests(unittest.TestCase):
++    def setUp(self):
++        self.cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
++
++    def compare(self, pose, points):
++        self.assertEqual(collision(pose, points, self.cfg),
++                         collision(pose, np.asarray(points).reshape(-1, 2), self.cfg))
++
++    def test_random_rotated_clouds_match_scalar(self):
++        rng = random.Random(42)
++        for unused in range(100):
++            pose = (rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-math.pi, math.pi))
++            points = [(rng.uniform(-2, 2), rng.uniform(-2, 2)) for i in range(50)]
++            self.compare(pose, points)
++
++    def test_boundary_and_empty_clouds_match_scalar(self):
++        cfg = self.cfg
++        lo = -cfg['rear_overhang']-cfg['obstacle_margin']
++        hi = cfg['wheelbase']+cfg['front_overhang']+cfg['obstacle_margin']
++        half = cfg['body_width']/2+cfg['obstacle_margin']
++        for pose in ((0, 0, 0), (1, 2, .7)):
++            self.compare(pose, [])
++            for x in (lo-1e-8, lo, hi, hi+1e-8):
++                for y in (-half-1e-8, -half, 0, half, half+1e-8):
++                    self.compare(pose, [world(pose, (x, y))])
++        self.compare((0, 0, 0), [(float('nan'), 0), (10, 10)])
++
++    def test_mutated_raw_obstacles_are_not_cached_or_filtered(self):
++        cfg = self.cfg
++        cfg.update(wait_green=False, lidar_enabled=True)
++        c = Controller(cfg)
++        self.addCleanup(c.close)
++        c.scan = type('Scan', (), dict(obstacles=[(3, 3)], shape_filter=True,
++                                      shape_mode='line_reject', round_clusters=[],
++                                      motion_obstacles=[], stamp=1))()
++        self.assertTrue(c.sweep_clear([(0, 0, 0)], False))
++        c.scan.obstacles[:] = [(.2, 0)]
++        self.assertFalse(c.sweep_clear([(0, 0, 0)], False))

@@ -1,0 +1,83 @@
+{
+  "evidence_limit": "Recorded stop-state snapshots only. No new trajectory or measured wheel angle.", 
+  "first_lock_commands": {
+    "0/0": 21, 
+    "20/-22": 336
+  }, 
+  "first_lock_last_tick": 1790708337.092653, 
+  "first_lock_start": 1790708315.434699, 
+  "first_lock_ticks": 357, 
+  "first_lock_zero_duration_s": 1.2388379573822021, 
+  "first_lock_zero_episodes": [
+    {
+      "end": 1790708323.987893, 
+      "reason": "lane_stream_stale", 
+      "start": 1790708323.93451, 
+      "ticks": 1
+    }, 
+    {
+      "end": 1790708324.727213, 
+      "reason": "lane_stream_stale", 
+      "start": 1790708324.544606, 
+      "ticks": 3
+    }, 
+    {
+      "end": 1790708324.957786, 
+      "reason": "lane_stream_stale", 
+      "start": 1790708324.92397, 
+      "ticks": 1
+    }, 
+    {
+      "end": 1790708326.115945, 
+      "reason": "scan_missing_or_stale", 
+      "start": 1790708325.923423, 
+      "ticks": 2
+    }, 
+    {
+      "end": 1790708326.373497, 
+      "reason": "scan_missing_or_stale", 
+      "start": 1790708326.17045, 
+      "ticks": 3
+    }, 
+    {
+      "end": 1790708326.765378, 
+      "reason": "lane_stream_stale", 
+      "start": 1790708326.677986, 
+      "ticks": 2
+    }, 
+    {
+      "end": 1790708327.301745, 
+      "reason": "lane_stream_stale", 
+      "start": 1790708327.199733, 
+      "ticks": 1
+    }, 
+    {
+      "end": 1790708327.502842, 
+      "reason": "scan_missing_or_stale", 
+      "start": 1790708327.412623, 
+      "ticks": 1
+    }, 
+    {
+      "end": 1790708327.781282, 
+      "reason": "lane_stream_stale", 
+      "start": 1790708327.658627, 
+      "ticks": 2
+    }, 
+    {
+      "end": 1790708327.944587, 
+      "reason": "lane_stream_stale", 
+      "start": 1790708327.831684, 
+      "ticks": 3
+    }, 
+    {
+      "end": 1790708336.226709, 
+      "reason": "scan_missing_or_stale", 
+      "start": 1790708336.168427, 
+      "ticks": 2
+    }
+  ], 
+  "initial_motion_tick": 1790708301.544791, 
+  "run": "20260930_025754_5783", 
+  "stop_snapshots_changed": 22, 
+  "stop_snapshots_checked": 663
+}

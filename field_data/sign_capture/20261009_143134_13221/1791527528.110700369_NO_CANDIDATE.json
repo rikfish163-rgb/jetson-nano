@@ -1,0 +1,25 @@
+{
+  "confidence": 0.0, 
+  "detections": [], 
+  "inference_ms": 99.9748706817627, 
+  "input_mode": "full_frame_yolo", 
+  "label": "", 
+  "range_reason": "no_candidate", 
+  "roi_diagnostics": {
+    "candidate_count": 0, 
+    "regions": [], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "scores": {}, 
+  "sign_bounds": null, 
+  "sign_depth_m": null, 
+  "sign_height_ratio": null, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.1648557186126709, 
+  "stamp": 1791527528.1107004, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": ""
+}

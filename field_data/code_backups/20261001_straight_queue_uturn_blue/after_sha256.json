@@ -1,0 +1,9 @@
+{
+  "src/robot/camera/observations.py": "8e7fc53e2bb78993c41287c32322068049d8c22d53b654c3a1f06dbe9d736412",
+  "src/robot/master/controller_node.py": "ba38b73cbc8d5145c299db34095397563a606afc3f9c9eca564bb22c52ba4152",
+  "src/robot/master/state_machine.py": "ca9fa60fa91f98a6bb439acd306bdead815692f71ae0887d2cc4d7712e140ddf",
+  "src/robot/signs/decisions.py": "7b01846fba8f4a734950e98860b05f205af85b5255689c96cddb344fc01ae579",
+  "src/robot/test/blue_test_helpers.py": "e84c4805401c17d79162e10e2287e947547c3dca30ce4474c7da28155ed8ec2d",
+  "src/robot/test/test_straight_queue_uturn_blue.py": "236b009ee5f2ac5db342bed2dbacc1197685f5312b9e19118c0b6891117ece27",
+  "src/robot/turn/controller.py": "94fa6ee02ae2f7c38fdc3f725bb2dcb6b2db2786321dc2c58e1d40a3914c1500"
+}

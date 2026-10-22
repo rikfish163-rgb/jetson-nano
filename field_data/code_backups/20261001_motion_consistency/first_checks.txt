@@ -1,0 +1,24 @@
+test_125m_does_not_depend_on_control_timer_frequency (test_command_odometry.CommandOdometryTests) ... FAIL
+test_delayed_tick_keeps_all_fresh_motion_time (test_command_odometry.CommandOdometryTests) ... ok
+test_late_stop_corrects_previous_extrapolation (test_command_odometry.CommandOdometryTests) ... ok
+test_new_command_does_not_apply_to_previous_interval (test_command_odometry.CommandOdometryTests) ... ok
+test_no_motion_before_first_feedback_and_after_timeout (test_command_odometry.CommandOdometryTests) ... ok
+test_repeated_and_out_of_order_feedback_is_rejected (test_command_odometry.CommandOdometryTests) ... ok
+test_reverse_yaw_integrates_each_command_mapping (test_command_odometry.CommandOdometryTests) ... ok
+test_busy_tick_does_not_drop_distance (test_motion_feedback.MotionFeedbackTests) ... ok
+test_model_mapping_does_not_change_at_uturn_handoff (test_motion_feedback.MotionFeedbackTests) ... ok
+test_stop_feedback_keeps_motion_before_stop (test_motion_feedback.MotionFeedbackTests) ... ok
+test_timeout_counts_only_the_valid_held_interval (test_motion_feedback.MotionFeedbackTests) ... ok
+
+======================================================================
+FAIL: test_125m_does_not_depend_on_control_timer_frequency (test_command_odometry.CommandOdometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_command_odometry.py", line 20, in test_125m_does_not_depend_on_control_timer_frequency
+    self.assertAlmostEqual(odom.estimate(17.8125)[0], 1.25)
+AssertionError: 1.2559999999999971 != 1.25 within 7 places
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.979s
+
+FAILED (failures=1)

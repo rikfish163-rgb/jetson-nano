@@ -1,0 +1,10 @@
+{
+  "src/robot/master/state_machine.py": "4b9b4ce287ff996cfe65751ae3b7a01cbac0668ce1256915edce8579cd9df1c7",
+  "src/robot/parking/forward.py": "a9fa219ec179ece51d502f0b4b29295e58544fb0cee02b831c9b9e3dc83dbcbf",
+  "src/robot/test/test_blue_stop_line.py": "a3e2ad77568940f581d74fc41f18305d22c53762c0f235fb4eb25ca94223243b",
+  "src/robot/test/test_forward_bottom_clearance.py": "43642148c2680dfa254a8659659b08fae9c79244fdcc070d60a1983863b5a5c7",
+  "src/robot/test/test_mission_blue_sequence.py": "30530a6a4dc1cccce683b77475be4000e1a5e20a9a444c09cc30a0cec68f51cc",
+  "src/robot/test/test_parking_nearest_pair.py": "aa780e4b0ec8c8084c414febb7774e9724a7b1ad7437ef5daf7694b87a662025",
+  "src/robot/test/test_parking_sign_anchor.py": "da56a3103a0a81fcf8733d6b3119676404c9a5c17f44b2c36b1db2cb7c5a8885",
+  "src/robot/test/test_requested_maneuvers.py": "1d897aacd332a871f903afd1a5ddabceda336399ae770c80693ba008e8102ab9"
+}

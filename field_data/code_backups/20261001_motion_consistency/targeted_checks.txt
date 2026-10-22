@@ -1,0 +1,141 @@
+test_125m_does_not_depend_on_control_timer_frequency (test_command_odometry.CommandOdometryTests) ... ok
+test_delayed_tick_keeps_all_fresh_motion_time (test_command_odometry.CommandOdometryTests) ... ok
+test_late_stop_corrects_previous_extrapolation (test_command_odometry.CommandOdometryTests) ... ok
+test_new_command_does_not_apply_to_previous_interval (test_command_odometry.CommandOdometryTests) ... ok
+test_no_motion_before_first_feedback_and_after_timeout (test_command_odometry.CommandOdometryTests) ... ok
+test_repeated_and_out_of_order_feedback_is_rejected (test_command_odometry.CommandOdometryTests) ... ok
+test_reverse_yaw_integrates_each_command_mapping (test_command_odometry.CommandOdometryTests) ... ok
+test_busy_tick_does_not_drop_distance (test_motion_feedback.MotionFeedbackTests) ... ok
+test_model_mapping_does_not_change_at_uturn_handoff (test_motion_feedback.MotionFeedbackTests) ... ok
+test_stop_feedback_keeps_motion_before_stop (test_motion_feedback.MotionFeedbackTests) ... ok
+test_timeout_counts_only_the_valid_held_interval (test_motion_feedback.MotionFeedbackTests) ... ok
+test_applied_raw_over_contract_clears_command (test_ros_adapter.RosAdapterTests) ... ok
+test_changing_odom_parent_frame_is_rejected (test_ros_adapter.RosAdapterTests) ... ok
+test_control_stop_event_is_logged_even_when_status_lock_is_busy (test_ros_adapter.RosAdapterTests) ... ok
+test_control_tick_uses_subscribed_param_cache_and_defers_telemetry (test_ros_adapter.RosAdapterTests) ... ok
+test_delayed_blue_uses_capture_pose_without_relaxing_lane_scan_timeout (test_ros_adapter.RosAdapterTests) ... ok
+test_empty_lane_observation_clears_previous_path (test_ros_adapter.RosAdapterTests) ... ok
+test_estop_false_cannot_clear_while_enabled_but_clears_disabled (test_ros_adapter.RosAdapterTests) ... ok
+test_future_odom_stamp_is_rejected_before_origin_mutation (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_accepts_direct_points_without_minimum_span (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_rejects_bad_inputs_without_overwriting_good_frame (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_rejects_deep_json_and_oversized_message (test_ros_adapter.RosAdapterTests) ... ok
+test_lane_observation_uses_own_confidence_even_if_legacy_arrives_first (test_ros_adapter.RosAdapterTests) ... ok
+test_observed_boundaries_are_atomic_validated_and_cleared (test_ros_adapter.RosAdapterTests) ... ok
+test_parking_retains_unclipped_p_anchor_through_confirmation (test_ros_adapter.RosAdapterTests) ... ok
+test_repeated_short_paths_refresh_stream_but_true_timeout_still_stops (test_ros_adapter.RosAdapterTests) ... FAIL
+test_scan_callback_uses_independent_lidar_timeout (test_ros_adapter.RosAdapterTests) ... ok
+test_short_optional_boundary_does_not_discard_fresh_center_path (test_ros_adapter.RosAdapterTests) ... FAIL
+test_startup_green_cannot_release_red_later (test_ros_adapter.RosAdapterTests) ... ok
+test_startup_tag_is_only_for_green (test_ros_adapter.RosAdapterTests) ... ok
+test_status_and_ros_log_include_stop_evidence_and_sign_decision (test_ros_adapter.RosAdapterTests) ... ok
+test_telemetry_publish_does_not_hold_controller_lock (test_ros_adapter.RosAdapterTests) ... ok
+test_timed_uturn_feedback_uses_own_radius_and_speed_gain (test_ros_adapter.RosAdapterTests) ... FAIL
+test_visual_direction_caches_without_scan (test_ros_adapter.RosAdapterTests) ... ok
+test_applied_raw_normalized_for_gap (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_bad_applied_value_cannot_be_held_for_gap (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_boundary_uses_capture_pose_and_does_not_replace_center (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_command_scale_01_amplifies_and_keeps_raw_limit (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_delayed_applied_source_is_not_refreshed_by_arrival (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_duplicate_and_empty_boundary (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_oversized_boundary_is_rejected (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_scaled_gap_hold_does_not_amplify_feedback_again (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_stale_future_and_replayed_applied_are_rejected (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_startup_neutral_trim_is_not_modelled_as_a_turn (test_right_boundary_adapter.BoundaryAdapterTests) ... FAIL
+test_wrong_frame_stale_future_and_nonfinite_are_rejected (test_right_boundary_adapter.BoundaryAdapterTests) ... ok
+test_blocked_exit_pauses_time_and_keeps_collision_protection (test_uturn_current_model.CurrentModelTests) ... ok
+test_calibration_is_independent_of_lane_limit_and_raw_roundtrips (test_uturn_current_model.CurrentModelTests) ... ERROR
+test_exit_can_correct_the_other_direction_after_overshoot (test_uturn_current_model.CurrentModelTests) ... ok
+test_exit_correction_is_bounded_and_stale_camera_stops (test_uturn_current_model.CurrentModelTests) ... ok
+test_exit_needs_new_aligned_frames_without_a_stop_pulse (test_uturn_current_model.CurrentModelTests) ... ok
+test_invalid_exit_limits_are_rejected (test_uturn_current_model.CurrentModelTests) ... ok
+test_ninety_degree_turn_cannot_handoff_to_a_crossing_lane (test_uturn_current_model.CurrentModelTests) ... ok
+test_preview_stops_at_reverse_segment_endpoint (test_uturn_current_model.CurrentModelTests) ... FAIL
+test_40cm_entry_finishes_before_seven_segments (test_uturn_production.ProductionUturnTests) ... ok
+test_default_profile_is_normal_seven_stage_mode (test_uturn_production.ProductionUturnTests) ... ok
+test_sign_blue_seven_segments_then_resume_normal_mission (test_uturn_production.ProductionUturnTests) ... ok
+test_both_turns_keep_estop_red_and_front_loss_stops (test_turn_current_model.CurrentTurnTests) ... ok
+test_launcher_enables_current_left_profile (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_counts_distinct_images_and_resets_after_camera_gap (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_does_not_straighten_at_estimated_arc_end_without_exit (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_entry_then_full_lock_at_selected_action_speed (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_rejects_entry_lane_crossing_lane_and_outside_path (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_visual_exit_can_handoff_before_large_model_arc_endpoint (test_turn_current_model.CurrentTurnTests) ... ok
+test_left_without_exit_stops_at_angle_limit (test_turn_current_model.CurrentTurnTests) ... ok
+test_right_blue_confirmation_resets_across_image_gap (test_turn_current_model.CurrentTurnTests) ... ok
+test_right_new_blue_requires_distinct_frames_then_straight (test_turn_current_model.CurrentTurnTests) ... ok
+test_right_uses_bounded_current_command_scale (test_turn_current_model.CurrentTurnTests) ... ok
+test_camera_loss_estop_and_red_still_stop (test_right_blue_exit.RightBlueTests) ... ok
+test_fresh_new_blue_starts_straight_without_stop_or_distance_wait (test_right_blue_exit.RightBlueTests) ... ok
+test_missing_left_and_past_angle_keep_lock_within_deadline (test_right_blue_exit.RightBlueTests) ... ok
+test_old_entry_line_stale_candidate_and_short_tick_do_not_exit (test_right_blue_exit.RightBlueTests) ... ok
+test_reverse_entry_finishes_before_new_blue_can_exit (test_right_blue_exit.RightBlueTests) ... ok
+test_detected_uturn_is_queued_before_075_and_survives_blank_frames (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_green_startup_still_requires_125_even_with_uturn_and_blue (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_mixed_direction_votes_cannot_confirm_the_wrong_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_queued_uturn_survives_completed_straight_lane_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_red_blocks_uturn_blue_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_uturn_without_confirmed_new_transverse_blue_cannot_interrupt_straight (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_125_returns_to_lane_before_dispatching_confirmed_next_blue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_late_second_straight_is_queued_without_interrupting_current_action (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_next_straight_survives_white_handoff_until_its_blue_line (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_old_blue_or_longitudinal_paint_cannot_dispatch_queued_straight (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_red_overrides_queued_blue_handoff (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_same_early_board_duplicate_or_interrupted_votes_do_not_queue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_does_not_start_with_front_axle_heading_misaligned (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_visual_updates_move_target_plane_and_stale_stream_stops (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+
+======================================================================
+ERROR: test_calibration_is_independent_of_lane_limit_and_raw_roundtrips (test_uturn_current_model.CurrentModelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_current_model.py", line 116, in test_calibration_is_independent_of_lane_limit_and_raw_roundtrips
+    self.cfg['uturn_calibration']['reverse_steering_sign'] = reverse_sign
+KeyError: 'uturn_calibration'
+
+======================================================================
+FAIL: test_repeated_short_paths_refresh_stream_but_true_timeout_still_stops (test_ros_adapter.RosAdapterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_ros_adapter.py", line 445, in test_repeated_short_paths_refresh_stream_but_true_timeout_still_stops
+    self.assertGreater(self.node.core.lane_command(stamp)[0],0)
+AssertionError: 0 not greater than 0
+
+======================================================================
+FAIL: test_short_optional_boundary_does_not_discard_fresh_center_path (test_ros_adapter.RosAdapterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_ros_adapter.py", line 437, in test_short_optional_boundary_does_not_discard_fresh_center_path
+    self.assertGreater(speed,0)
+AssertionError: 0 not greater than 0
+
+======================================================================
+FAIL: test_timed_uturn_feedback_uses_own_radius_and_speed_gain (test_ros_adapter.RosAdapterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_ros_adapter.py", line 508, in test_timed_uturn_feedback_uses_own_radius_and_speed_gain
+    self.assertAlmostEqual(n.applied[1],.2)
+AssertionError: 0.36595613806581945 != 0.2 within 7 places
+
+======================================================================
+FAIL: test_startup_neutral_trim_is_not_modelled_as_a_turn (test_right_boundary_adapter.BoundaryAdapterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_right_boundary_adapter.py", line 96, in test_startup_neutral_trim_is_not_modelled_as_a_turn
+    self.assertLess(self.n.applied[1],0.)
+AssertionError: 0 not less than 0.0
+
+======================================================================
+FAIL: test_preview_stops_at_reverse_segment_endpoint (test_uturn_current_model.CurrentModelTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_uturn_current_model.py", line 111, in test_preview_stops_at_reverse_segment_endpoint
+    self.assertLess(distance(paths[-1][-1],expected),1e-7)
+AssertionError: 0.0027389090099826075 not less than 1e-07
+
+----------------------------------------------------------------------
+Ran 88 tests in 29.552s
+
+FAILED (failures=5, errors=1)

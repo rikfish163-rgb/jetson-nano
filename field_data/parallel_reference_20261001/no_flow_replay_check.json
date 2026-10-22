@@ -1,0 +1,105 @@
+[
+  {
+    "max_processing_ms": 196.28000259399414, 
+    "first_result": {
+      "wheelbase_m": 0.26, 
+      "stamp": 10.0, 
+      "frame": "base_link", 
+      "source": "p1_reference_camera", 
+      "reason": "p1_terminal_seen", 
+      "rejected_lines": [], 
+      "p1_lines": [
+        [
+          [
+            1.3201398082058653, 
+            -0.289919531632195
+          ], 
+          [
+            1.3437146586802604, 
+            -0.64
+          ]
+        ]
+      ]
+    }, 
+    "image": "front.png", 
+    "median_processing_ms": 149.20949935913086
+  }, 
+  {
+    "max_processing_ms": 176.40995979309082, 
+    "first_result": {
+      "wheelbase_m": 0.26, 
+      "stamp": 10.0, 
+      "frame": "base_link", 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    "image": "prior_p1_front.png", 
+    "median_processing_ms": 136.66200637817383
+  }, 
+  {
+    "max_processing_ms": 174.8502254486084, 
+    "first_result": {
+      "wheelbase_m": 0.26, 
+      "stamp": 10.0, 
+      "frame": "base_link", 
+      "source": "p1_reference_camera", 
+      "reason": "p1_terminal_seen", 
+      "rejected_lines": [], 
+      "p1_lines": [
+        [
+          [
+            1.3260786002626304, 
+            -0.30053588076634474
+          ], 
+          [
+            1.3366670415227488, 
+            -0.6500216621918478
+          ]
+        ]
+      ]
+    }, 
+    "image": "validation_107cm/front.png", 
+    "median_processing_ms": 136.57498359680176
+  }, 
+  {
+    "max_processing_ms": 188.65680694580078, 
+    "first_result": {
+      "wheelbase_m": 0.26, 
+      "stamp": 10.0, 
+      "frame": "base_link", 
+      "source": "p1_reference_camera", 
+      "reason": "p1_terminal_seen", 
+      "rejected_lines": [], 
+      "p1_lines": [
+        [
+          [
+            1.60812559234223, 
+            -0.2991834486341216
+          ], 
+          [
+            1.5968217194185517, 
+            -0.659689262425097
+          ]
+        ]
+      ]
+    }, 
+    "image": "second_position/clear_front.png", 
+    "median_processing_ms": 146.3339328765869
+  }, 
+  {
+    "max_processing_ms": 213.23895454406738, 
+    "first_result": {
+      "wheelbase_m": 0.26, 
+      "stamp": 10.0, 
+      "frame": "base_link", 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    "image": "current_stop_front.png", 
+    "median_processing_ms": 170.85695266723633
+  }
+]

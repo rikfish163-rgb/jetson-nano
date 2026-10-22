@@ -1,0 +1,54 @@
+{
+  "mismatches": 0, 
+  "with_target": 1024, 
+  "frames": 2076, 
+  "no_path": 1052, 
+  "unreadable": 117, 
+  "runs": [
+    {
+      "files": 356, 
+      "mismatches": 0, 
+      "with_target": 145, 
+      "run": "20260929_205741_524", 
+      "frames": 356, 
+      "no_path": 211, 
+      "unreadable": 0
+    }, 
+    {
+      "files": 481, 
+      "mismatches": 0, 
+      "with_target": 97, 
+      "run": "20260929_205852_2178", 
+      "frames": 364, 
+      "no_path": 267, 
+      "unreadable": 117
+    }, 
+    {
+      "files": 194, 
+      "mismatches": 0, 
+      "with_target": 10, 
+      "run": "20260929_214359_14238", 
+      "frames": 194, 
+      "no_path": 184, 
+      "unreadable": 0
+    }, 
+    {
+      "files": 395, 
+      "mismatches": 0, 
+      "with_target": 175, 
+      "run": "20260929_214444_15843", 
+      "frames": 395, 
+      "no_path": 220, 
+      "unreadable": 0
+    }, 
+    {
+      "files": 767, 
+      "mismatches": 0, 
+      "with_target": 597, 
+      "run": "20260929_215839_18817", 
+      "frames": 767, 
+      "no_path": 170, 
+      "unreadable": 0
+    }
+  ]
+}

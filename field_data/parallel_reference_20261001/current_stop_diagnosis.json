@@ -1,0 +1,2262 @@
+{
+  "lane": [
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10598039627075195, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12741422653198242, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05742359161376953, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08099651336669922, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10821008682250977, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.13449740409851074, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05695176124572754, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08061003684997559, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10812711715698242, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.13271069526672363, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05526137351989746, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08011460304260254, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10838937759399414, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.13016271591186523, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1580791473388672, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08011317253112793, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1085214614868164, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1301877498626709, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.054784536361694336, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08148479461669922, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1077888011932373, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.13094377517700195, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05723285675048828, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.0828390121459961, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10624980926513672, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12624263763427734, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05352210998535156, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07763981819152832, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1045684814453125, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.13143467903137207, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05398225784301758, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07771444320678711, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10425853729248047, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1254284381866455, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.052988529205322266, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07725358009338379, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10248899459838867, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12653589248657227, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05440354347229004, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07721996307373047, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1011350154876709, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12747645378112793, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.052922725677490234, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07812190055847168, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10350990295410156, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12306880950927734, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.15195751190185547, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08159303665161133, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10380291938781738, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12231850624084473, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.15527892112731934, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.0769968032836914, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10185503959655762, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12402749061584473, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05346870422363281, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07808566093444824, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10382390022277832, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12523603439331055, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.0536036491394043, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07826876640319824, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10260653495788574, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12779784202575684, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.054166316986083984, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.07952332496643066, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10479879379272461, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1271500587463379, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.055251359939575195, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.0805666446685791, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.13170146942138672, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.16389131546020508, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.05800485610961914, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08292460441589355, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.10987663269042969, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.12738037109375, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.15902113914489746, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08034062385559082, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1009054183959961, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.13759493827819824, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.1585385799407959, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }, 
+    {
+      "controller_reason": "no_initial_lane", 
+      "points": [], 
+      "age": 0.08258891105651855, 
+      "computed_command": [
+        0, 
+        0
+      ], 
+      "confidence": 0.1146234375, 
+      "diagnostic": {
+        "selection": "nearest_continuous_segment", 
+        "point_count": 0, 
+        "center_method": "fitted_boundary_normal", 
+        "reference_side": null, 
+        "reason": "no_trusted_segment", 
+        "boundary_tracker": "camera_20260911", 
+        "segment_lengths": [], 
+        "offset_reference": "vehicle_center_axis", 
+        "reference_offset_m": null
+      }
+    }
+  ], 
+  "reference": [
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887298.2173483, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.004981801475683252, 
+        -0.003638254583713593, 
+        0.0037024924445989704
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887298.5181744, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005074423620905496, 
+        -0.0036694739402707973, 
+        0.003687216630705148
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887298.819181, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.004966864539284382, 
+        -0.0037533171181501727, 
+        0.003889906922756925
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 139, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887299.1182961, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005079579388864447, 
+        -0.003737453173210658, 
+        0.0036493551539380498
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887299.3182678, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.004944070615359128, 
+        -0.0037750915568471014, 
+        0.004052042675982914
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887299.6176467, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.00504182959644692, 
+        -0.0036825119147891163, 
+        0.003790878147615473
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887299.8177795, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.004960271343508871, 
+        -0.0037079731029904467, 
+        0.003957060275845858
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887300.1186333, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005099907563473987, 
+        -0.0037030336891812243, 
+        0.0037324696870699725
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887300.4184582, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.004997732707917602, 
+        -0.0036844339416654166, 
+        0.003835782711440139
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887300.6175115, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005046677730282461, 
+        -0.0036867256698292043, 
+        0.004020519797031774
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887300.9170103, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005058690460710643, 
+        -0.0038407187016067396, 
+        0.004079046486792137
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887301.1176472, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.00496400294243432, 
+        -0.003943535259511078, 
+        0.0043024472940143
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 139, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887301.4185023, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.00515408934260016, 
+        -0.0040453412168089545, 
+        0.004152932978366497
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887301.7180133, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.0051034407024075105, 
+        -0.004063477889964271, 
+        0.004154495399655733
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887302.0178618, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005158159902844962, 
+        -0.0040776055832679224, 
+        0.004334119695259986
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887302.2179716, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005149884768278706, 
+        -0.004066032951509147, 
+        0.004287464788966133
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887302.5207949, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005114265925116768, 
+        -0.004140054188648084, 
+        0.004364922399852755
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887302.818421, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.00512024467280685, 
+        -0.004102499705437632, 
+        0.0042760765111187204
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 139, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887303.1179185, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005134206684854964, 
+        -0.00416070315132839, 
+        0.004343600540889447
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887303.4213905, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005107371351929952, 
+        -0.004034695532458663, 
+        0.0043603076602449775
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 138, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887303.6179082, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.00511982241383585, 
+        -0.004073972877632711, 
+        0.0043889251474968916
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887303.9225461, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.0051877027980085835, 
+        -0.004085871120543172, 
+        0.004177350387710721
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887304.217541, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005090876877724686, 
+        -0.004093123772923491, 
+        0.004495688093467454
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887304.4237795, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.0051264380152263945, 
+        -0.004140646922682131, 
+        0.0045288261606217795
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 139, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887304.7183661, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005218256209269984, 
+        -0.0040635996578087166, 
+        0.004301688973272544
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887305.0174074, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005031611493084303, 
+        -0.004213285401940555, 
+        0.004641075537494377
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887305.31711, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005149077417184277, 
+        -0.004265039215863113, 
+        0.004299441214877131
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887305.517859, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005130252883881427, 
+        -0.004130636947223544, 
+        0.0043550964115945945
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887305.8191454, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005133440065108714, 
+        -0.0043304198180088484, 
+        0.004317552426667426
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 139, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887306.1176386, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005074371043768396, 
+        -0.004305165593702862, 
+        0.004726647889011115
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887306.4216878, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005025023941281137, 
+        -0.00431887298535343, 
+        0.004794297800124081
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887306.6180127, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005042030293189329, 
+        -0.00434659421977983, 
+        0.004979126286292157
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887306.9207778, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005010780566990511, 
+        -0.004292336330438628, 
+        0.004699205606482071
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887307.2171984, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005108966926273956, 
+        -0.004373827920490673, 
+        0.004590797018863224
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887307.521189, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005099897841463127, 
+        -0.0044610431107136835, 
+        0.0046798570681318985
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 139, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }, 
+    {
+      "wheelbase_m": 0.26, 
+      "stamp": 1790887307.7213035, 
+      "frame": "p1_floor_1790887250.416945", 
+      "pose": [
+        0.005041173273448837, 
+        -0.00445830320088597, 
+        0.004854176161460888
+      ], 
+      "motion_valid": true, 
+      "source": "p1_reference_camera", 
+      "reason": "searching_p1_terminal", 
+      "inliers": 140, 
+      "rejected_lines": [], 
+      "p1_lines": []
+    }
+  ]
+}

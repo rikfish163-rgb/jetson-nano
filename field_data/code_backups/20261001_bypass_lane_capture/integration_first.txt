@@ -1,0 +1,110 @@
+test_cancelled_left_heading_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_heading_endpoint_with_missing_lane_continues_right_until_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_no_lane_stops_only_after_completing_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_obstacle_still_ahead_or_too_early_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_off_axis_or_low_confidence_lane_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_recorded_aligned_lane_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_recorded_four_second_view_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_repeated_source_image_does_not_confirm_exit (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_safety_stop_pauses_timer_and_resumes_remaining_right_time (test_bypass_visual_exit.BypassVisualExitTests) ... FAIL
+test_six_second_cap_keeps_existing_partial_lane_handoff (test_bypass_visual_exit.BypassVisualExitTests) ... FAIL
+test_stable_current_lane_cannot_take_over_before_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_extended_left_arc_still_requires_six_seconds_of_right_motion (test_bypass_heading_geometry.BypassHeadingGeometryTests) ... FAIL
+test_blocked_right_entry_has_bounded_left_extension (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_clear_imminent_right_sweep_is_not_enough_to_end_left (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_clear_right_entry_preserves_nominal_two_second_switch (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_left_extension_releases_right_when_measured_obstacle_clears (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_left_extension_still_checks_imminent_obstacle_and_coverage (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_actual_body_collision_or_unknown_space_still_stops (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_new_clear_scan_resumes_original_right_phase (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_recorded_point_clears_while_vehicle_advances (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_recorded_side_return_uses_safe_sweep_at_action_speed (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_safe_clearance_cannot_extend_motion_without_bound (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_completed_bypass_allows_a_distinct_later_obstacle_to_trigger (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_bypass_does_not_disable_lidar_for_later_near_obstacle (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_entity_is_not_triggered_again_after_protection_reopens (test_continuous_obstacles.ContinuousObstacleTests) ... FAIL
+test_lidar_disabled_remains_an_explicit_bypass (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_non_target_raw_obstacle_still_stops_collision_sweep (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_shape_filter_does_not_authorize_unknown_ordinary_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_keeps_near_field_collision_guard (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_stops_on_unknown_near_field_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_both_arcs_use_26_with_each_vehicle_profile_action_speed (test_timed_bypass_speed.TimedBypassSpeedTests) ... ok
+test_speed_override_is_rejected_outside_command_range (test_timed_bypass_speed.TimedBypassSpeedTests) ... ok
+test_bypass_reacquires_recorded_two_point_exit_without_wait (test_partial_lane_continuity.PartialLaneContinuityTests) ... FAIL
+test_current_short_path_keeps_following_for_twenty_seconds (test_partial_lane_continuity.PartialLaneContinuityTests) ... ok
+test_incoherent_or_single_points_do_not_refresh_gap_budget (test_partial_lane_continuity.PartialLaneContinuityTests) ... ok
+test_partial_path_staleness_still_stops (test_partial_lane_continuity.PartialLaneContinuityTests) ... ok
+test_real_collision_overrides_partial_tracking (test_partial_lane_continuity.PartialLaneContinuityTests) ... ok
+test_recorded_four_dash_short_center_can_resume (test_partial_lane_continuity.PartialLaneContinuityTests) ... ok
+test_recorded_three_point_low_coverage_path_can_correct (test_partial_lane_continuity.PartialLaneContinuityTests) ... ok
+test_usable_short_path_resumes_after_unreliable_stop (test_partial_lane_continuity.PartialLaneContinuityTests) ... ok
+test_enabled_bypass_hands_back_to_continuous_center_control (test_lane_message_stability.LaneMessageStabilityTests) ... FAIL
+test_requested_two_five_seconds_then_live_lane (test_lane_bypass_inner_fix.LaneBypassInnerFixTests) ... FAIL
+
+======================================================================
+FAIL: test_safety_stop_pauses_timer_and_resumes_remaining_right_time (test_bypass_visual_exit.BypassVisualExitTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_visual_exit.py", line 128, in test_safety_stop_pauses_timer_and_resumes_remaining_right_time
+    self.assertIsNone(c.timed_bypass)
+AssertionError: {'last': None, 'trigger_world': (-0.5, 0), 'elapsed_s': 0.0, 'phase': 'REACQUIRE', 'lane_exit': {'point_world': (0.7, 0.03), 'stamp': 10.2, 'since': 10.2, 'heading_deg': 0.0, 'near_lateral_m': 0.03, 'reason': 'confirming_lane', 'valid': True, 'frames': 1, 'heading_world': 0.0}, 'trigger_point': (0.8, 0), 'right_completed_s': 6.0} is not None
+
+======================================================================
+FAIL: test_six_second_cap_keeps_existing_partial_lane_handoff (test_bypass_visual_exit.BypassVisualExitTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_visual_exit.py", line 106, in test_six_second_cap_keeps_existing_partial_lane_handoff
+    self.assertIsNone(c.timed_bypass)
+AssertionError: {'last': None, 'trigger_world': (-0.5, 0), 'elapsed_s': 0.0, 'phase': 'REACQUIRE', 'lane_exit': {'point_world': (0.7, 0.020000000000000004), 'stamp': 1.05, 'since': 1.05, 'heading_deg': -5.710593137499643, 'near_lateral_m': 0.03, 'reason': 'confirming_lane', 'valid': True, 'frames': 1, 'heading_world': -0.09966865249116186}, 'trigger_point': (0.8, 0), 'right_completed_s': 6.0} is not None
+
+======================================================================
+FAIL: test_extended_left_arc_still_requires_six_seconds_of_right_motion (test_bypass_heading_geometry.BypassHeadingGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_heading_geometry.py", line 40, in test_extended_left_arc_still_requires_six_seconds_of_right_motion
+    self.assertEqual((speed,steer),(26,-.03))
+AssertionError: Tuples differ: (0, 0.0) != (26, -0.03)
+
+First differing element 0:
+0
+26
+
+- (0, 0.0)
++ (26, -0.03)
+
+======================================================================
+FAIL: test_completed_entity_is_not_triggered_again_after_protection_reopens (test_continuous_obstacles.ContinuousObstacleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_continuous_obstacles.py", line 125, in test_completed_entity_is_not_triggered_again_after_protection_reopens
+    self.assertEqual(len(controller.timed_bypass_seen), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_bypass_reacquires_recorded_two_point_exit_without_wait (test_partial_lane_continuity.PartialLaneContinuityTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_partial_lane_continuity.py", line 70, in test_bypass_reacquires_recorded_two_point_exit_without_wait
+    self.assertEqual(speed,16)
+AssertionError: 0 != 16
+
+======================================================================
+FAIL: test_enabled_bypass_hands_back_to_continuous_center_control (test_lane_message_stability.LaneMessageStabilityTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_lane_message_stability.py", line 110, in test_enabled_bypass_hands_back_to_continuous_center_control
+    self.assertTrue(self.c.timed_bypass_completed)
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_requested_two_five_seconds_then_live_lane (test_lane_bypass_inner_fix.LaneBypassInnerFixTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_lane_bypass_inner_fix.py", line 77, in test_requested_two_five_seconds_then_live_lane
+    self.assertEqual(self.c.cfg['timed_bypass_right_s'], 5.)
+AssertionError: 4.5 != 5.0
+
+----------------------------------------------------------------------
+Ran 42 tests in 27.399s
+
+FAILED (failures=7)

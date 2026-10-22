@@ -15,7 +15,6 @@ catkin_package(
   DEPENDS
 )
 
-catkin_install_python(PROGRAMS scripts/joyop.py scripts/testloop.py scripts/keyboard_override.py
+catkin_install_python(PROGRAMS scripts/joyop.py scripts/keyop.py scripts/autoloop.py scripts/testloop.py scripts/keyboard_override.py
 	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 	)
-install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

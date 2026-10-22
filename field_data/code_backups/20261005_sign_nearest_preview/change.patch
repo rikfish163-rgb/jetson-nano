@@ -1,0 +1,224 @@
+--- field_data/code_backups/20261005_sign_nearest_preview/before/src/robot/signs/yolo_detector.py	2026-10-06 11:47:25.222063488 +0800
++++ src/robot/signs/yolo_detector.py	2026-10-06 12:02:45.944222454 +0800
+@@ -72,7 +72,9 @@
+         lt=np.maximum(boxes[i,:2],boxes[rest,:2]);rb=np.minimum(boxes[i,2:],boxes[rest,2:])
+         wh=np.maximum(rb-lt,0);inter=wh[:,0]*wh[:,1]
+         overlap=inter/np.maximum(area[i]+area[rest]-inter,1e-9)
+-        order=rest[(overlap<=nms_iou) | (classes[rest]!=classes[i])]
++        # One physical board can produce competing class predictions.
++        # Suppress duplicate boxes across labels as well as within a label.
++        order=rest[overlap<=nms_iou]
+     result=[]
+     for i in keep:
+         x1,y1,x2,y2=[int(round(float(v))) for v in boxes[i]]
+@@ -83,10 +85,10 @@
+     return result
+ 
+ def select_detection(detections, threshold):
+-    accepted=[d for d in detections if d['confidence']>=threshold]
+-    choices=accepted or detections
++    # The caller applies threshold to this candidate's label. A low score on
++    # the closest board must not make a farther board become the target.
+     # Apparent area is only a proximity heuristic; it is not metric distance.
+-    return max(choices,key=lambda d:(d['bounds'][2]*d['bounds'][3],d['confidence'])) if choices else None
++    return max(detections,key=lambda d:(d['bounds'][2]*d['bounds'][3],d['confidence'])) if detections else None
+ 
+ class YoloDetector(object):
+     def __init__(self, engine_path):
+--- field_data/code_backups/20261005_sign_nearest_preview/before/src/robot/signs/sign_node.py	2026-10-06 11:47:25.222063488 +0800
++++ src/robot/signs/sign_node.py	2026-10-06 11:47:43.346515437 +0800
+@@ -90,11 +90,12 @@
+             if getattr(self,'backend','classifier') == 'yolo_trt':
+                 from robot.signs.yolo_detector import select_detection
+                 mode='full_frame_yolo';roi_done=started
+-                detections=self.detector.detect(frame)
++                detections=sorted(self.detector.detect(frame),
++                    key=lambda d:(d['bounds'][2]*d['bounds'][3],d['confidence']),reverse=True)
+                 selected=select_detection(detections,self.threshold)
+-                diagnostics=dict(candidate_count=len(detections),selection='largest_accepted_area',
+-                    regions=[dict(bounds=d['bounds'],reason='%s %.2f' % (d['label'],d['confidence']))
+-                             for d in detections])
++                diagnostics=dict(candidate_count=len(detections),selection='largest_detected_area',
++                    regions=[dict(bounds=d['bounds'],reason='#%d %s %.2f' % (i+1,d['label'],d['confidence']))
++                             for i,d in enumerate(detections)])
+                 candidate=None
+                 if selected is not None:
+                     bounds=selected['bounds'];x,y,w,h=bounds
+--- field_data/code_backups/20261005_sign_nearest_preview/before/src/ros/camera/scripts/ros_flask_viewer.py	2026-10-06 11:47:25.222063488 +0800
++++ src/ros/camera/scripts/ros_flask_viewer.py	2026-10-06 11:48:32.659557628 +0800
+@@ -7,7 +7,7 @@
+ import time
+ import cv2
+ import rospy
+-from flask import Flask, Response, abort, jsonify
++from flask import Flask, Response, abort, jsonify, request
+ from werkzeug.serving import make_server
+ from sensor_msgs.msg import Image
+ from std_msgs.msg import String
+@@ -36,6 +36,7 @@
+ subscriptions, requested_at = {}, {}
+ STREAM_IDLE_SECONDS = 3.0
+ controller = {}
++sign = {}
+ lock = threading.Lock()
+ 
+ 
+@@ -96,6 +97,20 @@
+         return
+ 
+ 
++def sign_callback(msg):
++    if len(msg.data) > 131072:
++        return
++    try:
++        data = json.loads(msg.data)
++        if not isinstance(data, dict) or not isinstance(data.get('stamp'), (int, float)):
++            return
++        with lock:
++            sign.clear()
++            sign.update(data)
++    except (ValueError, TypeError):
++        return
++
++
+ @app.after_request
+ def headers(response):
+     response.headers['Cache-Control'] = 'no-store'
+@@ -109,10 +124,12 @@
+     now = rospy.Time.now().to_sec()
+     with lock:
+         result = dict(controller)
++        sign_result = dict(sign)
+         streams = {name: dict(topic=topic, fresh=fresh(frames.get(name, (None,))[0], now),
+                     age_s=now-frames[name][0] if name in frames else None)
+                    for name, topic in TOPICS.items()}
+     return jsonify(controller=result, controller_fresh=fresh(result.get('stamp'), now, 1),
++                   sign=sign_result, sign_fresh=fresh(sign_result.get('stamp'), now),
+                    streams=streams)
+ 
+ 
+@@ -147,6 +164,58 @@
+ 
+ @app.route('/')
+ def index():
++    if request.args.get('view') == 'signs':
++        return u"""<!doctype html><html lang="zh-CN"><meta charset="utf-8">
++<meta name="viewport" content="width=device-width, initial-scale=1"><title>路牌识别预览</title>
++<style>
++body{margin:18px;background:#15222b;color:#eef4f5;font:16px sans-serif;line-height:1.6}
++h1{font-size:23px;margin:0 0 6px}h2{font-size:17px;margin:0 0 8px}
++p{margin:8px 0;color:#bbccd2}#health{color:#ffbe70}
++article{background:#20323d;padding:12px;margin:14px 0;border-radius:8px}
++img{width:100%;object-fit:contain}.stale img{opacity:.2}
++small{display:block;color:#bbccd2}table{width:100%;border-collapse:collapse;font-size:14px}
++th,td{text-align:left;padding:8px 5px;border-bottom:1px solid #40545f}
++.selected{background:#344a44;color:#e4ffeb}pre{overflow:auto;font-size:12px}
++</style>
++<h1>路牌识别预览</h1><strong id="health">等待识别数据</strong>
++<p>静止识别预览。画面显示所有检测框；黄色粗框为最近候选，只确认这一块牌的类别。</p>
++<article id="sign_board_frame" class="stale"><h2>全部检测框与最近候选</h2><img><small></small></article>
++<p id="selection">等待图像</p>
++<table><thead><tr><th>远近顺序</th><th>路牌</th><th>识别分数</th><th>框尺寸</th></tr></thead><tbody id="rows"></tbody></table>
++<p>顺序按检测框面积估计；同尺寸、朝向接近时有效。最近候选分数不足时等待确认。</p>
++<article id="front_camera" class="stale"><h2>前摄原图</h2><img><small></small></article>
++<details><summary>识别数据</summary><pre id="details"></pre></details>
++<script>
++const labels={red:'红牌',green:'绿牌',straight:'直行',left:'左转',right:'右转',uturn:'掉头',park:'停车',parking:'停车'};
++const labelName=x=>labels[String(x||'').toLowerCase()]||String(x||'未知');
++async function poll(){
++ try{
++  const r=await fetch('/status',{cache:'no-store'});if(!r.ok)throw Error('status');
++  const data=await r.json(),s=data.sign||{},ds=s.detections||[];
++  document.getElementById('health').textContent=data.sign_fresh?'实时 · 检测到 '+ds.length+' 块路牌':'等待识别数据或数据已过期';
++  document.getElementById('selection').textContent=data.sign_fresh?(ds.length?
++   '最近候选：'+labelName(s.top_label)+' · '+(s.confidence*100).toFixed(1)+'% · '+(s.label?'已确认':'分数不足，等待确认'):
++   '当前没有检测到路牌'):'等待最新识别结果';
++  const rows=document.getElementById('rows');rows.textContent='';
++  if(data.sign_fresh)ds.forEach((d,i)=>{
++   const tr=document.createElement('tr');if(i===0)tr.className='selected';
++   const cells=[i===0?'1 · 最近':String(i+1),labelName(d.label),(d.confidence*100).toFixed(1)+'%',d.bounds[2]+' × '+d.bounds[3]+' px'];
++   cells.forEach(x=>{const td=document.createElement('td');td.textContent=x;tr.append(td);});rows.append(tr);
++  });
++  document.getElementById('details').textContent=JSON.stringify(s,null,2);
++  for(const key of ['sign_board_frame','front_camera']){
++   const a=document.getElementById(key),v=data.streams[key];a.classList.toggle('stale',!v.fresh);
++   a.querySelector('small').textContent=(v.fresh?'实时':'等待图像或图像已过期')+(v.age_s===null?'':' · '+v.age_s.toFixed(2)+' 秒');
++   a.querySelector('img').src='/frame/'+key+'?t='+Date.now();
++  }
++ }catch(e){
++  document.getElementById('health').textContent='连接中断';
++  document.getElementById('selection').textContent='等待连接恢复';
++  document.getElementById('rows').textContent='';
++  document.querySelectorAll('article').forEach(a=>{a.classList.add('stale');a.querySelector('img').removeAttribute('src');});
++ }finally{setTimeout(poll,500);}
++}poll();
++</script></html>"""
+     return u"""<!doctype html><html lang="zh-CN"><meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1"><title>比赛实时调试</title>
+ <style>
+@@ -218,6 +287,8 @@
+     rospy.init_node('competition_viewer')
+     expiry_timer = rospy.Timer(rospy.Duration(1), expire_streams)
+     rospy.Subscriber('/competition/status', String, status_callback, queue_size=1)
++    rospy.Subscriber(rospy.get_param('~sign_topic', '/competition/sign'), String,
++                     sign_callback, queue_size=1)
+     port = int(rospy.get_param('~port', 8080))
+     if not 1024 <= port <= 65535:
+         raise ValueError('viewer port must be 1024..65535')
+--- field_data/code_backups/20261005_sign_nearest_preview/before/src/robot/test/test_yolo_detector.py	2026-10-06 11:47:25.222063488 +0800
++++ src/robot/test/test_yolo_detector.py	2026-10-06 12:02:18.452024748 +0800
+@@ -75,12 +75,27 @@
+         self.assertEqual(len(d),1)
+         self.assertEqual(d[0]['bounds'],[0,0,20,30])
+ 
+-    def test_larger_accepted_sign_over_distant_high_score(self):
++    def test_nearest_candidate_does_not_fall_back_to_distant_high_score(self):
+         a=dict(bounds=[10,10,20,20],confidence=.99,label='park')
+         b=dict(bounds=[10,200,100,100],confidence=.9,label='right')
+         self.assertIs(select_detection([a,b],.8),b)
+         b['confidence']=.7
+-        self.assertIs(select_detection([a,b],.8),a)
++        self.assertIs(select_detection([a,b],.8),b)
+         self.assertIsNone(select_detection([],.8))
+ 
++    def test_two_separate_boards_of_same_class_survive_nms(self):
++        rows=np.array([self.row(120,250,100,100),self.row(450,220,40,40)])
++        detections=decode(rows,(360,640,3),1,(0,140))
++        self.assertEqual(len(detections),2)
++        self.assertEqual([d['label'] for d in detections],['straight','straight'])
++        self.assertEqual(sorted(d['bounds'][2] for d in detections),[40,100])
++
++    def test_one_board_with_competing_labels_counts_once_and_other_board_remains(self):
++        rows=np.array([self.row(390,240,25,26,index=5,confidence=.70),
++                       self.row(390,240,24,25,index=6,confidence=.58),
++                       self.row(120,250,100,100,index=2,confidence=.95)])
++        detections=decode(rows,(360,640,3),1,(0,140))
++        self.assertEqual(len(detections),2)
++        self.assertEqual([d['label'] for d in detections],['straight','uturn'])
++
+ if __name__=='__main__':unittest.main()
+--- field_data/code_backups/20261005_sign_nearest_preview/before/src/robot/test/test_yolo_sign_node.py	2026-10-06 11:47:25.222063488 +0800
++++ src/robot/test/test_yolo_sign_node.py	2026-10-06 11:47:25.982083331 +0800
+@@ -28,6 +28,22 @@
+         self.assertEqual(info['stamp'],10.0)
+         self.assertEqual(info['sign_bounds'],[200,220,80,80])
+         self.assertEqual(len(info['detections']),2)
++        self.assertEqual(info['detections'][0]['bounds'],[200,220,80,80])
++        self.assertFalse(self.warnings)
++
++    def test_yolo_nearest_low_confidence_withholds_label_without_far_fallback(self):
++        n=self.node;n.backend='yolo_trt'
++        near=dict(label='right',confidence=.70,bounds=[200,220,80,80],scores={'right':.70})
++        far=dict(label='park',confidence=.99,bounds=[10,10,20,20],scores={'park':.99})
++        n.detector=Value(detect=lambda frame:[far,near])
++        n.infer(None)
++        info=self.messages[-1]
++        self.assertEqual(info['label'],'')
++        self.assertEqual(info['top_label'],'RIGHT')
++        self.assertEqual(info['confidence'],.70)
++        self.assertEqual(info['sign_bounds'],near['bounds'])
++        self.assertEqual(info['detections'],[near,far])
++        self.assertEqual(info['stamp'],10.0)
+         self.assertFalse(self.warnings)
+ 
+     def test_yolo_empty_frame_publishes_unknown(self):

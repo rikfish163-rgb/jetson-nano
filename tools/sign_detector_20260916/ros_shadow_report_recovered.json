@@ -1,0 +1,15 @@
+{
+  "recovered_from_execution_output": true,
+  "reason": "The successful report was returned by the tool, but the on-device report file was later found empty.",
+  "observed_hz": 3.000899173237273,
+  "observation_topic": "/competition/sign",
+  "max_source_age_s": 0.24960947036743164,
+  "labels": [""],
+  "messages": 30,
+  "vehicle_started": false,
+  "mean_inference_ms": 205.8396577835083,
+  "source": "yolov5s",
+  "unique_source_stamps": true,
+  "mean_source_age_s": 0.23458906809488933,
+  "p95_inference_ms": 213.83023262023926
+}

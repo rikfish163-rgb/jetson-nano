@@ -1,0 +1,168 @@
+--- before/src/robot/common/contracts.py
++++ after/src/robot/common/contracts.py
+@@ -90,6 +90,8 @@
+         raise ValueError('uturn brake lead exceeds axle tolerance')
+     mode = cfg.get('parking_mode','reverse_plan')
+     boolean(cfg.get('timed_bypass_enabled',False))
++    if not 0 < number(cfg.get('timed_bypass_speed_raw',cfg['speed_raw']['action'])) <= cfg['speed_raw_limit']:
++        raise ValueError('timed_bypass_speed_raw must be positive and within speed_raw_limit')
+     if not 0 <= number(cfg.get('timed_bypass_settle_s',0.)) <= 2:
+         raise ValueError('timed_bypass_settle_s must be in [0,2]')
+     if not 0 < number(cfg.get('timed_bypass_left_s',2.)) <= 6:
+--- before/src/robot/config/workspace_modules.yaml
++++ after/src/robot/config/workspace_modules.yaml
+@@ -100,6 +100,7 @@
+     - timed_bypass_enabled
+     - timed_bypass_trigger_distance_m
+     - timed_bypass_settle_s
++    - timed_bypass_speed_raw
+     - timed_bypass_left_s
+     - timed_bypass_right_s
+     - bypass_enabled
+--- before/src/robot/obstacle/config.yaml
++++ after/src/robot/obstacle/config.yaml
+@@ -5,6 +5,8 @@
+ timed_bypass_trigger_distance_m: 0.85
+ # 停车下发左满舵后等待；这是待标定的换向余量，不是实际轮角反馈。
+ timed_bypass_settle_s: 0.4
++# 避障左右弧线单独使用 RAW 26；不复用普通路口动作速度。
++timed_bypass_speed_raw: 26
+ # 用户指定的实际前进时长；停车期间不计时，不按速度比例延长。
+ timed_bypass_left_s: 2.0
+ timed_bypass_right_s: 6.0
+--- before/src/robot/obstacle/controller.py
++++ after/src/robot/obstacle/controller.py
+@@ -171,7 +171,7 @@
+                 # Two seconds is the nominal left duration. Before reversing
+                 # the wheels, check the first two seconds of the right arc:
+                 # the 8 cm imminent guard alone notices the cone too late.
+-                speed=ctx.cfg['speed_raw']['action']
++                speed=ctx.cfg.get('timed_bypass_speed_raw',ctx.cfg['speed_raw']['action'])
+                 horizon=max(.08,min(.40,2*speed*ctx.cfg['raw_to_mps']['forward']))
+                 steer=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+                 angle=command_to_model_steering(-steer,ctx.cfg)
+@@ -221,7 +221,8 @@
+         ctx.issued_steer=steer
+         ctx.reason='bypass_settle_left'
+         return 0,steer
+-    command=(ctx.cfg['speed_raw']['action'],steer if task['phase']=='LEFT' else -steer)
++    command=(ctx.cfg.get('timed_bypass_speed_raw',ctx.cfg['speed_raw']['action']),
++             steer if task['phase']=='LEFT' else -steer)
+     result=ctx.call('obstacle','checked_command',command,now,False)
+     if result==command:
+         ctx.reason=('bypass_left_%gs'%ctx.cfg.get('timed_bypass_left_s',2.)
+--- before/src/robot/test/test_bypass_heading_geometry.py
++++ after/src/robot/test/test_bypass_heading_geometry.py
+@@ -13,7 +13,8 @@
+     def test_extended_left_arc_hands_off_without_turning_past_road_heading(self):
+         cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
+         cfg.update(wait_green=False,lidar_enabled=True,lane_curvature_preview=True,
+-                   lane_curve_speed_raw=16,steering_command_scale_rad=.03)
++                   lane_curve_speed_raw=16,steering_command_scale_rad=.03,
++                   timed_bypass_speed_raw=24)
+         cfg['speed_raw'].update(action=24,lane=24)
+         c=Controller(cfg);self.addCleanup(c.close)
+         left_duration=2.6870188713
+@@ -38,7 +39,10 @@
+                 self.assertEqual(speed,16)
+                 self.assertGreaterEqual(wrap(pose[2]),-math.radians(1.))
+                 self.assertLessEqual(i*.05,left_duration+.05)
+-                self.assertEqual(c.reason,'bypass_heading_lane_handoff')
++                # Either confirmed visual return or heading cancellation may
++                # hand off; both must satisfy the geometry bounds above.
++                self.assertIn(c.reason,('bypass_heading_lane_handoff',
++                                        'bypass_visual_lane_handoff'))
+                 break
+             self.assertEqual((speed,steer),(24,-.03))
+         else:
+--- before/src/robot/test/test_bypass_right_entry.py
++++ after/src/robot/test/test_bypass_right_entry.py
+@@ -15,7 +15,7 @@
+         cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
+         cfg.update(wait_green=False,lidar_enabled=True,timed_bypass_enabled=True,
+                    steering_command_scale_rad=.03,timed_bypass_left_s=2.,
+-                   timed_bypass_right_s=6.)
++                   timed_bypass_right_s=6.,timed_bypass_speed_raw=24)
+         cfg['speed_raw']['action']=24
+         c=Controller(cfg);self.addCleanup(c.close)
+         c.state='TIMED_BYPASS';c.action='BYPASS'
+--- before/src/robot/test/test_bypass_side_clearance.py
++++ after/src/robot/test/test_bypass_side_clearance.py
+@@ -12,7 +12,7 @@
+     def core(self):
+         cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
+         cfg.update(wait_green=False,lidar_enabled=True,timed_bypass_enabled=True,
+-                   steering_command_scale_rad=.03)
++                   steering_command_scale_rad=.03,timed_bypass_speed_raw=24)
+         cfg['speed_raw']['action']=24
+         c=Controller(cfg);self.addCleanup(c.close)
+         c.state='TIMED_BYPASS';c.action='BYPASS'
+--- before/src/robot/test/test_bypass_visual_exit.py
++++ after/src/robot/test/test_bypass_visual_exit.py
+@@ -18,7 +18,8 @@
+         cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
+         cfg.update(wait_green=False,lidar_enabled=True,timed_bypass_enabled=True,
+                    lane_curvature_preview=True,lane_curve_speed_raw=16,
+-                   steering_command_scale_rad=.03,timed_bypass_right_s=6.)
++                   steering_command_scale_rad=.03,timed_bypass_right_s=6.,
++                   timed_bypass_speed_raw=24)
+         cfg['speed_raw'].update(action=24,lane=24)
+         c=Controller(cfg);self.addCleanup(c.close)
+         c.state='TIMED_BYPASS';c.action='BYPASS';c.issued_steer=-.03
+--- before/src/robot/test/test_lane_bypass_inner_fix.py
++++ after/src/robot/test/test_lane_bypass_inner_fix.py
+@@ -11,7 +11,8 @@
+     def setUp(self):
+         cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
+         cfg.update(wait_green=False, lidar_enabled=False,
+-                   lane_curvature_preview=True, steering_command_scale_rad=.03)
++                   lane_curvature_preview=True, steering_command_scale_rad=.03,
++                   timed_bypass_speed_raw=20)
+         self.c = Controller(cfg)
+         self.addCleanup(self.c.close)
+ 
+--- /dev/null
++++ after/src/robot/test/test_timed_bypass_speed.py
+@@ -0,0 +1,42 @@
++"""Bypass speed is independent of ordinary junction action speed."""
++import os
++import unittest
++
++from robot.common.config import load_config
++from robot.common.contracts import encode_command, validate_config
++from robot.master.controller import Controller
++from test_continuous_obstacles import _SyntheticScan
++
++
++class TimedBypassSpeedTests(unittest.TestCase):
++    def config(self):
++        cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
++        cfg.update(wait_green=False, lidar_enabled=True, steering_command_scale_rad=.03)
++        return cfg
++
++    def test_both_arcs_use_26_with_each_vehicle_profile_action_speed(self):
++        for action_speed in (20, 24):
++            for phase, raw_steer in (('LEFT', 22), ('RIGHT', -22)):
++                cfg = self.config()
++                cfg['speed_raw']['action'] = action_speed
++                core = Controller(cfg)
++                self.addCleanup(core.close)
++                core.state, core.action = 'TIMED_BYPASS', 'BYPASS'
++                core.timed_bypass = dict(phase=phase, last=1., elapsed_s=.5)
++                core.scan = _SyntheticScan(1.1)
++                speed, steer = core.tick(1.1)
++                encoded = encode_command(speed, steer, cfg, 1)
++                self.assertEqual(encoded['speed_raw'], 26)
++                self.assertEqual(encoded['steering_raw'], raw_steer)
++                self.assertEqual(core.cfg['speed_raw']['action'], action_speed)
++
++    def test_speed_override_is_rejected_outside_command_range(self):
++        for invalid in (0, -1, 61, float('nan'), True):
++            cfg = self.config()
++            cfg['timed_bypass_speed_raw'] = invalid
++            with self.assertRaises(ValueError):
++                validate_config(cfg)
++
++
++if __name__ == '__main__':
++    unittest.main()

@@ -1,0 +1,313 @@
+{
+  "run": "20260930_022714_27404",
+  "ros_log_directory": "/home/nano/.ros/log/5e1a6b98-bc33-11f1-9b27-380025ec2b29",
+  "events": [
+    {
+      "file": "rosout.log",
+      "line": 85,
+      "text": "1790706470.278796583 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-6.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 86,
+      "controller": {
+        "stamp": 1790706470.986786,
+        "state": "GAP",
+        "reason": "tracking_gap",
+        "command": [
+          16,
+          -0.03
+        ],
+        "lane_source": "right_curve_hold",
+        "lane_curve_lock": {
+          "direction": "RIGHT",
+          "exit_frames": 0,
+          "started": 1790706470.297486,
+          "stamp": 1790706470.6932154,
+          "exit_since": null,
+          "steer": -0.03
+        },
+        "enabled": true
+      }
+    },
+    {
+      "file": "rosout.log",
+      "line": 87,
+      "text": "1790706471.286996482 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 88,
+      "controller": {
+        "stamp": 1790706471.268702,
+        "state": "LANE",
+        "reason": "tracking_lane",
+        "command": [
+          20,
+          -0.03
+        ],
+        "lane_source": "center",
+        "lane_curve_lock": {
+          "direction": "RIGHT",
+          "exit_frames": 0,
+          "started": 1790706470.297486,
+          "stamp": 1790706470.9592009,
+          "exit_since": null,
+          "steer": -0.03
+        },
+        "enabled": true
+      }
+    },
+    {
+      "file": "rosout.log",
+      "line": 90,
+      "text": "1790706472.280362401 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 91,
+      "text": "1790706473.329518831 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 93,
+      "text": "1790706474.329560348 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 94,
+      "text": "1790706475.382480551 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 96,
+      "text": "1790706476.428593054 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 97,
+      "text": "1790706477.429053687 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 99,
+      "text": "1790706478.440878218 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 100,
+      "text": "1790706479.431566144 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 102,
+      "text": "1790706480.478800596 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 103,
+      "text": "1790706481.481089767 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 104,
+      "text": "1790706482.529042673 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 106,
+      "controller": {
+        "stamp": 1790706483.219171,
+        "state": "GAP",
+        "reason": "tracking_gap",
+        "command": [
+          16,
+          -0.03
+        ],
+        "lane_source": "right_curve_hold",
+        "lane_curve_lock": {
+          "direction": "RIGHT",
+          "exit_frames": 0,
+          "started": 1790706470.297486,
+          "stamp": 1790706482.893248,
+          "exit_since": null,
+          "steer": -0.03
+        },
+        "enabled": true
+      }
+    },
+    {
+      "file": "rosout.log",
+      "line": 107,
+      "text": "1790706483.529016907 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 108,
+      "controller": {
+        "stamp": 1790706483.496824,
+        "state": "LANE",
+        "reason": "tracking_lane",
+        "command": [
+          20,
+          -0.03
+        ],
+        "lane_source": "center",
+        "lane_curve_lock": {
+          "direction": "RIGHT",
+          "exit_frames": 0,
+          "started": 1790706470.297486,
+          "stamp": 1790706483.2267113,
+          "exit_since": null,
+          "steer": -0.03
+        },
+        "enabled": true
+      }
+    },
+    {
+      "file": "rosout.log",
+      "line": 109,
+      "text": "1790706484.533949442 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 111,
+      "text": "1790706485.579890647 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 112,
+      "text": "1790706486.580847091 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 114,
+      "text": "1790706487.629550314 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 115,
+      "text": "1790706488.680218186 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 117,
+      "text": "1790706489.681933915 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=20.0 steering_raw=-22.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    },
+    {
+      "file": "rosout.log",
+      "line": 118,
+      "text": "1790706490.729771728 INFO /base_controller [/home/nano/robocup_ws/src/drivers/base/src/base_controller.cpp:149(publishStatus)] [topics: /rosout, /base_controller/status] chassis_output speed_raw=0.0 steering_raw=0.0 serial_bytes=11 command_received=true timed_out=false serial_open=true"
+    }
+  ],
+  "shutdown": [
+    {
+      "line": 246,
+      "text": "[roslaunch.pmon][INFO] 2026-09-30 02:28:11,155: ProcessMonitor.shutdown <ProcessMonitor(ProcessMonitor-1, started daemon 547854991856)>"
+    },
+    {
+      "line": 252,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,221: [lane_run_recorder-13] sending SIGINT to pgid [27404]"
+    },
+    {
+      "line": 253,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,221: [lane_run_recorder-13] sent SIGINT to pgid [27404]"
+    },
+    {
+      "line": 257,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,229: [competition_viewer-12] sending SIGINT to pgid [27383]"
+    },
+    {
+      "line": 258,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,229: [competition_viewer-12] sent SIGINT to pgid [27383]"
+    },
+    {
+      "line": 262,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,237: [base_controller-11] sending SIGINT to pgid [27382]"
+    },
+    {
+      "line": 263,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,238: [base_controller-11] sent SIGINT to pgid [27382]"
+    },
+    {
+      "line": 267,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,245: [ackermann_control_bridge-10] sending SIGINT to pgid [27376]"
+    },
+    {
+      "line": 268,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,245: [ackermann_control_bridge-10] sent SIGINT to pgid [27376]"
+    },
+    {
+      "line": 272,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,255: [competition_controller-9] sending SIGINT to pgid [27363]"
+    },
+    {
+      "line": 273,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,270: [competition_controller-9] sent SIGINT to pgid [27363]"
+    },
+    {
+      "line": 277,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,284: [competition_sign-8] sending SIGINT to pgid [27355]"
+    },
+    {
+      "line": 278,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,285: [competition_sign-8] sent SIGINT to pgid [27355]"
+    },
+    {
+      "line": 282,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,293: [competition_ground-7] sending SIGINT to pgid [27342]"
+    },
+    {
+      "line": 283,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,316: [competition_ground-7] sent SIGINT to pgid [27342]"
+    },
+    {
+      "line": 287,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,323: [rear_bev-6] sending SIGINT to pgid [27329]"
+    },
+    {
+      "line": 288,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,324: [rear_bev-6] sent SIGINT to pgid [27329]"
+    },
+    {
+      "line": 292,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,335: [ls01b_v2-5] sending SIGINT to pgid [27328]"
+    },
+    {
+      "line": 293,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,339: [ls01b_v2-5] sent SIGINT to pgid [27328]"
+    },
+    {
+      "line": 297,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,345: [competition_lane-4] sending SIGINT to pgid [27327]"
+    },
+    {
+      "line": 298,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,348: [competition_lane-4] sent SIGINT to pgid [27327]"
+    },
+    {
+      "line": 299,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,740: process[base_controller-11]: SIGINT killed with return value 0"
+    },
+    {
+      "line": 303,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,742: [rear/rear_camera-3] sending SIGINT to pgid [27326]"
+    },
+    {
+      "line": 304,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,743: [rear/rear_camera-3] sent SIGINT to pgid [27326]"
+    },
+    {
+      "line": 305,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,831: process[competition_viewer-12]: SIGINT killed with return value 0"
+    },
+    {
+      "line": 309,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,834: [front/front_camera-2] sending SIGINT to pgid [27325]"
+    },
+    {
+      "line": 310,
+      "text": "[roslaunch][INFO] 2026-09-30 02:28:11,834: [front/front_camera-2] sent SIGINT to pgid [27325]"
+    }
+  ]
+}

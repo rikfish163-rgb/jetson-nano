@@ -1,0 +1,539 @@
+--- before/src/robot/lane/README.md
++++ after/src/robot/lane/README.md
+@@ -1,6 +1,29 @@
+ # 寻线
+ 
+-## 2026-09-30 实车压外线修复
++## 2026-09-30 持续满右舵与消息停顿修复
++
++本次实测日志显示：关闭雷达时仍出现中央指令 0.25 秒超时；右弯锁持续覆盖
++有效中心路径的反向纠偏，使车偏内。当前 `lane_curvature_preview:=true` 使用
++测量路径的 Pure Pursuit，按 `lookahead` 的前向位置在路径内插值，按车轮模型
++计算角度后映射到 raw ±22。绿牌加避障测试命令使用 `lookahead:=0.8`。
++右弯、出弯及偏向弯内时均由新路径更新角度，不再固定满右舵，也不叠加第二次曲率转角。
++卡尔曼曲率估计保留用于弯道降速，至少四个不同前向位置、跨度 0.30 m、
++拟合残差 0.02 m 以内才更新；只计不同图像帧。
++
++置信度要求仍为 `lane_min_confidence`。几何有效、置信度处于门槛的 70%～100%
++且最近有效控制不超过 0.25 秒时，降速并保持上一个可信角度；坏帧不能刷新预算。
++严重低置信度和过期图像停车。空路径仅允许保持最多 0.35 秒。
++雷达失联、碰撞和未知占用空间仍由原保护判断。
++
++控制器启动时订阅 enabled 参数缓存，控制周期内不访问参数服务器；状态、
++轨迹和控制台输出在独立计时器处理，发布状态时不持有控制锁。
++测试命令关闭图像查看和 JPEG 录制，以减少 Nano 的负载；没有延长底盘超时。
++
++Nano 测试入口：`bash tools/sign_detector_20260916/run_lane_green_obstacle.sh`。
++启用绿牌、前摄像头、巡线、雷达和避障，泊车和后摄像头关闭。
++绿牌后仍执行已有 1.25 m 起步直行，之后进入巡线，起点应放在直道上。
++
++## 历史：曲率预判版本（已由上述连续控制替代）
+ 
+ 整车脚本现在显式启用 `lane_curvature_preview:=true lane_curve_speed_raw:=12`。
+ 在原最远点横偏控制上叠加 `atan(wheelbase * curvature)` 的物理转角前馈，
+--- before/src/robot/lane/controller.py
++++ after/src/robot/lane/controller.py
+@@ -6,7 +6,7 @@
+ from robot.common.geometry import local
+ from robot.common.contracts import model_to_command_steering
+ from vehicle_control.pure_pursuit import PurePursuit
+-from robot.lane.preview import preview_steering, lane_speed
++from robot.lane.preview import preview_steering, preview_target, lane_speed
+ 
+ 
+ 
+@@ -53,7 +53,7 @@
+     This is ordinary-lane intent, separate from signed intersection maneuvers.
+     Never count repeated control ticks as new visual evidence.
+     """
+-    if ctx.action is not None:
++    if ctx.action is not None or ctx.cfg.get('lane_curvature_preview',False):
+         ctx.lane_curve_lock = None
+         return steer, False
+     points = sorted(p for p in points if p[0] > 0.)
+@@ -123,8 +123,9 @@
+         lock['stamp'] = ctx.lane_stamp
+     elif ctx.state != 'GAP':
+         ctx.gap_steer = ctx.call('motion', 'current_steering', now)
++    gap_seconds = min(ctx.cfg['gap_max_seconds'],.35) if ctx.cfg.get('lane_curvature_preview',False) else ctx.cfg['gap_max_seconds']
+     if (distance(ctx.pose,ctx.gap_origin) > ctx.cfg['gap_max_distance'] or
+-            now-ctx.gap_start > ctx.cfg['gap_max_seconds']):
++            now-ctx.gap_start > gap_seconds):
+         return ctx.call('motion', 'stop', 'gap_limit_wait_for_lane')
+     ctx.state = 'GAP'
+     return lane_speed(ctx, ctx.cfg['speed_raw']['gap']), ctx.gap_steer
+@@ -143,6 +144,17 @@
+     if not ctx.lane:
+         return lane_gap_command(ctx, now)
+     if ctx.cfg.get('lane_curvature_preview',False) and not ctx.call('lane', 'lane_valid', now):
++        points = sorted(local(ctx.pose,p) for p in ctx.lane)
++        points = [p for p in points if p[0] > .05]
++        # Bridge a minor confidence dip using only the previous trusted angle.
++        # Bad frames cannot extend this interval or supply new steering.
++        if (ctx.gap_origin is not None and 0 <= now-ctx.gap_start <= .25 and
++                ctx.cfg['lane_min_confidence']*.7 <= ctx.lane_confidence < ctx.cfg['lane_min_confidence'] and
++                len(points) >= 2 and points[-1][0]-points[0][0] >= ctx.cfg.get('lane_min_path_span',.15)-1e-9):
++            ctx.lane_target = dict(stamp=now,source_stamp=ctx.lane_stamp,path=points,
++                target=None,valid=False,reason='confidence_grace',selection='confidence_grace')
++            speed,steer = lane_gap_command(ctx,now)
++            return min(speed,ctx.cfg.get('lane_curve_speed_raw',12)),steer
+         ctx.lane_preview = None
+         ctx.lane_target = dict(stamp=now,source_stamp=ctx.lane_stamp,path=[],
+             target=None,valid=False,reason='lane_unreliable',selection='lane_unreliable')
+@@ -152,6 +164,9 @@
+     if not forward:
+         return ctx.call('motion', 'stop', 'lane_behind_vehicle')
+     target_index,target = max(forward,key=lambda item:item[1][0])
++    if ctx.cfg.get('lane_curvature_preview',False):
++        target = preview_target(candidates,ctx.cfg['lookahead'])
++        target_index = min(forward,key=lambda item:abs(item[1][0]-target[0]))[0]
+     offset = target[1]  # y-left = (BEV midpoint u - target u) / 400.
+     fraction = max(-1.,min(1.,offset/ctx.cfg.get('lane_lateral_full_scale_m',.075)))
+     steer = fraction*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+@@ -162,8 +177,9 @@
+         intersection=None, line_x=None, lateral_offset_m=offset,
+         angle=steer, valid=True, reason='ok',curvature_preview=ctx.lane_preview,
+         selection='right_curve_full_lock' if ctx.lane_curve_lock else 'topmost_lateral_offset')
+-    if ctx.lane_preview is not None and ctx.lane_curve_lock is None:
+-        ctx.lane_target['selection'] = 'topmost_with_curvature_preview'
++    if ctx.cfg.get('lane_curvature_preview',False):
++        ctx.lane_target.update(selection='center_path_pursuit',line_x=ctx.cfg['lookahead'],
++            intersection=target)
+     if rejected:
+         ctx.lane_source = 'right_curve_hold'
+         ctx.lane_target.update(target=None,rejected_target=target,valid=False,
+--- before/src/robot/lane/preview.py
++++ after/src/robot/lane/preview.py
+@@ -1,7 +1,18 @@
+-"""Measured-path curvature feedforward with a scalar, frame-based Kalman filter."""
++"""Metric path feedback and frame-based curvature filtering for speed selection."""
+ from __future__ import division
+-import math
+ import numpy as np
++from robot.common.contracts import model_to_command_steering
++from vehicle_control.pure_pursuit import PurePursuit
++
++
++def preview_target(points, lookahead):
++    """Interpolate within measured points; never extrapolate an unseen exit."""
++    points = sorted(p for p in points if p[0] > .05)
++    for a,b in zip(points,points[1:]):
++        if a[0] <= lookahead <= b[0]:
++            fraction = (lookahead-a[0])/(b[0]-a[0])
++            return (lookahead,a[1]+fraction*(b[1]-a[1]))
++    return min(points,key=lambda p:abs(p[0]-lookahead))
+ 
+ 
+ def curvature_preview(points, stamp, previous, timeout):
+@@ -41,18 +52,17 @@
+         return steer
+     ctx.lane_preview = curvature_preview(points, ctx.lane_stamp, ctx.lane_preview,
+                                          ctx.cfg['sensor_timeout'])
+-    if ctx.lane_preview is None:
+-        return steer
+-    scale = ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+-    physical = steer/scale*ctx.cfg['max_steer']
+-    physical += math.atan(ctx.cfg['wheelbase']*ctx.lane_preview['curvature'])
+-    physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
+-    return physical/ctx.cfg['max_steer']*scale
++    target = preview_target(points,ctx.cfg['lookahead'])
++    result = PurePursuit(ctx.cfg['wheelbase'],ctx.cfg['lookahead']).compute([target])
++    # Pursuit already includes path curvature. Adding curvature again and
++    # holding full right steering double-counted the bend and prevented recovery.
++    return model_to_command_steering(result.steering_angle,ctx.cfg)
+ 
+ 
+ def lane_speed(ctx, speed):
+     if ctx.cfg.get('lane_curvature_preview',False) and (
+             ctx.lane_curve_lock is not None or
++            abs(ctx.gap_steer) >= .4*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer']) or
+             ctx.lane_preview is not None and abs(ctx.lane_preview['curvature']) >= .4):
+         return min(speed, ctx.cfg.get('lane_curve_speed_raw',12))
+     return speed
+--- before/src/robot/master/controller_node.py
++++ after/src/robot/master/controller_node.py
+@@ -2,6 +2,7 @@
+ # -*- coding: utf-8 -*-
+ from __future__ import division
+ import json
++import copy
+ import math
+ import threading
+ import time
+@@ -58,6 +59,11 @@
+         self.live_was_enabled = False
+         # No publisher on the real command topic is even registered in shadow mode.
+         self.live = boolean(rospy.get_param('~live',False))
++        # Subscribe once before the control timer starts. Later reads receive
++        # parameter updates locally instead of making 20 XMLRPC calls/second.
++        if self.live:
++            boolean(rospy.get_param_cached('~enabled',False))
++        self.last_command = (0,0.)
+         if self.live:
+             publishers,_,_ = rosgraph.Master(rospy.get_name()).getSystemState()
+             if dict(publishers).get('/control/cmd'):
+@@ -94,6 +100,7 @@
+         rospy.Subscriber(self.cfg['odom_topic'],Odometry,self.odom,queue_size=1)
+         rospy.on_shutdown(self.shutdown)
+         self.timer = rospy.Timer(rospy.Duration(0.05),self.tick)
++        self.telemetry_timer = rospy.Timer(rospy.Duration(0.2),self.telemetry)
+ 
+     def source_pose(self,stamp):
+         if not self.history:
+@@ -327,7 +334,7 @@
+                 rospy.logwarn_throttle(2,'ground rejected: %s',str(exc))
+ 
+     def publish_parallel_scene(self):
+-        """Publish a confirmed measured side-parking scene, if available."""
++        """Publish a confirmed measured parking scene, if available."""
+         publisher = getattr(self, 'parallel_scene_pub', None)
+         if publisher is None:
+             return
+@@ -349,7 +356,7 @@
+         with self.lock:
+             if msg.data:
+                 self.core.estop = True
+-            elif rospy.get_param('~enabled',False) is False:
++            elif rospy.get_param_cached('~enabled',False) is False:
+                 self.core.estop = False  # explicit reset only while automatic output is disabled
+ 
+     def keyboard(self,msg):
+@@ -422,12 +429,13 @@
+                 self.core.set_pose(bicycle(self.core.pose,speed*gain*dt,steer,self.cfg['wheelbase']),now)
+             self.history.append((now,self.core.pose))
+             try:
+-                enabled = boolean(rospy.get_param('~enabled',False)) if self.live else True
++                enabled = boolean(rospy.get_param_cached('~enabled',False)) if self.live else True
+                 self.core.lane_target = None
+                 command = self.core.tick(now) if enabled else (0,0.0)
+                 payload = encode_command(command[0],command[1],self.cfg,self.seq)
+                 payload['stamp'] = now
+                 self.output.publish(String(data=json.dumps(payload)))
++                self.last_command = command
+                 if getattr(self,'target_debug',None) is not None and self.target_debug.get_num_connections():
+                     self.target_debug.publish(String(data=json.dumps(dict(
+                         stamp=now, source_stamp=(self.core.lane_target['source_stamp']
+@@ -436,42 +444,53 @@
+                         curve_lock=self.core.lane_curve_lock,
+                         selection=self.core.lane_target, command=payload),allow_nan=False)))
+                 self.seq = (self.seq+1)%256
+-                if now-self.status_at >= 0.2:
+-                    self.status_at = now
+-                    status = controller_status(self.core, self.cfg, now, self.live,
+-                        enabled, command, (self.seq-1)%256,
+-                        getattr(self,'lane_observation_status',None))
+-                    self.status.publish(String(data=json.dumps(status,allow_nan=False)))
+-                    event = (enabled,self.core.state,self.core.reason,self.core.action,
+-                             self.core.pending,self.core.next_direction,
+-                             self.core.right_lock['phase'] if self.core.right_lock else None,
+-                             (self.core.left_fit_diagnostic or {}).get('reason')
+-                             if self.core.right_lock or self.core.follow_left_boundary else None)
+-                    if event != self.last_state_event:
+-                        self.last_state_event = event
+-                        # Full cluster detail remains on /competition/status.
+-                        # Avoid flooding the SSH console on stop/resume edges.
+-                        console_status=dict(status)
+-                        console_status['lidar_clusters']=status['lidar_clusters'][:4]
+-                        rospy.loginfo('competition_state %s',json.dumps(console_status,allow_nan=False))
+-                    self.publish_path(now)
+             except Exception as exc:
+                 self.core.estop = True
++                self.last_command = (0,0.)
+                 self.output.publish(String(data=json.dumps(dict(encode_command(0,0,self.cfg,self.seq),stamp=now))))
+                 self.seq = (self.seq+1)%256
+                 rospy.logerr_throttle(1,'control fault, stopped: %s',str(exc))
+ 
++    def telemetry(self,event):
++        # Skip a busy control cycle. Transport, JSON and console I/O must never
++        # keep lane/scan callbacks or the command timer behind the state lock.
++        if not self.lock.acquire(False):
++            return
++        try:
++            now = rospy.Time.now().to_sec()
++            enabled = boolean(rospy.get_param_cached('~enabled',False)) if self.live else True
++            status = copy.deepcopy(controller_status(self.core,self.cfg,now,self.live,
++                enabled,self.last_command,(self.seq-1)%256,
++                getattr(self,'lane_observation_status',None)))
++            state_event = (enabled,self.core.state,self.core.reason,self.core.action,
++                self.core.pending,self.core.next_direction,
++                self.core.right_lock['phase'] if self.core.right_lock else None)
++            changed = state_event != self.last_state_event
++            self.last_state_event = state_event
++        finally:
++            self.lock.release()
++        try:
++            self.status.publish(String(data=json.dumps(status,allow_nan=False)))
++            if changed:
++                console = {key:status[key] for key in ('stamp','state','reason','command',
++                    'enabled','lane_confidence','source_ages','lidar_processing_ms','sign')}
++                rospy.loginfo('competition_state %s',json.dumps(console,allow_nan=False))
++            self.publish_path(now)
++        except Exception as exc:
++            rospy.logwarn_throttle(2,'telemetry failed: %s',str(exc))
++
+     def publish_path(self,now):
+         if not self.pathpub.get_num_connections():
+             return
+         msg = Path()
+         msg.header.stamp, msg.header.frame_id = rospy.Time.from_sec(now),'competition_local'
+-        task=active_scene_task(self.core)
+-        if task is not None:
+-            msg.header.frame_id=task.frame
+-        # Visual turn/straight acquisition does not follow the nominal path.
+-        path=(task.follower.path[task.follower.index:] if task and task.follower else
+-              [] if task else active_planned_path(self.core))
++        with self.lock:
++            task=active_scene_task(self.core)
++            if task is not None:
++                msg.header.frame_id=task.frame
++            # Snapshot geometry; publishing below does not hold the state lock.
++            path=list(task.follower.path[task.follower.index:] if task and task.follower else
++                      [] if task else active_planned_path(self.core))
+         for p in path:
+             item = PoseStamped(); item.header = msg.header
+             item.pose.position.x,item.pose.position.y = p[:2]
+--- before/src/robot/motion/controller.py
++++ after/src/robot/motion/controller.py
+@@ -38,13 +38,15 @@
+     ctx.reason = reason
+     steer = 0.0
+     if (reason in ('lane_stream_stale', 'scan_missing_or_stale', 'lane_unreliable') and
+-            ctx.action is None and ctx.state in ('LANE', 'GAP') and
+-            ctx.lane_curve_lock is not None):
++            ctx.action is None and ctx.state in ('LANE', 'GAP')):
+         # Stop propulsion without straightening the wheels while the car
+         # may still be slowing through the confirmed bend.
+-        steer = ctx.lane_curve_lock['steer']
+-        ctx.lane_curve_lock['exit_since'] = None
+-        ctx.lane_curve_lock['exit_frames'] = 0
++        if ctx.lane_curve_lock is not None:
++            steer = ctx.lane_curve_lock['steer']
++            ctx.lane_curve_lock['exit_since'] = None
++            ctx.lane_curve_lock['exit_frames'] = 0
++        elif ctx.cfg.get('lane_curvature_preview',False):
++            steer = ctx.gap_steer
+     ctx.issued_steer = steer
+     return 0, steer
+ 
+--- before/src/robot/test/test_lane_preview.py
++++ after/src/robot/test/test_lane_preview.py
+@@ -25,17 +25,22 @@
+         speed, steer = self.c.lane_command(stamp if now is None else now)
+         return speed, encode_command(speed, steer, self.c.cfg, 0)['steering_raw']
+ 
+-    def test_recorded_entry_turns_right_before_far_offset_grows(self):
++    def test_recorded_entry_slows_without_forcing_a_turn_away_from_center(self):
+         speed, raw = self.command(self.ENTRY)
+-        self.assertLessEqual(raw, -4)
++        self.assertGreaterEqual(raw, 0)
++        self.assertLessEqual(abs(raw), 2)
+         self.assertEqual(speed, 12)
+ 
+     def test_mirrored_left_curve_is_symmetric(self):
+-        self.assertGreaterEqual(self.command([(x,-y) for x,y in self.ENTRY])[1], 4)
++        self.assertEqual(self.command([(x,-y) for x,y in self.ENTRY])[1],
++                         -self.command(self.ENTRY)[1])
+ 
+     def test_bend_lock_and_gap_slow_down(self):
+-        self.assertEqual(self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)]), (12,-22))
+-        self.assertEqual(self.command([], 1.1), (12,-22))
++        command = self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)])
++        self.assertEqual(command[0], 12)
++        self.assertLess(command[1], 0)
++        self.assertGreater(command[1], -22)
++        self.assertEqual(self.command([], 1.1), command)
+ 
+     def test_straight_retains_lane_speed(self):
+         self.assertEqual(self.command([(.5,0),(.7,0),(.9,0),(1.1,0)]), (20,0))
+@@ -53,8 +58,8 @@
+ 
+     def test_low_confidence_stop_keeps_bend_wheel_angle(self):
+         path = [(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)]
+-        self.command(path)
+-        self.assertEqual(self.command(path, 1.1, .1), (0,-22))
++        raw = self.command(path)[1]
++        self.assertEqual(self.command(path, 1.1, .1), (0,raw))
+ 
+     def test_filter_does_not_count_control_ticks_as_observations(self):
+         self.command(self.ENTRY)
+--- before/src/robot/test/test_ros_adapter.py
++++ after/src/robot/test/test_ros_adapter.py
+@@ -83,6 +83,9 @@
+         self.infos.append((message,args))
+ 
+     def get_param(self, name, default=None):
++        return self.params.get(name, default)
++
++    def get_param_cached(self, name, default=None):
+         return self.params.get(name, default)
+ 
+     def logwarn_throttle(self, period, message, *args):
+@@ -214,6 +217,7 @@
+         n.publish_path = lambda now: None
+         n.sign(_BoolMessage(json.dumps(dict(stamp=10.0,label='RIGHT',confidence=.4))))
+         n.tick(None)
++        n.telemetry(None)
+         self.assertFalse(self.fake_rospy.errors)
+         status = json.loads(n.status.messages[-1].data)
+         self.assertEqual(status['sign']['decision'],'low_confidence_or_unknown')
+@@ -225,6 +229,43 @@
+         self.assertEqual(status['turn_profiles']['left']['turn_radius'],.60)
+         self.assertEqual(status['turn_profiles']['right']['turn_radius'],.55)
+         self.assertTrue(any('competition_state' in msg for msg,args in self.fake_rospy.infos))
++
++    def test_control_tick_uses_subscribed_param_cache_and_defers_telemetry(self):
++        class Sink(object):
++            def __init__(self): self.messages = []
++            def publish(self, msg): self.messages.append(msg)
++            def get_num_connections(self): return 0
++        n = self.node
++        n.seq,n.live,n.last_tick = 0,True,10.
++        n.history = deque(maxlen=100)
++        n.output,n.status,n.target_debug = Sink(),Sink(),Sink()
++        self.fake_rospy.params['~enabled'] = True
++        def forbidden(*args): raise AssertionError('blocking work in control tick')
++        self.fake_rospy.get_param = forbidden
++        n.publish_path = forbidden
++        n.tick(None)
++        self.assertFalse(self.fake_rospy.errors)
++        self.assertEqual(len(n.output.messages), 1)
++        self.assertEqual(n.status.messages, [])
++
++    def test_telemetry_publish_does_not_hold_controller_lock(self):
++        n = self.node
++        n.live = False
++        n.last_command = (0,0.)
++        n.seq = 1
++        acquired = []
++        class Sink(object):
++            def publish(self, msg):
++                def probe():
++                    ready = n.lock.acquire(False)
++                    acquired.append(ready)
++                    if ready: n.lock.release()
++                thread = threading.Thread(target=probe)
++                thread.start(); thread.join(1.)
++        n.status = Sink()
++        n.publish_path = lambda now: None
++        n.telemetry(None)
++        self.assertEqual(acquired, [True])
+ 
+     def test_visual_direction_caches_without_scan(self):
+         n=self.node
+--- /dev/null
++++ after/src/robot/test/test_lane_message_stability.py
+@@ -0,0 +1,102 @@
++"""Regressions from standalone-lane run 1790715962--1790716037."""
++import os
++import unittest
++from robot.common.config import load_config
++from robot.common.contracts import encode_command
++from robot.master.controller import Controller
++
++
++class LaneMessageStabilityTests(unittest.TestCase):
++    def setUp(self):
++        cfg = load_config(os.path.join(os.path.dirname(__file__), '../config'))
++        cfg.update(wait_green=False, lidar_enabled=False, parking_enabled=False,
++                   lane_curvature_preview=True, steering_command_scale_rad=.03,
++                   lookahead=.8, lane_curve_speed_raw=12)
++        self.c = Controller(cfg)
++        self.addCleanup(self.c.close)
++
++    def command(self, points, stamp, confidence=.9, now=None):
++        self.c.observe_lane(points, confidence, stamp)
++        command = self.c.tick(stamp if now is None else now)
++        return command[0], encode_command(command[0], command[1], self.c.cfg, 0)['steering_raw']
++
++    def test_inside_bend_accepts_countersteer_instead_of_full_right(self):
++        self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)], 1.)
++        # Fresh measured path is now to the left of the car in the same bend.
++        speed, raw = self.command([(.6,.09),(.7,.08),(.8,.06),(.9,.03)], 1.1)
++        self.assertGreater(speed, 0)
++        self.assertGreater(raw, 0)
++        self.assertEqual(self.c.state, 'LANE')
++
++    def test_exit_reduces_angle_on_first_fresh_centered_path(self):
++        self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)], 1.)
++        self.assertEqual(self.command([(.5,0),(.7,0),(.9,0),(1.1,0)], 1.1)[1], 0)
++
++    def test_near_error_is_corrected_even_when_farthest_point_is_centered(self):
++        self.assertLess(self.command([(.5,-.15),(.65,-.105),(.8,-.06),(1.,0)], 1.)[1], 0)
++
++    def test_small_confidence_dip_has_bounded_grace_without_refreshing_it(self):
++        path = [(.5,.02),(.7,.02),(.9,.02),(1.1,.02)]
++        self.command(path, 1.)
++        origin = self.c.gap_start
++        self.assertGreater(self.command(path, 1.1, .327)[0], 0)
++        self.assertEqual(self.c.gap_start, origin)
++        self.assertEqual(self.command(path, 1.3, .327)[0], 0)
++        self.assertGreater(self.command(path, 1.4)[0], 0)
++
++    def test_severe_confidence_drop_and_camera_loss_still_stop(self):
++        path = [(.5,0),(.7,0),(.9,0),(1.1,0)]
++        self.command(path, 1.)
++        self.assertEqual(self.command(path, 1.1, .1)[0], 0)
++        self.assertEqual(self.command(path, 1.1, now=1.7)[0], 0)
++
++    def test_gap_cannot_hold_an_old_turn_for_seconds(self):
++        self.command([(.5,0),(.7,-.04),(.9,-.12),(1.1,-.24)], 1.)
++        self.assertGreater(self.command([], 1.1)[0], 0)
++        self.assertEqual(self.command([], 1.4)[0], 0)
++
++    def test_centered_circle_uses_bicycle_angle_and_mirrors(self):
++        import math
++        radius = .65
++        points = [(x,math.sqrt(radius*radius-x*x)-radius) for x in (.25,.35,.45,.5,.55)]
++        right = self.command(points, 1.)[1]
++        expected = int(round(-math.atan(self.c.cfg['wheelbase']/radius)/self.c.cfg['max_steer']*22))
++        self.assertEqual(right, expected)
++        self.assertEqual(self.command([(x,-y) for x,y in points], 1.1)[1], -right)
++
++    def test_obstacle_and_stale_scan_override_confidence_grace(self):
++        import math
++        from robot.lidar.scan import Scan
++        path = [(.5,0),(.7,0),(.9,0),(1.1,0)]
++        self.command(path, 1.)
++        self.c.cfg['lidar_enabled'] = True
++        self.c.cfg['timed_bypass_enabled'] = False
++        ranges = [float('inf')]*360
++        ranges[180] = .4
++        self.c.scan = Scan(ranges,-math.pi,math.pi/180,.05,6.,self.c.pose,self.c.cfg['lidar'],1.1)
++        self.assertEqual(self.command(path, 1.1, .327)[0], 0)
++        self.assertEqual(self.c.reason,'lidar_obstacle_in_sweep')
++        self.assertEqual(self.command(path, 2.)[0], 0)
++        self.assertEqual(self.c.reason,'scan_missing_or_stale')
++
++    def test_enabled_bypass_hands_back_to_continuous_center_control(self):
++        from test_continuous_obstacles import _SyntheticScan
++        self.c.cfg.update(lidar_enabled=True,timed_bypass_enabled=True,
++            timed_bypass_trigger_distance_m=.85,timed_bypass_settle_s=.1,
++            timed_bypass_left_s=.2,timed_bypass_right_s=.2)
++        path = [(.5,0),(.7,0),(.9,0),(1.1,0)]
++        self.c.scan = _SyntheticScan(1.,obstacles=[(.6,0.)])
++        self.command(path,1.)
++        self.assertEqual(self.c.state,'TIMED_BYPASS')
++        phases = set([self.c.timed_bypass['phase']])
++        for i in range(1,12):
++            stamp = 1.+i*.1
++            self.c.scan = _SyntheticScan(stamp)
++            speed,raw = self.command(path,stamp)
++            if self.c.timed_bypass:
++                phases.add(self.c.timed_bypass['phase'])
++        self.assertTrue(set(['SETTLE_LEFT','LEFT','RIGHT']).issubset(phases))
++        self.assertTrue(self.c.timed_bypass_completed)
++        self.assertEqual(self.c.state,'LANE')
++        self.assertGreater(speed,0)
++        self.assertEqual(raw,0)
+--- /dev/null
++++ after/tools/sign_detector_20260916/run_lane_green_obstacle.sh
+@@ -0,0 +1,9 @@
++#!/usr/bin/env bash
++set -e
++cd /home/nano/robocup_ws
++# The shared entry validates the engine and prevents duplicate vehicle nodes.
++# Retain green release and collision/unknown-space protection with no parking.
++exec bash tools/sign_detector_20260916/run_yolo_vehicle.sh \
++  parking_enabled:=false start_rear:=false wait_green:=true lidar_enabled:=true \
++  lane_curvature_preview:=true lookahead:=0.8 lane_curve_speed_raw:=12 \
++  debug_view:=false record_lane:=false sign_hz:=2.0 ground_hz:=4.0 "$@"

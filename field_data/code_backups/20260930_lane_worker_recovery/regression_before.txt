@@ -1,0 +1,53 @@
+EEEE
+======================================================================
+ERROR: test_bad_frame_keeps_timer_alive_for_next_capture (test_lane_processing_recovery.ProcessingRecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_processing_recovery.py", line 97, in test_bad_frame_keeps_timer_alive_for_next_capture
+    camera.process_latest_image(None)
+  File "/home/nano/robocup_ws/src/ros/camera/test/../scripts/camera_yihan_web.py", line 2899, in process_latest_image
+    process_image(msg)
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_processing_recovery.py", line 89, in process
+    raise TypeError('injected frame failure')
+TypeError: injected frame failure
+
+======================================================================
+ERROR: test_boundary_export_filters_empty_windows_before_sorting (test_lane_processing_recovery.ProcessingRecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_processing_recovery.py", line 37, in test_boundary_export_filters_empty_windows_before_sorting
+    rospy.Time.from_sec(1.))
+  File "/home/nano/robocup_ws/src/ros/camera/test/../scripts/camera_yihan_web.py", line 2628, in build_left_boundary_message
+    for point in sorted(points, key=lambda p: -p['y']):
+  File "/home/nano/robocup_ws/src/ros/camera/test/../scripts/camera_yihan_web.py", line 2628, in <lambda>
+    for point in sorted(points, key=lambda p: -p['y']):
+TypeError: 'NoneType' object has no attribute '__getitem__'
+
+======================================================================
+ERROR: test_debug_drawing_does_not_connect_across_empty_windows (test_lane_processing_recovery.ProcessingRecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_processing_recovery.py", line 48, in test_debug_drawing_does_not_connect_across_empty_windows
+    [self.point(120, 380), None, self.point(120, 220)], (255, 80, 0))
+  File "/home/nano/robocup_ws/src/ros/camera/test/../scripts/camera_yihan_web.py", line 1986, in draw_boundary_debug
+    y_center = int(point["y"])
+TypeError: 'NoneType' object has no attribute '__getitem__'
+
+======================================================================
+ERROR: test_full_frame_publishes_pending_reference_then_recovers (test_lane_processing_recovery.ProcessingRecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/ros/camera/test/test_lane_processing_recovery.py", line 71, in test_full_frame_publishes_pending_reference_then_recovers
+    camera.process_image(self.message(stamp))
+  File "/home/nano/robocup_ws/src/ros/camera/test/../scripts/camera_yihan_web.py", line 2754, in process_image
+    tracking_result['left_points'] if tracking_result else [],msg.header.stamp))
+  File "/home/nano/robocup_ws/src/ros/camera/test/../scripts/camera_yihan_web.py", line 2628, in build_left_boundary_message
+    for point in sorted(points, key=lambda p: -p['y']):
+  File "/home/nano/robocup_ws/src/ros/camera/test/../scripts/camera_yihan_web.py", line 2628, in <lambda>
+    for point in sorted(points, key=lambda p: -p['y']):
+TypeError: 'NoneType' object has no attribute '__getitem__'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.944s
+
+FAILED (errors=4)

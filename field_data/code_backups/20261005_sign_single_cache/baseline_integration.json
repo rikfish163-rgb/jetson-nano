@@ -1,0 +1,215 @@
+{
+  "failures": [
+    {
+      "test": "test_straight_queue_uturn_blue.StraightQueueUturnBlueTests.test_uturn_does_not_start_with_front_axle_heading_misaligned", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py\", line 150, in test_uturn_does_not_start_with_front_axle_heading_misaligned\n    self.assertAlmostEqual(local(core.pose, core.blue_approach['point'])[0], core.cfg['wheelbase'])\nAssertionError: 'blue_timed_blue_lost_before_trigger' != 'uturn_blue_heading_not_aligned'\n"
+    }, 
+    {
+      "test": "test_straight_queue_uturn_blue.StraightQueueUturnBlueTests.test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py\", line 129, in test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper\n    core = self.core()\nAssertionError: 0 not greater than 0\n"
+    }, 
+    {
+      "test": "test_straight_queue_uturn_blue.StraightQueueUturnBlueTests.test_uturn_visual_updates_move_target_plane_and_stale_stream_stops", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py\", line 161, in test_uturn_visual_updates_move_target_plane_and_stale_stream_stops\n    core.tick(1.5)\nAssertionError: 0 != 20\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_bypass_ignores_sweep_obstacle_but_stale_scan_stops", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 496, in test_bypass_ignores_sweep_obstacle_but_stale_scan_stops\n    self.assertEqual(c.timed_bypass['phase'],'LEFT')\nAssertionError: 'lane_stream_stale' != 'scan_missing_or_stale'\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_bypass_returns_to_lane_preserving_straight_until_blue", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 121, in test_bypass_returns_to_lane_preserving_straight_until_blue\n    c.observe_sign('STRAIGHT',.99,t,t)\nAssertionError: Tuples differ: (0, 0.0) != (20, 0.1)\n\nFirst differing element 0:\n0\n20\n\n- (0, 0.0)\n?       ^\n\n+ (20, 0.1)\n?  +     ^\n\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_bypass_uses_requested_action_speed_in_both_arcs", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 66, in test_bypass_uses_requested_action_speed_in_both_arcs\n    self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(18,.1))\nAssertionError: None != (18, 0.1)\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_completed_bypass_ignores_later_obstacles_and_missing_scan", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 197, in test_completed_bypass_ignores_later_obstacles_and_missing_scan\n    c=self.core();self.addCleanup(c.close)\nAssertionError: 'WAIT_OBSTACLE' != 'LANE'\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_configured_bypass_clears_stationary_cone_before_lane_handoff", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 252, in test_configured_bypass_clears_stationary_cone_before_lane_handoff\n    c.observe_lane([(.3,0),(.6,0)] if visible else [], .9 if visible else 0., now)\nAssertionError: stationary cone stopped bypass: lidar_unknown_in_sweep\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_configured_bypass_left_duration_at_speed_20", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 44, in test_configured_bypass_left_duration_at_speed_20\n    self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(0,.1))\nAssertionError: None != (0, 0.1)\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_configured_right_duration_preserves_full_lock_and_waits_for_exit", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 15, in test_configured_right_duration_preserves_full_lock_and_waits_for_exit\n    self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(0,.1))\nAssertionError: None != (0, 0.1)\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_full_profile_green_bypass_and_lane_handoff", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 156, in test_full_profile_green_bypass_and_lane_handoff\n    for key in ('wait_green','blue_default_straight','lidar_enabled','parking_enabled'):\nAssertionError: 2.0 != 2.6\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_left_settle_is_stationary_and_not_part_of_two_second_drive", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 78, in test_left_settle_is_stationary_and_not_part_of_two_second_drive\n    self.assertEqual(c.execute('obstacle','begin_timed_bypass',1.).value,(0,.1))\nAssertionError: None != (0, 0.1)\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_obstacle_distance_and_left_right_timing", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 442, in test_obstacle_distance_and_left_right_timing\nAssertionError: None != (20, 0.1)\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_red_pause_does_not_skip_timed_segments", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 489, in test_red_pause_does_not_skip_timed_segments\nAssertionError: Tuples differ: (0, 0.0) != (20, 0.1)\n\nFirst differing element 0:\n0\n20\n\n- (0, 0.0)\n?       ^\n\n+ (20, 0.1)\n?  +     ^\n\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_stale_scan_restarts_settle_without_advancing_drive", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 92, in test_stale_scan_restarts_settle_without_advancing_drive\n    self.assertEqual(c.tick(2.1),(0,.1))\nAssertionError: Tuples differ: (0, 0.0) != (0, 0.1)\n\nFirst differing element 1:\n0.0\n0.1\n\n- (0, 0.0)\n?       ^\n\n+ (0, 0.1)\n?       ^\n\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_timed_bypass_can_reach_half_meter_trigger", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 274, in test_timed_bypass_can_reach_half_meter_trigger\n    scan=Scan([float('inf')]*360,-3.14159,6.28318/360,.05,6,c.pose,c.cfg['lidar'],1.)\nAssertionError: 'LANE' != 'TIMED_BYPASS'\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_vehicle_script_uses_requested_steering_mapping", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 103, in test_vehicle_script_uses_requested_steering_mapping\n    self.assertEqual(float(args['steering_command_scale_rad']),.1)\nAssertionError: 0.03 != 0.1\n"
+    }, 
+    {
+      "test": "test_startup_straight.StartupStraightTests.test_blue_before_minimum_is_remembered_but_does_not_end_straight", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_startup_straight.py\", line 83, in test_blue_before_minimum_is_remembered_but_does_not_end_straight\n    self.assertEqual(self.c.tick(1.2),(26,0))\nAssertionError: Tuples differ: (12, 0.0) != (26, 0)\n\nFirst differing element 0:\n12\n26\n\n- (12, 0.0)\n?  -   --\n\n+ (26, 0)\n?   +\n\n"
+    }, 
+    {
+      "test": "test_startup_straight.StartupStraightTests.test_blue_during_startup_is_consumed_without_restarting_distance", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_startup_straight.py\", line 45, in test_blue_during_startup_is_consumed_without_restarting_distance\n    self.assertEqual(self.c.tick(1.4), (26, 0.0))\nAssertionError: Tuples differ: (12, 0.0) != (26, 0.0)\n\nFirst differing element 0:\n12\n26\n\n- (12, 0.0)\n?  -\n\n+ (26, 0.0)\n?   +\n\n"
+    }, 
+    {
+      "test": "test_startup_straight.StartupStraightTests.test_green_distance_alone_hands_off", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_startup_straight.py\", line 166, in test_green_distance_alone_hands_off\nAssertionError: Tuples differ: (12, 0.0) != (26, 0)\n\nFirst differing element 0:\n12\n26\n\n- (12, 0.0)\n?  -   --\n\n+ (26, 0)\n?   +\n\n"
+    }, 
+    {
+      "test": "test_startup_straight.StartupStraightTests.test_green_starts_zero_steer_even_with_curved_or_missing_lane", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_startup_straight.py\", line 34, in test_green_starts_zero_steer_even_with_curved_or_missing_lane\n    self.assertEqual(self.c.tick(1.3), (26, 0.0))\nAssertionError: Tuples differ: (12, 0.0) != (26, 0.0)\n\nFirst differing element 0:\n12\n26\n\n- (12, 0.0)\n?  -\n\n+ (26, 0.0)\n?   +\n\n"
+    }, 
+    {
+      "test": "test_direction_handoff.DirectionHandoffTests.test_live_curved_exit_releases_left_without_hitting_precise_goal", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_direction_handoff.py\", line 44, in test_live_curved_exit_releases_left_without_hitting_precise_goal\n    self.assertEqual(self.c.state,'LANE',self.c.reason)\nAssertionError: tracking_maneuver\n"
+    }, 
+    {
+      "test": "test_direction_handoff.DirectionHandoffTests.test_next_direction_is_stored_then_waits_for_next_marker", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_direction_handoff.py\", line 79, in test_next_direction_is_stored_then_waits_for_next_marker\n    self.assertEqual(self.c.pending,'RIGHT')\nAssertionError: None != 'RIGHT'\n"
+    }, 
+    {
+      "test": "test_direction_handoff.DirectionHandoffTests.test_real_exit_handoff_discards_right_seen_during_left", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_direction_handoff.py\", line 103, in test_real_exit_handoff_discards_right_seen_during_left\n    self.assertEqual(self.c.state,'LANE')\nAssertionError: 'MANEUVER' != 'LANE'\n"
+    }, 
+    {
+      "test": "test_direction_handoff.DirectionHandoffTests.test_same_completed_sign_rearms_for_next_marker", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_direction_handoff.py\", line 93, in test_same_completed_sign_rearms_for_next_marker\n    self.assertEqual(self.c.pending,'LEFT')\nAssertionError: None != 'LEFT'\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_after_alignment_does_not_chase_crossing_white_path", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 61, in test_after_alignment_does_not_chase_crossing_white_path\n    self.assertEqual(c.tick(1.4),(24,0.))\nAssertionError: Tuples differ: (20.0, 0.0) != (24, 0.0)\n\nFirst differing element 0:\n20.0\n24\n\n- (20.0, 0.0)\n?   ^^^\n\n+ (24, 0.0)\n?   ^\n\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_all_direction_actions_wait_at_blue_before_starting", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 88, in test_all_direction_actions_wait_at_blue_before_starting\n    self.stop(c)\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 39, in stop\n    self.assertEqual(c.state,'BLUE_STOP')\nAssertionError: 'FAULT' != 'BLUE_STOP'\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_blank_frame_does_not_rearm_consumed_blue", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 110, in test_blank_frame_does_not_rearm_consumed_blue\n    c=self.car();self.arm(c);self.stop(c)\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 39, in stop\n    self.assertEqual(c.state,'BLUE_STOP')\nAssertionError: 'FAULT' != 'BLUE_STOP'\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_bypass_keeps_pending_sign_until_confirmed_lane_handoff", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 187, in test_bypass_keeps_pending_sign_until_confirmed_lane_handoff\n    self.assertEqual(c.state,'LANE')\nAssertionError: 'TIMED_BYPASS' != 'LANE'\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_different_detection_ranges_advance_same_distance_after_alignment", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 51, in test_different_detection_ranges_advance_same_distance_after_alignment\n    self.assertGreater(c.tick(1.9)[0],0)\nAssertionError: 0 not greater than 0\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_empty_lane_after_straight_stops_without_discarding_action", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 134, in test_empty_lane_after_straight_stops_without_discarding_action\n    c=self.car();self.arm(c);self.stop(c)\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 39, in stop\n    self.assertEqual(c.state,'BLUE_STOP')\nAssertionError: 'FAULT' != 'BLUE_STOP'\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_full_seven_stage_uturn_hands_back_to_lane", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 191, in test_full_seven_stage_uturn_hands_back_to_lane\n    c=self.car();self.arm(c,'UTURN');self.stop(c)\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 39, in stop\n    self.assertEqual(c.state,'BLUE_STOP')\nAssertionError: 'FAULT' != 'BLUE_STOP'\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_oblique_line_first_requires_body_heading_alignment", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 160, in test_oblique_line_first_requires_body_heading_alignment\n    self.assertGreater(command[0],0)\nAssertionError: 0 not greater than 0\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_sensor_loss_and_red_stop_without_discarding_event", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 149, in test_sensor_loss_and_red_stop_without_discarding_event\n    self.assertGreater(c.tick(3.1)[0],0)\nAssertionError: 0 not greater than 0\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_stop_telemetry_reports_advance_remaining_and_wait", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 175, in test_stop_telemetry_reports_advance_remaining_and_wait\n    self.assertAlmostEqual(status['wait_remaining'],.8)\nAssertionError: 0 != 0.8 within 7 places\n"
+    }, 
+    {
+      "test": "test_blue_stop_line.BlueStopLineTests.test_straight_waits_at_distance_for_exit_confirmation", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 124, in test_straight_waits_at_distance_for_exit_confirmation\n    c=self.car();self.arm(c);self.stop(c)\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_stop_line.py\", line 39, in stop\n    self.assertEqual(c.state,'BLUE_STOP')\nAssertionError: 'FAULT' != 'BLUE_STOP'\n"
+    }, 
+    {
+      "test": "test_blue_edge_trigger.BlueEdgeTests.test_aligned_target_survives_near_blind_region", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_edge_trigger.py\", line 37, in test_aligned_target_survives_near_blind_region\n    self.assertEqual(self.c.state,'BLUE_STOP')\nAssertionError: 'FAULT' != 'BLUE_STOP'\n"
+    }, 
+    {
+      "test": "test_blue_edge_trigger.BlueEdgeTests.test_confirmed_aligned_target_advances_after_leaving_image", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_edge_trigger.py\", line 55, in test_confirmed_aligned_target_advances_after_leaving_image\n    self.assertGreater(self.c.tick(2.)[0],0)\nAssertionError: 0 not greater than 0\n"
+    }, 
+    {
+      "test": "test_blue_edge_trigger.BlueEdgeTests.test_lane_gap_holds_previous_turn_until_blue_takes_heading_control", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_blue_edge_trigger.py\", line 44, in test_lane_gap_holds_previous_turn_until_blue_takes_heading_control\n    self.assertEqual(self.c.tick(t)[1],before if t<1.3 else 0.)\nAssertionError: 0.0 != 0.19739555984988078\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_auto_accepts_both_bay_kinds_with_correct_dimensions", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 172, in test_auto_accepts_both_bay_kinds_with_correct_dimensions\n    self.assertEqual(len(c.parking_candidates), 2)\nAssertionError: 0 != 2\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_auto_parallel_real_planner_and_follower_reach_terminal", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 222, in test_auto_parallel_real_planner_and_follower_reach_terminal\n    self.assertEqual(c.state, 'AUTO_PLANNING', c.reason)\nAssertionError: parallel_parking_blue_stop\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_blue_never_interrupts_active_left_or_uturn", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 105, in test_blue_never_interrupts_active_left_or_uturn\n    self.assertEqual(c.action, action)\nAssertionError: None != 'LEFT'\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_cached_left_has_priority_and_keeps_explicit_wait", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 74, in test_cached_left_has_priority_and_keeps_explicit_wait\n    self.assertEqual((c.state, c.action), ('INTERSECTION_WAIT', 'LEFT'))\nAssertionError: Tuples differ: ('LANE', None) != ('INTERSECTION_WAIT', 'LEFT')\n\nFirst differing element 0:\n'LANE'\n'INTERSECTION_WAIT'\n\n- ('LANE', None)\n+ ('INTERSECTION_WAIT', 'LEFT')\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_cached_straight_crosses_missing_white_and_releases_once", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 160, in test_cached_straight_crosses_missing_white_and_releases_once\n    self.assertIsNotNone(c.completed_at_pose)\nAssertionError: unexpectedly None\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_cached_straight_waits_then_searches_without_white", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 61, in test_cached_straight_waits_then_searches_without_white\n    self.assertEqual((c.state, c.action), ('INTERSECTION_WAIT', 'STRAIGHT'))\nAssertionError: Tuples differ: ('LANE', None) != ('INTERSECTION_WAIT', 'STRAIGH...\n\nFirst differing element 0:\n'LANE'\n'INTERSECTION_WAIT'\n\n- ('LANE', None)\n+ ('INTERSECTION_WAIT', 'STRAIGHT')\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_full_launch_enables_mission_but_not_actuators_by_default", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 24, in test_full_launch_enables_mission_but_not_actuators_by_default\n    self.assertEqual(defaults['blue_default_straight'], 'true')\nAssertionError: 'false' != 'true'\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_parking_requires_fresh_votes_after_every_direction", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 121, in test_parking_requires_fresh_votes_after_every_direction\n    self.assertEqual(c.state, 'PARKING_SCAN')\nAssertionError: 'PARALLEL_PARKING' != 'PARKING_SCAN'\n"
+    }, 
+    {
+      "test": "test_mission_integration.MissionIntegrationTests.test_unarmed_blue_dispatches_default_straight", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_integration.py\", line 140, in test_unarmed_blue_dispatches_default_straight\n    self.assertEqual(c.action,'STRAIGHT')\nAssertionError: None != 'STRAIGHT'\n"
+    }, 
+    {
+      "test": "test_mission_blue_sequence.MissionBlueSequenceTests.test_different_order_right_straight_left_then_park", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_blue_sequence.py\", line 91, in test_different_order_right_straight_left_then_park\n    self.run_sequence(('RIGHT','STRAIGHT','LEFT','PARKING'))\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_blue_sequence.py\", line 43, in run_sequence\n    enter_blue_action(c,action,now+.8)\n  File \"/home/nano/robocup_ws/src/robot/test/blue_test_helpers.py\", line 39, in enter_blue_action\n    assert c.blue_approach['phase']==('STOP_LINE' if action in ('STRAIGHT','UTURN') else 'ADVANCE'), c.blue_approach\nAssertionError: {'image_timed': False, 'origin': (0.9, 0.0, 0), 'stop_reference': 'front_axle', 'point': (1.8, 0.0), 'started': 3.61, 'yaw': 0.0, 'align_stamp': -1.0, 'remaining_m': 0.64, 'align_frames': 0, 'observed_stamp': 3.71, 'heading_error_deg': 0.0, 'phase': 'STOP_LINE', 'observation_age_s': 0.0, 'right_blue': None, 'stop_line_distance_m': 0.9, 'point_local': (0.9, 0.0)}\n"
+    }, 
+    {
+      "test": "test_mission_blue_sequence.MissionBlueSequenceTests.test_repeated_straight_uturn_left_then_park", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_blue_sequence.py\", line 88, in test_repeated_straight_uturn_left_then_park\n    self.run_sequence(('STRAIGHT','STRAIGHT','UTURN','LEFT','PARKING'))\n  File \"/home/nano/robocup_ws/src/robot/test/test_mission_blue_sequence.py\", line 43, in run_sequence\n    enter_blue_action(c,action,now+.8)\n  File \"/home/nano/robocup_ws/src/robot/test/blue_test_helpers.py\", line 39, in enter_blue_action\n    assert c.blue_approach['phase']==('STOP_LINE' if action in ('STRAIGHT','UTURN') else 'ADVANCE'), c.blue_approach\nAssertionError: {'image_timed': False, 'origin': (3.4200000000000004, 0.0, 0), 'stop_reference': 'front_axle', 'point': (4.32, 0.0), 'started': 24.3100000000002, 'yaw': 0.0, 'align_stamp': -1.0, 'remaining_m': 0.6399999999999999, 'align_frames': 0, 'observed_stamp': 24.410000000000203, 'heading_error_deg': 0.0, 'phase': 'STOP_LINE', 'observation_age_s': 0.0, 'right_blue': None, 'stop_line_distance_m': 0.8999999999999999, 'point_local': (0.8999999999999999, 0.0)}\n"
+    }
+  ], 
+  "tests": 133, 
+  "errors": [
+    {
+      "test": "test_straight_uturn_handoff.StraightUturnHandoffTests.test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_straight_uturn_handoff.py\", line 68, in test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action\n    self.assertEqual(core.action, 'UTURN')\nKeyError: 'stop_reference'\n"
+    }, 
+    {
+      "test": "test_requested_maneuvers.RequestedManeuversTests.test_right_turn_requires_six_seconds_even_when_lane_returns", 
+      "traceback": "Traceback (most recent call last):\n  File \"/home/nano/robocup_ws/src/robot/test/test_requested_maneuvers.py\", line 471, in test_right_turn_requires_six_seconds_even_when_lane_returns\n    c=self.core();self.addCleanup(c.close)\nTypeError: 'NoneType' object has no attribute '__getitem__'\n"
+    }
+  ]
+}

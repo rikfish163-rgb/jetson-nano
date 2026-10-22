@@ -1,0 +1,157 @@
+test_bypass_does_not_enable_parking_but_keeps_completed_route_permission (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_green_clears_a_preexisting_parking_pending (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_new_green_start_resets_previous_route_permission (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_only_completed_junction_actions_enable_fresh_parking_votes (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_recorded_parking_votes_cannot_replace_startup_or_center_handoff (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_startup_route_sign_and_red_green_priority_are_preserved (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_waiting_parking_sign_keeps_center_lane_until_blue_trigger (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_blue_before_minimum_is_remembered_but_does_not_end_straight (test_startup_straight.StartupStraightTests) ... FAIL
+test_blue_during_startup_is_consumed_without_restarting_distance (test_startup_straight.StartupStraightTests) ... FAIL
+test_green_distance_alone_hands_off (test_startup_straight.StartupStraightTests) ... FAIL
+test_green_starts_zero_steer_even_with_curved_or_missing_lane (test_startup_straight.StartupStraightTests) ... FAIL
+test_later_sign_does_not_reuse_startup_blue (test_startup_straight.StartupStraightTests) ... ok
+test_missing_front_and_timeout_stop (test_startup_straight.StartupStraightTests) ... ok
+test_missing_lane_is_handled_by_lane_after_startup_distance (test_startup_straight.StartupStraightTests) ... ok
+test_new_startup_clears_previous_blue (test_startup_straight.StartupStraightTests) ... ok
+test_recorded_curved_lane_takes_over_at_distance (test_startup_straight.StartupStraightTests) ... ok
+test_red_and_estop_keep_priority (test_startup_straight.StartupStraightTests) ... ok
+test_startup_preserves_pending_uturn_for_next_blue (test_startup_straight.StartupStraightTests) ... ok
+test_both_curve_directions_steer_at_the_distance_handoff (test_startup_lane_handoff.StartupLaneHandoffTests) ... FAIL
+test_slow_lane_handoff_does_not_require_detected_curve (test_startup_lane_handoff.StartupLaneHandoffTests) ... ok
+test_all_labels_accept_point_eight (test_all_sign_threshold.AllSignThresholdTests) ... ok
+test_all_labels_reject_below_threshold (test_all_sign_threshold.AllSignThresholdTests) ... ok
+test_green_start_counts_only_fresh_distinct_frames_and_resets_after_gap (test_all_sign_threshold.AllSignThresholdTests) ... ok
+test_green_start_resets_on_other_label_or_low_confidence (test_all_sign_threshold.AllSignThresholdTests) ... ok
+test_parking_requires_three_consecutive_frames (test_all_sign_threshold.AllSignThresholdTests) ... ok
+test_parking_vote_sequence_resets_on_other_or_rejected_frame (test_all_sign_threshold.AllSignThresholdTests) ... ok
+test_red_requires_point_eight_even_during_uturn (test_all_sign_threshold.AllSignThresholdTests) ... ok
+test_interrupted_corrections_do_not_accumulate_and_action_stays_locked (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_low_confidence_unknown_and_time_gap_break_confirmation (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_recorded_wrong_right_is_corrected_before_next_blue (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_repeated_below_threshold_never_confirms (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_stale_frame_rejected_and_current_action_locked (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_two_frames_at_threshold_confirm_all_directions (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_two_fresh_frames_can_correct_pending_but_duplicate_cannot_vote (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_two_signed_straights_then_uturn_wait_for_separate_markers (test_direction_single_frame.DirectionSingleFrameTests) ... ok
+test_active_action_ignores_votes_and_requires_new_votes_after_exit (test_action_sign_lock.ActionSignLockTests) ... ok
+test_parking_and_active_actions_ignore_route_signs (test_action_sign_lock.ActionSignLockTests) ... ok
+test_pending_direction_can_be_corrected_before_blue (test_action_sign_lock.ActionSignLockTests) ... ok
+test_red_stop_and_green_release_remain_available (test_action_sign_lock.ActionSignLockTests) ... ok
+test_forward_parking_requires_lidar_even_if_lane_lidar_disabled (test_forward_parking_dispatch.ForwardParkingDispatchTests) ... ok
+test_forward_profile_accepts_all_five_designated_bays (test_forward_parking_dispatch.ForwardParkingDispatchTests) ... ok
+test_bend_geometry_and_gap_preserve_angle (test_lane_preview.LanePreviewTests) ... FAIL
+test_curvature_jitter_is_reduced_without_holding_opposite_bend (test_lane_preview.LanePreviewTests) ... ok
+test_degenerate_and_inconsistent_paths_do_not_invent_curve (test_lane_preview.LanePreviewTests) ... ok
+test_filter_does_not_count_control_ticks_as_observations (test_lane_preview.LanePreviewTests) ... ok
+test_long_source_gap_reinitializes_filter (test_lane_preview.LanePreviewTests) ... ok
+test_low_confidence_grace_then_stop_keeps_bend_wheel_angle (test_lane_preview.LanePreviewTests) ... ok
+test_mirrored_left_curve_is_symmetric (test_lane_preview.LanePreviewTests) ... ok
+test_recorded_entry_turns_right_before_far_offset_grows (test_lane_preview.LanePreviewTests) ... FAIL
+test_stale_frame_stops_speed (test_lane_preview.LanePreviewTests) ... ok
+test_straight_retains_lane_speed (test_lane_preview.LanePreviewTests) ... ok
+test_unreliable_and_single_point_do_not_refresh_gap (test_lane_preview.LanePreviewTests) ... ok
+
+======================================================================
+FAIL: test_blue_before_minimum_is_remembered_but_does_not_end_straight (test_startup_straight.StartupStraightTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_straight.py", line 83, in test_blue_before_minimum_is_remembered_but_does_not_end_straight
+    self.assertEqual(self.c.tick(1.2),(26,0))
+AssertionError: Tuples differ: (12, 0.0) != (26, 0)
+
+First differing element 0:
+12
+26
+
+- (12, 0.0)
+?  -   --
+
++ (26, 0)
+?   +
+
+
+======================================================================
+FAIL: test_blue_during_startup_is_consumed_without_restarting_distance (test_startup_straight.StartupStraightTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_straight.py", line 45, in test_blue_during_startup_is_consumed_without_restarting_distance
+    self.assertEqual(self.c.tick(1.4), (26, 0.0))
+AssertionError: Tuples differ: (12, 0.0) != (26, 0.0)
+
+First differing element 0:
+12
+26
+
+- (12, 0.0)
+?  -
+
++ (26, 0.0)
+?   +
+
+
+======================================================================
+FAIL: test_green_distance_alone_hands_off (test_startup_straight.StartupStraightTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_straight.py", line 166, in test_green_distance_alone_hands_off
+    self.assertEqual(self.c.tick(1.2),(26,0))
+AssertionError: Tuples differ: (12, 0.0) != (26, 0)
+
+First differing element 0:
+12
+26
+
+- (12, 0.0)
+?  -   --
+
++ (26, 0)
+?   +
+
+
+======================================================================
+FAIL: test_green_starts_zero_steer_even_with_curved_or_missing_lane (test_startup_straight.StartupStraightTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_straight.py", line 34, in test_green_starts_zero_steer_even_with_curved_or_missing_lane
+    self.assertEqual(self.c.tick(1.3), (26, 0.0))
+AssertionError: Tuples differ: (12, 0.0) != (26, 0.0)
+
+First differing element 0:
+12
+26
+
+- (12, 0.0)
+?  -
+
++ (26, 0.0)
+?   +
+
+
+======================================================================
+FAIL: test_both_curve_directions_steer_at_the_distance_handoff (test_startup_lane_handoff.StartupLaneHandoffTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_startup_lane_handoff.py", line 62, in test_both_curve_directions_steer_at_the_distance_handoff
+    self.assertGreater(raw*sign,0)
+AssertionError: 0 not greater than 0
+
+======================================================================
+FAIL: test_bend_geometry_and_gap_preserve_angle (test_lane_preview.LanePreviewTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_lane_preview.py", line 44, in test_bend_geometry_and_gap_preserve_angle
+    self.assertLess(command[1],0)
+AssertionError: 0 not less than 0
+
+======================================================================
+FAIL: test_recorded_entry_turns_right_before_far_offset_grows (test_lane_preview.LanePreviewTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_lane_preview.py", line 30, in test_recorded_entry_turns_right_before_far_offset_grows
+    self.assertLessEqual(raw, -4)
+AssertionError: -1 not less than or equal to -4
+
+----------------------------------------------------------------------
+Ran 52 tests in 22.275s
+
+FAILED (failures=7)

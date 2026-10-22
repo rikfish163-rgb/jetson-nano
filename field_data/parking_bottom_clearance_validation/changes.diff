@@ -1,0 +1,345 @@
+--- before/src/robot/master/state_machine.py
++++ after/src/robot/master/state_machine.py
+@@ -332,7 +332,7 @@
+         return ctx.call('motion', 'stop', 'emergency_stop')
+     if ctx.state == 'FINISHED':
+         if cfg.get('parking_mode')=='forward_center' and ctx.parking_entry is not None:
+-            return ctx.call('motion','stop','parking_bottom_detected')
++            return ctx.call('motion','stop','parking_at_bottom_clearance')
+         if ctx.course_finished:return ctx.call('motion', 'stop', 'uturn_course_exit_blue_stop')
+         if ctx.timed_uturn is not None:
+             return ctx.call('motion', 'stop', 'uturn_trial_complete_stop')
+--- before/src/robot/parking/forward.py
++++ after/src/robot/parking/forward.py
+@@ -24,7 +24,7 @@
+         anchor=local(self.pose,self.sign_anchor) if self.sign_anchor is not None else None
+         if self.associate and anchor is None:return
+         # A bottom stripe may be shared by several adjacent bays. Seeing the
+-        # stripe below P does not finish parking while still aimed at its neighbour.
++        # stripe below P is not our target while still aimed at its neighbour.
+         width=self.cfg.get('slots',{}).get('P4',{}).get('width',.38)
+         self.bottom_target_aligned=(not self.associate or abs(anchor[1])<=width/2.+.04)
+         sides=[];cross=[]
+@@ -48,7 +48,7 @@
+         if self.associate and self.bottom_target_aligned:
+             # Near the bottom the side rails can leave the image or fragment.
+             # The retained P position still identifies the target corridor;
+-            # do not require a complete side pair in this same frame to stop.
++            # do not require a complete side pair to retain the bottom target.
+             ax,ay=anchor
+             bottoms=[]
+             for a,b,line in cross:
+@@ -62,7 +62,7 @@
+             if bottoms:
+                 self.bottom=min(bottoms,key=lambda row:row[0])[1]
+                 self.bottom_stamp=stamp;self.bottom_source='p_near_cross'
+-                return
++                # Keep extracting visible sides for centering on the approach.
+         candidates=[]
+         for i,left in enumerate(sides):
+             for right in sides[i+1:]:
+@@ -112,7 +112,7 @@
+             ends=sorted((a[1],b[1]));ys=sorted((left[2]*bx+left[3],right[2]*bx+right[3]))
+             if max(abs(ends[j]-ys[j]) for j in (0,1))>.08:continue
+             bottoms.append((bx,line))
+-        if bottoms:
++        if bottoms and self.bottom_stamp!=stamp:
+             self.bottom=min(bottoms,key=lambda p:p[0])[1];self.bottom_stamp=stamp
+             self.bottom_source='paired_far_end'
+ 
+@@ -125,14 +125,30 @@
+             sides_behind_sign_rejected=self.sides_behind_sign_rejected,
+             bottom_target_aligned=self.bottom_target_aligned,
+             sign_association=self.associate)
+-        if self.status=='FINISHED':return (0,0.)
+-        if self.bottom is not None:
+-            self.status='FINISHED';self.phase='FINISHED';self.reason='parking_bottom_detected'
+-            self.debug['phase']=self.phase
+-            return (0,0.)
++        if self.status=='FINISHED':
++            self.reason='parking_at_bottom_clearance';return (0,0.)
+         if not 0<=now-self.stamp<=self.cfg.get('ground_timeout',1.25):
+             self.reason='parking_front_stale';return (0,0.)
+         speed=self.cfg.get('parking_entry_speed_raw',12)
++        if self.bottom is not None:
++            # Reuse the front-bumper calculation, including the nearer corner
++            # at an oblique line. Detection alone says nothing about arrival.
++            remaining=self.remaining()
++            clearance=self.cfg.get('parking_bottom_clearance_m',.04)
++            self.debug.update(remaining_m=remaining,target_clearance_m=clearance,
++                bumper_clearance_m=None if remaining is None else remaining+clearance,
++                bottom_age_s=now-self.bottom_stamp,
++                distance_source='live_bottom' if self.bottom_stamp==self.stamp else 'measured_bottom_plus_pose')
++            if remaining is None:
++                self.reason='parking_bottom_geometry_invalid';return (0,0.)
++            if remaining<=0:
++                self.status='FINISHED';self.phase='FINISHED';self.reason='parking_at_bottom_clearance'
++                self.debug['phase']=self.phase
++                return (0,0.)
++            # Retain the measured world line when it enters the camera's near
++            # blind region; require fresh image callbacks above throughout.
++            if remaining<=self.cfg.get('parking_final_max_m',.30):
++                speed=min(speed,self.cfg.get('parking_final_speed_raw',8))
+         if self.view is None:
+             if self.single is not None and self.phase=='APPROACH':
+                 self.reason='parking_follow_sign_side'
+--- before/src/robot/test/test_blue_stop_line.py
++++ after/src/robot/test/test_blue_stop_line.py
+@@ -206,7 +206,11 @@
+         c.observe_ground(dict(source='front',part='parking_lines',lines=[
+             [(.4,-.19),(.85,-.19)],[(.4,.19),(.85,.19)],
+             [(.85,-.19),(.85,.19)]]),3.1)
+-        self.assertEqual(c.tick(3.1),(0,0.))
++        self.assertGreater(c.tick(3.1)[0],0)
++        self.assertEqual(c.state,'PARKING')
++        c.set_pose((.841,0.,0.),3.2)
++        c.observe_ground(dict(source='front',part='parking_lines',lines=[]),3.2)
++        self.assertEqual(c.tick(3.2),(0,0.))
+         self.assertEqual(c.state,'FINISHED')
+ 
+ 
+--- before/src/robot/test/test_forward_bottom_clearance.py
++++ after/src/robot/test/test_forward_bottom_clearance.py
+@@ -0,0 +1,98 @@
++"""Forward parking stops at bumper clearance, never just on bottom detection."""
++import math
++import unittest
++import test_direction_single_frame as fixtures
++from robot.common.geometry import world
++from robot.parking.forward import ForwardParking
++
++
++class ForwardBottomClearanceTests(unittest.TestCase):
++    def parking(self, pose=(0.,0.,0.), bottom_x=1.4):
++        c=fixtures.DirectionSingleFrameTests.__dict__['core'](self)
++        c.cfg.update(parking_sign_association=True,parking_entry_speed_raw=12,
++                     parking_final_speed_raw=8,parking_bottom_clearance_m=.04)
++        p=ForwardParking(c.cfg,pose,1.)
++        p.sign_anchor=world(pose,(bottom_x+.1,0.))
++        lines=[[(.5,-.19),(bottom_x,-.19)],
++               [(.5,.19),(bottom_x,.19)],
++               [(bottom_x,-.19),(bottom_x,.19)]]
++        p.observe([[world(pose,q) for q in line] for line in lines],1.,pose)
++        self.assertIsNotNone(p.bottom)
++        return c,p
++
++    def test_far_bottom_keeps_centering(self):
++        c,p=self.parking()
++        self.assertEqual(p.command(1.,c.pose)[0],12)
++        self.assertIsNone(p.status)
++        self.assertEqual(p.reason,'parking_center_between_sides')
++        self.assertAlmostEqual(p.debug['remaining_m'],1.03)
++
++    def test_p_near_cross_does_not_discard_visible_sides(self):
++        c,p=self.parking(bottom_x=1.)
++        self.assertEqual(p.bottom_source,'p_near_cross')
++        self.assertIsNotNone(p.view)
++        self.assertEqual(p.command(1.,c.pose)[0],12)
++        self.assertEqual(p.reason,'parking_center_between_sides')
++
++    def test_final_speed_then_front_clearance_with_line_out_of_view(self):
++        c,p=self.parking()
++        for now,x,speed in ((2.,.75,8),(3.,1.02,8),(4.,1.031,0)):
++            pose=(x,0.,0.)
++            p.observe([],now,pose)  # Fresh image; paint is retained in world coordinates.
++            self.assertEqual(p.command(now,pose)[0],speed)
++            if speed:self.assertIsNone(p.status)
++        self.assertEqual(p.status,'FINISHED')
++        self.assertEqual(p.reason,'parking_at_bottom_clearance')
++        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.039)
++        self.assertEqual(p.debug['distance_source'],'measured_bottom_plus_pose')
++        self.assertEqual(p.command(20.,(1.,0.,0.)),(0,0.))
++
++    def test_slanted_bottom_uses_nearest_front_corner(self):
++        c,p=self.parking()
++        p.bottom=[(1.38,-.2),(1.42,.2)]
++        # At rear-axle x=1.02 the center has .05 m; closest corner only .038 m.
++        pose=(1.02,0.,0.)
++        p.observe([],2.,pose)
++        self.assertEqual(p.command(2.,pose),(0,0.))
++        self.assertEqual(p.status,'FINISHED')
++        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.038)
++
++    def test_world_pose_rotation_preserves_clearance(self):
++        origin=(2.,-3.,math.pi/3.)
++        c,p=self.parking(origin)
++        self.assertEqual(p.command(1.,origin)[0],12)
++        pose=tuple(world(origin,(1.031,0.)))+(origin[2],)
++        p.observe([],2.,pose)
++        self.assertEqual(p.command(2.,pose),(0,0.))
++        self.assertAlmostEqual(p.debug['bumper_clearance_m'],.039)
++
++    def test_stale_camera_does_not_report_finished(self):
++        c,p=self.parking()
++        self.assertEqual(p.command(4.,(1.031,0.,0.)),(0,0.))
++        self.assertIsNone(p.status)
++        self.assertEqual(p.reason,'parking_front_stale')
++
++    def test_recorded_far_bottom_is_still_over_one_metre_from_stop(self):
++        c,p=self.parking()
++        p.bottom=[(1.3935568369,.24427090099),(1.4286533213,-.08878237820)]
++        self.assertEqual(p.command(1.,c.pose)[0],12)
++        self.assertIsNone(p.status)
++        self.assertGreater(p.debug['remaining_m'],1.)
++
++    def test_new_measurement_updates_bottom_before_final_approach(self):
++        c,p=self.parking(bottom_x=1.)
++        p.observe([[(.9,-.19),(.9,.19)]],1.1,c.pose)
++        self.assertEqual(p.command(1.1,c.pose)[0],12)
++        self.assertAlmostEqual(p.debug['remaining_m'],.53)
++        self.assertEqual(p.debug['distance_source'],'live_bottom')
++
++    def test_bottom_no_longer_transverse_does_not_report_finished(self):
++        c,p=self.parking()
++        pose=(.7,0.,math.pi/2.)
++        p.observe([],2.,pose)
++        self.assertEqual(p.command(2.,pose),(0,0.))
++        self.assertIsNone(p.status)
++        self.assertEqual(p.reason,'parking_bottom_geometry_invalid')
++
++
++if __name__=='__main__':unittest.main()
+--- before/src/robot/test/test_mission_blue_sequence.py
++++ after/src/robot/test/test_mission_blue_sequence.py
+@@ -74,7 +74,12 @@
+                 c.observe_ground(dict(source='front',part='parking_lines',lines=[
+                     [(.4,-.19),(.85,-.19)],[(.4,.19),(.85,.19)],
+                     [(.85,-.19),(.85,.19)]]),now)
+-                self.assertEqual(c.tick(now),(0,0.))
++                self.assertGreater(c.tick(now)[0],0)
++                self.assertEqual(c.state,'PARKING')
++                pose=tuple(world(c.pose,(.481,0.)))+(c.pose[2],)
++                c.set_pose(pose,now+.1)
++                c.observe_ground(dict(source='front',part='parking_lines',lines=[]),now+.1)
++                self.assertEqual(c.tick(now+.1),(0,0.))
+                 self.assertEqual(c.state,'FINISHED')
+             now+=1.
+         self.assertEqual(c.state,'FINISHED')
+--- before/src/robot/test/test_parking_nearest_pair.py
++++ after/src/robot/test/test_parking_nearest_pair.py
+@@ -29,7 +29,9 @@
+         self.assertIsNone(p.bottom)
+         self.assertEqual(p.command(1.,c.pose)[0],16)
+         p.observe(near+[[(.8,-.11),(.8,.27)]],1.1,c.pose)
+-        self.assertEqual(p.command(1.1,c.pose),(0,0.))
++        self.assertEqual(p.command(1.1,c.pose)[0],16)
++        p.observe([],1.2,(.431,0.,0.))
++        self.assertEqual(p.command(1.2,(.431,0.,0.)),(0,0.))
+ 
+     def test_both_steering_directions_are_small_and_missing_pair_is_straight(self):
+         for sign in (-1,1):
+--- before/src/robot/test/test_parking_sign_anchor.py
++++ after/src/robot/test/test_parking_sign_anchor.py
+@@ -26,7 +26,9 @@
+         self.assertEqual(speed,12)
+         self.assertLessEqual(abs(encode_command(speed,steer,c.cfg,0)['steering_raw']),6)
+         p.observe(target+[[(1.4,-.09),(1.4,.29)]],1.1,c.pose)
+-        self.assertEqual(p.command(1.1,c.pose),(0,0.))
++        self.assertEqual(p.command(1.1,c.pose)[0],12)
++        p.observe([],1.2,(1.031,0.,0.))
++        self.assertEqual(p.command(1.2,(1.031,0.,0.)),(0,0.))
+ 
+     def test_wrong_side_pair_and_missing_sign_cannot_stop(self):
+         for anchor in ((1.,-.7),None):
+@@ -77,11 +79,15 @@
+         # Recorded geometry: broad bottom paint, one side off-camera.
+         line=[(.69,-.34),(.765,.36)]
+         p.observe([line],1.,c.pose)
+-        self.assertEqual(p.command(1.,c.pose),(0,0.))
++        self.assertEqual(p.command(1.,c.pose)[0],12)
++        self.assertIsNone(p.status)
++        # Nearest bumper corner reaches the 4 cm clearance at x=.34357.
++        pose=(.344,0.,0.)
++        p.observe([],1.1,pose)
++        self.assertEqual(p.command(1.1,pose),(0,0.))
+         self.assertEqual(p.status,'FINISHED')
+         self.assertEqual(p.debug['bottom_source'],'p_near_cross')
+-        p.observe([],1.1,c.pose)
+-        self.assertEqual(p.command(1.1,c.pose),(0,0.))
++        self.assertEqual(p.command(1.2,pose),(0,0.))
+ 
+     def test_entrance_adjacent_bay_and_behind_p_cross_do_not_stop(self):
+         for line in ([[(.3,-.4),(.3,.4)]],
+@@ -101,9 +107,13 @@
+         c.tick(1.2)
+         c.observe_ground(dict(source='front',part='parking_lines',slots=[],markers=[],
+             lines=[[ (.69,-.34),(.765,.36)]]),1.3)
+-        self.assertEqual(c.tick(1.3),(0,0.))
++        self.assertGreater(c.tick(1.3)[0],0)
++        self.assertEqual(c.state,'PARKING')
++        c.set_pose((.344,0.,0.),1.4)
++        c.observe_ground(dict(source='front',part='parking_lines',lines=[]),1.4)
++        self.assertEqual(c.tick(1.4),(0,0.))
+         self.assertEqual(c.state,'FINISHED')
+-        self.assertEqual(c.reason,'parking_bottom_detected')
++        self.assertEqual(c.reason,'parking_at_bottom_clearance')
+         self.assertEqual(c.tick(2.),(0,0.))
+ 
+     def test_recorded_line_behind_p_cannot_supply_missing_right_side(self):
+--- before/src/robot/test/test_requested_maneuvers.py
++++ after/src/robot/test/test_requested_maneuvers.py
+@@ -219,12 +219,12 @@
+         self.assertEqual(c.tick(1.3),(12,0.))
+         c.observe_ground(dict(source='front',part='parking_lines',slots=[],markers=[],
+             lines=[[(.4,.19),(1.,.19)],[(.4,-.19),(1.,-.19)],[(1.,-.19),(1.,.19)]]),1.4)
+-        self.assertEqual(c.tick(1.4),(0,0.))
++        self.assertEqual(c.tick(1.4),(12,0.))
+         c.set_pose((.64,0,0),1.5)
+         self.assertEqual(c.tick(1.5),(0,0.))
+         self.assertEqual(c.state,'FINISHED')
+         self.assertEqual(c.tick(2.),(0,0.))
+-        self.assertEqual(c.reason,'parking_bottom_detected')
++        self.assertEqual(c.reason,'parking_at_bottom_clearance')
+ 
+     def test_forward_parking_center_and_bottom(self):
+         from robot.parking.forward import ForwardParking
+@@ -238,7 +238,9 @@
+         p.observe([],1.2,c.pose)
+         self.assertEqual(p.command(1.2,c.pose),(12,0.))
+         p.observe(lines+[[(1.,-.14),(1.,.24)]],1.3,c.pose)
+-        self.assertEqual(p.command(1.3,c.pose),(0,0.))
++        self.assertGreater(p.command(1.3,c.pose)[0],0)
++        p.observe([],1.4,(.64,0.,0.))
++        self.assertEqual(p.command(1.4,(.64,0.,0.)),(0,0.))
+         self.assertEqual(p.status,'FINISHED')
+ 
+     def test_parking_follows_single_line_before_pair_and_while_pair_stream_stale(self):
+@@ -302,7 +304,7 @@
+         self.assertEqual(c.tick(1.4),(12,0.))
+         self.assertEqual(c.parking_entry.reason,'parking_center_between_sides')
+ 
+-    def test_parking_speed_16_for_side_and_pair_then_stop_when_bottom_seen(self):
++    def test_parking_speed_16_for_side_and_pair_then_stop_at_bottom_clearance(self):
+         c=self.core();c.cfg.update(parking_mode='forward_center',parking_entry_speed_raw=16)
+         for t in (1.,1.1,1.2):c.observe_sign('PARKING',.95,t,t)
+         enter_blue_action(c,'PARKING',1.2)
+@@ -314,10 +316,13 @@
+         self.assertEqual(c.tick(1.3)[0],16)
+         c.observe_ground(dict(source='front',part='parking_lines',
+             lines=pair+[[(1.,-.19),(1.,.19)]]),1.4)
+-        self.assertEqual(c.tick(1.4),(0,0.))
+-        self.assertEqual(c.reason,'parking_bottom_detected')
+-
+-    def test_missing_paint_continues_past_old_timeout_until_bottom_seen(self):
++        self.assertEqual(c.tick(1.4)[0],16)
++        c.set_pose((.64,0.,0.),1.5)
++        c.observe_ground(dict(source='front',part='parking_lines',lines=[]),1.5)
++        self.assertEqual(c.tick(1.5),(0,0.))
++        self.assertEqual(c.reason,'parking_at_bottom_clearance')
++
++    def test_missing_paint_continues_past_old_timeout_until_bottom_reached(self):
+         c=self.core();c.cfg.update(parking_mode='forward_center',parking_entry_speed_raw=16)
+         for t in (1.,1.1,1.2):c.observe_sign('PARKING',.95,t,t)
+         enter_blue_action(c,'PARKING',1.2)
+@@ -336,7 +341,10 @@
+         self.assertGreater(c.tick(80.2)[1],0)
+         c.observe_ground(dict(source='front',part='parking_lines',
+             lines=pair+[[(1.,-.14),(1.,.24)]]),80.3)
+-        self.assertEqual(c.tick(80.3),(0,0.))
++        self.assertGreater(c.tick(80.3)[0],0)
++        c.set_pose((.64,0.,0.),80.4)
++        c.observe_ground(dict(source='front',part='parking_lines',lines=[]),80.4)
++        self.assertEqual(c.tick(80.4),(0,0.))
+         self.assertEqual(c.state,'FINISHED')
+ 
+     def test_mouth_not_bottom_and_stale_camera_stops(self):

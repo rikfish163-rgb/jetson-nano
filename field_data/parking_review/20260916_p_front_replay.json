@@ -1,0 +1,162 @@
+[
+  {
+    "debug": {
+      "bottom_local": null, 
+      "side_local": [
+        [
+          0.565, 
+          -0.0825
+        ], 
+        [
+          0.9548543726973893, 
+          -0.16484891829704212
+        ]
+      ], 
+      "sign_anchor_local": [
+        0.9548543726973893, 
+        -0.3939943744325737
+      ], 
+      "sign_association": true, 
+      "line_age_s": 0, 
+      "bottom_source": null, 
+      "bottom_target_aligned": false, 
+      "phase": "APPROACH", 
+      "bottom_seen": false, 
+      "sides_behind_sign_rejected": 22
+    }, 
+    "reason": "parking_follow_sign_side", 
+    "command": [
+      12, 
+      -0.02727272727272727
+    ], 
+    "frame": "1789562821.826621771_PARKING"
+  }, 
+  {
+    "debug": {
+      "bottom_local": null, 
+      "side_local": [
+        [
+          0.625, 
+          -0.085
+        ], 
+        [
+          0.908653436432191, 
+          -0.1401098105068257
+        ]
+      ], 
+      "sign_anchor_local": [
+        0.908653436432191, 
+        -0.39548635862805437
+      ], 
+      "sign_association": true, 
+      "line_age_s": 0, 
+      "bottom_source": null, 
+      "bottom_target_aligned": false, 
+      "phase": "APPROACH", 
+      "bottom_seen": false, 
+      "sides_behind_sign_rejected": 24
+    }, 
+    "reason": "parking_follow_sign_side", 
+    "command": [
+      12, 
+      -0.02727272727272727
+    ], 
+    "frame": "1789562822.500686407_PARKING"
+  }, 
+  {
+    "debug": {
+      "bottom_local": null, 
+      "side_local": [
+        [
+          0.6225, 
+          -0.12
+        ], 
+        [
+          0.891319141272705, 
+          -0.1628885239637364
+        ]
+      ], 
+      "sign_anchor_local": [
+        0.891319141272705, 
+        -0.3921900422615116
+      ], 
+      "sign_association": true, 
+      "line_age_s": 0, 
+      "bottom_source": null, 
+      "bottom_target_aligned": false, 
+      "phase": "APPROACH", 
+      "bottom_seen": false, 
+      "sides_behind_sign_rejected": 18
+    }, 
+    "reason": "parking_follow_sign_side", 
+    "command": [
+      12, 
+      -0.02727272727272727
+    ], 
+    "frame": "1789562822.836876154_PARKING"
+  }, 
+  {
+    "debug": {
+      "bottom_local": null, 
+      "side_local": [
+        [
+          0.6375, 
+          -0.085
+        ], 
+        [
+          0.8583616890895154, 
+          -0.13125375687738544
+        ]
+      ], 
+      "sign_anchor_local": [
+        0.8583616890895154, 
+        -0.4098658711760161
+      ], 
+      "sign_association": true, 
+      "line_age_s": 0, 
+      "bottom_source": null, 
+      "bottom_target_aligned": false, 
+      "phase": "APPROACH", 
+      "bottom_seen": false, 
+      "sides_behind_sign_rejected": 27
+    }, 
+    "reason": "parking_follow_sign_side", 
+    "command": [
+      12, 
+      -0.02727272727272727
+    ], 
+    "frame": "1789562823.233938456_PARKING"
+  }, 
+  {
+    "debug": {
+      "bottom_local": null, 
+      "side_local": [
+        [
+          0.5575, 
+          -0.1125
+        ], 
+        [
+          0.7975, 
+          -0.185
+        ]
+      ], 
+      "sign_anchor_local": [
+        0.8319711393962914, 
+        -0.40897217057969837
+      ], 
+      "sign_association": true, 
+      "line_age_s": 0, 
+      "bottom_source": null, 
+      "bottom_target_aligned": false, 
+      "phase": "APPROACH", 
+      "bottom_seen": false, 
+      "sides_behind_sign_rejected": 37
+    }, 
+    "reason": "parking_follow_sign_side", 
+    "command": [
+      12, 
+      -0.02727272727272727
+    ], 
+    "frame": "1789562824.023064375_PARKING"
+  }
+]

@@ -1,0 +1,129 @@
+--- before/src/robot/turn/controller.py
++++ src/robot/turn/controller.py
+@@ -78,7 +78,7 @@
+ 
+ 
+ def blue_approach_tick(ctx, now):
+-    """Align the body to the blue normal, advance separately, then wait."""
++    """Use a fixed blue alignment window, advance separately, then wait."""
+     s = ctx.blue_approach
+     if s['phase'] == 'STOP':
+         if now < s['stop_until']:
+@@ -110,8 +110,10 @@
+                 s['align_frames']=0
+             s['align_stamp']=reference['stamp']
+             s['align_frames']=s['align_frames']+1 if aligned else 0
+-        complete=(s['align_frames'] >= ctx.cfg['exit_frames']) if measured else aligned
+-        if not complete:
++        elapsed=max(0.,now-s['started'])
++        duration=ctx.cfg.get('blue_align_duration_s',1.)
++        s.update(alignment_elapsed_s=elapsed,alignment_duration_s=duration)
++        if elapsed < duration-1e-9:
+             ctx.lane_source='blue_normal_alignment'
+             command=(ctx.cfg['speed_raw']['gap'],
+                      0. if aligned else steering_for_heading(heading,ctx.cfg))
+@@ -119,11 +121,12 @@
+             if result[0]:
+                 ctx.reason='blue_align_heading' if measured else 'blue_align_latched_heading'
+             return result
+-        # Freeze the measured heading and reset distance here. Neither the
+-        # travel used to align nor the later stationary wait counts as entry.
+-        origin=(ctx.pose[0],ctx.pose[1],target_yaw)
++        # Time ends alignment even if the measured angle has not converged.
++        # Start straight entry from the current heading, so ADVANCE cannot
++        # silently prolong the same blue correction beyond this window.
++        origin=tuple(ctx.pose)
+         s.update(phase='ADVANCE',advance_origin=origin,aligned_at=now,
+-                 alignment_completion=s['alignment_source'],
++                 alignment_completion='timed',heading_within_tolerance=aligned,
+                  advance_distance_m=ctx.cfg['blue_aligned_advance_m'],
+                  advance_travelled_m=0.)
+     travelled=local(s['advance_origin'],ctx.pose)[0]
+@@ -133,7 +136,7 @@
+         s.update(phase='STOP',stop_until=now+ctx.cfg.get('intersection_wait_s',1.),stop_pose=ctx.pose)
+         ctx.state='BLUE_STOP'
+         return ctx.call('motion','stop','blue_stop_wait_'+ctx.action.lower())
+-    # Blue may now leave the camera. Retain its aligned heading instead of
++    # Blue may now leave the camera. Retain the entry heading instead of
+     # steering onto a crossing white path or switching to another blue stripe.
+     heading=wrap(s['advance_origin'][2]-ctx.pose[2])
+     s['heading_error_deg']=math.degrees(heading)
+--- before/src/robot/config/competition.yaml
++++ src/robot/config/competition.yaml
+@@ -73,7 +73,8 @@
+ intersection_wait_s: 0.0 # set explicitly in full.launch for stop/wait/turn tests
+ turn_angle_deg: 90.0
+ straight_distance: 1.25 # independent straight segment, then return to lane; floor 1.25 m
+-blue_aligned_advance_m: 0.36 # forward travel starts only after visual body alignment
++blue_align_duration_s: 1.0 # fixed correction window; proceed even if not aligned
++blue_aligned_advance_m: 0.36 # separate forward travel after the alignment window
+ straight_wait_s: 1.0
+ straight_speed_raw: 26 # same command as the proven startup setting; verify wheel motion
+ straight_search_max_distance: 2.20 # legacy fixed-UTURN blue search only; unused by STRAIGHT
+--- before/src/robot/config/workspace_modules.yaml
++++ src/robot/config/workspace_modules.yaml
+@@ -131,6 +131,7 @@
+     - speed_raw.action
+     - straight_align_distance
+     - blue_aligned_advance_m
++    - blue_align_duration_s
+     - straight_align_tolerance_deg
+     - straight_blue_clearance
+     - straight_distance
+--- before/src/robot/common/contracts.py
++++ src/robot/common/contracts.py
+@@ -177,6 +177,7 @@
+     if not 0 <= number(cfg.get('uturn_reverse_distance_m',0)) <= 3:
+         raise ValueError('uturn_reverse_distance_m must be in [0,3]')
+     for key,default,upper in (('straight_wait_s',1.0,60),
++                              ('blue_align_duration_s',1.0,5),
+                               ('blue_aligned_advance_m',.36,2),
+                               ('straight_search_max_distance',.8,3),
+                               ('straight_search_timeout',10.0,60),
+--- before/src/robot/launch/full.launch
++++ src/robot/launch/full.launch
+@@ -63,6 +63,7 @@
+   <arg name="right_turn_exit" default=""/>
+   <arg name="straight_distance" default=""/>
+   <arg name="blue_aligned_advance_m" default=""/>
++  <arg name="blue_align_duration_s" default=""/>
+   <arg name="lane_speed_raw" default=""/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+@@ -131,6 +132,7 @@
+     <arg name="right_turn_exit" value="$(arg right_turn_exit)"/>
+     <arg name="straight_distance" value="$(arg straight_distance)"/>
+     <arg name="blue_aligned_advance_m" value="$(arg blue_aligned_advance_m)"/>
++    <arg name="blue_align_duration_s" value="$(arg blue_align_duration_s)"/>
+     <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+     <arg name="action_speed_raw" value="$(arg action_speed_raw)"/>
+     <arg name="straight_speed_raw" value="$(arg straight_speed_raw)"/>
+--- before/src/robot/launch/stack.launch
++++ src/robot/launch/stack.launch
+@@ -69,6 +69,7 @@
+   <arg name="right_turn_exit" default=""/>
+   <arg name="straight_distance" default=""/>
+   <arg name="blue_aligned_advance_m" default=""/>
++  <arg name="blue_align_duration_s" default=""/>
+   <arg name="lane_speed_raw" default=""/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+@@ -146,6 +147,7 @@
+   <param if="$(eval arg('right_turn_exit') != '')" name="/competition/config/right_turn_exit" value="$(arg right_turn_exit)" type="double"/>
+   <param if="$(eval arg('straight_distance') != '')" name="/competition/config/straight_distance" value="$(arg straight_distance)" type="double"/>
+   <param if="$(eval arg('blue_aligned_advance_m') != '')" name="/competition/config/blue_aligned_advance_m" value="$(arg blue_aligned_advance_m)" type="double"/>
++  <param if="$(eval arg('blue_align_duration_s') != '')" name="/competition/config/blue_align_duration_s" value="$(arg blue_align_duration_s)" type="double"/>
+   <param if="$(eval arg('lane_speed_raw') != '')" name="/competition/config/speed_raw/lane" value="$(arg lane_speed_raw)" type="int"/>
+   <param if="$(eval arg('action_speed_raw') != '')" name="/competition/config/speed_raw/action" value="$(arg action_speed_raw)" type="int"/>
+   <param if="$(eval arg('straight_speed_raw') != '')" name="/competition/config/straight_speed_raw" value="$(arg straight_speed_raw)" type="int"/>
+--- before/tools/sign_detector_20260916/run_yolo_vehicle.sh
++++ tools/sign_detector_20260916/run_yolo_vehicle.sh
+@@ -23,7 +23,7 @@
+   sign_backend:=yolo_trt \
+   sign_model:=/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine \
+   sign_ttl:=0 blue_default_straight:=false marker_trigger_x:=0.36 \
+-  blue_aligned_advance_m:=0.36 intersection_wait_s:=1.0 straight_distance:=1.25 \
++  blue_align_duration_s:=1.0 blue_aligned_advance_m:=0.36 intersection_wait_s:=1.0 straight_distance:=1.25 \
+   left_turn_entry:=0.12 left_turn_radius:=0.65 left_turn_exit:=0.30 \
+   right_turn_full_lock:=true right_exit_on_blue:=true right_lock_min_angle_deg:=30 \
+   right_turn_entry:=0.0 right_reverse_entry_m:=0.25 \

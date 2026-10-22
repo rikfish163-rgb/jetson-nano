@@ -1,0 +1,276 @@
+# Offline metric course model used by tools/competition_sim.py.
+#
+# Values under `measured` are taken from the supplied metric map, the 2025
+# rules, or the user's confirmed dimensions.  Route event order and placement
+# under `routes` are an interpretation of the red dotted paths in the three
+# supplied screenshots; they are intentionally labelled `inferred`.
+schema: competition-course-v1
+provenance:
+  measured:
+    arena_width_m: 6.0                 # metric map: 6000 mm
+    arena_height_m: 6.0                # metric map: 6000 mm
+    lane_width_m: 0.60                 # metric map / user confirmation
+    turn_radii_m: [0.60, 1.20, 1.80]   # metric map labels R600/R1200/R1800
+    slots:
+      P1: {kind: parallel, length_m: 0.70, width_m: 0.36}
+      P2: {kind: parallel, length_m: 0.70, width_m: 0.36}
+      P3: {kind: parallel, length_m: 0.70, width_m: 0.36}
+      P4: {kind: perpendicular, length_m: 0.45, width_m: 0.38}
+      P5: {kind: perpendicular, length_m: 0.45, width_m: 0.38}
+    # Fixed arena solids from the metric map. Route-specific bay placement
+    # remains under inferred below because it is read from the screenshots.
+    road_geometry:
+      outer_corner_radius_m: 1.80
+      top_pill_centres_m: [[-1.20, 1.20], [1.20, 1.20]]
+      bottom_island_centres_m: [[-1.20, -1.20], [1.20, -1.20]]
+  configured_model:
+    wheelbase_m: 0.26                  # current competition.yaml
+    body_width_m: 0.24                 # current competition.yaml
+    front_overhang_m: 0.07             # current competition.yaml
+    rear_overhang_m: 0.07              # current competition.yaml
+    raw_forward_mps: 0.16              # raw 20 * configured 0.008 mapping
+    max_steer_rad: 0.46275             # current competition.yaml
+  inferred:
+    coordinate_frame: "arena origin at centre; +x east, +y north; yaw CCW"
+    route_sources:
+      - /tmp/codex-clipboard-14c82eea-c990-4c56-823d-5d9a31f995b0.png#left
+      - /tmp/codex-clipboard-14c82eea-c990-4c56-823d-5d9a31f995b0.png#right
+      - /tmp/codex-clipboard-44c35319-efe3-477a-be84-efd58b697eca.png
+    note: "Screenshot red paths and sign identities are inferred; do not treat them as surveyed coordinates."
+    road_geometry:
+      # These openings and bay poses are screenshot-derived placement only;
+      # slot dimensions and the fixed arena solids above stay measured.
+      central_openings:
+        - {xmin: -0.45, xmax: 0.45, ymin: 0.55, ymax: 1.85}
+      parking_slot_poses:
+        P1: [0.70, 1.62, 0.0]
+        P2: [0.00, 1.62, 0.0]
+        P3: [-0.70, 1.62, 0.0]
+        P4: [0.20, 0.83, 1.5707963267948966]
+        P5: [-0.20, 0.83, 1.5707963267948966]
+      parking_bay_regions:
+        P1: {xmin: 0.35, xmax: 1.05, ymin: 1.44, ymax: 1.80}
+        P2: {xmin: -0.35, xmax: 0.35, ymin: 1.44, ymax: 1.80}
+        P3: {xmin: -1.05, xmax: -0.35, ymin: 1.44, ymax: 1.80}
+        P4: {xmin: 0.01, xmax: 0.39, ymin: 0.605, ymax: 1.055}
+        P5: {xmin: -0.39, xmax: -0.01, ymin: 0.605, ymax: 1.055}
+    obstacle_note: "No obstacle placement is asserted from screenshots; optional route obstacles are ray-cast when supplied."
+
+# `centerline` is a metric rendering of the screenshot red dotted path.  It is
+# kept independent from Controller's action planner so that a route deviation
+# remains visible in the result.  Event poses/actions and parking placement
+# are screenshot inferences; the lane/turn radii above remain map geometry.
+routes:
+  image1_left:
+    source: /tmp/codex-clipboard-14c82eea-c990-4c56-823d-5d9a31f995b0.png#left
+    placement: inferred_from_screenshot
+    start: [-2.10, -1.00, 1.5707963267948966]
+    centerline:
+      - [-2.10, -1.00]
+      - [-2.10, 1.20]
+      # R0.90 lane-centre arcs around the fixed R0.60 islands.
+      - [-2.031371, 1.544444]
+      - [-1.836396, 1.836396]
+      - [-1.544444, 2.031371]
+      - [-1.20, 2.10]
+      - [1.20, 2.10]
+      - [1.544444, 2.031371]
+      - [1.836396, 1.836396]
+      - [2.031371, 1.544444]
+      - [2.10, 1.20]
+      - [2.10, -1.20]
+      - [2.031371, -1.544444]
+      - [1.836396, -1.836396]
+      - [1.544444, -2.031371]
+      - [1.20, -2.10]
+      - [-1.20, -2.10]
+      - [-1.544444, -2.031371]
+      - [-1.836396, -1.836396]
+      - [-2.031371, -1.544444]
+      - [-2.10, -1.20]
+      - [-2.10, -0.60]
+      - [-2.70, -0.60]
+      - [-2.70, -1.20]
+      # R1.50 lane-centre arc about the measured (-1.20,-1.20) corner.
+      - [-2.585235, -1.773045]
+      - [-2.260660, -2.260660]
+      - [-1.773045, -2.585235]
+      - [-1.20, -2.70]
+      - [-0.90, -2.70]
+      - [0.30, -2.70]
+      - [0.30, -2.05]
+      - [0.30, -1.40]
+      - [0.30, -0.70]
+      - [0.30, 0.00]
+      - [0.30, 0.55]
+      - [0.20, 0.83]
+    events:
+      - {id: A, action: STRAIGHT, marker: [-2.10, 0.60, 1.5707963267948966]}
+      - {id: B, action: STRAIGHT, marker: [2.10, 0.60, -1.5707963267948966]}
+      - {id: C, action: STRAIGHT, marker: [2.10, -0.60, -1.5707963267948966]}
+      - {id: D, action: STRAIGHT, marker: [0.70, -2.10, 3.141592653589793]}
+      - {id: E, action: STRAIGHT, marker: [-0.70, -2.10, 3.141592653589793]}
+      - {id: F, action: UTURN, marker: [-2.10, -0.60, -1.5707963267948966]}
+      - {id: G, action: STRAIGHT, marker: [-2.70, -0.60, -1.5707963267948966]}
+      - {id: H, action: STRAIGHT, marker: [-1.80, -2.70, 0.0]}
+      - {id: I, action: STRAIGHT, marker: [0.30, -1.40, 1.5707963267948966]}
+      - {id: J, action: STRAIGHT, marker: [0.30, 0.00, 1.5707963267948966]}
+      - {id: K, action: PARKING, slot: P4,
+          marker: [0.20, 0.55, 1.5707963267948966],
+          target: [0.20, 0.83, 1.5707963267948966]}
+
+  image1_right:
+    source: /tmp/codex-clipboard-14c82eea-c990-4c56-823d-5d9a31f995b0.png#right
+    placement: inferred_from_screenshot
+    start: [-2.10, -1.00, 1.5707963267948966]
+    centerline:
+      - [-2.10, -1.00]
+      - [-2.10, 1.20]
+      # R0.90 lane-centre arcs around the fixed R0.60 islands.
+      - [-2.031371, 1.544444]
+      - [-1.836396, 1.836396]
+      - [-1.544444, 2.031371]
+      - [-1.20, 2.10]
+      - [1.20, 2.10]
+      - [1.544444, 2.031371]
+      - [1.836396, 1.836396]
+      - [2.031371, 1.544444]
+      - [2.10, 1.20]
+      - [2.10, 0.60]
+      - [1.70, 0.45]
+      - [1.10, 0.30]
+      - [0.60, 0.30]
+      - [0.15, 0.05]
+      - [-0.30, -0.10]
+      - [-0.30, -0.80]
+      - [-0.30, -1.80]
+      - [-0.30, -2.10]
+      - [-0.90, -2.55]
+      - [-1.20, -2.70]
+      - [0.00, -2.70]
+      - [1.20, -2.70]
+      # R1.50 lane-centre arc about the measured (1.20,-1.20) corner.
+      - [1.773045, -2.585235]
+      - [2.260660, -2.260660]
+      - [2.585235, -1.773045]
+      - [2.70, -1.20]
+      - [2.70, -0.60]
+      - [2.10, -0.60]
+      - [2.10, -1.30]
+      - [2.10, -2.10]
+      - [1.40, -2.10]
+      - [0.60, -2.10]
+      - [0.30, -1.70]
+      - [0.30, -1.00]
+      - [0.30, -0.20]
+      - [0.30, 0.60]
+      - [0.10, 0.70]
+      - [-0.20, 0.83]
+    events:
+      - {id: A, action: STRAIGHT, marker: [-2.10, 0.60, 1.5707963267948966]}
+      - {id: B, action: RIGHT, marker: [2.10, 0.60, -0.7853981633974483]}
+      - {id: C, action: LEFT, marker: [0.60, 0.30, 3.141592653589793]}
+      - {id: D, action: STRAIGHT, marker: [-0.30, -0.80, -1.5707963267948966]}
+      - {id: E, action: LEFT, marker: [-0.30, -1.80, -1.5707963267948966]}
+      - {id: F, action: UTURN, marker: [2.70, -0.60, 1.5707963267948966]}
+      - {id: G, action: STRAIGHT, marker: [2.10, -1.30, -1.5707963267948966]}
+      - {id: H, action: RIGHT, marker: [0.60, -2.10, 3.141592653589793]}
+      - {id: I, action: STRAIGHT, marker: [0.30, -1.00, 1.5707963267948966]}
+      - {id: J, action: STRAIGHT, marker: [0.30, 0.20, 1.5707963267948966]}
+      - {id: K, action: PARKING, slot: P5,
+          marker: [-0.10, 0.70, 1.5707963267948966],
+          target: [-0.20, 0.83, 1.5707963267948966]}
+
+  image2:
+    source: /tmp/codex-clipboard-44c35319-efe3-477a-be84-efd58b697eca.png
+    placement: inferred_from_screenshot
+    start: [-0.80, -2.70, 0.0]
+    centerline:
+      - [-0.80, -2.70]
+      - [0.50, -2.70]
+      - [1.20, -2.70]
+      # R1.50 lane-centre arc about the measured (1.20,-1.20) corner.
+      - [1.773045, -2.585235]
+      - [2.260660, -2.260660]
+      - [2.585235, -1.773045]
+      - [2.70, -1.20]
+      - [2.70, -0.80]
+      - [2.70, 0.70]
+      - [2.70, 1.20]
+      - [2.55, 1.80]
+      - [2.10, 2.35]
+      - [1.20, 2.70]
+      - [0.60, 2.70]
+      - [0.00, 2.70]
+      - [0.00, 2.00]
+      - [-0.50, 2.70]
+      - [-1.50, 2.70]
+      - [-2.10, 2.35]
+      - [-2.55, 1.80]
+      - [-2.70, 1.20]
+      - [-2.70, 0.50]
+      - [-2.70, -0.60]
+      - [-2.70, -1.20]
+      # R1.50 lane-centre arc about the measured (-1.20,-1.20) corner.
+      - [-2.585235, -1.773045]
+      - [-2.260660, -2.260660]
+      - [-1.773045, -2.585235]
+      - [-1.20, -2.70]
+      - [-1.60, -2.70]
+      - [-0.60, -2.70]
+      - [0.30, -2.70]
+      - [0.30, -1.80]
+      - [0.30, -0.60]
+      - [-0.30, -0.60]
+      # R0.90 lane-centre arc around the fixed lower-left R0.60 island.
+      - [-0.30, -1.20]
+      - [-0.369243, -1.544444]
+      - [-0.563604, -1.836396]
+      - [-0.855556, -2.031371]
+      - [-1.20, -2.10]
+      - [-1.544444, -2.031371]
+      - [-1.836396, -1.836396]
+      - [-2.031371, -1.544444]
+      - [-2.10, -1.20]
+      - [-2.10, -1.00]
+      - [-2.10, -0.30]
+      - [-1.20, -0.30]
+      - [-0.60, -0.30]
+      - [0.60, -0.30]
+      - [1.40, -0.30]
+      - [2.10, -0.30]
+      - [1.80, 0.30]
+      - [0.60, 0.30]
+      - [-0.60, 0.30]
+      - [-1.20, 0.30]
+      # R0.90 lane-centre arc around the fixed upper-left R0.60 island.
+      - [-1.544444, 0.368629]
+      - [-1.836396, 0.563604]
+      - [-2.031371, 0.855556]
+      - [-2.10, 1.20]
+      - [-2.031371, 1.544444]
+      - [-1.836396, 1.836396]
+      - [-1.544444, 2.031371]
+      - [-1.20, 2.10]
+      - [-0.70, 2.10]
+      - [0.00, 2.10]
+      - [0.60, 2.10]
+      - [0.70, 1.62]
+    events:
+      - {id: A, action: STRAIGHT, marker: [0.50, -2.70, 0.0]}
+      - {id: B, action: STRAIGHT, marker: [2.70, -0.80, 1.5707963267948966]}
+      - {id: C, action: STRAIGHT, marker: [2.70, 0.70, 1.5707963267948966]}
+      - {id: D, action: STRAIGHT, marker: [0.00, 2.70, 3.141592653589793]}
+      - {id: E, action: STRAIGHT, marker: [-2.70, -0.60, -1.5707963267948966]}
+      - {id: F, action: LEFT, marker: [-0.60, -2.70, 0.0]}
+      - {id: G, action: STRAIGHT, marker: [0.30, -1.80, 1.5707963267948966]}
+      - {id: H, action: UTURN, marker: [0.30, -0.60, 1.5707963267948966]}
+      - {id: I, action: STRAIGHT, marker: [-2.10, -1.00, -1.5707963267948966]}
+      - {id: J, action: STRAIGHT, marker: [-0.60, -0.30, 0.0]}
+      - {id: K, action: UTURN, marker: [2.10, -0.30, 0.0]}
+      - {id: L, action: STRAIGHT, marker: [0.60, 0.30, 3.141592653589793]}
+      - {id: M, action: RIGHT, marker: [-0.60, 0.30, 3.141592653589793]}
+      - {id: N, action: STRAIGHT, marker: [-0.70, 2.10, 0.0]}
+      - {id: O, action: PARKING, slot: P1,
+          marker: [0.60, 2.10, 0.0],
+          target: [0.70, 1.62, 0.0]}

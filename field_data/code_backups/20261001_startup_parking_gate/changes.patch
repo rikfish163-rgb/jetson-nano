@@ -1,0 +1,79 @@
+--- before/src/robot/signs/decisions.py
++++ after/src/robot/signs/decisions.py
+@@ -7,7 +7,7 @@
+ 
+ FIELDS = ('action', 'cfg', 'completed_at_pose', 'course_stop_pending', 'direction_window',
+  'green_start_window', 'last_completed_action', 'marker', 'next_direction',
+- 'next_direction_at', 'park_line_side', 'parking_marker', 'pending', 'pending_at', 'pose',
++ 'next_direction_at', 'park_line_side', 'parking_marker', 'parking_route_ready', 'pending', 'pending_at', 'pose',
+  'red', 'sign_count', 'sign_info', 'sign_label', 'sign_stamp', 'state',
+  'uturn_sign_window')
+ CALLS = (('mission', 'begin_startup'),)
+@@ -34,6 +34,14 @@
+         return
+     if label != 'GREEN' or not ctx.cfg['sign_confidence'] <= confidence <= 1.0:
+         ctx.green_start_window = []
++    if (label == 'PARKING' and
++            (ctx.state in ('WAIT_GREEN', 'STARTUP_STRAIGHT') or not ctx.parking_route_ready)):
++        # Green startup and its first lane leg cannot arm parking. Only a
++        # completed junction action opens a new, fresh parking vote sequence.
++        ctx.sign_label, ctx.sign_count = '', 0
++        ctx.direction_window, ctx.uturn_sign_window = [], []
++        ctx.sign_info.update(votes=0, decision='parking_wait_route_action')
++        return
+     bypass_straight = (label == 'STRAIGHT' and ctx.state == 'TIMED_BYPASS'
+                        and ctx.action == 'BYPASS' and ctx.pending is None)
+     directions=('LEFT','RIGHT','STRAIGHT','UTURN')
+--- before/src/robot/master/state_machine.py
++++ after/src/robot/master/state_machine.py
+@@ -21,7 +21,7 @@
+  'executor', 'exit_count', 'exit_pose', 'exit_stamp', 'follow_left_boundary', 'follower',
+  'front_marker_stamp', 'future', 'gap_origin', 'last_completed_action', 'left_reference', 'lane_source',
+  'marker', 'blue_consumed', 'marker_candidate', 'last_blue_trigger', 'next_direction', 'next_direction_at', 'obstacle_check', 'park_line_side', 'lane_stamp', 'parallel_future',
+- 'parallel_parking', 'parking_candidates', 'parking_entry', 'parking_sign', 'parking_front_frames',
++ 'parallel_parking', 'parking_candidates', 'parking_entry', 'parking_sign', 'parking_front_frames', 'parking_route_ready',
+  'parking_marker', 'parking_trigger_at', 'parking_trigger_pose', 'pending', 'pending_at',
+  'pose', 'pose_stamp', 'reason', 'red', 'left_lock', 'right_lock', 'right_tail_origin', 'sign_count', 'sign_info',
+  'sign_label', 'startup_started', 'startup_origin', 'startup_blue_point', 'startup_curve_lock',
+@@ -86,6 +86,7 @@
+     state['sign_info'] = dict(label='',confidence=0.0,votes=0,stamp=-1.0,decision='not_observed')
+     state['pending'] = None
+     state['pending_at'] = 0.0
++    state['parking_route_ready'] = not cfg['wait_green']
+     state['next_direction'], state['next_direction_at'] = None,0.0
+     state['obstacle_check'] = dict(kind='not_checked')
+     state['marker'] = None
+@@ -200,6 +201,8 @@
+     ctx.lane_preview = None
+     ctx.lane_curve_lock = None
+     ctx.startup_curve_lock = None
++    if ctx.action in ('LEFT', 'RIGHT', 'STRAIGHT', 'UTURN'):
++        ctx.parking_route_ready = True
+     if ctx.action=='LEFT':
+         # Reuse the existing bounded reversal transition at the visual handoff.
+         # Same-side steering remains immediate; ordinary lane tuning is intact.
+@@ -345,6 +348,11 @@
+ def begin_startup(ctx, now):
+     ctx.lane_speed_state = None
+     ctx.lane_curve_lock = None
++    ctx.parking_route_ready = False
++    if ctx.pending == 'PARKING':
++        ctx.pending, ctx.pending_at = None, 0.0
++    ctx.park_line_side = None
++    ctx.parking_sign = None
+     if ctx.cfg.get('startup_follow_lane',False):
+         # Command odometry cannot locate the physical bend. Use measured
+         # centers from release rather than holding neutral for a distance.
+--- before/src/robot/lane/controller.py
++++ after/src/robot/lane/controller.py
+@@ -94,8 +94,8 @@
+     ctx.lane_curve_lock = None
+     if not ctx.call('lane','lane_valid',now):
+         ctx.lane_speed_state = None
+-    if ctx.pending == 'PARKING' and ctx.action is None and ctx.cfg.get('parking_mode') != 'forward_center':
+-        return ctx.call('lane', 'park_line_command', now)
++    # Pending signs reserve a later blue trigger; road driving still follows
++    # lane centers until dispatch actually enters a parking action.
+     ctx.follow_left_boundary = False
+     ctx.lane_source = 'center'
+     partial = False

@@ -1,0 +1,10 @@
+{
+  "status": "failed", 
+  "command_seconds": null, 
+  "finished_at": 1790889591.18934, 
+  "commands": [], 
+  "requested_seconds": 2.0, 
+  "error": "start the dedicated parallel_open_loop_actuators.launch first", 
+  "started_at": 1790889589.973369, 
+  "speed_raw": 15
+}

@@ -1,0 +1,104 @@
+<launch>
+  <arg name="parking_only" default="false"/>
+  <arg name="slot_id" default="$(optenv PARKING_SLOT_ID P4)"/>
+  <arg name="parking_observation_topic" default="/image/receive"/>
+  <arg name="parking_lidar_topic" default="/lidar/receive"/>
+  <arg name="start_actuators" default="true"/>
+  <arg name="actuator_command_topic" default="/ackermann_cmd"/>
+  <arg name="base_controller_status_topic" default="/base_controller/status"/>
+  <arg name="keyboard_control_topic" default="/keyboard/control_cmd"/>
+  <arg name="keyboard_timeout" default="0.30"/>
+  <arg name="require_calibrated_parking" default="false"/>
+  <arg name="allow_experimental_motion" default="false"/>
+  <arg name="allow_preparking_approach" default="false"/>
+  <arg name="use_lane_for_preparking" default="false"/>
+  <arg name="allow_legacy_parking_trigger" default="true"/>
+  <arg name="experimental_speed_limit_raw" default="1"/>
+  <arg name="experimental_steering_limit_raw" default="4"/>
+  <arg name="green_start_speed_raw" default="20"/>
+  <arg name="green_start_hold_s" default="0.50"/>
+  <!-- Formal competition startup waits for one confirmed GREEN label, then
+       latches RUNNING until the process is restarted or stopped manually. -->
+  <arg name="competition_mode" default="true"/>
+  <arg name="timed_obstacle_enabled" default="false"/>
+  <!-- Convert the white-line Path/Pure-Pursuit output into the JSON command
+       consumed by main.py.  It is fail-safe until a fresh valid path exists. -->
+  <arg name="start_lane_controller" default="true"/>
+  <arg name="lane_normal_state" default="LANE_FOLLOWING"/>
+  <arg name="lane_speed_raw" default="20"/>
+  <arg name="lane_max_steering_raw" default="22"/>
+  <arg name="lane_path_topic" default="/vision/lane_path"/>
+  <arg name="lane_confidence_topic" default="/vision/lane_confidence"/>
+  <arg name="lane_command_topic" default="/camera_yihan/receive"/>
+  <!--
+    The vision nodes publish the JSON contracts described in
+    config/parking.yaml to the configured parking observation topic.  The
+    default observation topic remains /image/receive for legacy deployments;
+    parking_closed_loop.launch uses /parking/observation and a separate
+    /parking/lidar adapter topic so legacy bridge payloads cannot enter the
+    strict parking contracts accidentally.
+    The bridge is included because existing camera/lidar drivers publish their
+    String contracts on the corresponding /send topics.
+  -->
+  <node pkg="msg_bridge" type="bridge_node.py"
+        name="universal_bridge_node" output="screen"/>
+
+  <group if="$(arg start_lane_controller)">
+      <node pkg="vehicle_control" type="lane_main_adapter.py"
+            name="lane_main_adapter" output="screen">
+      <param name="normal_lane_state" value="$(arg lane_normal_state)"/>
+      <param name="speed_raw" value="$(arg lane_speed_raw)"/>
+      <param name="max_steering_raw" value="$(arg lane_max_steering_raw)"/>
+      <param name="lane_path_topic" value="$(arg lane_path_topic)"/>
+      <param name="lane_confidence_topic"
+             value="$(arg lane_confidence_topic)"/>
+      <param name="output_topic" value="$(arg lane_command_topic)"/>
+      </node>
+  </group>
+
+  <node pkg="robocup_competition" type="main.py" name="main_node" output="screen">
+    <param name="controller_backend" value="legacy"/>
+    <rosparam command="load" file="$(find main)/config/parking.yaml" param="parking"/>
+    <param name="parking/default_slot_id" value="$(arg slot_id)"/>
+    <param name="parking_only" value="$(arg parking_only)"/>
+    <param name="parking_observation_topic" value="$(arg parking_observation_topic)"/>
+    <param name="parking_lidar_topic" value="$(arg parking_lidar_topic)"/>
+    <param name="require_calibrated_parking"
+           value="$(arg require_calibrated_parking)"/>
+    <param name="allow_experimental_motion"
+           value="$(arg allow_experimental_motion)"/>
+    <param name="allow_preparking_approach"
+           value="$(arg allow_preparking_approach)"/>
+    <param name="use_lane_for_preparking"
+           value="$(arg use_lane_for_preparking)"/>
+    <param name="allow_legacy_parking_trigger"
+           value="$(arg allow_legacy_parking_trigger)"/>
+    <param name="experimental_speed_limit_raw"
+           value="$(arg experimental_speed_limit_raw)"/>
+    <param name="experimental_steering_limit_raw"
+           value="$(arg experimental_steering_limit_raw)"/>
+    <param name="green_start_speed_raw"
+           value="$(arg green_start_speed_raw)"/>
+    <param name="green_start_hold_s" value="$(arg green_start_hold_s)"/>
+    <param name="competition_mode" value="$(arg competition_mode)"/>
+    <param name="timed_obstacle_enabled" value="$(arg timed_obstacle_enabled)"/>
+  </node>
+
+  <group if="$(arg start_actuators)">
+    <node pkg="ackermann_drive_teleop" type="testloop.py"
+          name="ackermann_control_bridge" output="screen">
+      <param name="command_topic" value="$(arg actuator_command_topic)"/>
+      <param name="keyboard_control_topic" value="$(arg keyboard_control_topic)"/>
+      <param name="keyboard_timeout" value="$(arg keyboard_timeout)"/>
+      <param name="max_speed_raw" value="100"/>
+      <param name="max_steering_raw" value="22"/>
+    </node>
+
+    <node pkg="base_controller" type="base_controller"
+          name="base_controller" output="screen">
+      <param name="command_timeout" value="0.25"/>
+      <param name="command_topic" value="$(arg actuator_command_topic)"/>
+      <param name="status_topic" value="$(arg base_controller_status_topic)"/>
+    </node>
+  </group>
+</launch>

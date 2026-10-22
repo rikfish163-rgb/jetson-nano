@@ -1,0 +1,15 @@
+{
+  "labels": [
+    ""
+  ], 
+  "observed_hz": 3.019194770464275, 
+  "max_source_age_s": 0.526970624923706, 
+  "isolated_topic": "/competition/sign_preview", 
+  "messages": 30, 
+  "vehicle_started": false, 
+  "mean_inference_ms": 284.6224308013916, 
+  "source": "yolov5s", 
+  "unique_source_stamps": true, 
+  "mean_source_age_s": 0.32010478178660073, 
+  "p95_inference_ms": 379.8707962036133
+}

@@ -1,0 +1,65 @@
+test_cancelled_left_heading_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ERROR
+test_heading_endpoint_with_missing_lane_continues_right_until_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... FAIL
+test_no_lane_stops_only_after_completing_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_obstacle_still_ahead_or_too_early_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_off_axis_or_low_confidence_lane_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_recorded_aligned_lane_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ERROR
+test_recorded_four_second_view_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests) ... ERROR
+test_repeated_source_image_does_not_confirm_exit (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_safety_stop_pauses_timer_and_resumes_remaining_right_time (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_six_second_cap_keeps_existing_partial_lane_handoff (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_stable_current_lane_cannot_take_over_before_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... FAIL
+test_extended_left_arc_still_requires_six_seconds_of_right_motion (test_bypass_heading_geometry.BypassHeadingGeometryTests) ... FAIL
+
+======================================================================
+ERROR: test_cancelled_left_heading_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_visual_exit.py", line 66, in test_cancelled_left_heading_cannot_shorten_right_arc
+    self.assertEqual(c.timed_bypass['phase'],'RIGHT')
+TypeError: 'NoneType' object has no attribute '__getitem__'
+
+======================================================================
+ERROR: test_recorded_aligned_lane_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_visual_exit.py", line 57, in test_recorded_aligned_lane_cannot_shorten_right_arc
+    self.assertEqual(c.timed_bypass['phase'],'RIGHT')
+TypeError: 'NoneType' object has no attribute '__getitem__'
+
+======================================================================
+ERROR: test_recorded_four_second_view_cannot_shorten_right_arc (test_bypass_visual_exit.BypassVisualExitTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_visual_exit.py", line 51, in test_recorded_four_second_view_cannot_shorten_right_arc
+    self.assertEqual(c.timed_bypass['phase'],'RIGHT')
+TypeError: 'NoneType' object has no attribute '__getitem__'
+
+======================================================================
+FAIL: test_heading_endpoint_with_missing_lane_continues_right_until_six_seconds (test_bypass_visual_exit.BypassVisualExitTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_visual_exit.py", line 75, in test_heading_endpoint_with_missing_lane_continues_right_until_six_seconds
+    self.assertEqual(c.timed_bypass['phase'],'RIGHT')
+AssertionError: 'REACQUIRE' != 'RIGHT'
+
+======================================================================
+FAIL: test_stable_current_lane_cannot_take_over_before_six_seconds (test_bypass_visual_exit.BypassVisualExitTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_visual_exit.py", line 42, in test_stable_current_lane_cannot_take_over_before_six_seconds
+    self.assertEqual(c.state,'TIMED_BYPASS')
+AssertionError: 'LANE' != 'TIMED_BYPASS'
+
+======================================================================
+FAIL: test_extended_left_arc_still_requires_six_seconds_of_right_motion (test_bypass_heading_geometry.BypassHeadingGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_heading_geometry.py", line 37, in test_extended_left_arc_still_requires_six_seconds_of_right_motion
+    self.assertEqual(i,120)
+AssertionError: 43 != 120
+
+----------------------------------------------------------------------
+Ran 12 tests in 7.802s
+
+FAILED (failures=3, errors=3)

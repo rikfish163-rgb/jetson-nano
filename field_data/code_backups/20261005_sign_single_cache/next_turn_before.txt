@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_each_new_direction_can_trigger_a_distinct_blue_after_125 (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 204, in test_each_new_direction_can_trigger_a_distinct_blue_after_125
+    self.assertEqual(c.action,label)
+AssertionError: None != 'LEFT'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.815s
+
+FAILED (failures=1)

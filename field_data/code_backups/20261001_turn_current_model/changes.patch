@@ -1,0 +1,316 @@
+--- before/src/robot/motion/controller.py
++++ src/robot/motion/controller.py
+@@ -11,11 +11,11 @@
+ 
+ FIELDS = ('action', 'applied_stamp', 'applied_steer', 'cfg', 'finish_pose_stamp', 'finished_count',
+  'follower', 'front_marker_stamp', 'gap_steer', 'issued_steer', 'lane_stamp', 'pose',
+- 'pose_stamp', 'reason', 'right_lock', 'slot', 'slot_stamp', 'state', 'straight_search',
++ 'pose_stamp', 'reason', 'left_lock', 'right_lock', 'slot', 'slot_stamp', 'state', 'straight_search',
+  'timed_uturn', 'timed_bypass', 'lane_curve_lock')
+ CALLS = (('lane', 'lane_command'), ('mission', 'resume_lane'), ('motion', 'stop'),
+  ('obstacle', 'checked_command'), ('turn', 'direction_exit_reached'),
+- ('turn', 'exit_lane_confirmed'), ('turn', 'right_lock_tick'),
++ ('turn', 'exit_lane_confirmed'), ('turn', 'left_lock_tick'), ('turn', 'right_lock_tick'),
+  ('turn', 'straight_search_tick'))
+ OPERATIONS = ('observe_applied_steering', 'current_steering', 'stop', 'follow_path_tick')
+ 
+@@ -62,6 +62,8 @@
+             not 0 <= now-ctx.lane_stamp <= cfg['sensor_timeout'] and
+             not 0 <= now-ctx.front_marker_stamp <= cfg.get('ground_timeout',1.25)):
+         return ctx.call('motion', 'stop', 'maneuver_front_stale')
++    if ctx.left_lock is not None:
++        return ctx.call('turn', 'left_lock_tick', now)
+     if (ctx.state == 'MANEUVER' and ctx.action in ('LEFT','RIGHT','STRAIGHT') and
+             ctx.call('turn', 'direction_exit_reached') and ctx.call('turn', 'exit_lane_confirmed', now)):
+         ctx.call('mission', 'resume_lane')
+--- before/src/robot/turn/controller.py
++++ src/robot/turn/controller.py
+@@ -17,7 +17,7 @@
+  'consumed_marker', 'exit_count', 'exit_pose', 'exit_reason', 'exit_stamp',
+  'follow_left_boundary', 'front_blue_lines', 'front_marker_stamp', 'lane', 'lane_source',
+  'lane_stamp', 'last_completed_action', 'left_boundary_stamp', 'left_reference', 'marker',
+- 'parking_marker', 'pose', 'reason', 'right_lock', 'right_tail_origin', 'state',
++ 'parking_marker', 'pose', 'reason', 'left_lock', 'right_lock', 'right_tail_origin', 'state',
+  'straight_search', 'blue_approach')
+ CALLS = (('lane', 'lane_command'), ('lane', 'lane_valid'), ('lane', 'left_exit_line'),
+  ('lane', 'left_reference_command'), ('mission', 'resume_lane'),
+@@ -27,7 +27,7 @@
+  ('turn', 'right_blue_exit_tick'), ('turn', 'right_center_exit'),
+  ('turn', 'straight_heading_command'), ('turn', 'handoff_lane_confirmed'))
+ OPERATIONS = ('front_straight_reference', 'straight_heading_command', 'straight_search_tick', 'blue_approach_tick',
+- 'right_center_exit', 'right_blue_exit_tick', 'right_lock_tick', 'direction_exit_reached',
++ 'right_center_exit', 'right_blue_exit_tick', 'left_lock_tick', 'right_lock_tick', 'direction_exit_reached',
+  'exit_lane_confirmed', 'handoff_lane_confirmed')
+ 
+ def front_straight_reference(ctx, now, target=None):
+@@ -253,6 +253,59 @@
+     return dict(points=points,heading=heading,lateral=lateral)
+ 
+ 
++def left_lock_tick(ctx, now):
++    """Keep lock until a fresh centered exit is measured, not a model endpoint."""
++    cfg,lock = ctx.cfg,ctx.left_lock
++    progress = math.degrees(wrap(ctx.pose[2]-lock['origin'][2]))
++    lock['progress_deg'] = progress
++    if lock['phase'] == 'ENTRY':
++        travelled = local(lock['origin'],ctx.pose)[0]
++        lock['entry_travelled_m'] = travelled
++        if travelled < cfg.get('left_turn_entry',cfg['turn_entry'])-1e-9:
++            ctx.lane_source = 'left_entry'
++            command = ctx.call('obstacle','checked_command',(cfg['speed_raw']['action'],0.),now,False)
++            if command[0]: ctx.reason = 'left_entry_distance'
++            return command
++        lock.update(phase='LOCK',lock_started=now)
++    ctx.lane_source = 'left_visual_lock'
++    if progress >= cfg.get('left_turn_angle_deg',cfg.get('turn_angle_deg',90.))+30.:
++        ctx.state = 'FAULT'
++        return ctx.call('motion','stop','left_exit_not_found')
++    minimum = cfg.get('left_lock_min_angle_deg',30.)
++    valid = progress >= minimum and ctx.call('lane','lane_valid',now)
++    if valid:
++        points = sorted(local(ctx.pose,p) for p in ctx.lane)
++        valid = len(points) >= 2 and points[-1][0]-points[0][0] >= .10
++        if valid:
++            a,b = points[:2]
++            heading = math.atan2(b[1]-a[1],b[0]-a[0])
++            lock.update(exit_heading_deg=math.degrees(heading),exit_lateral_m=a[1])
++            valid = (a[0] > .05 and abs(a[1]) < cfg['exit_lateral_tolerance'] and
++                     abs(heading) < math.radians(cfg.get('left_lock_heading_deg',20.)))
++    if not valid:
++        ctx.exit_count = 0
++        ctx.exit_reason = 'left_before_min_turn' if progress < minimum else 'left_exit_not_aligned'
++    elif ctx.lane_stamp > ctx.exit_stamp:
++        if ctx.lane_stamp-ctx.exit_stamp > cfg['sensor_timeout']:
++            ctx.exit_count = 0
++        ctx.exit_stamp = ctx.lane_stamp
++        ctx.exit_reason = 'before_action' if ctx.lane_stamp <= ctx.action_started else 'ok'
++        ctx.exit_count = ctx.exit_count+1 if ctx.exit_reason == 'ok' else 0
++    lock['exit_frames'] = ctx.exit_count
++    if ctx.exit_count >= cfg['exit_frames']:
++        ctx.call('mission','resume_lane')
++        return ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,False)
++    steer = model_to_command_steering(cfg['max_steer'],cfg)
++    command = ctx.call('obstacle','checked_command',(cfg['speed_raw']['action'],steer),now,False)
++    if command[0]: ctx.reason = 'left_wait_exit_lane'
++    return command
++
++
++def right_lock_steering(cfg):
++    scale = cfg.get('steering_command_scale_rad',cfg['max_steer'])
++    return -min(cfg.get('right_lock_command_rad',.1),scale)
++
++
+ def right_blue_exit_tick(ctx, now):
+     cfg,r = ctx.cfg,ctx.right_lock
+     ctx.lane_source = 'right_blue_lock'
+@@ -270,6 +323,18 @@
+         elif not 0 < x <= 1.10 or abs(y) > cfg['lane_width']:
+             r['blue_reason'] = 'outside_forward_corridor'
+         else:
++            if stamp > r.get('blue_stamp',-1.):
++                if (stamp-r.get('blue_stamp',-1.) > cfg['sensor_timeout'] or
++                        distance(point,r.get('blue_candidate',point)) > .20):
++                    r['blue_votes'] = 0
++                r['blue_stamp'],r['blue_candidate'] = stamp,point
++                r['blue_votes'] = r.get('blue_votes',0)+1
++            r['blue_reason'] = 'confirming'
++            if r.get('blue_votes',0) < cfg['exit_frames']:
++                command = ctx.call('obstacle','checked_command',
++                    (cfg['speed_raw']['action'],right_lock_steering(cfg)),now,False)
++                if command[0]: ctx.reason = 'right_confirm_exit_blue'
++                return command
+             ctx.consumed_marker = point
+             ctx.marker,ctx.parking_marker = None,None
+             ctx.last_completed_action,ctx.completed_at_pose = 'RIGHT',ctx.pose
+@@ -279,8 +344,9 @@
+             command = ctx.call('obstacle', 'checked_command', (cfg.get('straight_speed_raw',12),0.0),now,False)
+             if command[0]: ctx.reason = 'right_blue_begin_straight'
+             return command
++    r['blue_votes'] = 0
+     command = ctx.call('obstacle', 'checked_command', (cfg['speed_raw']['action'],
+-        -cfg.get('right_lock_command_rad',.1)),now,False)
++        right_lock_steering(cfg)),now,False)
+     if command[0]: ctx.reason = 'right_wait_new_blue'
+     return command
+ 
+@@ -351,7 +417,7 @@
+                 ctx.follow_left_boundary = True
+             return ctx.call('obstacle', 'checked_command', command,now,False)
+         return ctx.call('obstacle', 'checked_command', (cfg['speed_raw']['action'],
+-            -cfg.get('right_lock_command_rad',0.05)),now,False)
++            right_lock_steering(cfg)),now,False)
+     center = ctx.call('turn', 'right_center_exit', now,progress)
+     source = 'left_boundary' if line else 'center' if center else None
+     line = line or center
+@@ -370,7 +436,7 @@
+             return ctx.call('motion', 'stop', 'right_exit_not_found')
+         else:
+             # Command-space magnitude; 0.05 maps to raw 11 with scale 0.1.
+-            lock_steer = -cfg.get('right_lock_command_rad',0.05)
++            lock_steer = right_lock_steering(cfg)
+             return ctx.call('obstacle', 'checked_command', (cfg['speed_raw']['action'],lock_steer),now,False)
+     if line is None:
+         ctx.exit_count = 0
+--- before/src/robot/turn/config.yaml
++++ src/robot/turn/config.yaml
+@@ -1,4 +1,6 @@
+ # 左右转与路口直行：只在此文件写本模块需要覆盖的参数。
+-# 默认空映射，沿用 competition.yaml + maneuvers.yaml，避免重复默认值。
++# 当前 max_steer 的左转满舵，以连续新车道图像确认出口。
+ # 用 python2 tools/module_workspace.py check 检查参数归属。
+-{}
++left_turn_full_lock: true
++left_lock_min_angle_deg: 30
++left_lock_heading_deg: 20
+--- before/src/robot/turn/README.md
++++ src/robot/turn/README.md
+@@ -2,7 +2,25 @@
+ 
+ controller.py 管理转弯及路口直行；planner.py 生成轨迹；geometry.py 判断转弯出口。
+ 
+-调参修改本目录 `config.yaml`。默认 `{}` 沿用整车标定；允许参数用 `list` 命令查看。
++调参修改本目录 `config.yaml`；允许参数用 `list` 命令查看。
++
++当前整车启动脚本使用 `max_steer=0.2`、命令尺度 `0.03`、左右转动作速度
++`20`。显式传入 `action_speed_raw` 时，入口和满舵阶段使用该速度。
++
++- 左转先直行 `left_turn_entry=0.12 m`，再保持当前满舵（RAW `+22`）。
++  估算转角至少 `left_lock_min_angle_deg=30` 后，出口路径须在车辆前方、
++  横向误差小于 `exit_lateral_tolerance=0.18 m`、近端朝向误差小于
++  `left_lock_heading_deg=20`，并由 `exit_frames=3` 张新图像连续确认。
++  随后立即交给循线，不因规划圆弧结束先回正。超过目标转角 30 度或动作
++  超时仍未找到出口时停车。估算角度和距离仍依赖车辆模型，需实车确认。
++- 右转保留倒退 `0.25 m` 后满舵找新蓝线的流程。舵量限制在当前命令尺度
++  内（尺度 `0.03` 对应 RAW `-22`）；符合位置、新鲜度、去重条件的蓝线
++  必须连续出现于 `exit_frames=3` 张新图像，才开始独立直行 `1.25 m`。
++  相同图像的重复控制周期不增加确认计数。
++- `left_turn_full_lock:=false` 仍可选择规划路径跟踪。以当前车辆模型计算，
++  最小半径约 `1.283 m`；`left_turn_radius=0.65` 不代表模型能生成该半径。
++
++UTURN 的固定动作表和普通循线参数由各自模块管理。
+ 
+ ```bash
+ cd /home/nano/robocup_ws
+--- before/src/robot/config/workspace_modules.yaml
++++ src/robot/config/workspace_modules.yaml
+@@ -123,6 +123,8 @@
+     - intersection_wait_s
+     - left_turn_entry
+     - left_turn_full_lock
++    - left_lock_min_angle_deg
++    - left_lock_heading_deg
+     - right_align_lookahead
+     - right_direct_left_follow
+     - right_exit_on_blue
+--- before/src/robot/master/telemetry.py
++++ src/robot/master/telemetry.py
+@@ -69,7 +69,7 @@
+         sign_age=now-core.sign_stamp if core.sign_stamp >= 0 else None,
+         lane_confidence=core.lane_confidence,lane_points=len(core.lane),
+         lane_observation=lane_observation,
+-        lane_source=core.lane_source,right_lock=core.right_lock,
++        lane_source=core.lane_source,left_lock=core.left_lock,right_lock=core.right_lock,
+         lane_curve_lock=core.lane_curve_lock,
+         lane_speed_state=core.lane_speed_state,
+         timed_bypass_candidate=core.timed_bypass_candidate,
+@@ -96,7 +96,8 @@
+             direct_left_follow=cfg.get('right_direct_left_follow',False),
+             following_left=core.follow_left_boundary,
+             command_scale=cfg.get('steering_command_scale_rad',cfg['max_steer']),
+-            lock_command=-cfg.get('right_lock_command_rad',.05),
++            lock_command=-min(cfg.get('right_lock_command_rad',.05),
++                             cfg.get('steering_command_scale_rad',cfg['max_steer'])),
+             encoded_command=encode_command(command[0],command[1],cfg,seq),
+             reverse_entry_m=cfg.get('right_reverse_entry_m',0),
+             left_entry_m=cfg.get('left_turn_entry',cfg['turn_entry']),
+--- before/src/robot/master/state_machine.py
++++ src/robot/master/state_machine.py
+@@ -23,7 +23,7 @@
+  'marker', 'blue_consumed', 'marker_candidate', 'last_blue_trigger', 'next_direction', 'next_direction_at', 'obstacle_check', 'park_line_side', 'lane_stamp', 'parallel_future',
+  'parallel_parking', 'parking_candidates', 'parking_entry', 'parking_sign', 'parking_front_frames',
+  'parking_marker', 'parking_trigger_at', 'parking_trigger_pose', 'pending', 'pending_at',
+- 'pose', 'pose_stamp', 'reason', 'red', 'right_lock', 'right_tail_origin', 'sign_count', 'sign_info',
++ 'pose', 'pose_stamp', 'reason', 'red', 'left_lock', 'right_lock', 'right_tail_origin', 'sign_count', 'sign_info',
+  'sign_label', 'startup_started', 'startup_origin', 'startup_blue_point', 'startup_curve_lock',
+  'state', 'straight_search', 'timed_uturn', 'uturn',
+  'uturn_sign_window', 'wait_until', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen', 'lane_recovery',
+@@ -128,6 +128,7 @@
+     state['left_boundary'], state['left_boundary_stamp'] = [], -1.0
+     state['left_fit_diagnostic'] = None
+     state['right_lock'] = None
++    state['left_lock'] = None
+     state['straight_search'] = None
+     state['right_tail_origin'] = None
+     state['lane_source'] = 'center'
+@@ -183,6 +184,8 @@
+     ctx.exit_pose = path[-1][:3]
+     ctx.exit_count, ctx.exit_stamp = 0, -1.0
+     ctx.right_tail_origin = None
++    ctx.left_lock = (dict(origin=ctx.pose,phase='ENTRY',progress_deg=0.)
++                      if action == 'LEFT' and ctx.cfg.get('left_turn_full_lock',False) else None)
+     ctx.right_lock = (dict(origin=ctx.pose,phase='ENTRY',last_seen=now,
+                             last_pose=ctx.pose,lost_steer=None)
+                        if action == 'RIGHT' and ctx.cfg.get('right_turn_full_lock',False) else None)
+@@ -224,6 +227,7 @@
+     ctx.uturn = None
+ 
+     ctx.right_lock = None
++    ctx.left_lock = None
+     ctx.straight_search = None
+     ctx.right_tail_origin = None
+ 
+--- before/src/robot/test/test_right_blue_exit.py
++++ src/robot/test/test_right_blue_exit.py
+@@ -34,8 +34,12 @@
+     def test_fresh_new_blue_starts_straight_without_stop_or_distance_wait(self):
+         self.front(2);self.c.tick(2)
+         for t in (2.01,2.02): self.c.observe_sign('LEFT',.99,t,t)
+-        self.front(2.1,[dict(kind='junction',x=.8,y=.1)])
+-        self.assertEqual(self.c.tick(2.1),(26,0))
++        for t in (2.1,2.15):
++            self.front(t,[dict(kind='junction',x=.8,y=.1)])
++            self.assertLess(self.c.tick(t)[1],0)
++            self.assertEqual(self.c.action,'RIGHT')
++        self.front(2.2,[dict(kind='junction',x=.8,y=.1)])
++        self.assertEqual(self.c.tick(2.2),(self.c.cfg['straight_speed_raw'],0))
+         self.assertEqual(self.c.action,'STRAIGHT')
+         self.assertEqual(self.c.state,'MANEUVER')
+         self.assertIsNone(self.c.right_lock)
+@@ -82,8 +86,11 @@
+         self.assertEqual(self.c.tick(2.1),(0,0))
+         self.front(2.2)
+         self.assertLess(self.c.tick(2.2)[1],0)
+-        self.front(2.3,[dict(kind='junction',x=.8,y=0)])
+-        self.assertEqual(self.c.tick(2.3),(26,0))
++        for t in (2.3,2.35):
++            self.front(t,[dict(kind='junction',x=.8,y=0)])
++            self.assertLess(self.c.tick(t)[1],0)
++        self.front(2.4,[dict(kind='junction',x=.8,y=0)])
++        self.assertEqual(self.c.tick(2.4),(self.c.cfg['straight_speed_raw'],0))
+ 
+     def test_camera_loss_estop_and_red_still_stop(self):
+         self.front(2);self.c.tick(2)
+--- before/src/robot/common/contracts.py
++++ src/robot/common/contracts.py
+@@ -282,6 +282,10 @@
+     if cfg['pose_mode'] not in ('command_model','odom'):
+         raise ValueError('pose_mode must be command_model or odom')
+     boolean(cfg.get('left_turn_full_lock',False))
++    if not 0 < number(cfg.get('left_lock_min_angle_deg',30)) < cfg.get('left_turn_angle_deg',cfg.get('turn_angle_deg',90)):
++        raise ValueError('left_lock_min_angle_deg must precede the left turn angle')
++    if not 0 < number(cfg.get('left_lock_heading_deg',20)) <= 40:
++        raise ValueError('left_lock_heading_deg must be in (0,40]')
+     if not .1 <= number(cfg.get('lidar_timeout',cfg['sensor_timeout'])) <= 2.:
+         raise ValueError('lidar_timeout must be in [0.1,2.0] s')
+     for name in ('wheelbase','track','body_width','max_steer','lookahead','parking_lookahead',
+--- before/tools/sign_detector_20260916/run_yolo_vehicle.sh
++++ tools/sign_detector_20260916/run_yolo_vehicle.sh
+@@ -26,7 +26,7 @@
+   sign_model:=/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine \
+   sign_ttl:=0 blue_default_straight:=false marker_trigger_x:=0.36 \
+   blue_align_duration_s:=1.0 blue_aligned_advance_m:=0.36 intersection_wait_s:=1.0 straight_distance:=1.25 \
+-  left_turn_full_lock:=false left_turn_entry:=0.12 left_turn_radius:=0.65 left_turn_exit:=0.30 \
++  left_turn_full_lock:=true left_turn_entry:=0.12 left_turn_radius:=0.65 left_turn_exit:=0.30 \
+   right_turn_full_lock:=true right_exit_on_blue:=true right_lock_min_angle_deg:=30 \
+   right_turn_entry:=0.0 right_reverse_entry_m:=0.25 \
+   right_turn_radius:=0.55 right_turn_exit:=0.25 "$@"

@@ -1,0 +1,5 @@
+complete: false
+formula: distance_m = max(0, speed_mps * command_seconds + offset_m)
+measurement: Stopped axle-to-axle displacement; includes starting and stopping effects.
+models: {}
+version: 1

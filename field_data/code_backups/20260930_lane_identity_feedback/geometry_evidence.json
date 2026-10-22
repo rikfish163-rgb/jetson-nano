@@ -1,0 +1,12 @@
+{
+  "recorded_raw": 7.127938484331477,
+  "simulation": {
+    "initial_offset": 0.48,
+    "min_offset": -0.00970000874645185,
+    "max_offset": 0.48065112388950687,
+    "final_offset": -0.00970000874645185,
+    "steps": 241,
+    "speed_mps": 0.128,
+    "dt": 0.05
+  }
+}

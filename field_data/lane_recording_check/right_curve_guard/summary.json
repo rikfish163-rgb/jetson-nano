@@ -1,0 +1,105 @@
+{
+  "runs": [
+    {
+      "guarded": 9, 
+      "gap_positive_while_locked": 0, 
+      "releases": 1, 
+      "ticks": 360, 
+      "stops": 5, 
+      "locks": 2, 
+      "positive_while_locked": 0, 
+      "run": "20260929_205741_524"
+    }, 
+    {
+      "guarded": 3, 
+      "gap_positive_while_locked": 0, 
+      "releases": 0, 
+      "ticks": 397, 
+      "stops": 0, 
+      "locks": 1, 
+      "positive_while_locked": 0, 
+      "run": "20260929_205852_2178"
+    }, 
+    {
+      "guarded": 0, 
+      "gap_positive_while_locked": 0, 
+      "releases": 0, 
+      "ticks": 314, 
+      "stops": 0, 
+      "locks": 1, 
+      "positive_while_locked": 0, 
+      "run": "20260929_214444_15843"
+    }, 
+    {
+      "guarded": 2, 
+      "gap_positive_while_locked": 0, 
+      "releases": 0, 
+      "ticks": 374, 
+      "stops": 16, 
+      "locks": 1, 
+      "positive_while_locked": 0, 
+      "run": "20260929_215839_18817"
+    }, 
+    {
+      "guarded": 3, 
+      "gap_positive_while_locked": 0, 
+      "releases": 0, 
+      "ticks": 264, 
+      "stops": 19, 
+      "locks": 1, 
+      "positive_while_locked": 0, 
+      "run": "20260929_221301_22814"
+    }, 
+    {
+      "guarded": 22, 
+      "gap_positive_while_locked": 0, 
+      "releases": 1, 
+      "ticks": 790, 
+      "stops": 56, 
+      "locks": 2, 
+      "positive_while_locked": 0, 
+      "run": "20260929_224456_26686"
+    }, 
+    {
+      "guarded": 93, 
+      "gap_positive_while_locked": 0, 
+      "releases": 1, 
+      "ticks": 727, 
+      "stops": 17, 
+      "locks": 2, 
+      "positive_while_locked": 0, 
+      "run": "20260929_224831_28947"
+    }, 
+    {
+      "guarded": 0, 
+      "gap_positive_while_locked": 0, 
+      "releases": 0, 
+      "ticks": 224, 
+      "stops": 6, 
+      "locks": 1, 
+      "positive_while_locked": 0, 
+      "run": "20260929_225212_31193"
+    }, 
+    {
+      "guarded": 2, 
+      "gap_positive_while_locked": 0, 
+      "releases": 1, 
+      "ticks": 739, 
+      "stops": 0, 
+      "locks": 2, 
+      "positive_while_locked": 0, 
+      "run": "20260929_230116_1410"
+    }, 
+    {
+      "guarded": 132, 
+      "gap_positive_while_locked": 0, 
+      "releases": 1, 
+      "ticks": 862, 
+      "stops": 40, 
+      "locks": 2, 
+      "positive_while_locked": 0, 
+      "run": "20260929_232406_4508"
+    }
+  ], 
+  "method": "Recorded current-vehicle-frame paths; fixed replay pose. Not a new physical trajectory."
+}

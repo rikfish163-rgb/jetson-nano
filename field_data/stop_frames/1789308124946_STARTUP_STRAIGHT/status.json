@@ -1,0 +1,222 @@
+{
+  "images": {
+    "front": {
+      "stamp": 1789308124.9100232, 
+      "file": "/home/nano/robocup_ws/field_data/stop_frames/1789308124946_STARTUP_STRAIGHT/front.jpg", 
+      "delta_from_stop_s": 0.052744150161743164
+    }, 
+    "front_bev": {
+      "stamp": 1789308124.774378, 
+      "file": "/home/nano/robocup_ws/field_data/stop_frames/1789308124946_STARTUP_STRAIGHT/front_bev.jpg", 
+      "delta_from_stop_s": -0.0829010009765625
+    }
+  }, 
+  "control": {
+    "lane_path_fresh": true, 
+    "right_turn_debug": {
+      "aligned_lateral_m": 0.18, 
+      "exit_on_blue": true, 
+      "lane_lookahead_m": 0.55, 
+      "reference_lateral_m": 0.08, 
+      "sensor_timeout": 0.5, 
+      "direct_left_follow": true, 
+      "lane_min_confidence": 0.35, 
+      "aligned_heading_deg": 15, 
+      "left_entry_m": 0.12, 
+      "align_lookahead_m": 0.3, 
+      "left_capture_max_m": 0.8, 
+      "encoded_command": {
+        "version": 1, 
+        "seq": 51, 
+        "steering_raw": 0, 
+        "speed_raw": 0
+      }, 
+      "command_scale": 0.1, 
+      "following_left": false, 
+      "capture_heading_deg": 50, 
+      "reverse_entry_m": 0.25, 
+      "required_frames": 3, 
+      "reference_heading_deg": 8, 
+      "left_reference": null, 
+      "min_turn_deg": 30.0, 
+      "reference_stable_s": 0.5, 
+      "max_turn_deg": 120, 
+      "lock_command": -0.1, 
+      "left_fit": null
+    }, 
+    "lidar_clusters": [], 
+    "lane_points": 7, 
+    "source_ages": {
+      "lane": 0.14996695518493652, 
+      "scan": null, 
+      "front_ground": 0.21350574493408203, 
+      "rear_ground": 1789308125.857279
+    }, 
+    "rear_markers_local": [], 
+    "sign": {
+      "votes": 1, 
+      "stamp": 1789308124.6437733, 
+      "decision": "green_release", 
+      "confidence": 1.0, 
+      "label": "GREEN", 
+      "source": "green_color", 
+      "range_reason": "startup_green_unfiltered"
+    }, 
+    "pose_evidence": "command_estimate", 
+    "rear_marker_age": null, 
+    "blue_default_straight": false, 
+    "parking_approach_m": null, 
+    "estop": false, 
+    "next_direction_age": null, 
+    "parking_front_age": 1789308125.857279, 
+    "pending_age": null, 
+    "slot": null, 
+    "lidar_shape_mode": "line_reject", 
+    "action_source": null, 
+    "stamp": 1789308124.857279, 
+    "lidar_cluster_total": 0, 
+    "front_marker_age": 0.21350574493408203, 
+    "turn_profiles": {
+      "right": {
+        "turn_radius": 0.55, 
+        "effective_radius": 0.55, 
+        "turn_entry": 0.0, 
+        "turn_angle_deg": 90.0, 
+        "turn_exit": 0.25
+      }, 
+      "left": {
+        "turn_radius": 0.65, 
+        "effective_radius": 0.65, 
+        "turn_entry": 0.12, 
+        "turn_angle_deg": 90.0, 
+        "turn_exit": 0.3
+      }
+    }, 
+    "lane_source": "center", 
+    "live": true, 
+    "front_blue_lines_local": [], 
+    "command": [
+      0, 
+      0.0
+    ], 
+    "right_lock": null, 
+    "pending": null, 
+    "turn_action": null, 
+    "slot_age": 1789308125.857279, 
+    "obstacle_check": {
+      "reason": "scan_missing_or_stale", 
+      "kind": "unknown"
+    }, 
+    "parking_candidates": [], 
+    "parking_entry": null, 
+    "planned_path_local": [], 
+    "state": "STARTUP_STRAIGHT", 
+    "scene_maneuver": null, 
+    "pose": [
+      0.0, 
+      0.0, 
+      0.0
+    ], 
+    "lane_confidence": 0.7934041067280772, 
+    "gap_steer": 0.0, 
+    "lidar_cluster_frame": "laser_link", 
+    "last_completed_action": null, 
+    "straight_search": null, 
+    "pose_mode": "command_model", 
+    "lane_path_local": [
+      [
+        0.5369033655765939, 
+        -0.049148746003612874
+      ], 
+      [
+        0.6361970685010507, 
+        -0.04369215106038041
+      ], 
+      [
+        0.7354907714255077, 
+        -0.04061091581710755
+      ], 
+      [
+        0.8347844743499647, 
+        -0.04060631957164872
+      ], 
+      [
+        0.9340781772744216, 
+        -0.0436789049385051
+      ], 
+      [
+        1.0333718801988783, 
+        -0.049828672080730455
+      ], 
+      [
+        1.1326655831233352, 
+        -0.05905670370042728
+      ]
+    ], 
+    "lane_observation": {
+      "stamp": 1789308124.707312, 
+      "receive_age_s": 0.12074398994445801, 
+      "path_reason": "ok"
+    }, 
+    "uturn": null, 
+    "wait_remaining": 0, 
+    "front_markers_local": [], 
+    "exit_confirmation": {
+      "frames": 0, 
+      "reason": "not_checked"
+    }, 
+    "marker_age": null, 
+    "enabled": true, 
+    "reason": "scan_missing_or_stale", 
+    "sign_age": 0.21350574493408203, 
+    "parking_detection": {}, 
+    "turn": {
+      "intersection_wait_s": 1.0, 
+      "turn_angle_deg": 90.0, 
+      "turn_entry": 0.45, 
+      "turn_radius": 0.65, 
+      "turn_exit": 0.55, 
+      "effective_radius": 0.65
+    }, 
+    "parking_mode": "reverse_plan", 
+    "next_direction": null, 
+    "left_boundary_points": 7, 
+    "marker_local": null, 
+    "action": null, 
+    "lidar_cluster_stamp": null, 
+    "lidar_shape_filter": true, 
+    "left_boundary_age": 0.14996695518493652, 
+    "lidar_enabled": true
+  }, 
+  "diagnostics": {
+    "base": {
+      "received_at": 1789308124.904261, 
+      "data": {
+        "command_received": true, 
+        "serial_bytes": 11, 
+        "timed_out": false, 
+        "serial_open": true, 
+        "schema": "base_controller_status_v1", 
+        "steering_raw": 0, 
+        "speed_raw": 0
+      }
+    }, 
+    "perception": {
+      "received_at": 1789308124.37707, 
+      "data": {
+        "blue_age": 0.06535863876342773, 
+        "slot_frames": 0, 
+        "uturn_blue_reason": "blue_wait_triplet", 
+        "stale_rear": 0, 
+        "blue_ms": 40.9388542175293, 
+        "uturn_vision_inliers": 0, 
+        "uturn_blue_correction_stamp": -1.0, 
+        "uturn_blue_locked": false, 
+        "stale_front": 0, 
+        "slot_ms": 0.0, 
+        "front_frames": 18, 
+        "uturn_vision_reason": "vision_wait_uturn_blue"
+      }
+    }
+  }
+}

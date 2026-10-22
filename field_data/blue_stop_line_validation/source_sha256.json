@@ -1,0 +1,15 @@
+{
+  "src/robot/camera/observations.py": "1c800fe3227ebcfd640bd74f290234bdc5e5edaa1e84b6d8faa5ba2292d37f1b", 
+  "src/robot/common/contracts.py": "44226c770eb649b0c24a3b8cccfd49552433ca97936f0d9b1f9de1c05b888a7b", 
+  "src/robot/config/competition.yaml": "da7c7670da8c659db3f21b409c5b35b6e8b77ec0009d836cc2878dc636fd340b", 
+  "src/robot/config/workspace_modules.yaml": "bda1145c202c71ed2abfca0081cb362975bf27242c439def1b63d06218686c85", 
+  "src/robot/lane/controller.py": "1c406a6e65fbd1b9a2ebb7552819e0d5a2aaa0204bf871168e0a5d63beb0b53d", 
+  "src/robot/launch/full.launch": "84b405bffc3c2258d45558d0702f0938ad5c786b5890d798c97ac6afecba58fd", 
+  "src/robot/launch/stack.launch": "d24ebba41eed49b94e52f3d8a0fd402b63053fd989f8df8faefe2fca62ce2b79", 
+  "src/robot/master/state_machine.py": "d1c0fc5cbad346c25af06d7ebe3161b1451340c46a4c9eccc4c72d32976255c6", 
+  "src/robot/master/telemetry.py": "7bba32a97b8900bdf27eb7bd3562d9a65ba25860468fd1181d289fd49580c0d4", 
+  "src/robot/obstacle/controller.py": "7223a62ff1882527214b3c6a1d661018836f8049256a884f7a051c39f8e7062a", 
+  "src/robot/turn/controller.py": "1b41411c62fc1cac4aa3675e10503e0080f90b55dc86898827724ddfad91e209", 
+  "src/robot/uturn/controller.py": "88f3e9db5f157898c85fe4bcb3dab6e70b8da4ca75a0b6e3e744393b8271b004", 
+  "tools/sign_detector_20260916/run_yolo_vehicle.sh": "46dfea0bcd81c5cc66494951e4d9f378a4123b328f99c317cca42007cea9074d"
+}

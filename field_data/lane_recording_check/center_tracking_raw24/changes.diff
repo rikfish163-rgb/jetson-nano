@@ -1,0 +1,125 @@
+--- before/src/robot/lane/controller.py
++++ src/robot/lane/controller.py
+@@ -14,7 +14,7 @@
+  'gap_steer', 'lane', 'lane_boundaries', 'lane_confidence', 'lane_source', 'lane_stamp',
+  'left_boundary', 'left_boundary_stamp', 'left_fit_diagnostic', 'left_reference',
+  'park_line_side', 'pending', 'pose', 'right_lock', 'right_tail_origin', 'state', 'lane_recovery',
+- 'startup_curve_lock', 'lane_target', 'lane_curve_lock', 'lane_preview')
++ 'startup_curve_lock', 'lane_target', 'lane_curve_lock', 'lane_preview', 'issued_steer')
+ CALLS = (('lane', 'lane_valid'), ('lane', 'left_exit_line'), ('lane', 'left_reference_command'),
+  ('lane', 'park_line_command'), ('motion', 'current_steering'), ('motion', 'stop'))
+ OPERATIONS = ('lane_valid', 'forward_lane_ready', 'lane_command', 'park_line_command', 'left_reference_command',
+@@ -194,15 +194,25 @@
+     fraction = max(-1.,min(1.,offset/ctx.cfg.get('lane_lateral_full_scale_m',.075)))
+     steer = fraction*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     steer = preview_steering(ctx, candidates, steer)
+-    steer, rejected = right_curve_command(ctx, candidates, steer)
++    desired_steer = steer
++    if ctx.cfg.get('lane_curvature_preview',False):
++        # One measured-center controller owns the angle in preview mode.
++        # The old right-only lock must not override center corrections.
++        ctx.lane_curve_lock = None
++        rejected = False
++        if ctx.issued_steer is not None:
++            dt = max(0.,min(.10,now-ctx.gap_start)) if ctx.gap_origin is not None else .05
++            before = ctx.call('motion','current_steering',now)
++            limit = 90.*dt/ctx.cfg['steering_raw_limit']*ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
++            steer = max(before-limit,min(before+limit,steer))
++    else:
++        steer, rejected = right_curve_command(ctx, candidates, steer)
+     ctx.lane_target = dict(stamp=now, source_stamp=ctx.lane_stamp,
+         path=candidates, target=target, target_index=target_index,
+         intersection=None, line_x=None, lateral_offset_m=offset,
+-        angle=steer, valid=True, reason='ok',curvature_preview=ctx.lane_preview,
+-        selection=('right_curve_tracking' if ctx.cfg.get('lane_curvature_preview',False)
+-            else 'right_curve_full_lock') if ctx.lane_curve_lock else 'topmost_lateral_offset')
+-    if ctx.lane_preview is not None and ctx.lane_curve_lock is None:
+-        ctx.lane_target['selection'] = 'topmost_with_curvature_preview'
++        angle=steer, desired_angle=desired_steer, valid=True, reason='ok',curvature_preview=ctx.lane_preview,
++        selection=('center_geometry' if ctx.cfg.get('lane_curvature_preview',False)
++            else 'right_curve_full_lock' if ctx.lane_curve_lock else 'topmost_lateral_offset'))
+     if rejected:
+         ctx.lane_source = 'right_curve_hold'
+         ctx.lane_target.update(target=None,rejected_target=target,valid=False,
+--- before/src/robot/lane/preview.py
++++ src/robot/lane/preview.py
+@@ -41,18 +41,30 @@
+         return steer
+     ctx.lane_preview = curvature_preview(points, ctx.lane_stamp, ctx.lane_preview,
+                                          ctx.cfg['sensor_timeout'])
+-    if ctx.lane_preview is None:
++    forward = sorted(p for p in points if p[0] > .05)
++    if not forward:
+         return steer
+     scale = ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+-    physical = steer/scale*ctx.cfg['max_steer']
+-    forward = sorted(p for p in points if p[0] > .05)
+-    # A coherent center entirely on the correction side is lateral drift.
+-    # Do not let bend feedforward cancel the correction back toward it.
+-    if (physical*ctx.lane_preview['curvature'] < 0 and forward and
+-            abs(forward[0][1]) >= .04 and
+-            all(y*physical > 0 for x,y in forward)):
+-        return steer
+-    physical += math.atan(ctx.cfg['wheelbase']*ctx.lane_preview['curvature'])
++    x,y = forward[-1]
++    # The arc through the measured far center already includes the bend.
++    # Adding its lateral displacement again as a proportional error caused
++    # full-lock saturation even when the vehicle was centered on that arc.
++    curvature = 2*y/(x*x+y*y)
++    desired_curvature = curvature
++    if ctx.lane_preview is not None:
++        # At curve entry the far center can still be almost straight ahead.
++        # Blend the measured curve shape, rather than adding a second angle.
++        desired_curvature = .5*(curvature+ctx.lane_preview['curvature'])
++    physical = math.atan(ctx.cfg['wheelbase']*desired_curvature)
++    near_x,near_y = forward[0]
++    if abs(curvature*near_x) < 1:
++        expected_y = curvature*near_x*near_x/(1+math.sqrt(1-(curvature*near_x)**2))
++        # Correct proximity to the center relative to the same arc, not to a
++        # straight line. A centered model circle therefore has zero error.
++        error = near_y-expected_y
++        if abs(near_y) >= .04 and near_y*error > 0:
++            fraction = max(-1.,min(1.,error/ctx.cfg.get('lane_lateral_full_scale_m',.10)))
++            physical += ctx.cfg['max_steer']*fraction
+     physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
+     return physical/ctx.cfg['max_steer']*scale
+ 
+--- before/src/robot/obstacle/controller.py
++++ src/robot/obstacle/controller.py
+@@ -18,7 +18,7 @@
+ FIELDS = ('action', 'cfg', 'follower', 'issued_steer', 'obstacle_check', 'parallel_parking', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen',
+  'parking_entry', 'pose', 'reason', 'relative_uturn', 'retry_at', 'scan', 'state', 'lane_recovery', 'exit_count', 'exit_stamp', 'lane_curve_lock')
+ CALLS = (('mission', 'start_follow'), ('motion', 'stop'), ('obstacle', 'scan_ready'),
+- ('lane', 'forward_lane_ready'), ('lane', 'lane_command'), ('turn','handoff_lane_confirmed'), ('mission','resume_lane'), ('obstacle', 'checked_command'),
++ ('lane', 'forward_lane_ready'), ('lane', 'lane_valid'), ('lane', 'lane_command'), ('mission','resume_lane'), ('obstacle', 'checked_command'),
+  ('obstacle', 'begin_timed_bypass'), ('obstacle', 'timed_bypass_tick'),
+  ('obstacle', 'sweep_clear'))
+ OPERATIONS = ('scan_ready', 'sweep_clear', 'checked_command', 'begin_timed_bypass', 'timed_bypass_tick')
+@@ -98,13 +98,12 @@
+             task['phase']=('LEFT' if task['phase']=='SETTLE_LEFT' else
+                            'RIGHT' if task['phase']=='LEFT' else 'REACQUIRE')
+             task['elapsed_s']=0.
+-    # Observe the exit during the final 0.3 s without shortening the timed
+-    # maneuver. An already confirmed exit can take over without a stop.
+-    if task['phase']=='RIGHT' and task['elapsed_s'] >= max(0.,right_duration-.3):
+-        ctx.call('turn','handoff_lane_confirmed',now)
+     if task['phase']=='REACQUIRE':
+         ctx.lane_recovery=None
+-        if not ctx.call('turn','handoff_lane_confirmed',now):
++        # At the timed endpoint the visible center may still be off-axis.
++        # Lane control must align to it; waiting to be aligned while stopped
++        # cannot converge. Keep the same freshness/confidence/geometry gate.
++        if not ctx.call('lane','lane_valid',now):
+             return ctx.call('motion','stop','bypass_wait_exit_lane')
+         _remember_trigger(ctx, now)
+         ctx.timed_bypass_completed=True
+--- before/tools/sign_detector_20260916/run_lane_green_obstacle.sh
++++ tools/sign_detector_20260916/run_lane_green_obstacle.sh
+@@ -5,5 +5,6 @@
+ # Retain green release and collision/unknown-space protection with no parking.
+ exec bash tools/sign_detector_20260916/run_yolo_vehicle.sh \
+   parking_enabled:=false start_rear:=false wait_green:=true lidar_enabled:=true \
+-  lane_curvature_preview:=true lookahead:=0.8 lane_curve_speed_raw:=12 \
++  lane_speed_raw:=24 action_speed_raw:=24 straight_speed_raw:=24 \
++  lane_curvature_preview:=true lookahead:=0.8 lane_curve_speed_raw:=24 \
+   debug_view:=false record_lane:=false sign_hz:=2.0 ground_hz:=4.0 "$@"

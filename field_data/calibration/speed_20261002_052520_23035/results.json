@@ -1,0 +1,129 @@
+{
+  "complete": false, 
+  "models": {}, 
+  "trials": [
+    {
+      "status": "awaiting_measurement", 
+      "index": 1, 
+      "command_seconds": 2.051208150000093, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "execution_record": "trial_001_attempt_01.json", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "pending", 
+      "index": 2, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "pending", 
+      "index": 3, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "pending", 
+      "index": 4, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }, 
+    {
+      "status": "pending", 
+      "index": 5, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "pending", 
+      "index": 6, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "pending", 
+      "index": 7, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "pending", 
+      "index": 8, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }
+  ], 
+  "created_at": "2026-10-01T21:25:20Z", 
+  "version": 1, 
+  "config": {
+    "directions": [
+      "forward", 
+      "reverse"
+    ], 
+    "durations": [
+      2.0
+    ], 
+    "repeats": 1, 
+    "speeds": [
+      15, 
+      20, 
+      25, 
+      30
+    ]
+  }
+}

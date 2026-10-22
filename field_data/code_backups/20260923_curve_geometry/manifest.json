@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "63927613117a4cc0d535350d15a1f26ecd134151a8d1ef41dd18f53a02017de6",
+    "after": "e7b94d1292fc7d805dca24fba26aa568f240a1d30daf22559f9a2db7c1ebaae4"
+  },
+  {
+    "path": "src/robot/master/controller_node.py",
+    "before": "086d1d0ee1ba87b0510d2a108ae3927db736184d0b887e692957dcf3b207a770",
+    "after": "e8e8e69c57f98ae417c9fc7ac4fb57765802fa24618a362869e935c0e898100f"
+  },
+  {
+    "path": "src/robot/test/test_curve_feedforward.py",
+    "before": null,
+    "after": "7f7898168a53ce9cbd2347bb51aa68d33d0a23b4949da2219cde62ee6430f7fd"
+  },
+  {
+    "path": "src/robot/test/test_ros_adapter.py",
+    "before": "48c6bbd22c929463b82dca7ef44c6f7d0012d0c4157cd7c16a6256e5173934d7",
+    "after": "bcb8710cfdcd522003434c545ffd32215ddad133937cda2a62c4ef7ecd19d849"
+  },
+  {
+    "path": "src/ros/camera/scripts/camera_yihan_web.py",
+    "before": "87c2138cc9313fe0863f1926b62c85aacf9897c6779a446bf903b9ec764bc37f",
+    "after": "62d167c3fecb4cf158d61613f02540763ea0faf39411ea92bba66ed4203f77de"
+  },
+  {
+    "path": "src/ros/camera/test/test_curve_geometry.py",
+    "before": null,
+    "after": "864c778fc0af1ba27a22079766e9385383b522e55afbb45293f1cec00eff1a95"
+  }
+]

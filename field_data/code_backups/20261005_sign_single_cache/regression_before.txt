@@ -1,0 +1,61 @@
+FFFFF.F..F
+======================================================================
+FAIL: test_active_action_ignores_votes_and_requires_new_votes_after_exit (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 43, in test_active_action_ignores_votes_and_requires_new_votes_after_exit
+    self.assertIsNone(self.c.next_direction)
+AssertionError: 'STRAIGHT' is not None
+
+======================================================================
+FAIL: test_bypass_cannot_cache_straight_before_completion (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 55, in test_bypass_cannot_cache_straight_before_completion
+    self.assertIsNone(self.c.pending)
+AssertionError: 'STRAIGHT' is not None
+
+======================================================================
+FAIL: test_bypass_preserves_the_one_sign_cached_before_the_obstacle (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 72, in test_bypass_preserves_the_one_sign_cached_before_the_obstacle
+    self.assertEqual(self.c.pending,'RIGHT')
+AssertionError: 'LEFT' != 'RIGHT'
+
+======================================================================
+FAIL: test_completion_discards_old_queued_direction_and_blue_marker (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 89, in test_completion_discards_old_queued_direction_and_blue_marker
+    self.assertIsNone(self.c.pending)
+AssertionError: 'STRAIGHT' is not None
+
+======================================================================
+FAIL: test_confirmed_cache_does_not_expire_and_admit_another_sign (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 99, in test_confirmed_cache_does_not_expire_and_admit_another_sign
+    self.assertEqual(self.c.pending,'STRAIGHT')
+AssertionError: None != 'STRAIGHT'
+
+======================================================================
+FAIL: test_pending_direction_stays_locked_until_its_blue_action (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 23, in test_pending_direction_stays_locked_until_its_blue_action
+    self.assertEqual(self.c.pending,'STRAIGHT')
+AssertionError: 'RIGHT' != 'STRAIGHT'
+
+======================================================================
+FAIL: test_startup_straight_cannot_cache_the_next_route_action (test_action_sign_lock.ActionSignLockTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_action_sign_lock.py", line 78, in test_startup_straight_cannot_cache_the_next_route_action
+    self.assertIsNone(self.c.pending)
+AssertionError: 'LEFT' is not None
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.825s
+
+FAILED (failures=7)

@@ -1,0 +1,100 @@
+{
+  "confidence": 0.9150550365447998, 
+  "detections": [
+    {
+      "bounds": [
+        256, 
+        101, 
+        32, 
+        32
+      ], 
+      "confidence": 0.9150550365447998, 
+      "label": "park", 
+      "scores": {
+        "green": 5.050943946116604e-05, 
+        "left": 3.185655441484414e-05, 
+        "park": 0.9150550365447998, 
+        "red": 2.8556132747326046e-05, 
+        "right": 3.753595956368372e-05, 
+        "straight": 0.0004715735267382115, 
+        "uturn": 0.00018045036995317787
+      }
+    }
+  ], 
+  "inference_ms": 99.09701347351074, 
+  "input_mode": "full_frame_yolo", 
+  "label": "PARKING", 
+  "range_reason": "route_confirmed", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          256, 
+          101, 
+          32, 
+          32
+        ], 
+        "reason": "#1 park 0.92"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        256, 
+        101, 
+        32, 
+        32
+      ], 
+      "confidence": 0.9150550365447998, 
+      "label": "park", 
+      "scores": {
+        "green": 5.050943946116604e-05, 
+        "left": 3.185655441484414e-05, 
+        "park": 0.9150550365447998, 
+        "red": 2.8556132747326046e-05, 
+        "right": 3.753595956368372e-05, 
+        "straight": 0.0004715735267382115, 
+        "uturn": 0.00018045036995317787
+      }
+    }
+  ], 
+  "route_gate": {
+    "center_ratio": 0.425, 
+    "confidence_threshold": 0.9, 
+    "enabled": true, 
+    "frames": 15, 
+    "left_center_ratio": 0.3, 
+    "min_height_ratio": 0.04, 
+    "required_frames": 3, 
+    "small_target": true, 
+    "track_id": 3
+  }, 
+  "scores": {
+    "GREEN": 5.050943946116604e-05, 
+    "LEFT": 3.185655441484414e-05, 
+    "PARKING": 0.9150550365447998, 
+    "RED": 2.8556132747326046e-05, 
+    "RIGHT": 3.753595956368372e-05, 
+    "STRAIGHT": 0.0004715735267382115, 
+    "UTURN": 0.00018045036995317787
+  }, 
+  "sign_bounds": [
+    256, 
+    101, 
+    32, 
+    32
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.08888888888888889, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.12817764282226562, 
+  "stamp": 1791542340.1811604, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "PARKING"
+}

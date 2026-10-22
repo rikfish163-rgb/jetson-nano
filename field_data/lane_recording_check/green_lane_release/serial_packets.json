@@ -1,0 +1,107 @@
+{
+  "scope": "Actual C++ writeSpeed encoder with memory sink; not STM32 acceptance or measured wheel angle.", 
+  "rows": [
+    {
+      "speed": 12, 
+      "packet": [
+        165, 
+        7, 
+        3, 
+        0, 
+        2, 
+        12, 
+        2, 
+        3, 
+        80, 
+        0, 
+        90
+      ], 
+      "steer": -3
+    }, 
+    {
+      "speed": 12, 
+      "packet": [
+        165, 
+        7, 
+        3, 
+        1, 
+        2, 
+        12, 
+        2, 
+        8, 
+        80, 
+        0, 
+        90
+      ], 
+      "steer": -8
+    }, 
+    {
+      "speed": 12, 
+      "packet": [
+        165, 
+        7, 
+        3, 
+        2, 
+        2, 
+        12, 
+        2, 
+        15, 
+        80, 
+        0, 
+        90
+      ], 
+      "steer": -15
+    }, 
+    {
+      "speed": 12, 
+      "packet": [
+        165, 
+        7, 
+        3, 
+        3, 
+        2, 
+        12, 
+        2, 
+        22, 
+        80, 
+        0, 
+        90
+      ], 
+      "steer": -22
+    }, 
+    {
+      "speed": 0, 
+      "packet": [
+        165, 
+        7, 
+        3, 
+        4, 
+        0, 
+        0, 
+        1, 
+        22, 
+        80, 
+        0, 
+        90
+      ], 
+      "steer": 22
+    }, 
+    {
+      "speed": 0, 
+      "packet": [
+        165, 
+        7, 
+        3, 
+        5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        80, 
+        0, 
+        90
+      ], 
+      "steer": 0
+    }
+  ]
+}

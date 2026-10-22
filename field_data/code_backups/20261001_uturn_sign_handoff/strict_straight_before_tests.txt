@@ -1,0 +1,23 @@
+test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests) ... FAIL
+test_125_returns_to_lane_before_dispatching_confirmed_next_blue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... FAIL
+
+======================================================================
+FAIL: test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_uturn_handoff.py", line 51, in test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action
+    self.assertEqual(core.action, 'STRAIGHT')
+AssertionError: 'UTURN' != 'STRAIGHT'
+
+======================================================================
+FAIL: test_125_returns_to_lane_before_dispatching_confirmed_next_blue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 73, in test_125_returns_to_lane_before_dispatching_confirmed_next_blue
+    self.assertEqual(core.state, 'LANE')
+AssertionError: 'BLUE_APPROACH' != 'LANE'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.976s
+
+FAILED (failures=2)

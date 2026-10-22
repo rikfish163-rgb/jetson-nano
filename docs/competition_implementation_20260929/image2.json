@@ -1,0 +1,7300 @@
+{
+  "duration_s": 16.85, 
+  "event_state": [
+    {
+      "action": "STRAIGHT", 
+      "id": "A", 
+      "status": "active"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "B", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "C", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "D", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "E", 
+      "status": "pending"
+    }, 
+    {
+      "action": "LEFT", 
+      "id": "F", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "G", 
+      "status": "pending"
+    }, 
+    {
+      "action": "UTURN", 
+      "id": "H", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "I", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "J", 
+      "status": "pending"
+    }, 
+    {
+      "action": "UTURN", 
+      "id": "K", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "L", 
+      "status": "pending"
+    }, 
+    {
+      "action": "RIGHT", 
+      "id": "M", 
+      "status": "pending"
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "id": "N", 
+      "status": "pending"
+    }, 
+    {
+      "action": "PARKING", 
+      "id": "O", 
+      "status": "pending"
+    }
+  ], 
+  "events": [
+    {
+      "action": "STRAIGHT", 
+      "id": "A", 
+      "pose": [
+        0.4703989318482212, 
+        -2.699840363946208, 
+        0.015350107439561
+      ], 
+      "status": "started", 
+      "time_s": 7.95
+    }
+  ], 
+  "failure": {
+    "boundary_half_width_m": 3.0, 
+    "controller_reason": "straight_continue", 
+    "event": "A", 
+    "offending_point": [
+      2.035656663772075, 
+      -2.795825741231569
+    ], 
+    "path_index": 100, 
+    "pose": [
+      1.703853601, 
+      -2.680905215, 
+      0.015350107
+    ], 
+    "reason": "road_boundary", 
+    "route_error_m": 0.08094, 
+    "route_progress_m": 2.48702, 
+    "state": "MANEUVER", 
+    "time_s": 16.85
+  }, 
+  "launch_profile": {
+    "ground_hz": 8.0, 
+    "intersection_wait_s": 1.0, 
+    "lane_curvature_preview": true, 
+    "lane_curve_speed_raw": 12, 
+    "lane_hz": 12, 
+    "lane_min_span": 0.15, 
+    "lane_window_height": 40, 
+    "obstacle_timed_bypass": {
+      "left_s": 2.0, 
+      "right_s": 6.0, 
+      "settle_s": 0.4, 
+      "trigger_distance_m": 0.85
+    }, 
+    "parallel_parking": {
+      "confirm_frames": 3, 
+      "slot_size_tolerance_m": 0.05, 
+      "turn_radius_m": 0.65
+    }, 
+    "right_exit_on_blue": true, 
+    "sign_ttl": 0, 
+    "steering_command_scale_rad": 0.03, 
+    "wait_green": true
+  }, 
+  "metric_provenance": {
+    "configured_model": {
+      "body_width_m": 0.24, 
+      "front_overhang_m": 0.07, 
+      "max_steer_rad": 0.46275, 
+      "raw_forward_mps": 0.16, 
+      "rear_overhang_m": 0.07, 
+      "wheelbase_m": 0.26
+    }, 
+    "inferred": {
+      "coordinate_frame": "arena origin at centre; +x east, +y north; yaw CCW", 
+      "note": "Screenshot red paths and sign identities are inferred; do not treat them as surveyed coordinates.", 
+      "obstacle_note": "No obstacle placement is asserted from screenshots; optional route obstacles are ray-cast when supplied.", 
+      "road_geometry": {
+        "central_openings": [
+          {
+            "xmax": 0.45, 
+            "xmin": -0.45, 
+            "ymax": 1.85, 
+            "ymin": 0.55
+          }
+        ], 
+        "parking_bay_regions": {
+          "P1": {
+            "xmax": 1.05, 
+            "xmin": 0.35, 
+            "ymax": 1.8, 
+            "ymin": 1.44
+          }, 
+          "P2": {
+            "xmax": 0.35, 
+            "xmin": -0.35, 
+            "ymax": 1.8, 
+            "ymin": 1.44
+          }, 
+          "P3": {
+            "xmax": -0.35, 
+            "xmin": -1.05, 
+            "ymax": 1.8, 
+            "ymin": 1.44
+          }, 
+          "P4": {
+            "xmax": 0.39, 
+            "xmin": 0.01, 
+            "ymax": 1.055, 
+            "ymin": 0.605
+          }, 
+          "P5": {
+            "xmax": -0.01, 
+            "xmin": -0.39, 
+            "ymax": 1.055, 
+            "ymin": 0.605
+          }
+        }, 
+        "parking_slot_poses": {
+          "P1": [
+            0.7, 
+            1.62, 
+            0.0
+          ], 
+          "P2": [
+            0.0, 
+            1.62, 
+            0.0
+          ], 
+          "P3": [
+            -0.7, 
+            1.62, 
+            0.0
+          ], 
+          "P4": [
+            0.2, 
+            0.83, 
+            1.5707963267948966
+          ], 
+          "P5": [
+            -0.2, 
+            0.83, 
+            1.5707963267948966
+          ]
+        }
+      }, 
+      "route_sources": [
+        "/tmp/codex-clipboard-14c82eea-c990-4c56-823d-5d9a31f995b0.png#left", 
+        "/tmp/codex-clipboard-14c82eea-c990-4c56-823d-5d9a31f995b0.png#right", 
+        "/tmp/codex-clipboard-44c35319-efe3-477a-be84-efd58b697eca.png"
+      ]
+    }, 
+    "measured": {
+      "arena_height_m": 6.0, 
+      "arena_width_m": 6.0, 
+      "lane_width_m": 0.6, 
+      "road_geometry": {
+        "bottom_island_centres_m": [
+          [
+            -1.2, 
+            -1.2
+          ], 
+          [
+            1.2, 
+            -1.2
+          ]
+        ], 
+        "outer_corner_radius_m": 1.8, 
+        "top_pill_centres_m": [
+          [
+            -1.2, 
+            1.2
+          ], 
+          [
+            1.2, 
+            1.2
+          ]
+        ]
+      }, 
+      "slots": {
+        "P1": {
+          "kind": "parallel", 
+          "length_m": 0.7, 
+          "width_m": 0.36
+        }, 
+        "P2": {
+          "kind": "parallel", 
+          "length_m": 0.7, 
+          "width_m": 0.36
+        }, 
+        "P3": {
+          "kind": "parallel", 
+          "length_m": 0.7, 
+          "width_m": 0.36
+        }, 
+        "P4": {
+          "kind": "perpendicular", 
+          "length_m": 0.45, 
+          "width_m": 0.38
+        }, 
+        "P5": {
+          "kind": "perpendicular", 
+          "length_m": 0.45, 
+          "width_m": 0.38
+        }
+      }, 
+      "turn_radii_m": [
+        0.6, 
+        1.2, 
+        1.8
+      ]
+    }
+  }, 
+  "model": {
+    "body_width_m": 0.24, 
+    "controller": "robot.master.controller.Controller", 
+    "dt_s": 0.05, 
+    "forward_command_raw": 20, 
+    "front_overhang_m": 0.07, 
+    "max_steer_rad": 0.46275, 
+    "raw_forward_mps": 0.16, 
+    "raw_to_mps_forward": 0.008, 
+    "rear_overhang_m": 0.07, 
+    "truth": "robot.common.geometry.bicycle", 
+    "wheelbase_m": 0.26
+  }, 
+  "placement": "inferred_from_screenshot", 
+  "route": "image2", 
+  "schema": "competition-sim-result-v1", 
+  "sensor_provenance": {
+    "cadence": "Controller.tick and the synthetic observation adapter run at fixed 20.000 Hz (dt 0.050 s) with ideal no-delay observations. Launch lane_hz=12.000 and ground_hz=8.000 are recorded only; their sensor-link cadence is not emulated, so this is not full sensor-link equivalence.", 
+    "lane": "fresh points projected from the mapped route centerline", 
+    "obstacles": "explicit course/route circles only; no screenshot placement is guessed", 
+    "parking_slots": "synthetic ground-truth metric bay poses projected into the current vehicle frame; explicit route identity is not visual recognition", 
+    "sensor_cadence_emulated": false
+  }, 
+  "source": "/tmp/codex-clipboard-44c35319-efe3-477a-be84-efd58b697eca.png", 
+  "source_hashes": {
+    "after": {
+      "camera_observations": {
+        "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+        "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+      }, 
+      "competition_config": {
+        "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+        "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+      }, 
+      "config_loader": {
+        "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+        "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+      }, 
+      "contracts": {
+        "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+        "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+      }, 
+      "course": {
+        "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+        "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+      }, 
+      "geometry": {
+        "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+        "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+      }, 
+      "lane_config": {
+        "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+        "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+      }, 
+      "lane_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+        "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+      }, 
+      "lane_preview": {
+        "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+        "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+      }, 
+      "lidar_scan": {
+        "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+        "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+      }, 
+      "maneuvers_config": {
+        "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+        "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+      }, 
+      "master_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+        "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+      }, 
+      "master_state_machine": {
+        "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+        "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+      }, 
+      "motion_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+        "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+      }, 
+      "motion_tracker": {
+        "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+        "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+      }, 
+      "obstacle_config": {
+        "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+        "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+      }, 
+      "obstacle_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+        "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+      }, 
+      "parallel_parking_config": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+        "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+      }, 
+      "parallel_parking_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+        "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+      }, 
+      "parallel_parking_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+        "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+      }, 
+      "parking_config": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+        "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+      }, 
+      "parking_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+        "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+      }, 
+      "parking_detection": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+        "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+      }, 
+      "parking_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+        "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+      }, 
+      "parking_scene": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+        "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+      }, 
+      "shared_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+        "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+      }, 
+      "simulator": {
+        "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+        "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+      }, 
+      "turn_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+        "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+      }, 
+      "turn_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+        "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+      }, 
+      "vehicle_launch_script": {
+        "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+        "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+      }
+    }, 
+    "before": {
+      "camera_observations": {
+        "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+        "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+      }, 
+      "competition_config": {
+        "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+        "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+      }, 
+      "config_loader": {
+        "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+        "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+      }, 
+      "contracts": {
+        "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+        "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+      }, 
+      "course": {
+        "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+        "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+      }, 
+      "geometry": {
+        "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+        "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+      }, 
+      "lane_config": {
+        "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+        "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+      }, 
+      "lane_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+        "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+      }, 
+      "lane_preview": {
+        "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+        "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+      }, 
+      "lidar_scan": {
+        "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+        "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+      }, 
+      "maneuvers_config": {
+        "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+        "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+      }, 
+      "master_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+        "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+      }, 
+      "master_state_machine": {
+        "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+        "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+      }, 
+      "motion_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+        "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+      }, 
+      "motion_tracker": {
+        "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+        "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+      }, 
+      "obstacle_config": {
+        "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+        "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+      }, 
+      "obstacle_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+        "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+      }, 
+      "parallel_parking_config": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+        "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+      }, 
+      "parallel_parking_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+        "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+      }, 
+      "parallel_parking_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+        "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+      }, 
+      "parking_config": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+        "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+      }, 
+      "parking_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+        "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+      }, 
+      "parking_detection": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+        "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+      }, 
+      "parking_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+        "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+      }, 
+      "parking_scene": {
+        "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+        "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+      }, 
+      "shared_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+        "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+      }, 
+      "simulator": {
+        "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+        "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+      }, 
+      "turn_controller": {
+        "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+        "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+      }, 
+      "turn_planner": {
+        "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+        "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+      }, 
+      "vehicle_launch_script": {
+        "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+        "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+      }
+    }, 
+    "stable": true
+  }, 
+  "status": "failed", 
+  "trajectory": [
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.792, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.0, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.784, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.025, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.776, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.025, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.768, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.025, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.76, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.05, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.752, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.05, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.744, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.05, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.736, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.075, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.728, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.075, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.72, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.075, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.712, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.704, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.696, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.688, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.68, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.125, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.672, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.125, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.664, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.125, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.656, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.15, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.9
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.648, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.15, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 0.95
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.64, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.15, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.0
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.632, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.175, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.624, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.175, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.616, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.175, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.608, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.2, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.6, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.0, 
+      "route_progress_m": 0.2, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.592, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.2, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.584, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.225, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.576, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.225, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.568, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.225, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.56, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.25, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.552, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.25, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.544, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.25, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.536, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.275, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.528, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.275, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.52, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.275, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.512, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.3, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.504, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.3, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.496, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.3, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.9
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.488, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.3, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 1.95
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.48, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.325, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.0
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.472, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.325, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.464, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.325, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.456, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.35, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.448, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.35, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.44, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.35, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.432, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.375, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.424, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.375, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.416, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.375, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.408, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.4, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.4, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.0, 
+      "route_progress_m": 0.4, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.392, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.4, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.384, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.425, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.376, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.425, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.368, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.425, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.36, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.45, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.352, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.45, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.344, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.45, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.336, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.475, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.9
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.328, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.475, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 2.95
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.32, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.475, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.0
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.312, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.5, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.304, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.5, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.296, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.5, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.288, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.5, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.28, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.525, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.272, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.525, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.264, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.525, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.256, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.55, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.248, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.55, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.24, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.55, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.232, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.575, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.224, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.575, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.216, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.575, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.208, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.6, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.2, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.0, 
+      "route_progress_m": 0.6, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.192, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.6, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.184, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.625, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.176, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.625, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.9
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.168, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.625, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 3.95
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.16, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.65, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.0
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.152, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.65, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.144, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.65, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.136, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.675, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.128, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.675, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.12, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.675, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.112, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.7, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.104, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.7, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.096, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.7, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.088, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.7, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.08, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.725, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.072, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.725, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.064, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.725, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.056, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.75, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.048, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.75, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.04, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.75, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.032, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.775, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.024, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.775, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.016, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.775, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.9
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        -0.008, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.8, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 4.95
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.0, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.0, 
+      "route_progress_m": 0.8, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.0
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.008, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 0.8, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.016, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.825, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.024, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.825, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.032, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.825, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.04, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.85, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.048, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.85, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.056, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.85, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.064, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.875, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.072, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.875, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.08, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.875, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.088, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.9, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.096, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.9, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.104, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 0.9, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.112, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 0.9, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.12, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 0.925, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.128, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 0.925, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.136, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 0.925, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.144, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 0.95, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.9
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.152, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 0.95, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 5.95
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.16, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 0.95, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.0
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.168, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 0.975, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.176, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 0.975, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.184, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 0.975, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.192, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 1.0, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.2, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.0, 
+      "route_progress_m": 1.0, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.208, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 1.0, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.216, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 1.025, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.224, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 1.025, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.232, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 1.025, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.24, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 1.05, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.248, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 1.05, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.256, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 1.05, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.264, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 1.075, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.272, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 1.075, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.28, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 1.075, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.288, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 1.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.296, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 1.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.304, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.004, 
+      "route_progress_m": 1.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.9
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.312, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.012, 
+      "route_progress_m": 1.1, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 6.95
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.32, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.005, 
+      "route_progress_m": 1.125, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.0
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.328, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.003, 
+      "route_progress_m": 1.125, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.05
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.336, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 1.125, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.1
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.344, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 1.15, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.15
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.352, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 1.15, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.2
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.36, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 1.15, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.25
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.368, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 1.175, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.3
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.376, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 1.175, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.35
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.384, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 1.175, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.4
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.392, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 1.2, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.45
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.4, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.0, 
+      "route_progress_m": 1.2, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.5
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.408, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.008, 
+      "route_progress_m": 1.2, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.55
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.416, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 1.225, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.6
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.424, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.001, 
+      "route_progress_m": 1.225, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.65
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.432, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.007, 
+      "route_progress_m": 1.225, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.7
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.44, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.01, 
+      "route_progress_m": 1.25, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.75
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.448, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.002, 
+      "route_progress_m": 1.25, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.8
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.456, 
+        -2.7, 
+        0.0
+      ], 
+      "reason": "startup_straight_distance", 
+      "route_error_m": 0.006, 
+      "route_progress_m": 1.25, 
+      "scan_valid_rays": 360, 
+      "state": "STARTUP_STRAIGHT", 
+      "t_s": 7.85
+    }, 
+    {
+      "action": null, 
+      "command_raw": 20.0, 
+      "command_steer": 0.03, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": "STRAIGHT", 
+      "physical_steer": 0.46275, 
+      "pose": [
+        0.463999686, 
+        -2.699938601, 
+        0.015350107
+      ], 
+      "reason": "tracking_lane", 
+      "route_error_m": 0.011, 
+      "route_progress_m": 1.275, 
+      "scan_valid_rays": 360, 
+      "state": "LANE", 
+      "t_s": 7.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.470398932, 
+        -2.699840364, 
+        0.015350107
+      ], 
+      "reason": "blue_align_heading", 
+      "route_error_m": 0.004604, 
+      "route_progress_m": 1.275, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 7.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.476798178, 
+        -2.699742127, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.001817, 
+      "route_progress_m": 1.275, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.483197424, 
+        -2.69964389, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.008205, 
+      "route_progress_m": 1.275, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.48959667, 
+        -2.699545653, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.010413, 
+      "route_progress_m": 1.3, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.495995916, 
+        -2.699447417, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.004042, 
+      "route_progress_m": 1.3, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.502395162, 
+        -2.69934918, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.002482, 
+      "route_progress_m": 1.3, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.508794408, 
+        -2.699250943, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.008826, 
+      "route_progress_m": 1.3, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.515193654, 
+        -2.699152706, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.009843, 
+      "route_progress_m": 1.325, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.5215929, 
+        -2.699054469, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.003536, 
+      "route_progress_m": 1.325, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.527992146, 
+        -2.698956232, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.003169, 
+      "route_progress_m": 1.325, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.534391392, 
+        -2.698857996, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.009461, 
+      "route_progress_m": 1.325, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.540790638, 
+        -2.698759759, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.009292, 
+      "route_progress_m": 1.35, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.547189884, 
+        -2.698661522, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.003113, 
+      "route_progress_m": 1.35, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.55358913, 
+        -2.698563285, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.003866, 
+      "route_progress_m": 1.35, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.559988376, 
+        -2.698465048, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.010106, 
+      "route_progress_m": 1.35, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.566387622, 
+        -2.698366812, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.008766, 
+      "route_progress_m": 1.375, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.572786868, 
+        -2.698268575, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.00281, 
+      "route_progress_m": 1.375, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.579186114, 
+        -2.698170338, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.004569, 
+      "route_progress_m": 1.375, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.58558536, 
+        -2.698072101, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.010759, 
+      "route_progress_m": 1.375, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 16.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.591984606, 
+        -2.697973864, 
+        0.015350107
+      ], 
+      "reason": "blue_align_latched_heading", 
+      "route_error_m": 0.008268, 
+      "route_progress_m": 1.4, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.599983664, 
+        -2.697851068, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.002149, 
+      "route_progress_m": 1.4, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 8.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.607982721, 
+        -2.697728272, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.0083, 
+      "route_progress_m": 1.4, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.615981779, 
+        -2.697605476, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.009331, 
+      "route_progress_m": 1.425, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.623980836, 
+        -2.69748268, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.002716, 
+      "route_progress_m": 1.425, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.631979894, 
+        -2.697359884, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.007463, 
+      "route_progress_m": 1.425, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.639978951, 
+        -2.697237088, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.010395, 
+      "route_progress_m": 1.45, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.647978009, 
+        -2.697114292, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.003524, 
+      "route_progress_m": 1.45, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.655977066, 
+        -2.696991496, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.006692, 
+      "route_progress_m": 1.45, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.663976124, 
+        -2.6968687, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.01146, 
+      "route_progress_m": 1.475, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.671975181, 
+        -2.696745904, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.004443, 
+      "route_progress_m": 1.475, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.679974239, 
+        -2.696623108, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.006012, 
+      "route_progress_m": 1.475, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.687973296, 
+        -2.696500312, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.012526, 
+      "route_progress_m": 1.5, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.695972354, 
+        -2.696377516, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.005417, 
+      "route_progress_m": 1.5, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.703971411, 
+        -2.69625472, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.005459, 
+      "route_progress_m": 1.5, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.711970469, 
+        -2.696131924, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.01258, 
+      "route_progress_m": 1.5, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.719969526, 
+        -2.696009128, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.006421, 
+      "route_progress_m": 1.525, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.727968584, 
+        -2.695886332, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.005073, 
+      "route_progress_m": 1.525, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.735967641, 
+        -2.695763536, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.011757, 
+      "route_progress_m": 1.525, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.743966699, 
+        -2.695640739, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.007443, 
+      "route_progress_m": 1.55, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.751965756, 
+        -2.695517943, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.004894, 
+      "route_progress_m": 1.55, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.759964814, 
+        -2.695395147, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.010977, 
+      "route_progress_m": 1.55, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 9.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.767963871, 
+        -2.695272351, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.008477, 
+      "route_progress_m": 1.575, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.775962929, 
+        -2.695149555, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.004945, 
+      "route_progress_m": 1.575, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.783961986, 
+        -2.695026759, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.010249, 
+      "route_progress_m": 1.575, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.791961044, 
+        -2.694903963, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.009518, 
+      "route_progress_m": 1.6, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.799960101, 
+        -2.694781167, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.005219, 
+      "route_progress_m": 1.6, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.807959159, 
+        -2.694658371, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.009585, 
+      "route_progress_m": 1.6, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.815958217, 
+        -2.694535575, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.010565, 
+      "route_progress_m": 1.625, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.823957274, 
+        -2.694412779, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.005684, 
+      "route_progress_m": 1.625, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.831956332, 
+        -2.694289983, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.009, 
+      "route_progress_m": 1.625, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.839955389, 
+        -2.694167187, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.011615, 
+      "route_progress_m": 1.65, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.847954447, 
+        -2.694044391, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.006297, 
+      "route_progress_m": 1.65, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.855953504, 
+        -2.693921595, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.008508, 
+      "route_progress_m": 1.65, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.863952562, 
+        -2.693798799, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.012669, 
+      "route_progress_m": 1.675, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.871951619, 
+        -2.693676003, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.00702, 
+      "route_progress_m": 1.675, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.879950677, 
+        -2.693553207, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.008128, 
+      "route_progress_m": 1.675, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.887949734, 
+        -2.693430411, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.013725, 
+      "route_progress_m": 1.7, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.895948792, 
+        -2.693307615, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.007823, 
+      "route_progress_m": 1.7, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.903947849, 
+        -2.693184819, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.007876, 
+      "route_progress_m": 1.7, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.911946907, 
+        -2.693062023, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.013815, 
+      "route_progress_m": 1.7, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.919945964, 
+        -2.692939227, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.008683, 
+      "route_progress_m": 1.725, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 10.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.927945022, 
+        -2.692816431, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.007764, 
+      "route_progress_m": 1.725, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 11.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.935944079, 
+        -2.692693635, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.013159, 
+      "route_progress_m": 1.725, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 11.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.943943137, 
+        -2.692570839, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.009585, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 11.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_advance_distance", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_APPROACH", 
+      "t_s": 11.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 11.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 12.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 12.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 12.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 0.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.951942194, 
+        -2.692448043, 
+        0.015350107
+      ], 
+      "reason": "blue_stop_wait_straight", 
+      "route_error_m": 0.007798, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "BLUE_STOP", 
+      "t_s": 12.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.959941252, 
+        -2.692325246, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.012559, 
+      "route_progress_m": 1.75, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.967940309, 
+        -2.69220245, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010519, 
+      "route_progress_m": 1.775, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.975939367, 
+        -2.692079654, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.007976, 
+      "route_progress_m": 1.775, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.983938424, 
+        -2.691956858, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.012024, 
+      "route_progress_m": 1.775, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.991937482, 
+        -2.691834062, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.011475, 
+      "route_progress_m": 1.8, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        0.999936539, 
+        -2.691711266, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.008289, 
+      "route_progress_m": 1.8, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.007935597, 
+        -2.69158847, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.011564, 
+      "route_progress_m": 1.8, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.015934654, 
+        -2.691465674, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.012451, 
+      "route_progress_m": 1.825, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.023933712, 
+        -2.691342878, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.008723, 
+      "route_progress_m": 1.825, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.031932769, 
+        -2.691220082, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.011187, 
+      "route_progress_m": 1.825, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.039931827, 
+        -2.691097286, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.01344, 
+      "route_progress_m": 1.85, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.047930884, 
+        -2.69097449, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.00926, 
+      "route_progress_m": 1.85, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.055929942, 
+        -2.690851694, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010902, 
+      "route_progress_m": 1.85, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.063928999, 
+        -2.690728898, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.01444, 
+      "route_progress_m": 1.875, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.071928057, 
+        -2.690606102, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.009883, 
+      "route_progress_m": 1.875, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.079927115, 
+        -2.690483306, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010717, 
+      "route_progress_m": 1.875, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 12.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.087926172, 
+        -2.69036051, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.01545, 
+      "route_progress_m": 1.9, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.09592523, 
+        -2.690237714, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010579, 
+      "route_progress_m": 1.9, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.103924287, 
+        -2.690114918, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010636, 
+      "route_progress_m": 1.9, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.111923345, 
+        -2.689992122, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.015567, 
+      "route_progress_m": 1.9, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.119922402, 
+        -2.689869326, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.011332, 
+      "route_progress_m": 1.925, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.12792146, 
+        -2.68974653, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010662, 
+      "route_progress_m": 1.925, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.135920517, 
+        -2.689623734, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.015064, 
+      "route_progress_m": 1.925, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.143919575, 
+        -2.689500938, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.012133, 
+      "route_progress_m": 1.95, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.151918632, 
+        -2.689378142, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010794, 
+      "route_progress_m": 1.95, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.15991769, 
+        -2.689255346, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.014622, 
+      "route_progress_m": 1.95, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.167916747, 
+        -2.68913255, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.012972, 
+      "route_progress_m": 1.975, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.175915805, 
+        -2.689009753, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.011028, 
+      "route_progress_m": 1.975, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.183914862, 
+        -2.688886957, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.014247, 
+      "route_progress_m": 1.975, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.19191392, 
+        -2.688764161, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.013843, 
+      "route_progress_m": 2.0, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.199912977, 
+        -2.688641365, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.011359, 
+      "route_progress_m": 2.0, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.207912035, 
+        -2.688518569, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.013944, 
+      "route_progress_m": 2.0, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.215911092, 
+        -2.688395773, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010488, 
+      "route_progress_m": 2.024351, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.22391015, 
+        -2.688272977, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.006945, 
+      "route_progress_m": 2.024351, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.231909207, 
+        -2.688150181, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010699, 
+      "route_progress_m": 2.024351, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.239908265, 
+        -2.688027385, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.008207, 
+      "route_progress_m": 2.048702, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 13.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.247907322, 
+        -2.687904589, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.002536, 
+      "route_progress_m": 2.048702, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.25590638, 
+        -2.687781793, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.008574, 
+      "route_progress_m": 2.048702, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.263905437, 
+        -2.687658997, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.007981, 
+      "route_progress_m": 2.073053, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.271904495, 
+        -2.687536201, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.001902, 
+      "route_progress_m": 2.073053, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.279903552, 
+        -2.687413405, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.008458, 
+      "route_progress_m": 2.073053, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.28790261, 
+        -2.687290609, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.009951, 
+      "route_progress_m": 2.097404, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.295901667, 
+        -2.687167813, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.006308, 
+      "route_progress_m": 2.097404, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.303900725, 
+        -2.687045017, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010419, 
+      "route_progress_m": 2.097404, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.311899782, 
+        -2.686922221, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.013166, 
+      "route_progress_m": 2.121755, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.31989884, 
+        -2.686799425, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.010721, 
+      "route_progress_m": 2.121755, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.327897897, 
+        -2.686676629, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.013585, 
+      "route_progress_m": 2.121755, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.335896955, 
+        -2.686553833, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.016931, 
+      "route_progress_m": 2.146106, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.343896013, 
+        -2.686431037, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.015136, 
+      "route_progress_m": 2.146106, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.35189507, 
+        -2.686308241, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.017307, 
+      "route_progress_m": 2.146106, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.359894128, 
+        -2.686185445, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.020951, 
+      "route_progress_m": 2.170457, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.367893185, 
+        -2.686062649, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.01955, 
+      "route_progress_m": 2.170457, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.375892243, 
+        -2.685939853, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.021295, 
+      "route_progress_m": 2.170457, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.3838913, 
+        -2.685817057, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.025104, 
+      "route_progress_m": 2.194808, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.391890358, 
+        -2.68569426, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.023965, 
+      "route_progress_m": 2.194808, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.399889415, 
+        -2.685571464, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.025425, 
+      "route_progress_m": 2.194808, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 14.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.407888473, 
+        -2.685448668, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.029096, 
+      "route_progress_m": 2.194808, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.41588753, 
+        -2.685325872, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.02838, 
+      "route_progress_m": 2.219159, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.423886588, 
+        -2.685203076, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.029638, 
+      "route_progress_m": 2.219159, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.431885645, 
+        -2.68508028, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.032854, 
+      "route_progress_m": 2.219159, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.439884703, 
+        -2.684957484, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.032795, 
+      "route_progress_m": 2.24351, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.44788376, 
+        -2.684834688, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.033902, 
+      "route_progress_m": 2.24351, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.455882818, 
+        -2.684711892, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.036758, 
+      "route_progress_m": 2.24351, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.463881875, 
+        -2.684589096, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.03721, 
+      "route_progress_m": 2.267861, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.471880933, 
+        -2.6844663, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.0382, 
+      "route_progress_m": 2.267861, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.47987999, 
+        -2.684343504, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.040766, 
+      "route_progress_m": 2.267861, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.487879048, 
+        -2.684220708, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.041625, 
+      "route_progress_m": 2.292212, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.495878105, 
+        -2.684097912, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.042522, 
+      "route_progress_m": 2.292212, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.503877163, 
+        -2.683975116, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.044851, 
+      "route_progress_m": 2.292212, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.51187622, 
+        -2.68385232, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.04604, 
+      "route_progress_m": 2.316563, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.519875278, 
+        -2.683729524, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.046862, 
+      "route_progress_m": 2.316563, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.527874335, 
+        -2.683606728, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.048994, 
+      "route_progress_m": 2.316563, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.535873393, 
+        -2.683483932, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.050455, 
+      "route_progress_m": 2.340914, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.54387245, 
+        -2.683361136, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.051214, 
+      "route_progress_m": 2.340914, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.85
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.551871508, 
+        -2.68323834, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.05318, 
+      "route_progress_m": 2.340914, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.9
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.559870565, 
+        -2.683115544, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.054871, 
+      "route_progress_m": 2.365265, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 15.95
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.567869623, 
+        -2.682992748, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.055577, 
+      "route_progress_m": 2.365265, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.0
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.57586868, 
+        -2.682869952, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.0574, 
+      "route_progress_m": 2.365265, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.05
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.583867738, 
+        -2.682747156, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.059286, 
+      "route_progress_m": 2.389616, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.1
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.591866795, 
+        -2.68262436, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.059947, 
+      "route_progress_m": 2.389616, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.15
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.599865853, 
+        -2.682501564, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.061648, 
+      "route_progress_m": 2.389616, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.2
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.607864911, 
+        -2.682378767, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.063701, 
+      "route_progress_m": 2.413967, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.25
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.615863968, 
+        -2.682255971, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.064323, 
+      "route_progress_m": 2.413967, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.3
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.623863026, 
+        -2.682133175, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.065918, 
+      "route_progress_m": 2.413967, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.35
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.631862083, 
+        -2.682010379, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.068116, 
+      "route_progress_m": 2.438318, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.4
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.639861141, 
+        -2.681887583, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.068704, 
+      "route_progress_m": 2.438318, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.45
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.647860198, 
+        -2.681764787, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.070206, 
+      "route_progress_m": 2.438318, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.5
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.655859256, 
+        -2.681641991, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.072531, 
+      "route_progress_m": 2.462669, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.55
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.663858313, 
+        -2.681519195, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.07309, 
+      "route_progress_m": 2.462669, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.6
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.671857371, 
+        -2.681396399, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.074508, 
+      "route_progress_m": 2.462669, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.65
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.679856428, 
+        -2.681273603, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.076739, 
+      "route_progress_m": 2.462669, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.7
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 53, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.687855486, 
+        -2.681150807, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.077478, 
+      "route_progress_m": 2.48702, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.75
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.695854543, 
+        -2.681028011, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.078823, 
+      "route_progress_m": 2.48702, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.8
+    }, 
+    {
+      "action": "STRAIGHT", 
+      "command_raw": 20.0, 
+      "command_steer": 0.0, 
+      "lane_points": 54, 
+      "parking_slot_rows": 0, 
+      "pending": null, 
+      "physical_steer": 0.0, 
+      "pose": [
+        1.703853601, 
+        -2.680905215, 
+        0.015350107
+      ], 
+      "reason": "straight_continue", 
+      "route_error_m": 0.08094, 
+      "route_progress_m": 2.48702, 
+      "scan_valid_rays": 360, 
+      "state": "MANEUVER", 
+      "t_s": 16.85
+    }
+  ]
+}

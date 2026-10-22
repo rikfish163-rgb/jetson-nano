@@ -1,0 +1,32 @@
+[
+  {
+    "freed_bytes": 60393719, 
+    "run": "20260929_230116_1410", 
+    "kept": "all numeric logs and summaries", 
+    "jpg_count": 2456
+  }, 
+  {
+    "freed_bytes": 100065174, 
+    "run": "20260929_232406_4508", 
+    "kept": "all numeric logs and summaries", 
+    "jpg_count": 3995
+  }, 
+  {
+    "freed_bytes": 77642500, 
+    "run": "20260930_004144_15514", 
+    "kept": "all numeric logs and summaries", 
+    "jpg_count": 3092
+  }, 
+  {
+    "freed_bytes": 90243088, 
+    "run": "20260930_011909_18373", 
+    "kept": "all numeric logs and summaries", 
+    "jpg_count": 3529
+  }, 
+  {
+    "freed_bytes": 36697309, 
+    "run": "20260930_021005_24181", 
+    "kept": "all numeric logs and summaries", 
+    "jpg_count": 1523
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "e7b94d1292fc7d805dca24fba26aa568f240a1d30daf22559f9a2db7c1ebaae4",
+    "after": "94431adeae949104e1861abc53bf49780be7a960bfff9adab95e96a9fad52576"
+  },
+  {
+    "path": "src/robot/master/controller_node.py",
+    "before": "e8e8e69c57f98ae417c9fc7ac4fb57765802fa24618a362869e935c0e898100f",
+    "after": "b69b1ce85b6eac09f9a7f08d0f3b99ab4becc2b09d8739dd31ec4555e1ba1df3"
+  },
+  {
+    "path": "src/robot/test/test_ros_adapter.py",
+    "before": "bcb8710cfdcd522003434c545ffd32215ddad133937cda2a62c4ef7ecd19d849",
+    "after": "e73a3b1490ddea34b385827c268971abffd82abfa9710f391846d0b89fa062c4"
+  },
+  {
+    "path": "src/robot/test/test_curve_without_entry.py",
+    "before": null,
+    "after": "ddb8a75f1e2480a2ff27d1ea0064333eb0a8e009205d50df6d92a1fd980a8c33"
+  }
+]

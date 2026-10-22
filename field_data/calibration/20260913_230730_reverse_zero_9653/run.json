@@ -1,0 +1,9 @@
+{
+  "case": "reverse_zero", 
+  "speed_raw": -26, 
+  "returncode": 0, 
+  "finished_at": 1789312056.007016, 
+  "started_at": 1789312050.329209, 
+  "steering_raw": 0, 
+  "requested_seconds": 3.0
+}

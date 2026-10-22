@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find ls01b_v2)/launch/ls01b_v2.launch" />
+
+  <!-- 这里必须是 just_msg.py -->
+  <node name="lidar_show" pkg="lidar_broadcast" type="just_msg.py" output="screen" />
+</launch>

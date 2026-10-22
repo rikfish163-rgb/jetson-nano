@@ -1,0 +1,17 @@
+index,direction,speed_raw,requested_seconds,command_seconds,distance_cm,status
+1,forward,15,1.0,,,moving
+2,forward,15,2.0,,,pending
+3,forward,20,1.0,,,pending
+4,forward,20,2.0,,,pending
+5,forward,25,1.0,,,pending
+6,forward,25,2.0,,,pending
+7,forward,30,1.0,,,pending
+8,forward,30,2.0,,,pending
+9,reverse,15,1.0,,,pending
+10,reverse,15,2.0,,,pending
+11,reverse,20,1.0,,,pending
+12,reverse,20,2.0,,,pending
+13,reverse,25,1.0,,,pending
+14,reverse,25,2.0,,,pending
+15,reverse,30,1.0,,,pending
+16,reverse,30,2.0,,,pending

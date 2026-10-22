@@ -17,7 +17,11 @@
   <arg name="timed_bypass_enabled" default=""/>
   <arg name="lidar_shape_filter" default="true"/>
   <arg name="start_sign" default="true"/>
+  <arg name="sign_backend" default="yolo_trt"/>
   <arg name="sign_model" default="/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine"/>
+  <arg name="sign_labels" default="/home/nano/robodata/models/20260915_10000/labels.json"/>
+  <arg name="sign_roi_mode" default="board"/>
+  <arg name="sign_capture" default="true"/>
   <arg name="start_ground" default="true"/>
   <arg name="start_rear" default="true"/>
   <arg name="front_fps" default="15"/>
@@ -239,7 +243,12 @@
   </group>
   <group if="$(arg start_sign)">
     <node pkg="robocup_competition" type="sign_node.py" name="competition_sign" output="screen">
+      <param name="backend" value="$(arg sign_backend)"/>
       <param name="model" value="$(arg sign_model)"/>
+      <param name="labels" value="$(arg sign_labels)"/>
+      <param name="roi_mode" value="$(arg sign_roi_mode)"/>
+      <param unless="$(arg sign_capture)" name="capture_dir" value=""/>
+      <param name="debug_images" value="true"/>
     </node>
   </group>
   <node if="$(arg start_controller)" pkg="robocup_competition" type="$(arg controller_type)" name="competition_controller" output="screen">

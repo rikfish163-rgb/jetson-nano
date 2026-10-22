@@ -1,0 +1,147 @@
+{
+  "confidence": 0.9858667254447937, 
+  "detections": [
+    {
+      "bounds": [
+        327, 
+        54, 
+        99, 
+        103
+      ], 
+      "confidence": 0.9858667254447937, 
+      "label": "park", 
+      "scores": {
+        "green": 6.932680116733536e-05, 
+        "left": 1.571335451444611e-05, 
+        "park": 0.9858667254447937, 
+        "red": 3.326457954244688e-05, 
+        "right": 4.204999640933238e-05, 
+        "straight": 6.0705100622726604e-05, 
+        "uturn": 5.97640173509717e-05
+      }
+    }, 
+    {
+      "bounds": [
+        219, 
+        78, 
+        67, 
+        68
+      ], 
+      "confidence": 0.9824911952018738, 
+      "label": "park", 
+      "scores": {
+        "green": 6.084767392167123e-06, 
+        "left": 2.9716486096731387e-05, 
+        "park": 0.9824911952018738, 
+        "red": 1.8889155398937874e-05, 
+        "right": 2.7057240004069172e-05, 
+        "straight": 5.41190729563823e-06, 
+        "uturn": 2.643047810124699e-05
+      }
+    }
+  ], 
+  "inference_ms": 99.96509552001953, 
+  "input_mode": "full_frame_yolo", 
+  "label": "PARKING", 
+  "range_reason": "route_confirmed", 
+  "roi_diagnostics": {
+    "candidate_count": 2, 
+    "regions": [
+      {
+        "bounds": [
+          327, 
+          54, 
+          99, 
+          103
+        ], 
+        "reason": "#1 park 0.99"
+      }, 
+      {
+        "bounds": [
+          219, 
+          78, 
+          67, 
+          68
+        ], 
+        "reason": "#2 park 0.98"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        327, 
+        54, 
+        99, 
+        103
+      ], 
+      "confidence": 0.9858667254447937, 
+      "label": "park", 
+      "scores": {
+        "green": 6.932680116733536e-05, 
+        "left": 1.571335451444611e-05, 
+        "park": 0.9858667254447937, 
+        "red": 3.326457954244688e-05, 
+        "right": 4.204999640933238e-05, 
+        "straight": 6.0705100622726604e-05, 
+        "uturn": 5.97640173509717e-05
+      }
+    }, 
+    {
+      "bounds": [
+        219, 
+        78, 
+        67, 
+        68
+      ], 
+      "confidence": 0.9824911952018738, 
+      "label": "park", 
+      "scores": {
+        "green": 6.084767392167123e-06, 
+        "left": 2.9716486096731387e-05, 
+        "park": 0.9824911952018738, 
+        "red": 1.8889155398937874e-05, 
+        "right": 2.7057240004069172e-05, 
+        "straight": 5.41190729563823e-06, 
+        "uturn": 2.643047810124699e-05
+      }
+    }
+  ], 
+  "route_gate": {
+    "center_ratio": 0.58828125, 
+    "confidence_threshold": 0.8, 
+    "enabled": true, 
+    "frames": 20, 
+    "left_center_ratio": 0.3, 
+    "min_height_ratio": 0.04, 
+    "required_frames": 2, 
+    "small_target": false, 
+    "track_id": 7
+  }, 
+  "scores": {
+    "GREEN": 6.932680116733536e-05, 
+    "LEFT": 1.571335451444611e-05, 
+    "PARKING": 0.9858667254447937, 
+    "RED": 3.326457954244688e-05, 
+    "RIGHT": 4.204999640933238e-05, 
+    "STRAIGHT": 6.0705100622726604e-05, 
+    "UTURN": 5.97640173509717e-05
+  }, 
+  "sign_bounds": [
+    327, 
+    54, 
+    99, 
+    103
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.2861111111111111, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.15665102005004883, 
+  "stamp": 1791546023.415403, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "PARKING"
+}

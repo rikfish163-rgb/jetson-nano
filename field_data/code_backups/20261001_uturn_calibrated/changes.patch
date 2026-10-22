@@ -1,0 +1,617 @@
+--- before/src/robot/config/maneuvers.yaml
++++ after/src/robot/config/maneuvers.yaml
+@@ -19,17 +19,17 @@
+ uturn_trial_side: left
+ uturn_trial_entry_m: 0.40
+ uturn_trial_forward_mps: 0.250
+-uturn_trial_forward_raw: 20
+-uturn_trial_reverse_raw: 20
++uturn_trial_forward_raw: 26
++uturn_trial_reverse_raw: 26
+ uturn_trial_pause_s: 0.7
+ uturn_trial_sequence:
+-  - {speed: 20, steering: 22, seconds: 3.6000000058}
+-  - {speed: -20, steering: 0, seconds: 1.2448132739}
+-  - {speed: -20, steering: -22, seconds: 0.8298755159}
+-  - {speed: -20, steering: 0, seconds: 1.4149377580}
+-  - {speed: 20, steering: 22, seconds: 4.0000000064}
+-  - {speed: -20, steering: -22, seconds: 0.8298755159}
+-  - {speed: 20, steering: 22, seconds: 1.2000000013}
++  - {speed: 26, steering: 22, seconds: 3.6000000058}
++  - {speed: -26, steering: 0, seconds: 1.2448132739}
++  - {speed: -26, steering: -22, seconds: 0.8298755159}
++  - {speed: -26, steering: 0, seconds: 0.4149377580}
++  - {speed: 26, steering: 22, seconds: 4.0000000064}
++  - {speed: -26, steering: -22, seconds: 0.8298755159}
++  - {speed: 26, steering: 22, seconds: 1.2000000013}
+ 
+ # Alternative relative U-turn requires a profile disabling uturn_trial_enabled.
+ # Reverse parallel parking remains available via parking_mode:=parallel_reverse.
+--- before/src/robot/config/workspace_modules.yaml
++++ after/src/robot/config/workspace_modules.yaml
+@@ -167,6 +167,7 @@
+     - uturn_blue_landmarks_enabled
+     - uturn_brake_lead_m
+     - uturn_course_test
++    - uturn_calibration
+     - uturn_goal_forward_max
+     - uturn_goal_forward_min
+     - uturn_goal_forward_step
+@@ -182,6 +183,9 @@
+     - uturn_reverse_yaw_rad
+     - uturn_tracking_error_max
+     - uturn_trial_enabled
++    - uturn_trial_exit_max_s
++    - uturn_trial_exit_min_turn_deg
++    - uturn_trial_exit_heading_deg
+     - uturn_trial_resume_lane
+     - uturn_vision_enabled
+   parking:
+--- before/src/robot/master/controller_node.py
++++ after/src/robot/master/controller_node.py
+@@ -29,6 +29,7 @@
+ from robot.common.contracts import boolean
+ from robot.common.contracts import validate_config
+ from robot.common.contracts import encode_command
++from robot.uturn.calibration import trial_active, raw_angle, speed_gain
+ 
+ 
+ def yaw(q):
+@@ -384,7 +385,11 @@
+                 model_raw = steer
+                 if self.core.state == 'STARTUP_STRAIGHT':
+                     model_raw -= self.cfg.get('startup_steering_raw',0)
+-                self.applied = (speed/self.cfg['speed_sign'],model_raw/self.cfg['steering_sign']/self.cfg['steering_raw_limit']*self.cfg['max_steer'])
++                logical_speed = speed/self.cfg['speed_sign']
++                physical = model_raw/self.cfg['steering_sign']/self.cfg['steering_raw_limit']*self.cfg['max_steer']
++                if trial_active(self.cfg,self.core.state):
++                    physical = raw_angle(self.cfg,logical_speed,model_raw)
++                self.applied = (logical_speed,physical)
+                 self.applied_at = stamp
+                 # GAP holds command-space steering; pose estimation above
+                 # keeps the chassis mapping. Do not apply command gain twice.
+@@ -428,6 +433,8 @@
+             if self.cfg['pose_mode'] == 'command_model':
+                 speed,steer = self.applied if 0 <= now-self.applied_at < 0.25 else (0,0)
+                 gain = self.cfg['raw_to_mps']['forward' if speed >= 0 else 'reverse']
++                if trial_active(self.cfg,self.core.state):
++                    gain = speed_gain(self.cfg,speed)
+                 self.core.set_pose(bicycle(self.core.pose,speed*gain*dt,steer,self.cfg['wheelbase']),now)
+             self.history.append((now,self.core.pose))
+             try:
+@@ -467,7 +474,7 @@
+         # telemetry thread, even when a busy state lock prevents full status.
+         self.control_events.append(copy.deepcopy(dict(stamp=now,
+             state=self.core.state,reason=self.core.reason,command=command,
+-            timed_bypass=task,obstacle_check=self.core.obstacle_check)))
++            timed_bypass=task,uturn=self.core.uturn,obstacle_check=self.core.obstacle_check)))
+ 
+     def telemetry(self,event):
+         events=getattr(self,'control_events',None)
+@@ -502,6 +509,7 @@
+                 console = {key:status[key] for key in ('stamp','state','reason','command',
+                     'enabled','lane_confidence','source_ages','lidar_processing_ms','sign')}
+                 console['timed_bypass'] = status['timed_bypass']
++                console['uturn'] = status['uturn']
+                 console['lane_curve_lock'] = status['lane_curve_lock']
+                 for key in ('pending','last_blue_trigger','blue_approach','straight_search',
+                             'front_blue_lines_local','blue_consumed'):
+--- before/src/robot/obstacle/controller.py
++++ after/src/robot/obstacle/controller.py
+@@ -13,11 +13,13 @@
+ from robot.common.geometry import wrap
+ from robot.obstacle.planner import bypass_path
+ from robot.common.contracts import command_to_model_steering
++from robot.common.contracts import encode_command
++from robot.uturn.calibration import trial_active, raw_angle
+ 
+ 
+ 
+ FIELDS = ('action', 'cfg', 'follower', 'issued_steer', 'obstacle_check', 'parallel_parking', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen', 'lane', 'lane_stamp', 'lane_confidence',
+- 'parking_entry', 'pose', 'reason', 'relative_uturn', 'retry_at', 'scan', 'state', 'lane_recovery', 'exit_count', 'exit_stamp', 'lane_curve_lock', 'timed_bypass_candidate')
++ 'parking_entry', 'pose', 'reason', 'relative_uturn', 'retry_at', 'scan', 'state', 'lane_recovery', 'exit_count', 'exit_stamp', 'lane_curve_lock', 'timed_bypass_candidate', 'timed_uturn')
+ CALLS = (('mission', 'start_follow'), ('motion', 'stop'), ('obstacle', 'scan_ready'),
+  ('lane', 'forward_lane_ready'), ('lane', 'lane_valid'), ('lane', 'lane_tracking_ready'), ('lane', 'lane_command'), ('mission','resume_lane'), ('obstacle', 'checked_command'),
+  ('obstacle', 'begin_timed_bypass'), ('obstacle', 'timed_bypass_tick'),
+@@ -322,6 +324,13 @@
+         # the obstacle guard through the planned stop into a bay end wall.
+         horizon = min(horizon,max(.04,remaining))
+     physical = command_to_model_steering(steer,ctx.cfg)
++    if trial_active(ctx.cfg,ctx.state):
++        raw = encode_command(speed,steer,ctx.cfg,0)['steering_raw']
++        physical = raw_angle(ctx.cfg,speed,raw)
++        if ctx.timed_uturn is not None:
++            remaining = ctx.timed_uturn.remaining_distance(ctx.cfg)
++            if remaining is not None:
++                horizon = min(horizon,max(.04,remaining))
+     if ctx.parking_entry is not None and ctx.state == 'PARKING':
+         # Dedicated entry emits command-space angles; collision sweeps use
+         # physical bicycle angles, exactly as applied feedback integration.
+--- before/src/robot/test/test_ros_adapter.py
++++ after/src/robot/test/test_ros_adapter.py
+@@ -477,6 +477,36 @@
+         self.node.applied_cb(_AppliedMessage(0.0, 23.0))
+         self.assertEqual(self.node.applied, (0, 0))
+ 
++    def test_timed_uturn_feedback_uses_own_radius_and_speed_gain(self):
++        from robot.common.config import load_config
++        from robot.common.geometry import bicycle, distance, wrap
++        from robot.uturn.calibration import raw_angle, speed_gain
++        n=self.node
++        n.cfg=load_config(os.path.join(PACKAGE_DIR,'config'))
++        n.cfg.update(max_steer=.2,pose_mode='command_model',steering_command_scale_rad=.03)
++        n.core.cfg=n.cfg
++        n.core.state='UTURN'
++        msg=_AppliedMessage(26,22);msg.header=_Header(10.,'base_link')
++        n.applied_cb(msg)
++        physical=raw_angle(n.cfg,26,22)
++        self.assertAlmostEqual(n.applied[1],physical)
++        self.assertGreater(physical,n.cfg['max_steer'])
++        n.seq,n.live,n.last_tick=0,False,10.
++        n.history=deque(maxlen=100)
++        n.output=type('Sink',(),{'publish':lambda self,msg:None})()
++        n.core.tick=lambda now:(0,0.)  # Do not dispatch any mission or ROS node.
++        self.clock.value=10.1
++        n.tick(None)
++        expected=bicycle((0,0,0),26*speed_gain(n.cfg,26)*.1,physical,.26)
++        self.assertLess(distance(n.core.pose,expected),1e-8)
++        self.assertLess(abs(wrap(n.core.pose[2]-expected[2])),1e-8)
++        for state in ('LANE','MANEUVER','TIMED_BYPASS'):
++            n.core.state=state
++            self.clock.value+=.1
++            msg.header=_Header(self.clock.value,'base_link')
++            n.applied_cb(msg)
++            self.assertAlmostEqual(n.applied[1],.2)
++
+     def test_estop_false_cannot_clear_while_enabled_but_clears_disabled(self):
+         self.node.core.estop = True
+         self.fake_rospy.params["~enabled"] = True
+--- before/src/robot/test/test_uturn_production.py
++++ after/src/robot/test/test_uturn_production.py
+@@ -7,6 +7,8 @@
+ from robot.common.contracts import encode_command, validate_config
+ from robot.master.controller import Controller
+ from robot.uturn.timed import TimedUturn
++from robot.uturn.calibration import raw_angle, speed_gain
++from robot.common.geometry import bicycle
+ 
+ 
+ class ProductionUturnTests(unittest.TestCase):
+@@ -21,7 +23,7 @@
+             with open(os.path.join(root, path)) as stream:
+                 self.cfg.update(yaml.safe_load(stream) or {})
+         self.cfg.update(wait_green=False, lidar_enabled=False,
+-                        steering_command_scale_rad=.1, sign_ttl=0,
++                        steering_command_scale_rad=.03, sign_ttl=0,
+                         blue_default_straight=False)
+         self.c = Controller(self.cfg)
+         self.addCleanup(self.c.close)
+@@ -38,10 +40,7 @@
+         root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+         with open(os.path.join(root, 'config/uturn_course_test.yaml')) as stream:
+             field = yaml.safe_load(stream)
+-        # Preserve the saved timing/steering profile; production uses RAW 20.
+-        field['uturn_trial_sequence'][3]['seconds'] += 1.0
+-        for row in field['uturn_trial_sequence']:
+-            row['speed'] = 20 if row['speed'] > 0 else -20
++        # Compare against the original executed RAW 26 profile unchanged.
+         self.assertEqual(self.cfg['uturn_trial_sequence'], field['uturn_trial_sequence'])
+         task = TimedUturn(self.cfg)
+         self.assertEqual(self.cfg['uturn_trial_entry_m'], .40)
+@@ -57,9 +56,9 @@
+ 
+     def test_40cm_entry_finishes_before_seven_segments(self):
+         task = TimedUturn(self.cfg)
+-        self.assertEqual(task.command(0), (20, 0.))
++        self.assertEqual(task.command(0), (26, 0.))
+         for i in range(1, 16):
+-            self.assertEqual(task.command(i*.1), (20, 0.))
++            self.assertEqual(task.command(i*.1), (26, 0.))
+             self.assertEqual(task.status()['phase'], 'ENTRY')
+         task.command(1.6)
+         self.assertEqual(task.status()['phase'], 'GEAR_PAUSE_1')
+@@ -76,8 +75,13 @@
+         enter_blue_action(c,'UTURN',1.5)
+         self.assertEqual(c.state, 'UTURN')
+         phases = []
++        command = (0, 0.)
+         for i in range(1, 650):
+             now = 1.5 + i * .05
++            # Simulated command model only; no assertion of measured vehicle motion.
++            raw = encode_command(command[0],command[1],self.cfg,0)['steering_raw']
++            c.set_pose(bicycle(c.pose,command[0]*speed_gain(self.cfg,command[0])*.05,
++                              raw_angle(self.cfg,command[0],raw),self.cfg['wheelbase']),now)
+             self.front(now)
+             c.observe_lane([(.5, 0), (.8, 0)], .99, now)
+             command = c.tick(now)
+--- before/src/robot/uturn/calibration.py
++++ after/src/robot/uturn/calibration.py
+@@ -32,3 +32,24 @@
+     fraction=max(-1.,min(1.,steer/limit(cfg,gear,steer)))
+     sign=1 if gear>0 else cfg.get('uturn_calibration',{}).get('reverse_steering_sign',1)
+     return sign*fraction*cfg.get('steering_command_scale_rad',cfg['max_steer'])
++
++
++def trial_active(cfg, state):
++    return (state == 'UTURN' and cfg.get('uturn_trial_enabled',False) and
++            cfg.get('uturn_calibration') is not None)
++
++
++def raw_angle(cfg, speed, steering_raw):
++    """Inverse chassis mapping; speed is logical RAW, steering is wire RAW."""
++    gear = 1 if speed >= 0 else -1
++    fraction = steering_raw / float(cfg['steering_sign']*cfg['steering_raw_limit'])
++    fraction = max(-1.,min(1.,fraction))
++    sign = 1 if gear > 0 else cfg.get('uturn_calibration',{}).get('reverse_steering_sign',1)
++    physical_side = sign*fraction
++    return physical_side*limit(cfg,gear,physical_side)
++
++
++def speed_gain(cfg, speed):
++    gear = 'forward' if speed >= 0 else 'reverse'
++    table = cfg.get('uturn_calibration')
++    return table[gear+'_mps_per_raw'] if table is not None else cfg['raw_to_mps'][gear]
+--- before/src/robot/uturn/config.yaml
++++ after/src/robot/uturn/config.yaml
+@@ -1,4 +1,16 @@
+ # 掉头：只在此文件写本模块需要覆盖的参数。
+-# 默认空映射，沿用 competition.yaml + maneuvers.yaml，避免重复默认值。
+ # 用 python2 tools/module_workspace.py check 检查参数归属。
+-{}
++# Reuse the recorded RAW 26 model only during timed UTURN. Lane limits stay separate.
++uturn_calibration:
++  reverse_steering_sign: 1
++  forward_left_radius: 0.6784646272
++  forward_right_radius: 0.9925
++  # Historical reverse radii are provisional; no new measurement is implied.
++  reverse_left_radius: 0.5645372549
++  reverse_right_radius: 1.3608228346
++  forward_mps_per_raw: 0.0096153846
++  reverse_mps_per_raw: 0.0092692308
++# Seven timed segments first; bounded correction with fresh visual exit evidence.
++uturn_trial_exit_max_s: 4.0
++uturn_trial_exit_min_turn_deg: 150.0
++uturn_trial_exit_heading_deg: 20.0
+--- before/src/robot/uturn/controller.py
++++ after/src/robot/uturn/controller.py
+@@ -15,13 +15,15 @@
+ from robot.uturn.relative import RelativeUturn
+ from robot.uturn.relative import decode_scene
+ from robot.uturn.timed import TimedUturn
++from robot.uturn.calibration import command_angle
++from vehicle_control.pure_pursuit import PurePursuit
+ 
+ 
+ 
+ FIELDS = ('action_started', 'cfg', 'consumed_marker', 'course_clear_frames', 'course_finished',
+  'course_marker_stamp', 'course_stop_armed', 'course_stop_pending', 'executor',
+  'exit_count', 'exit_pose', 'exit_stamp', 'follow_left_boundary', 'follower',
+- 'front_blue_lines', 'front_marker_stamp', 'front_markers', 'gap_origin', 'lane_source',
++ 'front_blue_lines', 'front_marker_stamp', 'front_markers', 'gap_origin', 'lane_source', 'lane', 'lane_stamp',
+  'left_reference', 'marker', 'parking_marker', 'pending', 'pending_at', 'pose',
+  'rear_blue_lines', 'rear_marker_stamp', 'rear_markers', 'reason', 'relative_future',
+  'relative_replan_future', 'relative_scene', 'relative_uturn', 'right_tail_origin',
+@@ -317,8 +319,16 @@
+     if not 0<=now-ctx.front_marker_stamp<=cfg.get('ground_timeout',1.25):
+         return ctx.call('motion', 'stop', 'uturn_trial_front_stale')
+     try:
+-        if ctx.timed_uturn is None:ctx.timed_uturn=TimedUturn(cfg)
++        if ctx.timed_uturn is None:
++            ctx.timed_uturn=TimedUturn(cfg)
++            ctx.uturn.update(trial_last_yaw=ctx.pose[2],trial_turn_rad=0.)
+         task=ctx.timed_uturn
++        direction=1 if task.side=='left' else -1
++        # Command-model progress is a gate, not a measured chassis heading.
++        u=ctx.uturn
++        u['trial_turn_rad']=u.get('trial_turn_rad',0.)+direction*wrap(
++            ctx.pose[2]-u.get('trial_last_yaw',ctx.pose[2]))
++        u.update(trial_last_yaw=ctx.pose[2],estimated_turn_deg=math.degrees(u['trial_turn_rad']))
+         command=task.command(now)
+     except ValueError as exc:
+         ctx.state='FAULT'
+@@ -328,7 +338,28 @@
+         if not cfg.get('uturn_trial_resume_lane',False):
+             ctx.state='FINISHED'
+             return ctx.call('motion', 'stop', 'uturn_trial_complete_stop')
+-        if not ctx.call('turn','handoff_lane_confirmed',now):return ctx.call('motion', 'stop', 'uturn_trial_wait_lane')
++        if task.exit_max_s:
++            if 'trial_exit_started' not in ctx.uturn:
++                ctx.uturn['trial_exit_started']=now
++                ctx.exit_count,ctx.exit_stamp=0,-1.
++            _trial_exit_candidate(ctx,now)
++            if ctx.exit_count < cfg['exit_frames']:
++                ctx.uturn.update(phase='EXIT_ALIGN',exit_elapsed_s=task.elapsed,
++                                 exit_frames=ctx.exit_count)
++                if task.elapsed >= task.exit_max_s:
++                    ctx.state='FAULT'
++                    return ctx.call('motion','stop','uturn_trial_exit_not_aligned')
++                if not 0<=now-ctx.lane_stamp<=cfg['sensor_timeout']:
++                    return ctx.call('motion','stop','uturn_trial_wait_lane')
++                # Follow a credible near exit without changing mission state.
++                # Otherwise complete the residual turn, bounded by exit_max_s.
++                steer=_trial_exit_steering(ctx,now,direction)
++                result=ctx.call('obstacle','checked_command',
++                                (cfg['uturn_trial_forward_raw'],steer),now,False)
++                if result[0]:ctx.reason='uturn_trial_exit_align'
++                return result
++        elif not ctx.call('turn','handoff_lane_confirmed',now):
++            return ctx.call('motion', 'stop', 'uturn_trial_wait_lane')
+         ctx.timed_uturn=None
+         ctx.call('mission', 'resume_lane')
+         if cfg.get('uturn_course_test',False):
+@@ -336,10 +367,57 @@
+             ctx.course_stop_armed=False
+             ctx.course_clear_frames=0
+             ctx.course_marker_stamp=ctx.front_marker_stamp
+-        return ctx.call('motion', 'stop', 'uturn_trial_complete_lane')
++        # Resume in the same tick; avoid a gratuitous zero-speed handoff pulse.
++        return ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,True)
+     result=ctx.call('obstacle', 'checked_command', command,now,False)
+     if result==command:ctx.reason='uturn_trial_'+ctx.uturn['phase'].lower()
+     return result
++
++
++def _trial_exit_candidate(ctx, now):
++    """Near tangent plus turn progress; require distinct post-sequence images."""
++    cfg,u=ctx.cfg,ctx.uturn
++    reason='ok'
++    if not ctx.call('lane','lane_valid',now) or ctx.lane_stamp<u['trial_exit_started']:
++        reason='stale_or_invalid_lane'
++    elif u['estimated_turn_deg']<cfg.get('uturn_trial_exit_min_turn_deg',150):
++        reason='turn_incomplete'
++    else:
++        points=sorted(p for p in (local(ctx.pose,q) for q in ctx.lane) if .05<p[0]<=1.1)
++        if len(points)<2:
++            reason='exit_lane_too_far'
++        else:
++            heading=math.degrees(math.atan2(points[1][1]-points[0][1],points[1][0]-points[0][0]))
++            u.update(exit_heading_deg=heading,exit_lateral_m=points[0][1])
++            if abs(heading)>cfg.get('uturn_trial_exit_heading_deg',20):
++                reason='exit_heading'
++            elif abs(points[0][1])>cfg['exit_lateral_tolerance']:
++                reason='exit_lateral'
++    if reason!='ok':ctx.exit_count=0
++    if ctx.lane_stamp>ctx.exit_stamp:
++        if ctx.lane_stamp-ctx.exit_stamp>cfg['sensor_timeout']:ctx.exit_count=0
++        ctx.exit_stamp=ctx.lane_stamp
++        if reason=='ok':ctx.exit_count+=1
++    u.update(exit_reason=reason,exit_frames=ctx.exit_count)
++    return reason=='ok'
++
++
++def _trial_exit_steering(ctx, now, direction):
++    cfg,u=ctx.cfg,ctx.uturn
++    fallback=direction*cfg.get('steering_command_scale_rad',cfg['max_steer'])
++    if (u['estimated_turn_deg']<cfg.get('uturn_trial_exit_min_turn_deg',150) or
++            ctx.lane_stamp<u['trial_exit_started'] or not ctx.call('lane','lane_valid',now)):
++        return fallback
++    points=sorted(p for p in (local(ctx.pose,q) for q in ctx.lane) if .05<p[0]<=1.1)
++    if len(points)<2:return fallback
++    heading=math.atan2(points[1][1]-points[0][1],points[1][0]-points[0][0])
++    if abs(heading)>math.radians(60) or abs(points[0][1])>cfg['lane_width']/2:
++        return fallback
++    result=PurePursuit(cfg['wheelbase'],cfg['lookahead']).compute(points)
++    if not result.valid:return fallback
++    # Same pursuit law as lane tracking, with UTURN's own physical RAW mapping.
++    u['exit_target_local']=result.target_point
++    return command_angle(cfg,1,result.steering_angle)
+ 
+ 
+ def uturn_tick(ctx, now):
+--- before/src/robot/uturn/planner.py
++++ after/src/robot/uturn/planner.py
+@@ -36,7 +36,8 @@
+     mode=cfg.get('uturn_planner_mode','auto')
+     if mode not in ('auto','search'):
+         raise ValueError('uturn_planner_mode must be auto or search')
+-    if cfg.get('uturn_calibration') is not None and mode != 'search':
++    if (cfg.get('uturn_calibration') is not None and mode != 'search' and
++            not cfg.get('uturn_trial_enabled',False)):
+         raise ValueError('calibrated U-turn requires search mode')
+     values={}
+     for key,default,low,high in (
+--- before/src/robot/uturn/timed.py
++++ after/src/robot/uturn/timed.py
+@@ -1,6 +1,7 @@
+ """Explicit open-loop calibration maneuver; distances are command estimates."""
+ from __future__ import division
+ import math
++from robot.uturn.calibration import speed_gain
+ 
+ 
+ def sequence_steps(cfg,forward,vf,entry,pause):
+@@ -68,7 +69,10 @@
+             self.steps=sequence_steps(cfg,forward,vf,entry,pause)
+         self.index,self.elapsed,self.last=0,0.0,None
+         self.total_s=sum(step[1] for step in self.steps)
+-        if self.total_s+cfg.get('intersection_wait_s',1)+1 >= cfg['action_timeout']:
++        self.exit_max_s=value('uturn_trial_exit_max_s',0,0,5)
++        value('uturn_trial_exit_min_turn_deg',150,0,180)
++        value('uturn_trial_exit_heading_deg',20,1,45)
++        if self.total_s+self.exit_max_s+cfg.get('intersection_wait_s',1)+1 >= cfg['action_timeout']:
+             raise ValueError('trial duration exceeds action_timeout')
+ 
+     def pause(self):
+@@ -88,6 +92,15 @@
+     @property
+     def done(self):return self.index==len(self.steps)
+ 
++    def remaining_distance(self, cfg):
++        """Preview only the current segment, stopping at its planned endpoint."""
++        if self.done:
++            if not self.exit_max_s:return None
++            speed=cfg['uturn_trial_forward_raw']
++            return abs(speed)*speed_gain(cfg,speed)*max(0.,self.exit_max_s-self.elapsed)
++        unused,duration,command=self.steps[self.index]
++        return abs(command[0])*speed_gain(cfg,command[0])*max(0.,duration-self.elapsed)
++
+     def status(self):
+         return dict(phase='DONE' if self.done else self.steps[self.index][0],
+                     elapsed_s=self.elapsed,total_estimated_s=self.total_s,
+--- /dev/null
++++ src/robot/test/test_uturn_current_model.py
+@@ -0,0 +1,164 @@
++"""Timed UTURN regressions with current lane limits; never starts ROS nodes."""
++from __future__ import division
++import math
++import os
++import unittest
++
++from robot.common.config import load_config
++from robot.common.geometry import bicycle, distance, wrap, world
++from robot.master.controller import Controller
++from robot.uturn.timed import TimedUturn
++from robot.uturn.calibration import raw_angle, speed_gain, command_angle, trial_active
++from robot.common.contracts import encode_command, validate_config
++
++
++class CurrentModelTests(unittest.TestCase):
++    def setUp(self):
++        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
++        self.cfg = load_config(os.path.join(root, 'config'))
++        self.cfg.update(wait_green=False, lidar_enabled=False,
++                        steering_command_scale_rad=.03, max_steer=.2)
++        self.c = Controller(self.cfg)
++        self.addCleanup(self.c.close)
++
++    def finish(self, yaw):
++        c = self.c
++        c.state, c.action, c.action_started = 'UTURN', 'UTURN', 1.
++        c.wait_until = 0.
++        c.uturn = dict(trial_last_yaw=yaw, trial_turn_rad=yaw)
++        c.set_pose((0., 0., yaw), 10.)
++        c.timed_uturn = TimedUturn(self.cfg)
++        c.timed_uturn.index = len(c.timed_uturn.steps)
++
++    def lane(self, now, heading=0., lateral=0.):
++        c = self.c
++        c.front_marker_stamp = now
++        c.observe_lane([(.5, lateral), (.8, lateral+.3*math.tan(heading))], .99, now)
++
++    def test_ninety_degree_turn_cannot_handoff_to_a_crossing_lane(self):
++        self.finish(math.pi/2)
++        for i in range(4):
++            now = 10.+i*.1
++            self.lane(now)
++            command = self.c.tick(now)
++            self.assertEqual(command, (26, .03))
++            self.assertEqual(self.c.state, 'UTURN')
++
++    def test_exit_needs_new_aligned_frames_without_a_stop_pulse(self):
++        self.finish(math.pi)
++        self.lane(10., heading=math.radians(45))
++        command=self.c.tick(10.)
++        self.assertEqual(command[0],26)
++        self.assertGreater(command[1],0.)
++        for i in range(1, 4):
++            now = 10.+i*.1
++            self.lane(now)
++            command = self.c.tick(now)
++            self.assertGreater(command[0], 0)
++            if i < 3:
++                self.assertEqual(self.c.state, 'UTURN')
++                self.assertEqual(command, (26, 0.))
++                self.c.tick(now+.01)  # Same camera image cannot add a vote.
++                self.assertEqual(self.c.state, 'UTURN')
++                self.assertGreater(self.c.timed_uturn.elapsed, 0.)
++        self.assertEqual(self.c.state, 'LANE')
++
++    def test_exit_can_correct_the_other_direction_after_overshoot(self):
++        self.finish(math.radians(205))
++        self.lane(10.,heading=math.radians(-35))
++        command=self.c.tick(10.)
++        self.assertEqual(command[0],26)
++        self.assertLess(command[1],0.)
++        self.assertEqual(self.c.state,'UTURN')
++        self.assertEqual(self.c.action,'UTURN')
++
++    def test_exit_correction_is_bounded_and_stale_camera_stops(self):
++        self.finish(math.pi/2)
++        self.lane(10.)
++        self.c.tick(10.)
++        elapsed = self.c.timed_uturn.elapsed
++        self.assertEqual(self.c.tick(11.3), (0, 0.))
++        self.assertEqual(self.c.timed_uturn.elapsed, elapsed)
++        for i in range(55):
++            now = 11.4+i*.1
++            self.lane(now)
++            self.c.tick(now)
++            if self.c.state == 'FAULT':
++                break
++        self.assertEqual(self.c.state, 'FAULT')
++        self.assertEqual(self.c.reason, 'uturn_trial_exit_not_aligned')
++
++    def test_preview_stops_at_reverse_segment_endpoint(self):
++        c = self.c
++        c.cfg['lidar_enabled'] = True
++        c.state, c.action = 'UTURN', 'UTURN'
++        c.timed_uturn = TimedUturn(self.cfg)
++        c.timed_uturn.index = next(i for i, step in enumerate(c.timed_uturn.steps)
++                                  if step[0] == 'SEGMENT_6')
++        paths = []
++        c._runtime.overrides['scan_ready'] = lambda now: True
++        c._runtime.overrides['sweep_clear'] = lambda path, *args, **kwargs: paths.append(path) or True
++        self.assertEqual(c.checked_command((-26, -.03), 1., False), (-26, -.03))
++        endpoint = paths[-1][-1]
++        expected = bicycle(c.pose, -26*.0092692308*.8298755159,
++                           -math.atan(.26/1.3608228346), .26)
++        self.assertLess(distance(endpoint, expected), 1e-7)
++        self.assertLess(abs(wrap(endpoint[2]-expected[2])), 1e-7)
++        # The same wire command in normal lane mode keeps the shared .2 model.
++        c.state,c.action='LANE',None
++        c.checked_command((-26,-.03),1.,False)
++        expected=bicycle(c.pose,-c.cfg['obstacle_stop_distance'],-.2,.26)
++        self.assertLess(distance(paths[-1][-1],expected),1e-7)
++        self.assertLess(abs(wrap(paths[-1][-1][2]-expected[2])),1e-7)
++
++    def test_calibration_is_independent_of_lane_limit_and_raw_roundtrips(self):
++        for reverse_sign in (-1, 1):
++            self.cfg['uturn_calibration']['reverse_steering_sign'] = reverse_sign
++            for speed in (-26, 26):
++                for raw in (-22, -11, 0, 11, 22):
++                    angle = raw_angle(self.cfg, speed, raw)
++                    command = command_angle(self.cfg, 1 if speed > 0 else -1, angle)
++                    self.assertEqual(encode_command(speed,command,self.cfg,0)['steering_raw'],raw)
++                    changed = dict(self.cfg,max_steer=.46275)
++                    self.assertEqual(raw_angle(changed,speed,raw),angle)
++        self.assertAlmostEqual(26*speed_gain(self.cfg,26),.25,places=7)
++        self.assertTrue(trial_active(self.cfg,'UTURN'))
++        for state in ('LANE','MANEUVER','TIMED_BYPASS','PARKING'):
++            self.assertFalse(trial_active(self.cfg,state))
++
++    def test_blocked_exit_pauses_time_and_keeps_collision_protection(self):
++        self.finish(math.pi/2)
++        c=self.c
++        c.cfg['lidar_enabled']=True
++        c._runtime.overrides['scan_ready']=lambda now: True
++        # Real raw-return sweep with a point in the current body.
++        class BodyScan(object):
++            stamp=10.
++            shape_filter=False
++            obstacles=[(.2,0.)]
++            def evidence(self,point):return {}
++            def classify(self,point):return 'FREE'
++        c.scan=BodyScan()
++        c.scan.obstacles=[world(c.pose,(.2,0.))]
++        self.lane(10.)
++        self.assertEqual(c.tick(10.),(0,0.))
++        self.assertEqual(c.reason,'lidar_obstacle_in_sweep')
++        for i in range(1,6):
++            now=10.+i*.1;self.lane(now)
++            self.assertEqual(c.tick(now),(0,0.))
++        self.assertEqual(c.timed_uturn.elapsed,0.)
++        c.scan.obstacles=[]
++        self.lane(10.6)
++        self.assertEqual(c.tick(10.6),(26,.03))
++        self.assertEqual(c.timed_uturn.elapsed,0.)
++
++    def test_invalid_exit_limits_are_rejected(self):
++        for key,value in (('uturn_trial_exit_max_s',float('nan')),
++                          ('uturn_trial_exit_min_turn_deg',181),
++                          ('uturn_trial_exit_heading_deg',0)):
++            cfg=dict(self.cfg);cfg[key]=value
++            with self.assertRaises(ValueError):validate_config(cfg)
++
++
++if __name__ == '__main__':
++    unittest.main()

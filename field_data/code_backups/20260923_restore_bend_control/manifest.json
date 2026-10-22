@@ -1,0 +1,37 @@
+[
+  {
+    "path": "src/robot/camera/observations.py",
+    "before": "285446985fc077bde98b4a70efb7c91130020c73bb80c108374eec78becbf47e",
+    "after": "a6f762849dd238197cde41d35885a8465f45610f9e5bbe7791db1d3f9e802022"
+  },
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "1c406a6e65fbd1b9a2ebb7552819e0d5a2aaa0204bf871168e0a5d63beb0b53d",
+    "after": "1718fe27bae0c40338d6ff815f37a700152bf09a63098e7626aaf2d40051199d"
+  },
+  {
+    "path": "src/robot/master/controller_node.py",
+    "before": "e281b4cc611513291bfe97b6759e294ed806199cde9023b873d761aa44bc4807",
+    "after": "e0097a8ad770c32a501d30489ea95f8d7c08f75c349dd6134d5adbdc87c8edfa"
+  },
+  {
+    "path": "src/robot/master/state_machine.py",
+    "before": "dd9099888a6f312df0f34f2577c73bb2200127e9482445f3db805a7ea91fcb50",
+    "after": "032e956243b6c57143bb010bdd859d44603eb973a93f5f77ef83467c1d4609b8"
+  },
+  {
+    "path": "src/robot/master/telemetry.py",
+    "before": "7bba32a97b8900bdf27eb7bd3562d9a65ba25860468fd1181d289fd49580c0d4",
+    "after": "6c3750ed5e9c6b6a1d8a11ad0593b2e69b9a007612f14d026096964aed464e4e"
+  },
+  {
+    "path": "src/robot/test/test_lane_loss_transition.py",
+    "before": "737e50000c4c981d4835295a9bfa12f7702270e411b03b7701aea254cbbcc060",
+    "after": "7557687c26eb93448f6a687de80f2bc8bbaea26f8051bb1369933e89ed8e84ee"
+  },
+  {
+    "path": "src/robot/test/test_ros_adapter.py",
+    "before": "4919e866726ef93541bac56bd2cd800bc506e6f52a5688483882fab44d848208",
+    "after": "7a221e1c5a7756f3913cea7b3f318ee0c260c16e8e07d54d12c86dca4ee446c2"
+  }
+]

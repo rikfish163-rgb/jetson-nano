@@ -1,0 +1,533 @@
+[
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/000_red.jpg",
+    "label": "red",
+    "pred": "red",
+    "score": 0.9934056997299194,
+    "bounds": [
+      0,
+      0,
+      352,
+      360
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/001_red.jpg",
+    "label": "red",
+    "pred": "red",
+    "score": 0.9951838850975037,
+    "bounds": [
+      0,
+      31,
+      378,
+      329
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/002_red.jpg",
+    "label": "red",
+    "pred": "red",
+    "score": 0.9956884980201721,
+    "bounds": [
+      0,
+      91,
+      352,
+      269
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/003_red.jpg",
+    "label": "red",
+    "pred": "red",
+    "score": 0.9999862909317017,
+    "bounds": [
+      284,
+      68,
+      168,
+      162
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/004_red.jpg",
+    "label": "red",
+    "pred": "red",
+    "score": 0.9999741315841675,
+    "bounds": [
+      0,
+      0,
+      514,
+      360
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/005_green.jpg",
+    "label": "green",
+    "pred": "green",
+    "score": 0.9999817609786987,
+    "bounds": [
+      315,
+      85,
+      133,
+      131
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/006_green.jpg",
+    "label": "green",
+    "pred": "green",
+    "score": 0.9999862909317017,
+    "bounds": [
+      269,
+      69,
+      155,
+      155
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/007_green.jpg",
+    "label": "green",
+    "pred": "green",
+    "score": 0.9999864101409912,
+    "bounds": [
+      269,
+      69,
+      155,
+      154
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/008_green.jpg",
+    "label": "green",
+    "pred": "green",
+    "score": 0.9999967813491821,
+    "bounds": [
+      221,
+      68,
+      239,
+      236
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/009_green.jpg",
+    "label": "green",
+    "pred": "green",
+    "score": 0.9999932050704956,
+    "bounds": [
+      265,
+      70,
+      158,
+      159
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/010_green.jpg",
+    "label": "green",
+    "pred": "green",
+    "score": 0.9999986886978149,
+    "bounds": [
+      137,
+      0,
+      468,
+      360
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/011_straight.jpg",
+    "label": "straight",
+    "pred": "straight",
+    "score": 0.9992706179618835,
+    "bounds": [
+      292,
+      22,
+      142,
+      142
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/012_straight.jpg",
+    "label": "straight",
+    "pred": "straight",
+    "score": 0.9992990493774414,
+    "bounds": [
+      291,
+      22,
+      143,
+      141
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/013_straight.jpg",
+    "label": "straight",
+    "pred": "straight",
+    "score": 0.999342143535614,
+    "bounds": [
+      292,
+      22,
+      142,
+      142
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/014_straight.jpg",
+    "label": "straight",
+    "pred": "straight",
+    "score": 0.9995946288108826,
+    "bounds": [
+      292,
+      22,
+      142,
+      142
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/015_straight.jpg",
+    "label": "straight",
+    "pred": "straight",
+    "score": 0.9999092817306519,
+    "bounds": [
+      259,
+      0,
+      154,
+      147
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/016_straight.jpg",
+    "label": "straight",
+    "pred": "straight",
+    "score": 0.9999773502349854,
+    "bounds": [
+      211,
+      48,
+      111,
+      111
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/017_left.jpg",
+    "label": "left",
+    "pred": "left",
+    "score": 0.9899210929870605,
+    "bounds": [
+      301,
+      0,
+      221,
+      171
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/018_left.jpg",
+    "label": "left",
+    "pred": "left",
+    "score": 0.9915061593055725,
+    "bounds": [
+      295,
+      0,
+      226,
+      175
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/019_left.jpg",
+    "label": "left",
+    "pred": "left",
+    "score": 0.9918714761734009,
+    "bounds": [
+      295,
+      0,
+      224,
+      173
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/020_left.jpg",
+    "label": "left",
+    "pred": "left",
+    "score": 0.9993775486946106,
+    "bounds": [
+      384,
+      0,
+      190,
+      173
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/021_left.jpg",
+    "label": "left",
+    "pred": "left",
+    "score": 0.9981993436813354,
+    "bounds": [
+      301,
+      0,
+      199,
+      151
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/022_left.jpg",
+    "label": "left",
+    "pred": "left",
+    "score": 0.9999454021453857,
+    "bounds": [
+      424,
+      74,
+      78,
+      78
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/023_right.jpg",
+    "label": "right",
+    "pred": "right",
+    "score": 0.9979467988014221,
+    "bounds": [
+      362,
+      61,
+      86,
+      88
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/024_right.jpg",
+    "label": "right",
+    "pred": "right",
+    "score": 0.9979496598243713,
+    "bounds": [
+      369,
+      60,
+      85,
+      88
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/025_right.jpg",
+    "label": "right",
+    "pred": "right",
+    "score": 0.9980912804603577,
+    "bounds": [
+      385,
+      57,
+      86,
+      88
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/026_right.jpg",
+    "label": "right",
+    "pred": "right",
+    "score": 0.9994295239448547,
+    "bounds": [
+      299,
+      70,
+      77,
+      78
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/027_right.jpg",
+    "label": "right",
+    "pred": "right",
+    "score": 0.9997214674949646,
+    "bounds": [
+      329,
+      38,
+      123,
+      121
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/028_right.jpg",
+    "label": "right",
+    "pred": "right",
+    "score": 0.9996765851974487,
+    "bounds": [
+      297,
+      67,
+      96,
+      93
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/029_uturn.jpg",
+    "label": "uturn",
+    "pred": "uturn",
+    "score": 0.9722870588302612,
+    "bounds": [
+      280,
+      72,
+      89,
+      86
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/030_uturn.jpg",
+    "label": "uturn",
+    "pred": "uturn",
+    "score": 0.9734401702880859,
+    "bounds": [
+      280,
+      73,
+      89,
+      84
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/031_uturn.jpg",
+    "label": "uturn",
+    "pred": "uturn",
+    "score": 0.9768154621124268,
+    "bounds": [
+      280,
+      71,
+      87,
+      87
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/032_uturn.jpg",
+    "label": "uturn",
+    "pred": "uturn",
+    "score": 0.9918394088745117,
+    "bounds": [
+      279,
+      73,
+      89,
+      85
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/033_uturn.jpg",
+    "label": "uturn",
+    "pred": "uturn",
+    "score": 0.9826648831367493,
+    "bounds": [
+      279,
+      72,
+      90,
+      85
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/034_uturn.jpg",
+    "label": "uturn",
+    "pred": "uturn",
+    "score": 0.9929059743881226,
+    "bounds": [
+      279,
+      73,
+      88,
+      85
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/035_park.jpg",
+    "label": "park",
+    "pred": "park",
+    "score": 0.7347245812416077,
+    "bounds": [
+      352,
+      88,
+      107,
+      97
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/036_park.jpg",
+    "label": "park",
+    "pred": "park",
+    "score": 0.8929819464683533,
+    "bounds": [
+      368,
+      78,
+      111,
+      109
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/037_park.jpg",
+    "label": "park",
+    "pred": "park",
+    "score": 0.9194583892822266,
+    "bounds": [
+      383,
+      73,
+      101,
+      118
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/038_park.jpg",
+    "label": "park",
+    "pred": "park",
+    "score": 0.9995917677879333,
+    "bounds": [
+      325,
+      72,
+      77,
+      77
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/039_park.jpg",
+    "label": "park",
+    "pred": "park",
+    "score": 0.9998219609260559,
+    "bounds": [
+      359,
+      86,
+      57,
+      57
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/040_park.jpg",
+    "label": "park",
+    "pred": "park",
+    "score": 0.9996241331100464,
+    "bounds": [
+      283,
+      70,
+      86,
+      89
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/041_background.jpg",
+    "label": "background",
+    "pred": "no_candidate"
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/042_background.jpg",
+    "label": "background",
+    "pred": "no_candidate"
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/043_background.jpg",
+    "label": "background",
+    "pred": "no_candidate"
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/044_background.jpg",
+    "label": "background",
+    "pred": "background",
+    "score": 0.9999418258666992,
+    "bounds": [
+      186,
+      150,
+      115,
+      86
+    ]
+  },
+  {
+    "path": "/home/nano/robocup_ws/field_data/board_validation_20260915/045_background.jpg",
+    "label": "background",
+    "pred": "background",
+    "score": 0.9999858140945435,
+    "bounds": [
+      225,
+      170,
+      138,
+      99
+    ]
+  }
+]

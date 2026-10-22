@@ -1,0 +1,12 @@
+[
+  {
+    "images": 3070, 
+    "path": "/home/nano/robocup_ws/field_data/lane_runs/20260930_025754_5783", 
+    "bytes": 72480140
+  }, 
+  {
+    "images": 4135, 
+    "path": "/home/nano/robocup_ws/field_data/lane_runs/20260930_040314_16505", 
+    "bytes": 99940808
+  }
+]

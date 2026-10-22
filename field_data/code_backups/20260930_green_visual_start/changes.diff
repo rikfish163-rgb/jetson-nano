@@ -1,0 +1,99 @@
+--- before/src/robot/master/state_machine.py
++++ src/robot/master/state_machine.py
+@@ -335,6 +335,17 @@
+ 
+ def begin_startup(ctx, now):
+     ctx.lane_curve_lock = None
++    if ctx.cfg.get('startup_follow_lane',False):
++        # Command odometry cannot locate the physical bend. Use measured
++        # centers from release rather than holding neutral for a distance.
++        ctx.state = 'LANE'
++        ctx.startup_started = None
++        ctx.startup_origin = None
++        ctx.startup_blue_point = None
++        ctx.startup_curve_lock = None
++        ctx.gap_origin = None
++        ctx.marker, ctx.parking_marker = None, None
++        return
+     ctx.state = 'STARTUP_STRAIGHT'
+     ctx.startup_started = now
+     ctx.startup_origin = ctx.pose
+--- before/src/robot/common/contracts.py
++++ src/robot/common/contracts.py
+@@ -196,6 +196,7 @@
+     if not 0 < number(cfg.get('straight_speed_raw',18)) <= cfg['speed_raw_limit']:
+         raise ValueError('invalid straight_speed_raw')
+     trim = number(cfg.get('startup_steering_raw',0))
++    boolean(cfg.get('startup_follow_lane',False))
+     if trim != int(trim) or abs(trim) > 5:
+         raise ValueError('startup_steering_raw must be an integer in [-5,5]')
+     if not .05 <= number(cfg.get('lane_min_path_span',.15)) <= .30:
+--- before/src/robot/launch/full.launch
++++ src/robot/launch/full.launch
+@@ -72,6 +72,7 @@
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+   <arg name="startup_steering_raw" default=""/>
++  <arg name="startup_follow_lane" default="false"/>
+   <arg name="uturn_reverse_distance_m" default="0"/>
+   <arg name="uturn_relative_enabled" default="false"/>
+   <arg name="lookahead" default=""/>
+@@ -146,6 +147,7 @@
+     <arg name="action_speed_raw" value="$(arg action_speed_raw)"/>
+     <arg name="straight_speed_raw" value="$(arg straight_speed_raw)"/>
+     <arg name="startup_steering_raw" value="$(arg startup_steering_raw)"/>
++    <arg name="startup_follow_lane" value="$(arg startup_follow_lane)"/>
+     <arg name="uturn_reverse_distance_m" value="$(arg uturn_reverse_distance_m)"/>
+     <arg name="uturn_relative_enabled" value="$(arg uturn_relative_enabled)"/>
+     <arg name="lookahead" value="$(arg lookahead)"/>
+--- before/src/robot/launch/stack.launch
++++ src/robot/launch/stack.launch
+@@ -78,6 +78,7 @@
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+   <arg name="startup_steering_raw" default=""/>
++  <arg name="startup_follow_lane" default="false"/>
+   <arg name="uturn_reverse_distance_m" default="0"/>
+   <arg name="uturn_relative_enabled" default="false"/>
+   <arg name="lookahead" default=""/>
+@@ -162,6 +163,7 @@
+   <param if="$(eval arg('action_speed_raw') != '')" name="/competition/config/speed_raw/action" value="$(arg action_speed_raw)" type="int"/>
+   <param if="$(eval arg('straight_speed_raw') != '')" name="/competition/config/straight_speed_raw" value="$(arg straight_speed_raw)" type="int"/>
+   <param if="$(eval arg('startup_steering_raw') != '')" name="/competition/config/startup_steering_raw" value="$(arg startup_steering_raw)" type="int"/>
++  <param name="/competition/config/startup_follow_lane" value="$(arg startup_follow_lane)" type="bool"/>
+   <param name="/competition/config/uturn_reverse_distance_m" value="$(arg uturn_reverse_distance_m)" type="double"/>
+   <param name="/competition/config/uturn_relative_enabled" value="$(arg uturn_relative_enabled)" type="bool"/>
+   <param if="$(eval arg('lookahead') != '')" name="/competition/config/lookahead" value="$(arg lookahead)" type="double"/>
+--- before/src/robot/config/competition.yaml
++++ src/robot/config/competition.yaml
+@@ -84,6 +84,7 @@
+ straight_wait_s: 1.0
+ straight_speed_raw: 20
+ startup_steering_raw: 0 # green-start straight steering command
++startup_follow_lane: false # true: green release goes directly to measured lane control
+ straight_right_blue_offset_m: 0.30 # vehicle center stays this far left of right tape
+ straight_search_max_distance: 2.20 # legacy fixed-UTURN blue search only; unused by STRAIGHT
+ straight_search_timeout: 20.0
+--- before/src/robot/config/workspace_modules.yaml
++++ src/robot/config/workspace_modules.yaml
+@@ -17,6 +17,7 @@
+     - rear_bev
+     - sensor_timeout
+     - wait_green
++    - startup_follow_lane
+     - white
+   camera:
+     title: 摄像头与图像输入
+--- before/tools/sign_detector_20260916/run_lane_green_obstacle.sh
++++ tools/sign_detector_20260916/run_lane_green_obstacle.sh
+@@ -3,8 +3,10 @@
+ cd /home/nano/robocup_ws
+ # The shared entry validates the engine and prevents duplicate vehicle nodes.
+ # Retain green release and collision/unknown-space protection with no parking.
++# Green immediately follows measured centers at 12; no blind startup distance.
+ exec bash tools/sign_detector_20260916/run_yolo_vehicle.sh \
+   parking_enabled:=false start_rear:=false wait_green:=true lidar_enabled:=true \
++  startup_follow_lane:=true \
+   lane_speed_raw:=12 action_speed_raw:=24 straight_speed_raw:=24 \
+   lane_curvature_preview:=true lookahead:=0.8 lane_curve_speed_raw:=12 \
+   debug_view:=false record_lane:=false sign_hz:=2.0 ground_hz:=4.0 "$@"

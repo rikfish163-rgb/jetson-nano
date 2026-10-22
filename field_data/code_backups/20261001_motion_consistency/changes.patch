@@ -1,0 +1,725 @@
+--- before/src/robot/obstacle/controller.py
++++ src/robot/obstacle/controller.py
+@@ -12,9 +12,9 @@
+ from robot.common.geometry import world
+ from robot.common.geometry import wrap
+ from robot.obstacle.planner import bypass_path
+-from robot.common.contracts import command_to_model_steering
+ from robot.common.contracts import encode_command
+ from robot.uturn.calibration import trial_active, raw_angle
++from robot.motion import calibration as chassis
+ 
+ 
+ 
+@@ -172,9 +172,10 @@
+                 # the wheels, check the first two seconds of the right arc:
+                 # the 8 cm imminent guard alone notices the cone too late.
+                 speed=ctx.cfg.get('timed_bypass_speed_raw',ctx.cfg['speed_raw']['action'])
+-                horizon=max(.08,min(.40,2*speed*ctx.cfg['raw_to_mps']['forward']))
++                horizon=max(.08,min(.40,2*speed*chassis.speed_gain(ctx.cfg,speed)))
+                 steer=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+-                angle=command_to_model_steering(-steer,ctx.cfg)
++                raw = encode_command(speed,-steer,ctx.cfg,0)['steering_raw']
++                angle = chassis.raw_angle(ctx.cfg,speed,raw)
+                 obstacles=np.asarray(ctx.scan.obstacles,dtype=float).reshape(-1,2)
+                 path=[bicycle(ctx.pose,horizon*i/32,angle,ctx.cfg['wheelbase'])
+                       for i in range(1,33)]
+@@ -324,9 +325,9 @@
+         # remains in the scan's existing command-local frame. Never project
+         # the obstacle guard through the planned stop into a bay end wall.
+         horizon = min(horizon,max(.04,remaining))
+-    physical = command_to_model_steering(steer,ctx.cfg)
++    raw = encode_command(speed,steer,ctx.cfg,0)['steering_raw']
++    physical = chassis.raw_angle(ctx.cfg,speed,raw)
+     if trial_active(ctx.cfg,ctx.state):
+-        raw = encode_command(speed,steer,ctx.cfg,0)['steering_raw']
+         physical = raw_angle(ctx.cfg,speed,raw)
+         if ctx.timed_uturn is not None:
+             remaining = ctx.timed_uturn.remaining_distance(ctx.cfg)
+@@ -364,7 +365,8 @@
+             # 15 cm cap would stop before it clears the rotating rear sweep.
+             if now-clearance['since'] <= 1.5 and distance(ctx.pose,clearance['origin']) <= .25:
+                 for alternative in (steer*.5,0.,-steer*.5):
+-                    angle = command_to_model_steering(alternative,ctx.cfg)
++                    raw = encode_command(speed,alternative,ctx.cfg,0)['steering_raw']
++                    angle = chassis.raw_angle(ctx.cfg,speed,raw)
+                     safe_path = [bicycle(ctx.pose,horizon*i/16,angle,ctx.cfg['wheelbase'])
+                                  for i in range(1,17)]
+                     if ctx.call('obstacle','sweep_clear',safe_path,True):
+--- before/src/robot/motion/config.yaml
++++ src/robot/motion/config.yaml
+@@ -1,4 +1,13 @@
+ # 运动执行与手动接管：只在此文件写本模块需要覆盖的参数。
+-# 默认空映射，沿用 competition.yaml + maneuvers.yaml，避免重复默认值。
+ # 用 python2 tools/module_workspace.py check 检查参数归属。
+-{}
++# Shared historical RAW 26 model. Independent of the lane max_steer gain.
++# Source: config/uturn_vision.yaml and field_data/uturn_open_loop/20260914_220634_1407.json.
++# Reverse radii and linear speed scaling at other RAW values remain estimates.
++chassis_calibration:
++  reverse_steering_sign: 1
++  forward_left_radius: 0.6784646272
++  forward_right_radius: 0.9925
++  reverse_left_radius: 0.5645372549
++  reverse_right_radius: 1.3608228346
++  forward_mps_per_raw: 0.0096153846
++  reverse_mps_per_raw: 0.0092692308
+--- before/src/robot/motion/README.md
++++ src/robot/motion/README.md
+@@ -1,8 +1,21 @@
+ # 运动执行
+ 
+ controller.py 执行选定轨迹、停车和转向反馈；tracker.py 跟踪路径。
++odometry.py 按底盘命令反馈的源时间戳累计自行车模型，最多外推到 0.25 秒的命令有效期。
++控制定时器延迟不会截掉行程；停车反馈按实际反馈时间结束上一条命令的行程。
+ 
+-调参修改本目录 `config.yaml`。默认 `{}` 沿用整车标定；允许参数用 `list` 命令查看。
++调参修改本目录 `config.yaml`；允许参数用 `list` 命令查看。
++
++`chassis_calibration` 保存统一的 RAW 到速度、轮角模型，来源是已有 RAW 26
++标定记录。前进满舵左、右的后轴半径分别为 .6784646272 m、.9925 m。
++倒车半径和其他 RAW 速度的线性换算仍是估计，需要当前车辆实测核对。
++正常左右转、直行、UTURN 位姿累计和雷达扫掠使用这套模型。
++UTURN 实验配置仍可通过 `uturn_calibration` 显式覆盖。
++
++`max_steer=.2` 保留为现有循线调舵尺度；`steering_command_scale_rad=.03`
++对应协议 RAW 22。它们不再作为底盘满舵的物理轮角。
++`/competition/status` 的 `motion_model` 显示当前使用的模型参数，
++位姿来源仍是 `command_estimate`，不是轮速或航向传感器测量。
+ 
+ ```bash
+ cd /home/nano/robocup_ws
+--- before/src/robot/uturn/calibration.py
++++ src/robot/uturn/calibration.py
+@@ -1,55 +1,34 @@
+-"""U-turn-only empirical full-lock model. Intermediate angles are interpolated."""
+-import math
++"""Optional U-turn calibration override of the shared chassis model."""
++from robot.motion import calibration as chassis
++
++
++def _config(cfg):
++    if cfg.get('uturn_calibration') is not None:
++        return dict(cfg,chassis_calibration=cfg['uturn_calibration'])
++    return cfg
+ 
+ 
+ def validate(cfg):
+-    table=cfg.get('uturn_calibration')
+-    if table is None:return
+-    if not isinstance(table,dict):raise ValueError('invalid uturn calibration table')
+-    sign=table.get('reverse_steering_sign',1)
+-    if isinstance(sign,bool) or sign not in (-1,1):
+-        raise ValueError('invalid uturn reverse steering sign')
+-    for key in ('forward_left_radius','forward_right_radius',
+-                'reverse_left_radius','reverse_right_radius',
+-                'forward_mps_per_raw','reverse_mps_per_raw'):
+-        value=table.get(key)
+-        if isinstance(value,bool) or not isinstance(value,(int,float)):
+-            raise ValueError('invalid uturn calibration '+key)
+-        upper=5. if 'radius' in key else .1
+-        if not 0 < value <= upper:raise ValueError('invalid uturn calibration '+key)
++    chassis.validate(_config(cfg))
+ 
+ 
+ def limit(cfg,gear,steer):
+-    table=cfg.get('uturn_calibration')
+-    if table is None:return cfg['max_steer']
+-    # Map model curvature to RAW side; reverse travel already reverses yaw.
+-    raw_side=steer if gear>0 else steer*table.get('reverse_steering_sign',1)
+-    key=('forward_' if gear>0 else 'reverse_')+('left_radius' if raw_side>=0 else 'right_radius')
+-    return math.atan(cfg['wheelbase']/table[key])
++    return chassis.limit(_config(cfg),gear,steer)
+ 
+ 
+ def command_angle(cfg,gear,steer):
+-    fraction=max(-1.,min(1.,steer/limit(cfg,gear,steer)))
+-    sign=1 if gear>0 else cfg.get('uturn_calibration',{}).get('reverse_steering_sign',1)
+-    return sign*fraction*cfg.get('steering_command_scale_rad',cfg['max_steer'])
++    return chassis.command_angle(_config(cfg),gear,steer)
+ 
+ 
+ def trial_active(cfg, state):
+     return (state == 'UTURN' and cfg.get('uturn_trial_enabled',False) and
+-            cfg.get('uturn_calibration') is not None)
++            (cfg.get('uturn_calibration') is not None or cfg.get('chassis_calibration') is not None))
+ 
+ 
+ def raw_angle(cfg, speed, steering_raw):
+     """Inverse chassis mapping; speed is logical RAW, steering is wire RAW."""
+-    gear = 1 if speed >= 0 else -1
+-    fraction = steering_raw / float(cfg['steering_sign']*cfg['steering_raw_limit'])
+-    fraction = max(-1.,min(1.,fraction))
+-    sign = 1 if gear > 0 else cfg.get('uturn_calibration',{}).get('reverse_steering_sign',1)
+-    physical_side = sign*fraction
+-    return physical_side*limit(cfg,gear,physical_side)
++    return chassis.raw_angle(_config(cfg),speed,steering_raw)
+ 
+ 
+ def speed_gain(cfg, speed):
+-    gear = 'forward' if speed >= 0 else 'reverse'
+-    table = cfg.get('uturn_calibration')
+-    return table[gear+'_mps_per_raw'] if table is not None else cfg['raw_to_mps'][gear]
++    return chassis.speed_gain(_config(cfg),speed)
+--- before/src/robot/uturn/config.yaml
++++ src/robot/uturn/config.yaml
+@@ -1,15 +1,6 @@
+ # 掉头：只在此文件写本模块需要覆盖的参数。
+ # 用 python2 tools/module_workspace.py check 检查参数归属。
+-# Reuse the recorded RAW 26 model only during timed UTURN. Lane limits stay separate.
+-uturn_calibration:
+-  reverse_steering_sign: 1
+-  forward_left_radius: 0.6784646272
+-  forward_right_radius: 0.9925
+-  # Historical reverse radii are provisional; no new measurement is implied.
+-  reverse_left_radius: 0.5645372549
+-  reverse_right_radius: 1.3608228346
+-  forward_mps_per_raw: 0.0096153846
+-  reverse_mps_per_raw: 0.0092692308
++# Normal UTURN uses the shared RAW model in motion/config.yaml.
+ # Seven timed segments first; bounded correction with fresh visual exit evidence.
+ uturn_trial_exit_max_s: 4.0
+ uturn_trial_exit_min_turn_deg: 150.0
+--- before/src/robot/turn/planner.py
++++ src/robot/turn/planner.py
+@@ -2,6 +2,7 @@
+ from __future__ import division
+ import math
+ from robot.common.geometry import bicycle
++from robot.motion.calibration import limit
+ 
+ 
+ def turn_parameters(cfg, action):
+@@ -10,9 +11,11 @@
+     values = dict((key,cfg.get(prefix+key,cfg[key]))
+                   for key in ('turn_entry','turn_radius','turn_exit'))
+     values['turn_angle_deg'] = cfg.get(prefix+'turn_angle_deg',cfg.get('turn_angle_deg',90.0))
+-    values['effective_radius'] = max(values['turn_radius'],cfg['wheelbase']/math.tan(cfg['max_steer']))
+-    if action=='LEFT' and cfg.get('left_turn_full_lock',False):
+-        values['effective_radius']=cfg['wheelbase']/math.tan(cfg['max_steer'])
++    steer_limit = limit(cfg,1,-1 if action == 'RIGHT' else 1)
++    minimum_radius = cfg['wheelbase']/math.tan(steer_limit)
++    values['effective_radius'] = max(values['turn_radius'],minimum_radius)
++    if action in ('LEFT','RIGHT') and cfg.get(prefix+'turn_full_lock',False):
++        values['effective_radius'] = minimum_radius
+     return values
+ 
+ 
+--- before/src/robot/turn/README.md
++++ src/robot/turn/README.md
+@@ -17,8 +17,13 @@
+   内（尺度 `0.03` 对应 RAW `-22`）；符合位置、新鲜度、去重条件的蓝线
+   必须连续出现于 `exit_frames=3` 张新图像，才开始独立直行 `1.25 m`。
+   相同图像的重复控制周期不增加确认计数。
+-- `left_turn_full_lock:=false` 仍可选择规划路径跟踪。以当前车辆模型计算，
+-  最小半径约 `1.283 m`；`left_turn_radius=0.65` 不代表模型能生成该半径。
++- 规划与位姿累计使用 `motion/config.yaml` 的独立底盘模型，前进满舵左、
++  右后轴半径分别约 `.678 m`、`.993 m`；不再用循线的 `max_steer=.2`
++  推算成 `1.283 m`。这些是已有标定记录，当前实车仍需核对。
++
++直行牌的流程是：缓存 STRAIGHT → 横向蓝线触发并停车 → 从该动作起点
++前进 1.25 m → 继续循线。行程累计使用命令反馈的源时间戳与统一速度映射，
++不使用控制回调次数；在途中识别到下一块牌只缓存，不抢占这 1.25 m。
+ 
+ UTURN 的固定动作表和普通循线参数由各自模块管理。
+ 
+--- before/src/robot/config/workspace_modules.yaml
++++ src/robot/config/workspace_modules.yaml
+@@ -57,6 +57,7 @@
+     title: 运动执行与手动接管
+     parameters:
+     - body_width
++    - chassis_calibration
+     - front_overhang
+     - max_steer
+     - odom_timeout
+--- before/src/robot/master/telemetry.py
++++ src/robot/master/telemetry.py
+@@ -4,6 +4,7 @@
+ from robot.common.geometry import wrap
+ from robot.common.planning import turn_parameters
+ from robot.common.contracts import encode_command
++from robot.motion.calibration import limit, speed_gain
+ 
+ 
+ def active_scene_task(core):
+@@ -51,6 +52,11 @@
+ def controller_status(core, cfg, now, live, enabled, command, seq, lane_observation=None):
+     turn_action = core.action or core.pending or core.last_completed_action
+     status = dict(stamp=now,state=core.state,reason=core.reason,
++        motion_model=dict(source='configured_chassis_calibration' if cfg.get('chassis_calibration') else 'legacy_config',
++            evidence='command_estimate',lane_max_steer_rad=cfg['max_steer'],
++            command_scale_rad=cfg.get('steering_command_scale_rad',cfg['max_steer']),
++            forward_mps_per_raw=speed_gain(cfg,1),reverse_mps_per_raw=speed_gain(cfg,-1),
++            forward_left_lock_rad=limit(cfg,1,1),forward_right_lock_rad=limit(cfg,1,-1)),
+         uturn_course=(dict(stop_pending=core.course_stop_pending,
+             stop_armed=core.course_stop_armed,clear_frames=core.course_clear_frames,
+             finished=core.course_finished) if cfg.get('uturn_course_test',False) else None),
+--- before/src/robot/master/controller_node.py
++++ src/robot/master/controller_node.py
+@@ -16,7 +16,8 @@
+ from std_msgs.msg import String,Float32,Bool
+ from robot.master.controller import Controller
+ from robot.lidar.scan import Scan
+-from robot.common.geometry import bicycle
++from robot.motion.odometry import CommandOdometry
++from robot.motion import calibration as chassis
+ from robot.common.geometry import wrap
+ from robot.common.geometry import local
+ from robot.common.geometry import world
+@@ -51,6 +52,7 @@
+         self.confidence, self.confidence_time = 0.0,-1.0
+         self.applied, self.applied_at = (0,0),-1.0
+         self.last_tick = rospy.Time.now().to_sec()
++        self.command_odometry = CommandOdometry(self.core.pose,self.cfg['wheelbase'])
+         self.history = deque(maxlen=100)
+         self.odom_origin = None
+         self.odom_frame = None
+@@ -386,9 +388,14 @@
+                 if self.core.state == 'STARTUP_STRAIGHT':
+                     model_raw -= self.cfg.get('startup_steering_raw',0)
+                 logical_speed = speed/self.cfg['speed_sign']
+-                physical = model_raw/self.cfg['steering_sign']/self.cfg['steering_raw_limit']*self.cfg['max_steer']
++                physical = chassis.raw_angle(self.cfg,logical_speed,model_raw)
++                gain = chassis.speed_gain(self.cfg,logical_speed)
+                 if trial_active(self.cfg,self.core.state):
+                     physical = raw_angle(self.cfg,logical_speed,model_raw)
++                    gain = speed_gain(self.cfg,logical_speed)
++                if not hasattr(self,'command_odometry'):
++                    self.command_odometry = CommandOdometry(self.core.pose,self.cfg['wheelbase'])
++                self.command_odometry.observe(stamp,logical_speed*gain,physical)
+                 self.applied = (logical_speed,physical)
+                 self.applied_at = stamp
+                 # GAP holds command-space steering; pose estimation above
+@@ -399,6 +406,10 @@
+             except ValueError:
+                 self.applied = (0,0)
+                 self.core.applied_stamp = -1.0
++                odometry = getattr(self,'command_odometry',None)
++                now = rospy.Time.now().to_sec()
++                if odometry is not None:
++                    odometry.stop(now)
+ 
+     def odom(self,msg):
+         if self.cfg['pose_mode'] != 'odom':
+@@ -426,16 +437,14 @@
+     def tick(self,event):
+         with self.lock:
+             now = rospy.Time.now().to_sec()
+-            dt = max(0,min(0.10,now-self.last_tick))
+             if now < self.last_tick:
+                 self.core.estop = True  # restart after ROS /clock rollback
++                self.command_odometry = CommandOdometry(self.core.pose,self.cfg['wheelbase'])
+             self.last_tick = now
+             if self.cfg['pose_mode'] == 'command_model':
+-                speed,steer = self.applied if 0 <= now-self.applied_at < 0.25 else (0,0)
+-                gain = self.cfg['raw_to_mps']['forward' if speed >= 0 else 'reverse']
+-                if trial_active(self.cfg,self.core.state):
+-                    gain = speed_gain(self.cfg,speed)
+-                self.core.set_pose(bicycle(self.core.pose,speed*gain*dt,steer,self.cfg['wheelbase']),now)
++                odometry = getattr(self,'command_odometry',None)
++                if odometry is not None:
++                    self.core.set_pose(odometry.estimate(now),now)
+             self.history.append((now,self.core.pose))
+             try:
+                 enabled = boolean(rospy.get_param_cached('~enabled',False)) if self.live else True
+@@ -513,7 +522,8 @@
+                 console['uturn'] = status['uturn']
+                 console['lane_curve_lock'] = status['lane_curve_lock']
+                 for key in ('pending','last_blue_trigger','blue_approach','straight_search',
+-                            'front_blue_lines_local','blue_consumed'):
++                            'front_blue_lines_local','blue_consumed','motion_model',
++                            'left_lock','right_lock'):
+                     console[key]=status[key]
+                 check = status['obstacle_check']
+                 console['obstacle_check'] = {key:check[key] for key in
+--- before/src/robot/test/test_ros_adapter.py
++++ src/robot/test/test_ros_adapter.py
+@@ -505,7 +505,7 @@
+             self.clock.value+=.1
+             msg.header=_Header(self.clock.value,'base_link')
+             n.applied_cb(msg)
+-            self.assertAlmostEqual(n.applied[1],.2)
++            self.assertAlmostEqual(n.applied[1],physical)
+ 
+     def test_estop_false_cannot_clear_while_enabled_but_clears_disabled(self):
+         self.node.core.estop = True
+--- before/src/robot/test/test_uturn_current_model.py
++++ src/robot/test/test_uturn_current_model.py
+@@ -104,16 +104,18 @@
+                            -math.atan(.26/1.3608228346), .26)
+         self.assertLess(distance(endpoint, expected), 1e-7)
+         self.assertLess(abs(wrap(endpoint[2]-expected[2])), 1e-7)
+-        # The same wire command in normal lane mode keeps the shared .2 model.
++        # The same wire command in lane mode uses the same chassis radius;
++        # only the U-turn segment endpoint preview is removed.
+         c.state,c.action='LANE',None
+         c.checked_command((-26,-.03),1.,False)
+-        expected=bicycle(c.pose,-c.cfg['obstacle_stop_distance'],-.2,.26)
++        expected=bicycle(c.pose,-c.cfg['obstacle_stop_distance'],
++                         -math.atan(.26/1.3608228346),.26)
+         self.assertLess(distance(paths[-1][-1],expected),1e-7)
+         self.assertLess(abs(wrap(paths[-1][-1][2]-expected[2])),1e-7)
+ 
+     def test_calibration_is_independent_of_lane_limit_and_raw_roundtrips(self):
+         for reverse_sign in (-1, 1):
+-            self.cfg['uturn_calibration']['reverse_steering_sign'] = reverse_sign
++            self.cfg['chassis_calibration']['reverse_steering_sign'] = reverse_sign
+             for speed in (-26, 26):
+                 for raw in (-22, -11, 0, 11, 22):
+                     angle = raw_angle(self.cfg, speed, raw)
+--- before/src/robot/test/test_right_boundary_adapter.py
++++ src/robot/test/test_right_boundary_adapter.py
+@@ -91,8 +91,8 @@
+         self.n.applied_cb(self.applied(20,-2))
+         self.assertEqual(self.n.applied,(20,0.))
+         self.n.core.state='LANE'
+-        self.n.applied_at=0
+-        self.n.applied_cb(self.applied(20,-2))
++        self.env.clock.value=10.1
++        self.n.applied_cb(self.applied(20,-2,10.1))
+         self.assertLess(self.n.applied[1],0.)
+ 
+     def applied(self,speed,steer,stamp=10):
+--- before/src/robot/common/contracts.py
++++ src/robot/common/contracts.py
+@@ -30,6 +30,8 @@
+ 
+ 
+ def validate_config(cfg):
++    from robot.motion.calibration import validate as validate_chassis
++    validate_chassis(cfg)
+     vision=boolean(cfg.get('uturn_vision_enabled',False))
+     blue_landmarks=boolean(cfg.get('uturn_blue_landmarks_enabled',False))
+     if blue_landmarks:
+--- /dev/null
++++ src/robot/motion/odometry.py
+@@ -0,0 +1,27 @@
++"""Bicycle estimate from timestamped applied commands, never measured odometry."""
++from robot.common.geometry import bicycle
++
++
++class CommandOdometry(object):
++    def __init__(self, pose, wheelbase, timeout=.25):
++        self.pose, self.wheelbase, self.timeout = tuple(pose), wheelbase, timeout
++        self.stamp, self.velocity, self.steering = None, 0., 0.
++
++    def estimate(self, now):
++        if self.stamp is None:
++            return self.pose
++        dt = max(0., min(self.timeout, now-self.stamp))
++        return bicycle(self.pose, self.velocity*dt, self.steering, self.wheelbase)
++
++    def observe(self, stamp, velocity, steering):
++        if self.stamp is not None and stamp <= self.stamp:
++            raise ValueError('command odometry source stamp out of order')
++        # Commit the previous held command to the new command's source stamp.
++        # Estimates between feedback samples are extrapolated, not accumulated,
++        # so delayed stop feedback can correct that interval without double count.
++        self.pose = self.estimate(stamp)
++        self.stamp, self.velocity, self.steering = stamp, velocity, steering
++
++    def stop(self, now):
++        self.pose = self.estimate(now)
++        self.stamp, self.velocity, self.steering = now, 0., 0.
+--- /dev/null
++++ src/robot/motion/calibration.py
+@@ -0,0 +1,53 @@
++"""Shared RAW-to-motion model; lane steering gain is a separate parameter."""
++from __future__ import division
++import math
++
++
++def validate(cfg):
++    table = cfg.get('chassis_calibration')
++    if table is None:
++        return
++    if not isinstance(table,dict):
++        raise ValueError('invalid chassis calibration table')
++    sign = table.get('reverse_steering_sign',1)
++    if isinstance(sign,bool) or sign not in (-1,1):
++        raise ValueError('invalid chassis reverse steering sign')
++    for key in ('forward_left_radius','forward_right_radius',
++                'reverse_left_radius','reverse_right_radius',
++                'forward_mps_per_raw','reverse_mps_per_raw'):
++        value = table.get(key)
++        if isinstance(value,bool) or not isinstance(value,(int,float)):
++            raise ValueError('invalid chassis calibration '+key)
++        upper = 5. if 'radius' in key else .1
++        if not 0 < value <= upper:
++            raise ValueError('invalid chassis calibration '+key)
++
++
++def limit(cfg, gear, steer):
++    table = cfg.get('chassis_calibration')
++    if table is None:
++        return cfg['max_steer']
++    side = steer if gear > 0 else steer*table.get('reverse_steering_sign',1)
++    key = ('forward_' if gear > 0 else 'reverse_')+('left_radius' if side >= 0 else 'right_radius')
++    return math.atan(cfg['wheelbase']/table[key])
++
++
++def command_angle(cfg, gear, steer):
++    fraction = max(-1.,min(1.,steer/limit(cfg,gear,steer)))
++    sign = 1 if gear > 0 else cfg.get('chassis_calibration',{}).get('reverse_steering_sign',1)
++    return sign*fraction*cfg.get('steering_command_scale_rad',cfg['max_steer'])
++
++
++def raw_angle(cfg, speed, steering_raw):
++    gear = 1 if speed >= 0 else -1
++    fraction = steering_raw/float(cfg['steering_sign']*cfg['steering_raw_limit'])
++    fraction = max(-1.,min(1.,fraction))
++    sign = 1 if gear > 0 else cfg.get('chassis_calibration',{}).get('reverse_steering_sign',1)
++    side = sign*fraction
++    return side*limit(cfg,gear,side)
++
++
++def speed_gain(cfg, speed):
++    gear = 'forward' if speed >= 0 else 'reverse'
++    table = cfg.get('chassis_calibration')
++    return table[gear+'_mps_per_raw'] if table is not None else cfg['raw_to_mps'][gear]
+--- /dev/null
++++ src/robot/test/test_command_odometry.py
+@@ -0,0 +1,66 @@
++"""Command estimates must account for feedback intervals, not timer cadence."""
++from __future__ import division
++import unittest
++from robot.common.geometry import bicycle, distance, wrap
++from robot.motion.odometry import CommandOdometry
++
++
++class CommandOdometryTests(unittest.TestCase):
++    def test_delayed_tick_keeps_all_fresh_motion_time(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        odom.observe(10., .16, 0.)
++        # A busy control timer must not discard the last 0.10 s.
++        self.assertAlmostEqual(odom.estimate(10.2)[0], .032)
++
++    def test_125m_does_not_depend_on_control_timer_frequency(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        for i in range(157):
++            odom.observe(10.+i*.05, .16, 0.)
++        self.assertAlmostEqual(odom.estimate(17.8125)[0], 1.25)
++
++    def test_new_command_does_not_apply_to_previous_interval(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        odom.observe(10., .16, 0.)
++        odom.observe(10.1, 0., 0.)
++        self.assertAlmostEqual(odom.estimate(10.2)[0], .016)
++
++    def test_late_stop_corrects_previous_extrapolation(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        odom.observe(10., .16, 0.)
++        self.assertAlmostEqual(odom.estimate(10.15)[0], .024)
++        odom.observe(10.1, 0., 0.)
++        self.assertAlmostEqual(odom.estimate(10.2)[0], .016)
++
++    def test_no_motion_before_first_feedback_and_after_timeout(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        self.assertEqual(odom.estimate(10.1), (0.,0.,0.))
++        odom.observe(10.1, .16, 0.)
++        self.assertAlmostEqual(odom.estimate(10.2)[0], .016)
++        self.assertAlmostEqual(odom.estimate(11.)[0], .04)
++        odom.observe(11., .16, 0.)
++        self.assertAlmostEqual(odom.estimate(11.1)[0], .056)
++
++    def test_repeated_and_out_of_order_feedback_is_rejected(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        odom.observe(10., .16, 0.)
++        for stamp in (10., 9.9):
++            with self.assertRaises(ValueError): odom.observe(stamp, 1., .2)
++        self.assertAlmostEqual(odom.estimate(10.1)[0], .016)
++
++    def test_invalid_feedback_at_same_stamp_can_freeze_estimate(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        odom.observe(10., .16, 0.)
++        odom.stop(10.)
++        self.assertEqual(odom.estimate(10.2), (0.,0.,0.))
++
++    def test_reverse_yaw_integrates_each_command_mapping(self):
++        odom = CommandOdometry((0.,0.,0.), .26)
++        odom.observe(10., .25, .36)
++        odom.observe(10.2, -.24, -.19)
++        expected = bicycle(bicycle((0.,0.,0.), .05, .36, .26), -.048, -.19, .26)
++        actual = odom.estimate(10.4)
++        self.assertLess(distance(actual, expected), 1e-9)
++        self.assertLess(abs(wrap(actual[2]-expected[2])), 1e-9)
++
++
++if __name__ == '__main__': unittest.main()
+--- /dev/null
++++ src/robot/test/test_motion_feedback.py
+@@ -0,0 +1,91 @@
++"""Exercise the real adapter with delayed control ticks and RAW feedback."""
++from __future__ import division
++import unittest
++from collections import deque
++import test_ros_adapter as fixture
++
++
++@unittest.skipUnless(fixture._rospy is not None and fixture.imp is not None, 'requires ROS')
++class MotionFeedbackTests(unittest.TestCase):
++    def setUp(self):
++        self.env = fixture.RosAdapterTests('test_applied_raw_over_contract_clears_command')
++        self.env.setUpClass(); self.env.setUp()
++        self.addCleanup(self.env.doCleanups)
++        self.n = self.env.node
++        self.n.cfg['pose_mode'] = 'command_model'
++        self.n.seq,self.n.live,self.n.last_tick = 0,False,10.
++        self.n.history = deque(maxlen=100)
++        self.n.output = type('Sink',(),{'publish':lambda self,msg:None})()
++        self.n.core.tick = lambda now:(0,0.)
++
++    def applied(self, stamp, speed=20, steer=0):
++        self.env.clock.value = stamp
++        msg = fixture._AppliedMessage(speed, steer)
++        msg.header = fixture._Header(stamp,'base_link')
++        self.n.applied_cb(msg)
++
++    def tick(self, now):
++        self.env.clock.value = now
++        self.n.tick(None)
++        self.assertFalse(self.env.fake_rospy.errors)
++
++    def test_busy_tick_does_not_drop_distance(self):
++        self.applied(10.)
++        self.tick(10.2)
++        self.assertAlmostEqual(self.n.core.pose[0], .032)
++
++    def test_stop_feedback_keeps_motion_before_stop(self):
++        self.applied(10.)
++        self.applied(10.1,0)
++        self.tick(10.2)
++        self.assertAlmostEqual(self.n.core.pose[0], .016)
++
++    def test_timeout_counts_only_the_valid_held_interval(self):
++        self.applied(10.)
++        self.tick(10.4)
++        self.assertAlmostEqual(self.n.core.pose[0], .04)
++
++    def test_model_mapping_does_not_change_at_uturn_handoff(self):
++        from robot.common.config import load_config
++        import os
++        self.n.cfg = load_config(os.path.join(fixture.PACKAGE_DIR,'config'))
++        self.n.cfg.update(steering_command_scale_rad=.03, max_steer=.2)
++        self.n.core.cfg = self.n.cfg
++        self.n.core.state = 'UTURN'
++        self.applied(10.,26,22)
++        uturn_angle = self.n.applied[1]
++        self.n.core.state = 'MANEUVER'
++        self.applied(10.1,26,22)
++        self.assertAlmostEqual(self.n.applied[1],uturn_angle)
++
++    def test_real_straight_handoff_with_sparse_control_ticks(self):
++        from robot.common.config import load_config
++        from robot.master.controller import Controller
++        from robot.turn.planner import intersection_path
++        from robot.motion.calibration import speed_gain
++        import os
++        cfg=load_config(os.path.join(fixture.PACKAGE_DIR,'config'))
++        cfg.update(wait_green=False,lidar_enabled=False,steering_command_scale_rad=.03,
++                   straight_speed_raw=20)
++        n=self.n
++        n.cfg=cfg;n.core=Controller(cfg)
++        self.addCleanup(n.core.close)
++        n.core.start_follow(intersection_path((0.,0.,0.),'STRAIGHT',cfg),'STRAIGHT',10.)
++        # Feedback continues at 20 Hz; the controller wakes only every 0.2 s.
++        for i in range(160):
++            now=10.+i*.05
++            self.applied(now)
++            if i%4:continue
++            n.core.front_marker_stamp=now
++            n.core.observe_lane([(.5,0.),(.8,0.)],.99,now)
++            self.tick(now)
++            if n.core.state=='LANE':break
++            self.assertEqual(n.core.state,'MANEUVER')
++        velocity=20*speed_gain(cfg,20)
++        self.assertEqual(n.core.state,'LANE')
++        self.assertGreaterEqual(n.core.pose[0],1.25)
++        self.assertLess(n.core.pose[0],1.25+.2*velocity+1e-9)
++        self.assertLess(now-10.,1.25/velocity+.2+1e-9)
++
++
++if __name__ == '__main__': unittest.main()
+--- /dev/null
++++ src/robot/test/test_chassis_calibration.py
+@@ -0,0 +1,79 @@
++"""Motion geometry must be independent of the tuned lane steering gain."""
++from __future__ import division
++import copy
++import math
++import os
++import unittest
++from robot.common.config import load_config
++from robot.common.contracts import encode_command, model_to_command_steering, validate_config
++from robot.common.geometry import bicycle, distance, wrap
++from robot.motion.calibration import raw_angle, command_angle, speed_gain
++from robot.turn.planner import turn_parameters
++from robot.motion.odometry import CommandOdometry
++from robot.master.controller import Controller
++
++
++class ChassisCalibrationTests(unittest.TestCase):
++    def setUp(self):
++        root=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
++        self.cfg=load_config(os.path.join(root,'config'))
++        self.cfg.update(max_steer=.2,steering_command_scale_rad=.03)
++
++    def test_raw_full_lock_is_unchanged_by_lane_limit(self):
++        for maximum in (.2,.46275):
++            cfg=dict(self.cfg,max_steer=maximum)
++            for sign,radius in ((1,.6784646272),(-1,.9925)):
++                wire=encode_command(20,model_to_command_steering(sign*maximum,cfg),cfg,0)
++                self.assertEqual(wire['steering_raw'],sign*22)
++                self.assertAlmostEqual(raw_angle(cfg,20,sign*22),sign*math.atan(.26/radius))
++                cfg[('left_' if sign>0 else 'right_')+'turn_full_lock']=True
++                self.assertAlmostEqual(turn_parameters(cfg,'LEFT' if sign>0 else 'RIGHT')['effective_radius'],radius)
++
++    def test_raw_roundtrip_both_gears_and_wiring_signs(self):
++        for speed_sign in (-1,1):
++            for steering_sign in (-1,1):
++                cfg=dict(self.cfg,speed_sign=speed_sign,steering_sign=steering_sign)
++                for gear in (-1,1):
++                    for raw in (-22,-11,0,11,22):
++                        angle=raw_angle(cfg,gear*26,raw)
++                        command=command_angle(cfg,gear,angle)
++                        self.assertEqual(encode_command(gear*26,command,cfg,0)['steering_raw'],raw)
++
++    def test_straight125_uses_feedback_not_raw_or_tick_count(self):
++        for raw in (12,20,24,26,30):
++            velocity=raw*speed_gain(self.cfg,raw)
++            duration=1.25/velocity
++            odom=CommandOdometry((0.,0.,0.),.26)
++            # Irregular command feedback and sparse control reads.
++            stamp=0.
++            while stamp<duration:
++                odom.observe(stamp,velocity,0.)
++                stamp+=.17
++            self.assertAlmostEqual(odom.estimate(duration)[0],1.25,places=8)
++
++    def test_collision_preview_and_odometry_use_same_full_lock_arc(self):
++        c=Controller(dict(self.cfg,wait_green=False,lidar_enabled=True))
++        self.addCleanup(c.close)
++        c._runtime.overrides['scan_ready']=lambda now:True
++        paths=[]
++        c._runtime.overrides['sweep_clear']=lambda path,*args,**kwargs:paths.append(path) or True
++        for raw in (22,-22):
++            command=raw/22.*.03
++            c.checked_command((20,command),1.,False)
++            horizon=c.cfg['obstacle_stop_distance']
++            steering=raw_angle(c.cfg,20,raw)
++            odom=CommandOdometry(c.pose,.26,timeout=10.)
++            odom.observe(0.,20*speed_gain(c.cfg,20),steering)
++            expected=odom.estimate(horizon/(20*speed_gain(c.cfg,20)))
++            self.assertLess(distance(paths[-1][-1],expected),1e-9)
++            self.assertLess(abs(wrap(paths[-1][-1][2]-expected[2])),1e-9)
++
++    def test_invalid_chassis_mapping_is_rejected_before_startup(self):
++        for key,value in (('forward_left_radius',0),('forward_mps_per_raw',float('nan')),
++                          ('reverse_right_radius',True),('reverse_steering_sign',0)):
++            cfg=copy.deepcopy(self.cfg)
++            cfg['chassis_calibration'][key]=value
++            with self.assertRaises(ValueError):validate_config(cfg)
++
++
++if __name__ == '__main__':unittest.main()

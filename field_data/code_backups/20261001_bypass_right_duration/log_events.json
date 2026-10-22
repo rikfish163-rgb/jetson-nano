@@ -1,0 +1,77 @@
+{
+  "source": "/home/nano/.ros/log/6626d80c-bddd-11f1-bae2-380025ec2b29/competition_controller-7.log", 
+  "events": [
+    {
+      "stamp": 1790889437.709181, 
+      "state": "TIMED_BYPASS", 
+      "command": [
+        0, 
+        0.03
+      ], 
+      "reason": "bypass_settle_left"
+    }, 
+    {
+      "stamp": 1790889438.165726, 
+      "state": "TIMED_BYPASS", 
+      "command": [
+        26, 
+        0.03
+      ], 
+      "reason": "bypass_left_2s"
+    }, 
+    {
+      "stamp": 1790889440.213972, 
+      "state": "TIMED_BYPASS", 
+      "command": [
+        26, 
+        -0.03
+      ], 
+      "reason": "bypass_right_6s"
+    }, 
+    {
+      "stamp": 1790889442.586078, 
+      "state": "LANE", 
+      "command": [
+        30, 
+        -0.02386363636363636
+      ], 
+      "reason": "bypass_visual_lane_handoff"
+    }, 
+    {
+      "stamp": 1790889442.713816, 
+      "state": "LANE", 
+      "command": [
+        30, 
+        -0.017727272727272723
+      ], 
+      "reason": "tracking_lane"
+    }, 
+    {
+      "stamp": 1790889443.582206, 
+      "state": "GAP", 
+      "command": [
+        16, 
+        0.013636363636363636
+      ], 
+      "reason": "tracking_gap"
+    }, 
+    {
+      "stamp": 1790889443.736803, 
+      "state": "GAP", 
+      "command": [
+        0, 
+        0.0
+      ], 
+      "reason": "gap_limit_wait_for_lane"
+    }, 
+    {
+      "stamp": 1790889448.543626, 
+      "state": "LANE", 
+      "command": [
+        30, 
+        -0.012272727272727274
+      ], 
+      "reason": "tracking_lane"
+    }
+  ]
+}

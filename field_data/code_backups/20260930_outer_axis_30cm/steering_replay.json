@@ -1,0 +1,32 @@
+[
+  {
+    "case": "recorded_exit", 
+    "after": {
+      "raw": -17, 
+      "guard": true, 
+      "radius": 0.9129384666971403, 
+      "center_error_m": -0.12973911246651837
+    }, 
+    "before": {
+      "raw": 0, 
+      "guard": false, 
+      "radius": 0.9129384666971403, 
+      "center_error_m": -0.12973911246651837
+    }
+  }, 
+  {
+    "case": "tight_outward", 
+    "after": {
+      "raw": -22, 
+      "guard": true, 
+      "radius": 0.5500000000000006, 
+      "center_error_m": -0.07999999999999996
+    }, 
+    "before": {
+      "raw": -22, 
+      "guard": false, 
+      "radius": 0.5500000000000006, 
+      "center_error_m": -0.07999999999999996
+    }
+  }
+]

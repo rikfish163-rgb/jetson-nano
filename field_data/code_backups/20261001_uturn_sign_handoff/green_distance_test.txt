@@ -1,0 +1,6 @@
+test_green_startup_still_requires_125_even_with_uturn_and_blue (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.535s
+
+OK

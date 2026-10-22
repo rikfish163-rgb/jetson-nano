@@ -1,0 +1,43 @@
+{
+  "dataset_sha256": "28a374e04ba3c9ae4ed4b23e0604487440cc5d7eb3ed5dbe3b133174606c0038", 
+  "completed_at": 1789389600.873094, 
+  "counts": {
+    "test": {
+      "uturn": 50, 
+      "right": 50, 
+      "straight": 50, 
+      "park": 50, 
+      "green": 50, 
+      "red": 50, 
+      "left": 50
+    }, 
+    "train": {
+      "uturn": 350, 
+      "right": 350, 
+      "straight": 350, 
+      "park": 350, 
+      "green": 350, 
+      "red": 350, 
+      "left": 350
+    }, 
+    "val": {
+      "uturn": 100, 
+      "right": 100, 
+      "straight": 100, 
+      "park": 100, 
+      "green": 100, 
+      "red": 100, 
+      "left": 100
+    }
+  }, 
+  "labels": [
+    "red", 
+    "green", 
+    "straight", 
+    "left", 
+    "right", 
+    "uturn", 
+    "park"
+  ], 
+  "authorization": "User explicitly requested training after completing capture in this task"
+}

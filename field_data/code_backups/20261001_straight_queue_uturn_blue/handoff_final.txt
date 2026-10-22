@@ -1,0 +1,36 @@
+test_confirmed_next_blue_hands_over_at_125_without_waiting_for_white (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_late_second_straight_is_queued_without_interrupting_current_action (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_next_straight_survives_white_handoff_until_its_blue_line (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_old_blue_or_longitudinal_paint_cannot_dispatch_queued_straight (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_red_overrides_queued_blue_handoff (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_same_early_board_duplicate_or_interrupted_votes_do_not_queue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_does_not_start_with_front_axle_heading_misaligned (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_visual_updates_move_target_plane_and_stale_stream_stops (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_aligned_target_survives_near_blind_region (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_confirmed_aligned_target_advances_after_leaving_image (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_continuously_visible_line_has_only_one_chance (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_far_confirmed_line_approaches_and_ignores_old_map_position (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_lane_gap_holds_previous_turn_until_blue_takes_heading_control (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_line_during_action_is_not_queued (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_line_without_pending_does_not_wait_for_later_sign (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_rear_updates_do_not_rearm_front_line (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_short_ticks_and_sign_alone_do_not_trigger (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_single_frame_does_not_arm_projection (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_bicycle_motion_reduces_offset_error_within_straight_segment (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_both_correction_directions_keep_speed_and_bound_raw_steering (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_correction_uses_local_heading_and_does_not_delay_lane_handoff (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_loss_clears_previous_correction (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_missing_stale_left_and_transverse_lines_keep_zero_steering (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_offset_is_perpendicular_and_independent_of_segment_center (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_parallel_line_distance_corrects_both_lateral_directions (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_reversed_endpoints_same_heading_and_red_still_stops (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_right_turn_exit_straight_also_tracks_right_blue (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_sign_still_waits_for_blue_and_green_does_not_use_side_line (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_straight_entry_clears_consumed_sign_votes_immediately (test_straight_right_blue.RightBlueStraightTests) ... ok
+test_control_stop_event_is_logged_even_when_status_lock_is_busy (test_ros_adapter.RosAdapterTests) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 16.149s
+
+OK

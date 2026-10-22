@@ -1,0 +1,57 @@
+[
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "37b86620b5387fe20f4571a563f754f5a417af3854766a34298544b2336a0542",
+    "after": "19540ba86aa563da633f33a8c2fb7ae44b82426ec17f3eade1360e47ea7219fa"
+  },
+  {
+    "path": "src/robot/lane/path_feedback.py",
+    "before": null,
+    "after": "54e20a053c5bcf98b35639076a6ca0a2f62cbd6b87e6d2849a6bb69def74483e"
+  },
+  {
+    "path": "src/robot/lane/config.yaml",
+    "before": "ee89e8b4d94324ce0d2ccc76e5acfb5181e57d1b0afb63fb2dbbb0c25c11e4d6",
+    "after": "3fbb32633198a364d79418d2e3c41cd7c10b23a75a207342ee3dc8bd5f5e4ecd"
+  },
+  {
+    "path": "src/robot/master/state_machine.py",
+    "before": "c9637c81502571db9332d14fcb4bfc42695896458ba872e5e78948495858f07a",
+    "after": "4ee021e883f5ed909e5bc65fe0a8037c553abd0807937f77bc9eeda3221c9266"
+  },
+  {
+    "path": "src/robot/master/telemetry.py",
+    "before": "ce8aa6c022fd388f11e9f462e0a2074075901360d72d51db1cae7a6e7a2dbc97",
+    "after": "0a0ac5352635cfc70d220301b31c2fa753d58218df23c6a26270bf8a3d22b2ed"
+  },
+  {
+    "path": "src/robot/common/contracts.py",
+    "before": "28afd73ddd4684474861f684c5c7d7490068f7cc228106c5b31d6160b7743af8",
+    "after": "10e4c9ef31265f89259d6f3f208fa020f31f1aefbe3fc8ca35c8b0a40f741f0c"
+  },
+  {
+    "path": "src/robot/config/workspace_modules.yaml",
+    "before": "f2318199b7439402e4e7e6d4fb027d29c1bc8063dd04ea1be572a98ffa71df4d",
+    "after": "3f4edda96eccac6cc6abe7c0303d8b323ebf5464029dffe535b21c0d37c62e77"
+  },
+  {
+    "path": "src/robot/launch/full.launch",
+    "before": "f24a5fc75aa4354541a61d68bb3929a4f688769f63b09538ed17f73510ffce66",
+    "after": "33c30052e6827fda301792396a8e9b8d5f4f6ec6a9a13fffc966f8efb3a01730"
+  },
+  {
+    "path": "src/robot/launch/stack.launch",
+    "before": "6ca0aead1b84a71a6571b5bd1bbbb041d1c3b0e0ecb6144748d4e77abb922c99",
+    "after": "1b563a1dc7aeffea570a6e0febb90fe5616c9be0862aa9e0041c3b2fc5e76acc"
+  },
+  {
+    "path": "tools/sign_detector_20260916/run_yolo_vehicle.sh",
+    "before": "a538348a04d1ec028203d4c6b1c488c34d1918c7cea1330ca833def10ebfb627",
+    "after": "d5a1b50489aaf61eecb24e81c951c21536d17f63b581f1d0ec06e91af0c0e321"
+  },
+  {
+    "path": "src/robot/test/test_visual_path_feedback.py",
+    "before": null,
+    "after": "33ed86d02f3915aec49c816cdb4a18ce428031be1093dc6b354436edc79942fb"
+  }
+]

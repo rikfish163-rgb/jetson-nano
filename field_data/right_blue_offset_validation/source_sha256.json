@@ -1,0 +1,8 @@
+{
+  "src/robot/turn/controller.py": "7872599eb3e05534a71456657416aa607af28e9df770f212f2dbf0f887856e4a",
+  "src/robot/master/state_machine.py": "66095837506626351662c0f291454e121ab99dad7c832de034c3c9bca4aac1c5",
+  "src/robot/signs/decisions.py": "853e01bc1935c1f3835312fcdb6193bdec33a4f1c355854edc067ddf4612bb3c",
+  "src/robot/config/competition.yaml": "6ba366d4081cbb9d607f866db030363afe88a1efdb6451131bd5b7ac1da76254",
+  "src/robot/config/workspace_modules.yaml": "b922ad6e23efce2880921b01c7b04d73529c49d948daeb7baf27a054a793c4c9",
+  "src/robot/common/contracts.py": "c1c94f08fdba8ba9d4e5bed420016cfd8fc8dabfe5367ba424ff6729f4e114db"
+}

@@ -82,7 +82,7 @@ def main(argv):
         # Inspection bypasses hardware checks and never starts ROS nodes.
         if not options:
             model = values.get('sign_model', '')
-            if not (os.path.isfile(model) and os.path.getsize(model)):
+            if values.get('sign_backend') == 'yolo_trt' and not (os.path.isfile(model) and os.path.getsize(model)):
                 raise ValueError('TensorRT model is missing: '+model)
             if subprocess.call(['pgrep', '-f', '/usb_cam_node|/robot/master/main.py|/robot/master/controller_node.py'],
                                stdout=open(os.devnull, 'w')) == 0:

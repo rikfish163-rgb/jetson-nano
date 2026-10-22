@@ -1,0 +1,14 @@
+{
+  "recording": "/home/nano/robocup_ws/field_data/code_backups/20260930_video_recording/export_check",
+  "paired_frames": 3,
+  "first_source_stamp_ns": 1790761000000000000,
+  "last_source_stamp_ns": 1790761000700000000,
+  "unpaired_front": 0,
+  "unpaired_bev": 0,
+  "gaps_over_half_second": 1,
+  "timing": "Source-stamp intervals supplied to both videos identically; the JPEG demuxer rounds playback timestamps to 40 ms. Gaps hold the preceding recorded frame; exact source timestamps remain in filenames and logs.",
+  "view": "BEV is a camera transform, not an external overhead view of the vehicle.",
+  "recorder_summary": {
+    "closed": true
+  }
+}

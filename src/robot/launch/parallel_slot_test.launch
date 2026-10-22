@@ -1,0 +1,22 @@
+<launch>
+  <arg name="start_camera" default="true"/>
+  <arg name="front_device" default="/dev/v4l/by-path/platform-70090000.xusb-usb-0:2.3:1.0-video-index0"/>
+  <arg name="record" default="false"/>
+  <arg name="record_path" default="/tmp/parallel_reference"/>
+  <include file="$(find robocup_competition)/launch/parallel_reference_camera.launch">
+    <arg name="start_camera" value="$(arg start_camera)"/>
+    <arg name="front_device" value="$(arg front_device)"/>
+  </include>
+  <node pkg="yihan_ros_pkg" type="camera_yihan_web.py" name="parallel_lane" output="screen" required="true">
+    <param name="image_topic" value="/front/usb_cam/image_raw"/>
+    <param name="lane_path_topic" value="/vision/lane_path"/>
+    <param name="lane_confidence_topic" value="/vision/lane_confidence"/>
+    <param name="processing_hz" value="8"/>
+    <param name="window_height" value="40"/>
+    <param name="min_path_span" value="0.15"/>
+  </node>
+  <include file="$(find robocup_competition)/launch/parallel_open_loop_actuators.launch"/>
+  <node if="$(arg record)" pkg="rosbag" type="record" name="parallel_reference_record"
+        args="--lz4 -o $(arg record_path) /front/usb_cam/image_raw /vision/lane_observation /parallel_parking/p1_reference /parallel_parking/open_loop_status /base_controller/status"
+        output="screen"/>
+</launch>

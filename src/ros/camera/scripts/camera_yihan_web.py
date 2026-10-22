@@ -8,6 +8,7 @@ import numpy as np
 import rospy
 import json
 import threading
+import hashlib
 import traceback
 from collections import deque
 
@@ -19,19 +20,30 @@ from cv_bridge import CvBridge, CvBridgeError
 
 cv2.setNumThreads(1)
 
+
+# ============================================================
 # ROS 话题配置
+# ============================================================
 
 # 前摄像头图像话题
 FRONT_CAMERA_TOPIC = "/front/usb_cam/image_raw"
 
 # 原图发布话题，网页端看这个：/stream/front_raw
+DEBUG_FRONT_TOPIC = "/debug/front_raw"
 
 # 白线检测结果发布话题，网页端看这个：/stream/warped_image
+DEBUG_WHITE_TOPIC = "/debug/warped_image"
+DEBUG_METRIC_BEV_TOPIC = "/debug/metric_bev"
+DEBUG_LANE_TRACKING_TOPIC = "/debug/lane_tracking"
+LANE_SEND_TOPIC = "/vision/front_lane"
 LANE_PATH_TOPIC = "/vision/lane_path"
 LANE_CONFIDENCE_TOPIC = "/vision/lane_confidence"
 LANE_PATH_FRAME_ID = "base_link"
 
+
+# ============================================================
 # 固定相机标定与 Metric BEV 参数
+# ============================================================
 
 CAMERA_SIZE = (640, 360)
 BEV_SIZE = (480, 400)
@@ -56,7 +68,10 @@ H = np.array([
     [ 0.000124867696, -0.007523542869,   1.000000000000]
 ], dtype=np.float64)
 
+
+# ============================================================
 # 自适应 Sliding Window 调试参数
+# ============================================================
 
 BEV_WIDTH = 480
 BEV_HEIGHT = 400
@@ -68,6 +83,7 @@ WINDOW_HEIGHT = 40
 WINDOW_HALF_WIDTH = 36
 WINDOW_HALF_WIDTH_LOST = 56
 
+LANE_WIDTH_NOMINAL_CM = 60.5
 LANE_WIDTH_NOMINAL_PX = 242.0
 LANE_WIDTH_MIN_CM = 59.0
 LANE_WIDTH_MAX_CM = 62.0
@@ -84,6 +100,7 @@ MIN_LANE_PATH_FORWARD_SPAN_M = 0.15
 MAX_EMPTY_WINDOWS = 2
 MIN_WINDOW_PIXELS = 12
 
+EMA_ALPHA = 0.45
 LANE_WIDTH_HISTORY_SIZE = 15
 
 # 轻量峰值检测与局部趋势约束。
@@ -103,9 +120,12 @@ MAX_MEASUREMENT_OFFSET = 30.0
 MAX_MEASUREMENT_OFFSET_LOST = 48.0
 TRACK_GOOD_CONFIDENCE = 0.55
 MIN_REINIT_OBSERVATIONS = 4
+CENTER_OUTLIER_THRESHOLD_PX = 45.0
+LOW_CONFIDENCE_THRESHOLD = 0.45
 MIN_GEOMETRY_SCORE = 0.30
 MAX_WIDTH_TANGENT_OFFSET = 55.0
 MIN_WIDTH_SAMPLES = 2
+CENTER_CANDIDATE_MAX_DISTANCE = 80.0
 MAX_CENTER_LINK_DISTANCE_PER_WINDOW = 85.0
 MAX_CENTER_TURN_DEGREES = 70.0
 MAX_TEMPORAL_GAP_SECONDS = 0.5
@@ -121,14 +141,61 @@ MIN_MODE_BOUNDARY_POINTS = MIN_LANE_PATH_POINTS
 
 # Spatial center fitting uses only NumPy and runs on the small set of window
 # centers. It therefore adds no new runtime dependency.
+CENTER_FIT_MIN_POINTS = 3
+CENTER_FIT_MIN_SCALE_PX = 3.0
+CENTER_FIT_HUBER_K = 2.0
+CENTER_FIT_BLEND_BOTH = 0.80
+CENTER_FIT_BLEND_SINGLE = 0.90
 
+PROFILE_INTERVAL_FRAMES = 100
+PROFILE_KEYS = (
+    "input_cvbridge",
+    "white_mask",
+    "undistort_remap",
+    "bev_transform",
+    "lane_tracking",
+    "center_confidence",
+    "debug_drawing",
+    "debug_msg_conversion",
+    "ros_publish",
+    "callback_total"
+)
+
+WHITE_PROFILE_INTERVAL_FRAMES = 100
+WHITE_PROFILE_KEYS = (
+    "roi_copy",
+    "bgr_to_hls",
+    "hls_split",
+    "hls_threshold",
+    "bgr_split",
+    "bgr_minmax_spread",
+    "bgr_threshold",
+    "gaussian_blur",
+    "local_contrast",
+    "strong_threshold",
+    "mask_logic",
+    "roi_apply",
+    "median_blur",
+    "morph_open",
+    "morph_close",
+    "connected_components",
+    "component_filter_rebuild",
+    "final_morphology"
+)
+
+
+# ============================================================
 # 当前版本目标
+# ============================================================
 # 1. 优先保证左右两侧白线都能显示出来
 # 2. 不再单纯依赖 WHITE_L_MIN
 # 3. 用 HLS + BGR + 局部对比度综合判断白线
 # 4. 尽量减少地面灰色反光误检
 
+
+# ============================================================
 # 主要调试参数
+# ============================================================
 
 # 只检测图像下方地面区域
 # 数值越大，检测区域越靠下
@@ -203,14 +270,24 @@ MIN_FILL_RATIO = 0.08
 FILTER_CENTER_VERTICAL_REFLECTION = True
 
 # 终端打印间隔
+PRINT_INTERVAL = 0.5
 
+
+# ============================================================
 # 全局变量
+# ============================================================
 
 bridge = CvBridge()
+front_pub = None
+white_pub = None
+metric_bev_pub = None
+lane_tracking_pub = None
+lane_pub = None
 lane_path_pub = None
 lane_confidence_pub = None
 undistort_map_x = None
 undistort_map_y = None
+last_print_time = 0.0
 
 previous_left_points = [None] * NUM_WINDOWS
 previous_right_points = [None] * NUM_WINDOWS
@@ -219,14 +296,128 @@ lane_width_history = deque(maxlen=LANE_WIDTH_HISTORY_SIZE)
 lane_width_est_px = float(LANE_WIDTH_NOMINAL_PX)
 previous_tracking_confidence = 0.0
 previous_tracking_time = None
+left_reference_history = None
+left_reference_candidate = None
+last_confidence_components = {}
 
+profile_frame_count = 0
+profile_totals = dict((key, 0.0) for key in PROFILE_KEYS)
+profile_batch_start_time = None
+
+white_profile_frame_count = 0
+white_profile_totals = dict((key, 0.0) for key in WHITE_PROFILE_KEYS)
+
+
+# ============================================================
 # ROS 图像发布函数
+# ============================================================
+
+def publisher_has_subscribers(pub):
+    if pub is None:
+        return False
+    try:
+        return pub.get_num_connections() > 0
+    except AttributeError:
+        return True
+
+
+def begin_frame_profile():
+    global profile_batch_start_time
+    if profile_batch_start_time is None:
+        profile_batch_start_time = time.time()
+    return {}
+
+
+def record_profile_time(frame_profile, key, elapsed_seconds):
+    if frame_profile is not None:
+        frame_profile[key] = frame_profile.get(key, 0.0) + elapsed_seconds
+
+
+def record_white_profile_time(white_profile, key, elapsed_seconds):
+    white_profile[key] = white_profile.get(key, 0.0) + elapsed_seconds
+
+
+def finish_white_profile(white_profile):
+    global white_profile_frame_count
+    global white_profile_totals
+
+    for key in WHITE_PROFILE_KEYS:
+        white_profile_totals[key] += white_profile.get(key, 0.0)
+    white_profile_frame_count += 1
+
+    if white_profile_frame_count < WHITE_PROFILE_INTERVAL_FRAMES:
+        return
+
+    values = []
+    for key in WHITE_PROFILE_KEYS:
+        average_ms = (
+            white_profile_totals[key] * 1000.0 /
+            float(white_profile_frame_count)
+        )
+        values.append("%s=%.2f" % (key, average_ms))
+
+    print("WHITE_PROFILE avg_ms[%d] %s" % (
+        white_profile_frame_count,
+        " ".join(values)
+    ))
+
+    white_profile_frame_count = 0
+    white_profile_totals = dict(
+        (key, 0.0) for key in WHITE_PROFILE_KEYS
+    )
+
+
+def finish_frame_profile(frame_profile):
+    global profile_frame_count
+    global profile_totals
+    global profile_batch_start_time
+
+    for key in PROFILE_KEYS:
+        profile_totals[key] += frame_profile.get(key, 0.0)
+    profile_frame_count += 1
+
+    if profile_frame_count < PROFILE_INTERVAL_FRAMES:
+        return
+
+    values = []
+    for key in PROFILE_KEYS:
+        average_ms = profile_totals[key] * 1000.0 / float(profile_frame_count)
+        values.append("%s=%.2f" % (key, average_ms))
+
+    batch_elapsed = max(0.001, time.time() - profile_batch_start_time)
+    wall_fps = float(profile_frame_count) / batch_elapsed
+
+    print("PROFILE avg_ms[%d] wall_fps=%.2f %s" % (
+        profile_frame_count,
+        wall_fps,
+        " ".join(values)
+    ))
+
+    if len(last_confidence_components) > 0:
+        print("CONF components center=%.2f boundary=%.2f width=%.2f "
+              "continuity=%.2f direction=%.2f temporal=%.2f reinit=%s" % (
+                  last_confidence_components.get("center", 0.0),
+                  last_confidence_components.get("boundary", 0.0),
+                  last_confidence_components.get("width", 0.0),
+                  last_confidence_components.get("continuity", 0.0),
+                  last_confidence_components.get("direction", 0.0),
+                  last_confidence_components.get("temporal", 0.0),
+                  str(last_confidence_components.get("reinitialized", False))
+              ))
+
+    profile_frame_count = 0
+    profile_totals = dict((key, 0.0) for key in PROFILE_KEYS)
+    profile_batch_start_time = None
+
+
+
 
 def bev_point_to_vehicle_m(u, v):
     """将Metric BEV像素转换到以后轴中心为原点的车辆坐标系。"""
     x_forward_m = (600.0 - float(v)) / 400.0
     y_left_m = (240.0 - float(u)) / 400.0
     return x_forward_m, y_left_m
+
 
 def select_nearest_lane_path_segment(center_segments, diagnostic=None):
     """选择最近的可信连续段；最近段不合格时不使用更远孤立段。"""
@@ -286,6 +477,7 @@ def select_nearest_lane_path_segment(center_segments, diagnostic=None):
         diagnostic.update(reason='ok',point_count=len(nearest_points))
     return nearest_points
 
+
 def build_lane_path_message(center_segments, stamp):
     """由冻结的center segments构造near-to-far vehicle-frame Path。"""
     path_msg = Path()
@@ -312,7 +504,10 @@ def build_lane_path_message(center_segments, stamp):
 
     return path_msg
 
+
+# ============================================================
 # Metric BEV
+# ============================================================
 
 def init_undistort_maps():
     """
@@ -347,7 +542,8 @@ def init_undistort_maps():
         nninterpolation=True
     )
 
-def make_metric_bev(white_mask):
+
+def make_metric_bev(white_mask, frame_profile=None):
     """
     将现有白线二值 mask 去畸变后映射到 4 pixel/cm 的 Metric BEV。
     """
@@ -360,6 +556,7 @@ def make_metric_bev(white_mask):
         )
         return None
 
+    remap_start = time.time()
     undistorted_white_mask = cv2.remap(
         white_mask,
         undistort_map_x,
@@ -368,7 +565,13 @@ def make_metric_bev(white_mask):
         borderMode=cv2.BORDER_CONSTANT,
         borderValue=0
     )
+    record_profile_time(
+        frame_profile,
+        "undistort_remap",
+        time.time() - remap_start
+    )
 
+    bev_start = time.time()
     metric_bev_mask = cv2.warpPerspective(
         undistorted_white_mask,
         H,
@@ -377,19 +580,30 @@ def make_metric_bev(white_mask):
         borderMode=cv2.BORDER_CONSTANT,
         borderValue=0
     )
+    record_profile_time(
+        frame_profile,
+        "bev_transform",
+        time.time() - bev_start
+    )
 
     return metric_bev_mask
 
+
+# ============================================================
 # 自适应 Sliding Window 车道追踪（仅调试）
+# ============================================================
 
 def clip_x(x):
     return float(np.clip(float(x), 0.0, float(BEV_WIDTH - 1)))
 
+
 def point_is_usable(point):
     return point is not None and point.get("usable", False) and point.get("x") is not None
 
+
 def get_lane_width_estimate():
     return float(lane_width_est_px)
+
 
 def find_histogram_peak(binary_img, y0, y1, x_pred, search_half_width,
                         max_measurement_offset):
@@ -467,6 +681,7 @@ def find_histogram_peak(binary_img, y0, y1, x_pred, search_half_width,
 
     return clip_x(lane_x), float(quality), search_range
 
+
 def initialize_lane_bases(binary_img, lane_width_est):
     """
     使用车辆中心和当前车道宽先验，在底部合理邻域内初始化左右边界。
@@ -495,6 +710,7 @@ def initialize_lane_bases(binary_img, lane_width_est):
 
     return left_x, right_x, left_quality, right_quality
 
+
 def predict_window_x(points, base_x, window_index, previous_points, use_previous):
     usable_points = [point for point in points if point_is_usable(point)]
 
@@ -521,6 +737,7 @@ def predict_window_x(points, base_x, window_index, previous_points, use_previous
                 x_pred = 0.70 * x_pred + 0.30 * float(previous_point["x"])
 
     return clip_x(x_pred)
+
 
 def trace_boundary(binary_img, side, base_x, base_inferred,
                    previous_points_for_side, use_previous):
@@ -630,6 +847,7 @@ def trace_boundary(binary_img, side, base_x, base_inferred,
 
     return points
 
+
 def track_boundaries_once(binary_img, lane_width_est, use_previous):
     if use_previous:
         left_base = None
@@ -678,14 +896,17 @@ def track_boundaries_once(binary_img, lane_width_est, use_previous):
 
     return left_points, right_points
 
+
 def count_observed(points):
     return sum(1 for point in points if point_is_usable(point) and point.get("observed", False))
+
 
 def point_in_trusted_control_region(point):
     if point is None:
         return False
     source_y = float(point.get("source_y", point.get("y", -1.0)))
     return CONTROL_Y_MIN <= source_y < CONTROL_Y_MAX
+
 
 def boundary_point_is_reliable(point, trusted_only=False):
     if not point_is_usable(point):
@@ -699,6 +920,7 @@ def boundary_point_is_reliable(point, trusted_only=False):
     if trusted_only and not point_in_trusted_control_region(point):
         return False
     return True
+
 
 def get_local_boundary_geometry(boundary_points, window_index, side,
                                 trusted_only=False):
@@ -757,6 +979,7 @@ def get_local_boundary_geometry(boundary_points, window_index, side,
         "normal_y": float(normal_y)
     }
 
+
 def project_normal_distance(source_points, opposite_points,
                             window_index, side):
     geometry = get_local_boundary_geometry(
@@ -797,6 +1020,7 @@ def project_normal_distance(source_points, opposite_points,
         return None
 
     return float(best_distance)
+
 
 def update_lane_width_estimate(left_points, right_points):
     """
@@ -874,11 +1098,58 @@ def update_lane_width_estimate(left_points, right_points):
         width_measurement_consistency
     )
 
+
+def estimate_normal_center(boundary_points, window_index, side, lane_width_est):
+    boundary_point = boundary_points[window_index]
+
+    if not boundary_point_is_reliable(boundary_point):
+        return None
+
+    geometry = get_local_boundary_geometry(
+        boundary_points,
+        window_index,
+        side,
+        trusted_only=False
+    )
+    half_width = lane_width_est / 2.0
+    used_normal = geometry is not None
+
+    if geometry is not None:
+        center_x = (
+            float(boundary_point["x"]) +
+            geometry["normal_x"] * half_width
+        )
+        center_y = (
+            float(boundary_point["y"]) +
+            geometry["normal_y"] * half_width
+        )
+    else:
+        if side == "left":
+            center_x = float(boundary_point["x"]) + half_width
+        else:
+            center_x = float(boundary_point["x"]) - half_width
+        center_y = float(boundary_point["y"])
+
+    return {
+        "x": clip_x(center_x),
+        "y": float(np.clip(center_y, 0.0, float(BEV_HEIGHT - 1))),
+        "source_y": float(boundary_point["y"]),
+        "window_index": int(window_index),
+        "score": float(boundary_point.get("score", 0.0)),
+        "usable": True,
+        "observed": False,
+        "compensated": True,
+        "used_normal": used_normal,
+        "geometry_agreement": True
+    }
+
+
 def count_reliable_boundary_points(points, trusted_only=True):
     return sum(
         1 for point in points
         if boundary_point_is_reliable(point, trusted_only=trusted_only)
     )
+
 
 def determine_lane_tracking_mode(left_points, right_points):
     """
@@ -900,6 +1171,41 @@ def determine_lane_tracking_mode(left_points, right_points):
     if right_ready:
         return LANE_MODE_RIGHT_ONLY
     return LANE_MODE_NONE
+
+
+def make_two_side_center(left_point, right_point, window_index):
+    """
+    Pair the two observed boundaries at the same longitudinal window.
+
+    This is deliberately different from independently offsetting the two noisy
+    local normals. Pairing at one fixed BEV row prevents the two center
+    candidates from jumping apart on a curve.
+    """
+    if not boundary_point_is_reliable(left_point):
+        return None
+    if not boundary_point_is_reliable(right_point):
+        return None
+
+    left_score = max(0.05, float(left_point.get("score", 0.0)))
+    right_score = max(0.05, float(right_point.get("score", 0.0)))
+    center_x = 0.5 * (float(left_point["x"]) + float(right_point["x"]))
+    center_y = 0.5 * (float(left_point["y"]) + float(right_point["y"]))
+
+    return {
+        "x": clip_x(center_x),
+        "y": float(np.clip(center_y, 0.0, float(BEV_HEIGHT - 1))),
+        "source_y": float(center_y),
+        "window_index": int(window_index),
+        "score": float(0.5 * (left_score + right_score)),
+        "usable": True,
+        "observed": True,
+        "compensated": False,
+        "predicted": False,
+        "used_normal": False,
+        "geometry_agreement": True,
+        "lane_mode": LANE_MODE_BOTH_SIDES
+    }
+
 
 def build_center_points(left_points, right_points, lane_width_est,
                         lane_mode=None, preferred_side=None):
@@ -979,6 +1285,145 @@ def build_center_points(left_points, right_points, lane_width_est,
             point['offset_reference'] = 'vehicle_center_axis'
     return result
 
+
+def fit_center_curve_robust(center_points):
+    """
+    Fit x_lateral_pixel=f(y_forward_pixel) with a lightweight robust fit.
+
+    Returns coefficients and the observed source-y interval. The latter keeps
+    gap filling interpolation-only; the function never extrapolates a center
+    path beyond current observations.
+    """
+    fit_points = [
+        point for point in center_points
+        if point_is_usable(point) and point_in_trusted_control_region(point)
+    ]
+
+    if len(fit_points) < CENTER_FIT_MIN_POINTS:
+        return None
+
+    y_values = np.asarray([
+        float(point.get("source_y", point["y"]))
+        for point in fit_points
+    ], dtype=np.float64)
+    x_values = np.asarray([
+        float(point["x"])
+        for point in fit_points
+    ], dtype=np.float64)
+
+    if len(np.unique(y_values)) < CENTER_FIT_MIN_POINTS:
+        return None
+
+    degree = 2 if len(fit_points) >= 4 else 1
+    base_weights = np.asarray([
+        max(0.10, min(1.0, float(point.get("score", 0.0)))) *
+        (0.70 if point.get("compensated", False) else 1.0)
+        for point in fit_points
+    ], dtype=np.float64)
+    robust_weights = np.ones(len(fit_points), dtype=np.float64)
+    coefficients = None
+
+    try:
+        for _ in range(3):
+            fit_weights = np.sqrt(base_weights * robust_weights)
+            coefficients = np.polyfit(
+                y_values,
+                x_values,
+                degree,
+                w=fit_weights
+            )
+            residuals = x_values - np.polyval(coefficients, y_values)
+            residual_median = float(np.median(residuals))
+            absolute_residuals = np.abs(residuals - residual_median)
+            mad = float(np.median(absolute_residuals))
+            scale = max(CENTER_FIT_MIN_SCALE_PX, 1.4826 * mad)
+            cutoff = CENTER_FIT_HUBER_K * scale
+            robust_weights = np.ones(len(fit_points), dtype=np.float64)
+            outlier_mask = absolute_residuals > cutoff
+            robust_weights[outlier_mask] = (
+                cutoff / np.maximum(absolute_residuals[outlier_mask], 1.0)
+            )
+    except (TypeError, ValueError, np.linalg.LinAlgError):
+        return None
+
+    if coefficients is None or not np.all(np.isfinite(coefficients)):
+        return None
+
+    return {
+        "coefficients": coefficients,
+        "min_y": float(np.min(y_values)),
+        "max_y": float(np.max(y_values))
+    }
+
+
+def smooth_center_points_spatially(center_points, lane_mode):
+    """
+    Smooth the complete center curve and fill only internal window gaps.
+
+    Existing points retain a small part of their measured position. Missing
+    points are synthesized only between the nearest and farthest current
+    observations, never beyond them.
+    """
+    fit_result = fit_center_curve_robust(center_points)
+    if fit_result is None:
+        return center_points
+
+    coefficients = fit_result["coefficients"]
+    min_y = fit_result["min_y"]
+    max_y = fit_result["max_y"]
+    fit_blend = (
+        CENTER_FIT_BLEND_BOTH
+        if lane_mode == LANE_MODE_BOTH_SIDES
+        else CENTER_FIT_BLEND_SINGLE
+    )
+    smoothed = []
+
+    for window_index in range(NUM_WINDOWS):
+        nominal_y = float(
+            BEV_HEIGHT - window_index * WINDOW_HEIGHT - WINDOW_HEIGHT / 2
+        )
+        current_point = center_points[window_index]
+
+        if not (CONTROL_Y_MIN <= nominal_y <= CONTROL_Y_MAX):
+            smoothed.append(current_point)
+            continue
+
+        if nominal_y < min_y or nominal_y > max_y:
+            smoothed.append(current_point)
+            continue
+
+        fitted_x = clip_x(float(np.polyval(coefficients, nominal_y)))
+
+        if point_is_usable(current_point):
+            stable_point = dict(current_point)
+            stable_point["x"] = float(
+                fit_blend * fitted_x +
+                (1.0 - fit_blend) * float(current_point["x"])
+            )
+            stable_point["y"] = nominal_y
+            stable_point["source_y"] = nominal_y
+            stable_point["spatially_smoothed"] = True
+            smoothed.append(stable_point)
+        else:
+            smoothed.append({
+                "x": fitted_x,
+                "y": nominal_y,
+                "source_y": nominal_y,
+                "window_index": int(window_index),
+                "score": 0.0,
+                "usable": True,
+                "observed": False,
+                "compensated": True,
+                "predicted": True,
+                "used_normal": False,
+                "geometry_agreement": True,
+                "lane_mode": lane_mode,
+                "spatially_smoothed": True
+            })
+
+    return smoothed
+
+
 def vector_turn_degrees(first_vector, second_vector):
     first_norm = float(np.hypot(first_vector[0], first_vector[1]))
     second_norm = float(np.hypot(second_vector[0], second_vector[1]))
@@ -990,6 +1435,7 @@ def vector_turn_degrees(first_vector, second_vector):
     ) / (first_norm * second_norm)
     cosine = float(np.clip(cosine, -1.0, 1.0))
     return float(np.degrees(np.arccos(cosine)))
+
 
 def build_center_segments(center_points):
     """按窗口间隔、空间距离和局部转角将中心路径切成连续短段。"""
@@ -1043,6 +1489,7 @@ def build_center_segments(center_points):
         segments.append(current_segment)
 
     return segments
+
 
 def calculate_tracking_confidence(left_points, right_points,
                                   center_points, center_segments,
@@ -1209,7 +1656,56 @@ def calculate_tracking_confidence(left_points, right_points,
 
     return float(np.clip(confidence, 0.0, 1.0))
 
-def track_metric_lane(metric_bev_mask, source_stamp=None):
+
+def stabilize_center_points(center_points, tracking_confidence):
+    stabilized = []
+
+    for window_index in range(NUM_WINDOWS):
+        current_point = center_points[window_index]
+        previous_point = previous_center_points[window_index]
+
+        if not point_is_usable(current_point):
+            stabilized.append(None)
+            continue
+
+        stable_point = dict(current_point)
+
+        if point_is_usable(previous_point):
+            delta_x = abs(float(current_point["x"] - previous_point["x"]))
+
+            if (
+                    delta_x > CENTER_OUTLIER_THRESHOLD_PX and
+                    tracking_confidence < LOW_CONFIDENCE_THRESHOLD):
+                stable_point["x"] = float(previous_point["x"])
+                stable_point["y"] = float(previous_point["y"])
+                stable_point["observed"] = False
+                stable_point["compensated"] = True
+            else:
+                stable_point["x"] = float(
+                    EMA_ALPHA * current_point["x"] +
+                    (1.0 - EMA_ALPHA) * previous_point["x"]
+                )
+                stable_point["y"] = float(
+                    EMA_ALPHA * current_point["y"] +
+                    (1.0 - EMA_ALPHA) * previous_point["y"]
+                )
+
+        stabilized.append(stable_point)
+
+    return stabilized
+
+
+
+
+
+
+
+
+
+
+
+
+def track_metric_lane(metric_bev_mask, frame_profile=None, source_stamp=None):
     """
     返回仅用于调试绘制的左右边界点、中心路径、车道宽和置信度。
     """
@@ -1229,6 +1725,7 @@ def track_metric_lane(metric_bev_mask, source_stamp=None):
     use_previous = temporal_comparable and previous_tracking_confidence >= TRACK_GOOD_CONFIDENCE
     reinitialized = not use_previous
 
+    lane_tracking_start = time.time()
     left_points, right_points = track_boundaries_once(
         metric_bev_mask,
         lane_width_est,
@@ -1251,6 +1748,13 @@ def track_metric_lane(metric_bev_mask, source_stamp=None):
             right_points = retry_right
             reinitialized = True
 
+    record_profile_time(
+        frame_profile,
+        "lane_tracking",
+        time.time() - lane_tracking_start
+    )
+
+    center_confidence_start = time.time()
     (
         lane_width_est,
         accepted_width_count,
@@ -1285,6 +1789,11 @@ def track_metric_lane(metric_bev_mask, source_stamp=None):
     )
     # The tracker supplies current offset points. The lane controller fits one
     # smooth reference inside their support; it never blends old pixel positions.
+    record_profile_time(
+        frame_profile,
+        "center_confidence",
+        time.time() - center_confidence_start
+    )
 
     previous_left_points = left_points
     previous_right_points = right_points
@@ -1304,11 +1813,182 @@ def track_metric_lane(metric_bev_mask, source_stamp=None):
         "right_valid_count": count_observed(right_points)
     }
 
+
+def draw_boundary_debug(debug_img, points, observed_color):
+    last_point = None
+
+    for point in points:
+        if point is None:
+            last_point = None
+            continue
+        y_center = int(point["y"])
+
+        if point.get("search_x") is not None:
+            half_width = int(point.get("search_half_width", WINDOW_HALF_WIDTH))
+            search_x = int(round(point["search_x"]))
+            y0 = max(0, y_center - WINDOW_HEIGHT / 2)
+            y1 = min(BEV_HEIGHT - 1, y_center + WINDOW_HEIGHT / 2)
+            x0 = max(0, search_x - half_width)
+            x1 = min(BEV_WIDTH - 1, search_x + half_width)
+            rectangle_color = (0, 165, 255) if point.get("used_lost_width", False) else (90, 90, 90)
+            cv2.rectangle(debug_img, (x0, y0), (x1, y1), rectangle_color, 1)
+
+        if not point_is_usable(point):
+            last_point = None
+            continue
+
+        draw_point = (int(round(point["x"])), y_center)
+
+        if point.get("observed", False):
+            point_color = observed_color
+            radius = 4
+        else:
+            point_color = (0, 255, 255)
+            radius = 3
+
+        if last_point is not None:
+            cv2.line(debug_img, last_point, draw_point, observed_color, 2)
+        cv2.circle(debug_img, draw_point, radius, point_color, -1)
+        last_point = draw_point
+
+
+def make_lane_tracking_debug(metric_bev_mask, tracking_result):
+    debug_img = cv2.cvtColor(metric_bev_mask, cv2.COLOR_GRAY2BGR)
+
+    cv2.line(
+        debug_img,
+        (0, CONTROL_Y_MIN),
+        (BEV_WIDTH - 1, CONTROL_Y_MIN),
+        (255, 255, 0),
+        1
+    )
+    cv2.putText(
+        debug_img,
+        "trusted control region",
+        (8, CONTROL_Y_MIN - 6),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.42,
+        (255, 255, 0),
+        1,
+        cv2.LINE_AA
+    )
+
+    draw_boundary_debug(
+        debug_img,
+        tracking_result["left_points"],
+        (255, 80, 0)
+    )
+    draw_boundary_debug(
+        debug_img,
+        tracking_result["right_points"],
+        (0, 0, 255)
+    )
+
+    path_diagnostic = {}
+    selected_path = select_nearest_lane_path_segment(tracking_result['center_segments'],path_diagnostic)
+    selected_ids = set(id(p) for p in selected_path)
+    for center_point in tracking_result["center_points"]:
+        if not point_is_usable(center_point):
+            continue
+
+        draw_point = (
+            int(round(center_point["x"])),
+            int(round(center_point["y"]))
+        )
+
+        point_color = (0, 255, 0) if id(center_point) in selected_ids else (100,100,100)
+        cv2.circle(debug_img, draw_point, 4, point_color, -1)
+
+    for center_segment in [selected_path]:
+        for point_index in range(1, len(center_segment)):
+            previous_point = center_segment[point_index - 1]
+            current_point = center_segment[point_index]
+            cv2.line(
+                debug_img,
+                (
+                    int(round(previous_point["x"])),
+                    int(round(previous_point["y"]))
+                ),
+                (
+                    int(round(current_point["x"])),
+                    int(round(current_point["y"]))
+                ),
+                (0, 255, 0),
+                2
+            )
+
+    cv2.rectangle(debug_img, (0, 0), (BEV_WIDTH - 1, 66), (0, 0, 0), -1)
+    cv2.putText(
+        debug_img,
+        "left valid: %d  right valid: %d" % (
+            tracking_result["left_valid_count"],
+            tracking_result["right_valid_count"]
+        ),
+        (8, 20),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.48,
+        (255, 255, 255),
+        1,
+        cv2.LINE_AA
+    )
+    cv2.putText(
+        debug_img,
+        "lane width: %.1f cm" % (
+            tracking_result["lane_width_est"] / PX_PER_CM
+        ),
+        (8, 41),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.48,
+        (255, 255, 255),
+        1,
+        cv2.LINE_AA
+    )
+    cv2.putText(
+        debug_img,
+        "confidence: %.2f  mode: %s" % (
+            tracking_result["tracking_confidence"],
+            tracking_result.get("lane_mode", LANE_MODE_NONE)
+        ),
+        (8, 62),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.48,
+        (255, 255, 255),
+        1,
+        cv2.LINE_AA
+    )
+
+    reference = next((p.get('reference_side') for p in tracking_result['center_points'] if p), None)
+    cv2.putText(debug_img, 'normal-fit reference: %s' % (reference or 'none'),
+                (8,83), cv2.FONT_HERSHEY_SIMPLEX, .45, (255,255,255), 1)
+    cv2.putText(debug_img, 'published path: %d  %s' % (len(selected_path),path_diagnostic['reason']),
+                (8,101), cv2.FONT_HERSHEY_SIMPLEX, .42, (255,255,255), 1)
+    return debug_img
+
+
+# ============================================================
 # 构建地面 ROI
+# ============================================================
 
+def build_floor_mask(frame_bgr):
+    """
+    只保留图像下方地面区域。
+    避免天花板、墙面、围挡进入检测。
+    """
+    h, w = frame_bgr.shape[:2]
+
+    y0 = int(h * FLOOR_Y_RATIO)
+
+    mask = np.zeros((h, w), dtype=np.uint8)
+    mask[y0:h, :] = 255
+
+    return mask
+
+
+# ============================================================
 # 连通域过滤函数
+# ============================================================
 
-def filter_white_components(binary_img):
+def filter_white_components(binary_img, white_profile=None):
     """
     连通域过滤。
 
@@ -1321,6 +2001,7 @@ def filter_white_components(binary_img):
 
     img_h, img_w = binary_img.shape[:2]
 
+    stage_start = time.time()
     num_labels, labels, stats, centroids = (
         cv2.connectedComponentsWithStatsWithAlgorithm(
             binary_img,
@@ -1329,7 +2010,14 @@ def filter_white_components(binary_img):
             cv2.CCL_GRANA
         )
     )
+    if white_profile is not None:
+        record_white_profile_time(
+            white_profile,
+            "connected_components",
+            time.time() - stage_start
+        )
 
+    stage_start = time.time()
     x = stats[:, cv2.CC_STAT_LEFT].astype(np.float64)
     y = stats[:, cv2.CC_STAT_TOP].astype(np.float64)
     bw = stats[:, cv2.CC_STAT_WIDTH].astype(np.float64)
@@ -1368,9 +2056,19 @@ def filter_white_components(binary_img):
     label_lut[keep] = 255
     cleaned = label_lut[labels]
 
+    if white_profile is not None:
+        record_white_profile_time(
+            white_profile,
+            "component_filter_rebuild",
+            time.time() - stage_start
+        )
+
     return cleaned
 
+
+# ============================================================
 # 白线检测主函数
+# ============================================================
 
 def detect_white_line(frame_bgr):
     """
@@ -1386,7 +2084,10 @@ def detect_white_line(frame_bgr):
     -> 输出白线二值图
     """
 
+    white_profile = {}
+
     # 1. 地面 ROI
+    stage_start = time.time()
     h, w = frame_bgr.shape[:2]
     y_start = int(h * FLOOR_Y_RATIO)
     gaussian_radius = 15
@@ -1394,49 +2095,109 @@ def detect_white_line(frame_bgr):
     halo_offset = y_start - halo_start
     frame_halo = frame_bgr[halo_start:h, :]
     frame_roi = frame_bgr[y_start:h, :]
+    record_white_profile_time(
+        white_profile,
+        "roi_copy",
+        time.time() - stage_start
+    )
 
     # 2. HLS 白色粗筛
+    stage_start = time.time()
     hls_halo = cv2.cvtColor(frame_halo, cv2.COLOR_BGR2HLS)
+    record_white_profile_time(
+        white_profile,
+        "bgr_to_hls",
+        time.time() - stage_start
+    )
 
+    stage_start = time.time()
     l_halo = cv2.extractChannel(hls_halo, 1)
     l_channel = l_halo[halo_offset:, :]
     s_channel = cv2.extractChannel(hls_halo[halo_offset:, :], 2)
+    record_white_profile_time(
+        white_profile,
+        "hls_split",
+        time.time() - stage_start
+    )
 
+    stage_start = time.time()
     mask_l = cv2.inRange(l_channel, WHITE_L_MIN, 255)
     mask_s = cv2.inRange(s_channel, 0, WHITE_S_MAX)
     mask_hls = cv2.bitwise_and(mask_l, mask_s)
+    record_white_profile_time(
+        white_profile,
+        "hls_threshold",
+        time.time() - stage_start
+    )
 
     # 3. BGR 真白色判断
+    stage_start = time.time()
     b_channel, g_channel, r_channel = cv2.split(frame_roi)
+    record_white_profile_time(
+        white_profile,
+        "bgr_split",
+        time.time() - stage_start
+    )
 
+    stage_start = time.time()
     max_rgb = cv2.max(cv2.max(r_channel, g_channel), b_channel)
     min_rgb = cv2.min(cv2.min(r_channel, g_channel), b_channel)
 
     delta_rgb = cv2.subtract(max_rgb, min_rgb)
+    record_white_profile_time(
+        white_profile,
+        "bgr_minmax_spread",
+        time.time() - stage_start
+    )
 
     # 三个通道都比较亮
+    stage_start = time.time()
     mask_rgb_bright = cv2.inRange(min_rgb, WHITE_RGB_MIN, 255)
 
     # 三个通道差距不能太大
     mask_rgb_neutral = cv2.inRange(delta_rgb, 0, WHITE_RGB_DELTA_MAX)
 
     mask_rgb_white = cv2.bitwise_and(mask_rgb_bright, mask_rgb_neutral)
+    record_white_profile_time(
+        white_profile,
+        "bgr_threshold",
+        time.time() - stage_start
+    )
 
     # 4. 局部对比度判断
     # 白线应该比附近地面亮，而不是整片地面一起亮
+    stage_start = time.time()
     l_blur_halo = cv2.GaussianBlur(l_halo, (31, 31), 0)
     l_blur = l_blur_halo[halo_offset:, :]
+    record_white_profile_time(
+        white_profile,
+        "gaussian_blur",
+        time.time() - stage_start
+    )
 
+    stage_start = time.time()
     local_contrast = cv2.subtract(l_channel, l_blur)
 
     mask_contrast = cv2.inRange(local_contrast, LOCAL_CONTRAST_MIN, 255)
+    record_white_profile_time(
+        white_profile,
+        "local_contrast",
+        time.time() - stage_start
+    )
 
     # 5. 强白线判断
     # 对非常亮的白线放宽局部对比度限制
+    stage_start = time.time()
     mask_strong_l = cv2.inRange(l_channel, STRONG_L_MIN, 255)
+    record_white_profile_time(
+        white_profile,
+        "strong_threshold",
+        time.time() - stage_start
+    )
 
     # 6. 综合白线判断
     # 条件 A：HLS 像白色 + RGB 像白色 + 比周围亮
+    stage_start = time.time()
     mask_normal_white = cv2.bitwise_and(mask_hls, mask_rgb_white)
     mask_normal_white = cv2.bitwise_and(mask_normal_white, mask_contrast)
 
@@ -1444,45 +2205,185 @@ def detect_white_line(frame_bgr):
     mask_strong_white = cv2.bitwise_and(mask_rgb_white, mask_strong_l)
 
     roi_white_mask = cv2.bitwise_or(mask_normal_white, mask_strong_white)
+    record_white_profile_time(
+        white_profile,
+        "mask_logic",
+        time.time() - stage_start
+    )
 
     # 7. 放回完整 640x360 mask；上半部与原 ROI mask 逻辑完全一致为0。
+    stage_start = time.time()
     white_mask = np.zeros((h, w), dtype=np.uint8)
     white_mask[y_start:h, :] = roi_white_mask
+    record_white_profile_time(
+        white_profile,
+        "roi_apply",
+        time.time() - stage_start
+    )
 
     # 8. 中值滤波，减少孤立噪点
+    stage_start = time.time()
     white_mask = cv2.medianBlur(white_mask, 3)
+    record_white_profile_time(
+        white_profile,
+        "median_blur",
+        time.time() - stage_start
+    )
 
     # 9. 开运算：去小白点
+    stage_start = time.time()
     white_mask = cv2.morphologyEx(
         white_mask,
         cv2.MORPH_OPEN,
         OPEN_KERNEL
     )
+    record_white_profile_time(
+        white_profile,
+        "morph_open",
+        time.time() - stage_start
+    )
 
     # 10. 闭运算：连接断裂虚线/边线
+    stage_start = time.time()
     white_mask = cv2.morphologyEx(
         white_mask,
         cv2.MORPH_CLOSE,
         CLOSE_KERNEL
+    )
+    record_white_profile_time(
+        white_profile,
+        "morph_close",
+        time.time() - stage_start
     )
 
     # 11. 连通域过滤
-    white_mask = filter_white_components(white_mask)
+    white_mask = filter_white_components(white_mask, white_profile)
 
     # 12. 再轻微闭运算一次，让白线块更完整
+    stage_start = time.time()
     white_mask = cv2.morphologyEx(
         white_mask,
         cv2.MORPH_CLOSE,
         CLOSE_KERNEL
     )
+    record_white_profile_time(
+        white_profile,
+        "final_morphology",
+        time.time() - stage_start
+    )
+
+    finish_white_profile(white_profile)
 
     return white_mask
 
+
+# ============================================================
 # 车道中心/分层 offset 计算
+# ============================================================
 
+def calc_lane_offset_in_band(white_mask, y0_ratio, y1_ratio):
+    """
+    在指定纵向区域内计算车道中心和 offset。
+    y0_ratio/y1_ratio: 0~1，越大越靠近车身。
+    返回 dict，供直道和弯道共同使用。
+    """
+    h, w = white_mask.shape[:2]
+    y0 = int(h * y0_ratio)
+    y1 = int(h * y1_ratio)
+
+    if y1 <= y0:
+        return {
+            "offset": 9999,
+            "lane_center_x": -1,
+            "left_x": -1,
+            "right_x": -1,
+            "white_sum": 0
+        }
+
+    roi = white_mask[y0:y1, :]
+    hist = cv2.reduce(roi, 0, cv2.REDUCE_SUM, dtype=cv2.CV_32S).flatten()
+
+    mid_x = int(w / 2)
+    left_hist = hist[:mid_x]
+    right_hist = hist[mid_x:]
+
+    left_sum = int(left_hist.sum())
+    right_sum = int(right_hist.sum())
+    white_sum = left_sum + right_sum
+
+    # 注意：这里的 sum 是 255 累加值，不是像素个数。
+    # 2500 大约等价于 10 个白色像素，适合分层 ROI。
+    MIN_SIDE_SUM = 2500
+
+    left_x = -1
+    right_x = -1
+
+    if left_sum > MIN_SIDE_SUM:
+        left_x = int((left_hist * np.arange(0, mid_x)).sum() / float(left_sum))
+
+    if right_sum > MIN_SIDE_SUM:
+        right_x = int((right_hist * np.arange(mid_x, w)).sum() / float(right_sum))
+
+    LANE_HALF_WIDTH_PIXELS = 120
+
+    if left_x >= 0 and right_x >= 0:
+        lane_center_x = int((left_x + right_x) / 2)
+    elif left_x >= 0:
+        lane_center_x = int(left_x + LANE_HALF_WIDTH_PIXELS)
+    elif right_x >= 0:
+        lane_center_x = int(right_x - LANE_HALF_WIDTH_PIXELS)
+    else:
+        lane_center_x = -1
+
+    image_center_x = int(w / 2)
+
+    if lane_center_x >= 0:
+        OFFSET_BIAS = 17
+        raw_offset_error = int(lane_center_x - image_center_x)
+        offset = int(raw_offset_error - OFFSET_BIAS)
+    else:
+        offset = 9999
+
+    return {
+        "offset": int(offset),
+        "lane_center_x": int(lane_center_x),
+        "left_x": int(left_x),
+        "right_x": int(right_x),
+        "white_sum": int(white_sum)
+    }
+
+
+def judge_curve(offset_near, offset_mid):
+    """
+    根据近处 offset 和中距离 offset 的差值，给出弯道趋势。
+    只作为视觉提示，不直接控制车辆。
+    """
+    if offset_near == 9999 or offset_mid == 9999:
+        return "UNKNOWN"
+
+    diff = int(offset_mid - offset_near)
+    CURVE_THRESHOLD = 25
+
+    if diff > CURVE_THRESHOLD:
+        return "RIGHT_CURVE"
+    elif diff < -CURVE_THRESHOLD:
+        return "LEFT_CURVE"
+    else:
+        return "STRAIGHT"
+
+
+# ============================================================
 # 图像回调函数
+# ============================================================
 
+
+
+# ============================================================
 # 主函数
+# ============================================================
+
+
+
 
 # ROS transport retained for the complete mission; perception above is the backup.
 LANE_OBSERVATION_TOPIC = "/vision/lane_observation"
@@ -1494,6 +2395,49 @@ latest_image_msg = None
 latest_image_lock = threading.Lock()
 processing_lock = threading.Lock()
 last_processed_source_stamp = None
+processing_timer = None
+
+def publish_image(pub, img, encoding=None, frame_profile=None, source_header=None):
+    """
+    将 OpenCV 图像发布为 ROS Image。
+    """
+    if img is None or not publisher_has_subscribers(pub):
+        return
+
+    try:
+        if img.dtype != np.uint8:
+            img = np.clip(img, 0, 255).astype(np.uint8)
+
+        if encoding is None:
+            if len(img.shape) == 2:
+                encoding = "mono8"
+            else:
+                encoding = "bgr8"
+
+        conversion_start = time.time()
+        msg = bridge.cv2_to_imgmsg(img, encoding=encoding)
+        if source_header is not None:
+            msg.header = source_header
+        else:
+            msg.header.stamp = rospy.Time.now()
+        record_profile_time(
+            frame_profile,
+            "debug_msg_conversion",
+            time.time() - conversion_start
+        )
+
+        publish_start = time.time()
+        pub.publish(msg)
+        record_profile_time(
+            frame_profile,
+            "ros_publish",
+            time.time() - publish_start
+        )
+
+    except Exception as e:
+        rospy.logwarn("publish_image failed: %s" % str(e))
+
+
 
 def configure_lane_windows(height, min_span):
     global WINDOW_HEIGHT, NUM_WINDOWS, MIN_LANE_PATH_FORWARD_SPAN_M
@@ -1513,6 +2457,8 @@ def configure_lane_windows(height, min_span):
     previous_center_points = [None] * NUM_WINDOWS
     left_reference_history = left_reference_candidate = None
 
+
+
 def build_left_boundary_message(points, stamp):
     """Reuse observed boundary windows; no predictions or center-line guesses."""
     msg = Path()
@@ -1528,6 +2474,8 @@ def build_left_boundary_message(points, stamp):
         msg.poses.append(pose)
     return msg
 
+
+
 def build_observed_lane_boundaries(tracking_result, stamp):
     """Export continuous observed paint paths without a half-width offset."""
     result = {}
@@ -1542,30 +2490,59 @@ def build_observed_lane_boundaries(tracking_result, stamp):
                                 for p in selected]
     return result
 
+
+
 def process_image(msg):
+    global last_print_time
 
     callback_start = time.time()
+    frame_profile = begin_frame_profile()
+    input_start = time.time()
     try:
         frame = bridge.imgmsg_to_cv2(msg, "bgr8")
     except CvBridgeError as e:
         rospy.logerr("cv_bridge failed: %s" % str(e))
         return
+    record_profile_time(
+        frame_profile,
+        "input_cvbridge",
+        time.time() - input_start
+    )
 
+    white_start = time.time()
     white_mask = detect_white_line(frame)
+    record_profile_time(
+        frame_profile,
+        "white_mask",
+        time.time() - white_start
+    )
 
-    metric_bev_mask = make_metric_bev(white_mask)
+    metric_bev_mask = make_metric_bev(white_mask, frame_profile)
+    lane_tracking_debug = None
     tracking_result = None
 
     if metric_bev_mask is not None:
         try:
             tracking_result = track_metric_lane(
                 metric_bev_mask,
+                frame_profile,
                 source_stamp=msg.header.stamp.to_sec()
             )
+            if publisher_has_subscribers(lane_tracking_pub):
+                debug_start = time.time()
+                lane_tracking_debug = make_lane_tracking_debug(
+                    metric_bev_mask,
+                    tracking_result
+                )
+                record_profile_time(
+                    frame_profile,
+                    "debug_drawing",
+                    time.time() - debug_start
+                )
         except Exception as e:
             rospy.logwarn_throttle(
                 5.0,
-                "lane tracking failed: %s" % str(e)
+                "lane tracking debug failed: %s" % str(e)
             )
 
     if tracking_result is None:
@@ -1586,6 +2563,7 @@ def process_image(msg):
     confidence_msg = Float32()
     confidence_msg.data = tracking_confidence
 
+    path_publish_start = time.time()
     if lane_observation_pub is not None:
         diagnostic = {}
         select_nearest_lane_path_segment(center_segments, diagnostic)
@@ -1611,10 +2589,104 @@ def process_image(msg):
     if left_boundary_pub is not None:
         left_boundary_pub.publish(build_left_boundary_message(
             tracking_result['left_points'] if tracking_result else [],msg.header.stamp))
+    record_profile_time(
+        frame_profile,
+        "ros_publish",
+        time.time() - path_publish_start
+    )
+
+    publish_image(front_pub, frame, encoding="bgr8", frame_profile=frame_profile,
+                  source_header=msg.header)
+    publish_image(white_pub, white_mask, encoding="mono8", frame_profile=frame_profile,
+                  source_header=msg.header)
+    publish_image(
+        metric_bev_pub,
+        metric_bev_mask,
+        encoding="mono8",
+        frame_profile=frame_profile,
+        source_header=msg.header
+    )
+    publish_image(
+        lane_tracking_pub,
+        lane_tracking_debug,
+        encoding="bgr8",
+        frame_profile=frame_profile,
+        source_header=msg.header
+    )
+
+    now = time.time()
+
+    if now - last_print_time >= PRINT_INTERVAL:
+        white_points = cv2.countNonZero(white_mask)
+
+        # near: 近处车道中心，最适合判断当前是否压线/偏离
+        # mid:  中距离车道中心，适合观察入弯趋势
+        # old:  兼容旧版本控制组，保持 offset_error 的意义不突然改变
+        near_info = calc_lane_offset_in_band(white_mask, 0.78, 0.95)
+        mid_info = calc_lane_offset_in_band(white_mask, 0.60, 0.78)
+        old_info = calc_lane_offset_in_band(white_mask, 0.60, 0.95)
+
+        offset_error = old_info["offset"]
+        offset_near = near_info["offset"]
+        offset_mid = mid_info["offset"]
+        curve_hint = judge_curve(offset_near, offset_mid)
+
+        # 粗略反光提示：白色面积异常偏大时，提示可能有地面反光。
+        # 这个阈值先保守设置，后续根据现场日志再调。
+        reflection_warning = bool(white_points > 45000)
+
+        print("OLD  left_x = %d, right_x = %d, lane_center_x = %d" % (
+            old_info["left_x"], old_info["right_x"], old_info["lane_center_x"]
+        ))
+        print("NEAR offset = %d, MID offset = %d, curve_hint = %s" % (
+            offset_near, offset_mid, curve_hint
+        ))
+        print("white_points = %d, reflection_warning = %s" % (
+            white_points, str(reflection_warning)
+        ))
+        print("offset_error = %d" % offset_error)
+
+        if lane_pub is not None:
+            # 原来 /5000 会导致置信度长期等于 1.0，改成更合理的量级。
+            lane_confidence = min(1.0, float(white_points) / 35000.0)
+            lane_data = {
+                "source": "lane",
+                "white_points": int(white_points),
+                "lane_confidence": float(lane_confidence),
+                "offset_error": int(offset_error),
+                "offset_near": int(offset_near),
+                "offset_mid": int(offset_mid),
+                "curve_hint": curve_hint,
+                "reflection_warning": reflection_warning,
+                "left_x": int(old_info["left_x"]),
+                "right_x": int(old_info["right_x"]),
+                "lane_center_x": int(old_info["lane_center_x"])
+            }
+            msg = String()
+            msg.data = json.dumps(lane_data)
+            lane_publish_start = time.time()
+            lane_pub.publish(msg)
+            record_profile_time(
+                frame_profile,
+                "ros_publish",
+                time.time() - lane_publish_start
+            )
+        last_print_time = now
+
+    record_profile_time(
+        frame_profile,
+        "callback_total",
+        time.time() - callback_start
+    )
+    finish_frame_profile(frame_profile)
+
+
 
 def source_stamp_key(msg):
     stamp = msg.header.stamp
     return int(stamp.secs), int(stamp.nsecs)
+
+
 
 def image_callback(msg):
     global latest_image_msg
@@ -1629,6 +2701,8 @@ def image_callback(msg):
 
     with latest_image_lock:
         latest_image_msg = msg
+
+
 
 def process_latest_image(_event):
     global last_processed_source_stamp
@@ -1668,16 +2742,53 @@ def process_latest_image(_event):
     finally:
         processing_lock.release()
 
+
+
+def build_runtime_calibration(stamp):
+    """Read-only startup evidence from this process, including hard-coded settings."""
+    constants = {}
+    for key, value in list(globals().items()):
+        if not key.isupper():
+            continue
+        if isinstance(value, np.ndarray):
+            constants[key] = value.tolist()
+        elif isinstance(value, (bool, int, float, str, tuple, list)):
+            constants[key] = value
+    with open(__file__, 'rb') as source:
+        source_hash = hashlib.sha256(source.read()).hexdigest()
+    return dict(stamp=float(stamp), source_kind='running_process',
+                source_file=__file__, source_sha256=source_hash,
+                H=H.tolist(), K=K.tolist(), D=D.tolist(),
+                rectified_camera_matrix=new_camera_matrix.tolist(),
+                origin_uv=[240., 600.], pixels_per_metre=400.,
+                transform='undistorted 640x360 image -> metric BEV; rear axle origin',
+                processing_hz=processing_hz, max_image_age=max_image_age,
+                constants=constants)
+
+
+
 def check_lane_owner(publishers, topic):
     owners = publishers.get(topic, [])
     if owners:
         raise RuntimeError('lane topic already published by %s; stop the old preview/driver first: %s' %
                            (', '.join(owners), topic))
 
+
+
 def main():
     global FRONT_CAMERA_TOPIC
+    global DEBUG_FRONT_TOPIC
+    global DEBUG_WHITE_TOPIC
+    global DEBUG_METRIC_BEV_TOPIC
+    global DEBUG_LANE_TRACKING_TOPIC
+    global LANE_SEND_TOPIC
     global LANE_PATH_TOPIC
     global LANE_CONFIDENCE_TOPIC
+    global front_pub
+    global white_pub
+    global metric_bev_pub
+    global lane_tracking_pub
+    global lane_pub
     global lane_path_pub
     global lane_confidence_pub
     global lane_observation_pub
@@ -1707,12 +2818,50 @@ def main():
     # silently receive no data.
     FRONT_CAMERA_TOPIC = rospy.get_param(
         "~image_topic", FRONT_CAMERA_TOPIC)
+    DEBUG_FRONT_TOPIC = rospy.get_param(
+        "~raw_topic", DEBUG_FRONT_TOPIC)
+    DEBUG_WHITE_TOPIC = rospy.get_param(
+        "~white_topic", DEBUG_WHITE_TOPIC)
+    DEBUG_METRIC_BEV_TOPIC = rospy.get_param(
+        "~metric_bev_topic", DEBUG_METRIC_BEV_TOPIC)
+    DEBUG_LANE_TRACKING_TOPIC = rospy.get_param(
+        "~lane_tracking_topic", DEBUG_LANE_TRACKING_TOPIC)
+    LANE_SEND_TOPIC = rospy.get_param(
+        "~lane_topic", LANE_SEND_TOPIC)
     LANE_PATH_TOPIC = rospy.get_param(
         "~lane_path_topic", LANE_PATH_TOPIC)
     LANE_CONFIDENCE_TOPIC = rospy.get_param(
         "~lane_confidence_topic", LANE_CONFIDENCE_TOPIC)
     init_undistort_maps()
+    calibration_pub = rospy.Publisher('/vision/lane_calibration', String, queue_size=1, latch=True)
+    calibration_pub.publish(String(data=json.dumps(
+        build_runtime_calibration(rospy.Time.now().to_sec()), allow_nan=False)))
 
+    front_pub = rospy.Publisher(
+        DEBUG_FRONT_TOPIC,
+        Image,
+        queue_size=1
+    )
+
+    white_pub = rospy.Publisher(
+        DEBUG_WHITE_TOPIC,
+        Image,
+        queue_size=1
+    )
+
+    metric_bev_pub = rospy.Publisher(
+        DEBUG_METRIC_BEV_TOPIC,
+        Image,
+        queue_size=1
+    )
+
+    lane_tracking_pub = rospy.Publisher(
+        DEBUG_LANE_TRACKING_TOPIC,
+        Image,
+        queue_size=1
+    )
+
+    lane_pub = rospy.Publisher(LANE_SEND_TOPIC, String, queue_size=1)
     left_boundary_pub = rospy.Publisher('/vision/left_boundary',Path,queue_size=1)
     lane_path_pub = rospy.Publisher(LANE_PATH_TOPIC, Path, queue_size=1)
     lane_observation_pub = rospy.Publisher(
@@ -1736,7 +2885,28 @@ def main():
             process_latest_image
         )
 
+    print("camera_yihan_white_only started")
+    print("subscribe: %s" % FRONT_CAMERA_TOPIC)
+    print("processing_hz = %.2f" % processing_hz)
+    print("max_image_age = %.3f" % max_image_age)
+    print("publish raw: %s" % DEBUG_FRONT_TOPIC)
+    print("publish white mask: %s" % DEBUG_WHITE_TOPIC)
+    print("publish metric BEV: %s" % DEBUG_METRIC_BEV_TOPIC)
+    print("publish lane tracking: %s" % DEBUG_LANE_TRACKING_TOPIC)
+    print("publish lane path: %s" % LANE_PATH_TOPIC)
+    print("publish lane confidence: %s" % LANE_CONFIDENCE_TOPIC)
+    print("WHITE_L_MIN = %d" % WHITE_L_MIN)
+    print("WHITE_S_MAX = %d" % WHITE_S_MAX)
+    print("WHITE_RGB_MIN = %d" % WHITE_RGB_MIN)
+    print("WHITE_RGB_DELTA_MAX = %d" % WHITE_RGB_DELTA_MAX)
+    print("LOCAL_CONTRAST_MIN = %d" % LOCAL_CONTRAST_MIN)
+    print("STRONG_L_MIN = %d" % STRONG_L_MIN)
+    print("CLOSE_KERNEL = %d x %d" % (CLOSE_KERNEL_W, CLOSE_KERNEL_H))
+    print("FILTER_CENTER_VERTICAL_REFLECTION = %s" % str(FILTER_CENTER_VERTICAL_REFLECTION))
+
     rospy.spin()
+
+
 
 if __name__ == "__main__":
     main()

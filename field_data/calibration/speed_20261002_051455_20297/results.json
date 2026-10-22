@@ -1,0 +1,233 @@
+{
+  "complete": false, 
+  "models": {}, 
+  "trials": [
+    {
+      "status": "moving", 
+      "index": 1, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 1, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": 15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "pending", 
+      "index": 2, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "pending", 
+      "index": 3, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": 20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "pending", 
+      "index": 4, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "pending", 
+      "index": 5, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": 25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "pending", 
+      "index": 6, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "pending", 
+      "index": 7, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": 30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }, 
+    {
+      "status": "pending", 
+      "index": 8, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "forward", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": 30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }, 
+    {
+      "status": "pending", 
+      "index": 9, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": -15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "pending", 
+      "index": 10, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -15, 
+      "steering_raw": 0, 
+      "speed_raw": 15
+    }, 
+    {
+      "status": "pending", 
+      "index": 11, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": -20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "pending", 
+      "index": 12, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -20, 
+      "steering_raw": 0, 
+      "speed_raw": 20
+    }, 
+    {
+      "status": "pending", 
+      "index": 13, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": -25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "pending", 
+      "index": 14, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -25, 
+      "steering_raw": 0, 
+      "speed_raw": 25
+    }, 
+    {
+      "status": "pending", 
+      "index": 15, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 1.0, 
+      "signed_speed_raw": -30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }, 
+    {
+      "status": "pending", 
+      "index": 16, 
+      "command_seconds": null, 
+      "repeat": 1, 
+      "attempt": 0, 
+      "distance_cm": null, 
+      "direction": "reverse", 
+      "requested_seconds": 2.0, 
+      "signed_speed_raw": -30, 
+      "steering_raw": 0, 
+      "speed_raw": 30
+    }
+  ], 
+  "created_at": "2026-10-01T21:14:55Z", 
+  "version": 1, 
+  "config": {
+    "directions": [
+      "forward", 
+      "reverse"
+    ], 
+    "durations": [
+      1.0, 
+      2.0
+    ], 
+    "repeats": 1, 
+    "speeds": [
+      15, 
+      20, 
+      25, 
+      30
+    ]
+  }
+}

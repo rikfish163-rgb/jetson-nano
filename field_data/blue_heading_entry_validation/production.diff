@@ -1,0 +1,212 @@
+--- before/src/robot/camera/observations.py
++++ after/src/robot/camera/observations.py
+@@ -99,7 +99,7 @@
+         markers.append(p)
+     if channel[0] == 'front' and channel[1] in ('all','markers'):
+         approach = ctx.blue_approach
+-        if approach is not None and approach['phase'] == 'APPROACH':
++        if approach is not None and approach['phase'] == 'ALIGN':
+             nx,ny = math.cos(approach['yaw']),math.sin(approach['yaw'])
+             matches = [p for p in markers if
+                 abs((p[0]-approach['point'][0])*nx+(p[1]-approach['point'][1])*ny) < .15
+--- before/src/robot/common/contracts.py
++++ after/src/robot/common/contracts.py
+@@ -177,6 +177,7 @@
+     if not 0 <= number(cfg.get('uturn_reverse_distance_m',0)) <= 3:
+         raise ValueError('uturn_reverse_distance_m must be in [0,3]')
+     for key,default,upper in (('straight_wait_s',1.0,60),
++                              ('blue_aligned_advance_m',.36,2),
+                               ('straight_search_max_distance',.8,3),
+                               ('straight_search_timeout',10.0,60),
+                               ('straight_search_heading_deg',20,45)):
+--- before/src/robot/config/competition.yaml
++++ after/src/robot/config/competition.yaml
+@@ -73,6 +73,7 @@
+ intersection_wait_s: 0.0 # set explicitly in full.launch for stop/wait/turn tests
+ turn_angle_deg: 90.0
+ straight_distance: 1.25 # minimum forward displacement before lane takeover; floor 1.25 m
++blue_aligned_advance_m: 0.36 # forward travel starts only after visual body alignment
+ straight_wait_s: 1.0
+ straight_speed_raw: 26 # same command as the proven startup setting; verify wheel motion
+ straight_search_max_distance: 2.20 # bounded allowance for the 1.6 m blue-line spacing
+--- before/src/robot/config/workspace_modules.yaml
++++ after/src/robot/config/workspace_modules.yaml
+@@ -130,6 +130,7 @@
+     - right_turn_full_lock
+     - speed_raw.action
+     - straight_align_distance
++    - blue_aligned_advance_m
+     - straight_align_tolerance_deg
+     - straight_blue_clearance
+     - straight_distance
+--- before/src/robot/launch/full.launch
++++ after/src/robot/launch/full.launch
+@@ -62,6 +62,7 @@
+   <arg name="right_turn_angle_deg" default=""/>
+   <arg name="right_turn_exit" default=""/>
+   <arg name="straight_distance" default=""/>
++  <arg name="blue_aligned_advance_m" default=""/>
+   <arg name="lane_speed_raw" default=""/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+@@ -129,6 +130,7 @@
+     <arg name="right_turn_angle_deg" value="$(arg right_turn_angle_deg)"/>
+     <arg name="right_turn_exit" value="$(arg right_turn_exit)"/>
+     <arg name="straight_distance" value="$(arg straight_distance)"/>
++    <arg name="blue_aligned_advance_m" value="$(arg blue_aligned_advance_m)"/>
+     <arg name="lane_speed_raw" value="$(arg lane_speed_raw)"/>
+     <arg name="action_speed_raw" value="$(arg action_speed_raw)"/>
+     <arg name="straight_speed_raw" value="$(arg straight_speed_raw)"/>
+--- before/src/robot/launch/stack.launch
++++ after/src/robot/launch/stack.launch
+@@ -68,6 +68,7 @@
+   <arg name="right_turn_angle_deg" default=""/>
+   <arg name="right_turn_exit" default=""/>
+   <arg name="straight_distance" default=""/>
++  <arg name="blue_aligned_advance_m" default=""/>
+   <arg name="lane_speed_raw" default=""/>
+   <arg name="action_speed_raw" default=""/>
+   <arg name="straight_speed_raw" default=""/>
+@@ -144,6 +145,7 @@
+   <param if="$(eval arg('right_turn_angle_deg') != '')" name="/competition/config/right_turn_angle_deg" value="$(arg right_turn_angle_deg)" type="double"/>
+   <param if="$(eval arg('right_turn_exit') != '')" name="/competition/config/right_turn_exit" value="$(arg right_turn_exit)" type="double"/>
+   <param if="$(eval arg('straight_distance') != '')" name="/competition/config/straight_distance" value="$(arg straight_distance)" type="double"/>
++  <param if="$(eval arg('blue_aligned_advance_m') != '')" name="/competition/config/blue_aligned_advance_m" value="$(arg blue_aligned_advance_m)" type="double"/>
+   <param if="$(eval arg('lane_speed_raw') != '')" name="/competition/config/speed_raw/lane" value="$(arg lane_speed_raw)" type="int"/>
+   <param if="$(eval arg('action_speed_raw') != '')" name="/competition/config/speed_raw/action" value="$(arg action_speed_raw)" type="int"/>
+   <param if="$(eval arg('straight_speed_raw') != '')" name="/competition/config/straight_speed_raw" value="$(arg straight_speed_raw)" type="int"/>
+--- before/src/robot/master/state_machine.py
++++ after/src/robot/master/state_machine.py
+@@ -246,6 +246,11 @@
+     x,y = local(ctx.pose,ctx.marker[0])
+     if not 0 < x <= ctx.cfg.get('straight_align_distance',1.6) or abs(y) > ctx.cfg['lane_width']:
+         return None
++    lines = [line for line in ctx.front_blue_lines
++             if distance(line['point'],ctx.marker[0]) < .05]
++    if not lines:
++        return None  # A marker center alone cannot establish body heading.
++    yaw = min(lines,key=lambda line:distance(line['point'],ctx.marker[0]))['yaw']
+     ctx.last_blue_trigger = dict(stamp=now, observed_stamp=ctx.marker[1],
+         observation_age_s=now-ctx.marker[1], point_local=[x,y],
+         point_world=list(ctx.marker[0]), action=action or 'STRAIGHT',
+@@ -257,15 +262,12 @@
+     ctx.action_source = 'blue_default' if fallback else 'sign'
+     if fallback:
+         action = 'STRAIGHT'
+-    # Reserve one visual event; the maneuver starts only at the bumper stop.
+-    lines = [line for line in ctx.front_blue_lines
+-             if distance(line['point'],ctx.consumed_marker) < .15]
+-    yaw = min(lines,key=lambda line:distance(line['point'],ctx.consumed_marker))['yaw'] if lines else ctx.pose[2]
++    # Reserve the observed stripe; align the body before counting entry travel.
+     if math.cos(yaw-ctx.pose[2]) < 0:
+         yaw = wrap(yaw+math.pi)
+     ctx.blue_approach = dict(point=ctx.consumed_marker,yaw=yaw,
+         observed_stamp=ctx.last_blue_trigger['observed_stamp'],started=now,
+-        origin=ctx.pose,phase='APPROACH',target_front_m=ctx.cfg['wheelbase']+ctx.cfg['front_overhang'])
++        origin=ctx.pose,phase='ALIGN',align_frames=0,align_stamp=-1.)
+     if (action == 'PARKING' and ctx.parking_sign is not None and
+             ctx.pending_at-ctx.cfg['sign_timeout'] <= ctx.parking_sign['stamp'] <= now):
+         ctx.blue_approach['parking_anchor'] = ctx.parking_sign['point']
+--- before/src/robot/turn/controller.py
++++ after/src/robot/turn/controller.py
+@@ -78,7 +78,7 @@
+ 
+ 
+ def blue_approach_tick(ctx, now):
+-    """Follow the lane to the observed stripe plane, then stop the bumper."""
++    """Align the body to the blue normal, advance separately, then wait."""
+     s = ctx.blue_approach
+     if s['phase'] == 'STOP':
+         if now < s['stop_until']:
+@@ -86,37 +86,54 @@
+         if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25):
+             return ctx.call('motion','stop','blue_stop_front_stale')
+         return ctx.call('mission','begin_blue_action',now)
+-    # The normal defines a line, not a point to chase. This also works when
+-    # its contour center moves sideways or the car approaches obliquely.
+-    nx,ny = math.cos(s['yaw']),math.sin(s['yaw'])
+-    front = s['target_front_m']
+-    bumper = (ctx.pose[0]+front*math.cos(ctx.pose[2]),
+-              ctx.pose[1]+front*math.sin(ctx.pose[2]))
+-    remaining = (s['point'][0]-bumper[0])*nx+(s['point'][1]-bumper[1])*ny
+-    s.update(remaining_m=remaining,point_local=local(ctx.pose,s['point']),
++    s.update(point_local=local(ctx.pose,s['point']),
+              observation_age_s=now-s['observed_stamp'])
++    if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25):
++        s['align_frames']=0
++        return ctx.call('motion','stop','blue_approach_front_stale')
++    if now-s['started'] > ctx.cfg['action_timeout']:
++        return ctx.call('motion','stop','blue_approach_timeout')
++    if s['phase'] == 'ALIGN':
++        reference=ctx.call('turn','front_straight_reference',now,s['point'])
++        if reference is None or reference['stamp'] != s['observed_stamp']:
++            s['align_frames']=0
++            return ctx.call('motion','stop','blue_align_target_missing')
++        heading=reference['heading']
++        s['heading_error_deg']=math.degrees(heading)
++        aligned=abs(heading) <= math.radians(ctx.cfg['straight_align_tolerance_deg'])
++        if reference['stamp'] > s['align_stamp']:
++            if reference['stamp']-s['align_stamp'] > ctx.cfg['sensor_timeout']:
++                s['align_frames']=0
++            s['align_stamp']=reference['stamp']
++            s['align_frames']=s['align_frames']+1 if aligned else 0
++        if s['align_frames'] < ctx.cfg['exit_frames']:
++            ctx.lane_source='blue_normal_alignment'
++            command=(ctx.cfg['speed_raw']['gap'],
++                     0. if aligned else steering_for_heading(heading,ctx.cfg))
++            result=ctx.call('obstacle','checked_command',command,now,False)
++            if result[0]:ctx.reason='blue_align_heading'
++            return result
++        # Freeze the measured heading and reset distance here. Neither the
++        # travel used to align nor the later stationary wait counts as entry.
++        origin=(ctx.pose[0],ctx.pose[1],reference['yaw'])
++        s.update(phase='ADVANCE',advance_origin=origin,aligned_at=now,
++                 advance_distance_m=ctx.cfg['blue_aligned_advance_m'],
++                 advance_travelled_m=0.)
++    travelled=local(s['advance_origin'],ctx.pose)[0]
++    remaining=s['advance_distance_m']-travelled
++    s.update(advance_travelled_m=travelled,remaining_m=remaining)
+     if remaining <= 1e-9:
+         s.update(phase='STOP',stop_until=now+ctx.cfg.get('intersection_wait_s',1.),stop_pose=ctx.pose)
+         ctx.state='BLUE_STOP'
+         return ctx.call('motion','stop','blue_stop_wait_'+ctx.action.lower())
+-    if not 0 <= now-ctx.front_marker_stamp <= ctx.cfg.get('ground_timeout',1.25):
+-        return ctx.call('motion','stop','blue_approach_front_stale')
+-    # Only extrapolate into the camera's near blind region; disappearing far
+-    # paint must be seen again instead of driving towards a stale hypothesis.
+-    camera=ctx.cfg['front_camera']
+-    blind_x=(camera['origin_v']-camera['bev_height'])/camera['pixels_per_m']
+-    if now-s['observed_stamp'] > ctx.cfg['sensor_timeout'] and s['point_local'][0] > blind_x+.10:
+-        return ctx.call('motion','stop','blue_approach_target_lost')
+-    if now-s['started'] > ctx.cfg['action_timeout']:
+-        return ctx.call('motion','stop','blue_approach_timeout')
+-    ctx.state=s.get('lane_state','LANE')
+-    command=ctx.call('lane','lane_command',now,approach=True)
+-    s['lane_state']=ctx.state
+-    ctx.state='BLUE_APPROACH'
+-    if remaining < .20:
+-        command=(min(command[0],ctx.cfg['speed_raw']['gap']),command[1])
+-    result=ctx.call('obstacle','checked_command',command,now,False)
+-    if result[0]:ctx.reason='blue_approach_lane'
++    # Blue may now leave the camera. Retain its aligned heading instead of
++    # steering onto a crossing white path or switching to another blue stripe.
++    heading=wrap(s['advance_origin'][2]-ctx.pose[2])
++    s['heading_error_deg']=math.degrees(heading)
++    steer=steering_for_heading(heading,ctx.cfg) if abs(heading)>math.radians(2) else 0.
++    ctx.lane_source='blue_aligned_advance'
++    result=ctx.call('obstacle','checked_command',(ctx.cfg['straight_speed_raw'],steer),now,False)
++    if result[0]:ctx.reason='blue_advance_distance'
+     return result
+ 
+ 
+--- before/tools/sign_detector_20260916/run_yolo_vehicle.sh
++++ after/tools/sign_detector_20260916/run_yolo_vehicle.sh
+@@ -23,7 +23,7 @@
+   sign_backend:=yolo_trt \
+   sign_model:=/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine \
+   sign_ttl:=0 blue_default_straight:=false marker_trigger_x:=0.36 \
+-  intersection_wait_s:=1.0 straight_distance:=1.25 \
++  blue_aligned_advance_m:=0.36 intersection_wait_s:=1.0 straight_distance:=1.25 \
+   left_turn_entry:=0.12 left_turn_radius:=0.65 left_turn_exit:=0.30 \
+   right_turn_full_lock:=true right_exit_on_blue:=true right_lock_min_angle_deg:=30 \
+   right_turn_entry:=0.0 right_reverse_entry_m:=0.25 \

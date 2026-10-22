@@ -1,0 +1,50 @@
+test_detected_uturn_is_queued_before_075_and_survives_blank_frames (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_mixed_direction_votes_cannot_confirm_the_wrong_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_new_blue_takes_over_before_straight_can_overshoot_front_axle (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_queued_uturn_survives_completed_straight_lane_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_red_blocks_uturn_blue_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_uturn_without_confirmed_new_transverse_blue_cannot_interrupt_straight (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_confirmed_next_blue_hands_over_at_125_without_waiting_for_white (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_late_second_straight_is_queued_without_interrupting_current_action (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_next_straight_survives_white_handoff_until_its_blue_line (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_old_blue_or_longitudinal_paint_cannot_dispatch_queued_straight (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_red_overrides_queued_blue_handoff (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_same_early_board_duplicate_or_interrupted_votes_do_not_queue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_does_not_start_with_front_axle_heading_misaligned (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_visual_updates_move_target_plane_and_stale_stream_stops (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_both_arcs_use_26_with_each_vehicle_profile_action_speed (test_timed_bypass_speed.TimedBypassSpeedTests) ... ok
+test_speed_override_is_rejected_outside_command_range (test_timed_bypass_speed.TimedBypassSpeedTests) ... ok
+test_blocked_right_entry_has_bounded_left_extension (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_clear_imminent_right_sweep_is_not_enough_to_end_left (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_clear_right_entry_preserves_nominal_two_second_switch (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_left_extension_releases_right_when_measured_obstacle_clears (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_left_extension_still_checks_imminent_obstacle_and_coverage (test_bypass_right_entry.BypassRightEntryTests) ... ok
+test_extended_left_arc_hands_off_without_turning_past_road_heading (test_bypass_heading_geometry.BypassHeadingGeometryTests) ... FAIL
+test_heading_endpoint_with_missing_lane_does_not_continue_full_right (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_obstacle_still_ahead_or_too_early_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_off_axis_or_low_confidence_lane_cannot_end_turn (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_recorded_aligned_lane_can_take_over_before_lateral_recentering (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_recorded_four_second_view_is_eligible_for_handoff (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_repeated_source_image_does_not_confirm_exit (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_right_arc_stops_when_left_heading_has_been_cancelled (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_six_second_cap_keeps_existing_partial_lane_handoff (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_stable_current_lane_takes_over_before_six_seconds (test_bypass_visual_exit.BypassVisualExitTests) ... ok
+test_actual_body_collision_or_unknown_space_still_stops (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_new_clear_scan_resumes_original_right_phase (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_recorded_point_clears_while_vehicle_advances (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_recorded_side_return_uses_safe_sweep_at_action_speed (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+test_safe_clearance_cannot_extend_motion_without_bound (test_bypass_side_clearance.BypassSideClearanceTests) ... ok
+
+======================================================================
+FAIL: test_extended_left_arc_hands_off_without_turning_past_road_heading (test_bypass_heading_geometry.BypassHeadingGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_heading_geometry.py", line 42, in test_extended_left_arc_hands_off_without_turning_past_road_heading
+    self.assertEqual(c.reason,'bypass_heading_lane_handoff')
+AssertionError: 'bypass_visual_lane_handoff' != 'bypass_heading_lane_handoff'
+
+----------------------------------------------------------------------
+Ran 37 tests in 25.386s
+
+FAILED (failures=1)

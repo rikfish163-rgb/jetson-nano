@@ -1,0 +1,811 @@
+[
+  {
+    "failure": {
+      "controller_reason": "straight_wait_exit_lane", 
+      "event": "A", 
+      "path_index": 118, 
+      "pose": [
+        -2.073169065, 
+        2.007794224, 
+        1.555446219
+      ], 
+      "reason": "stalled:straight_wait_exit_lane", 
+      "route_error_m": 0.292299, 
+      "route_progress_m": 2.902286, 
+      "state": "MANEUVER", 
+      "time_s": 28.05
+    }, 
+    "json": "docs/competition_implementation_20260929/image1_left.json", 
+    "route": "image1_left", 
+    "source_hashes": {
+      "after": {
+        "camera_observations": {
+          "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+          "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+        }, 
+        "competition_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+          "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+        }, 
+        "config_loader": {
+          "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+          "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+        }, 
+        "contracts": {
+          "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+          "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+        }, 
+        "course": {
+          "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+          "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+        }, 
+        "geometry": {
+          "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+          "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+        }, 
+        "lane_config": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+          "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+        }, 
+        "lane_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+          "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+        }, 
+        "lane_preview": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+          "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+        }, 
+        "lidar_scan": {
+          "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+          "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+        }, 
+        "maneuvers_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+          "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+        }, 
+        "master_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+          "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+        }, 
+        "master_state_machine": {
+          "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+          "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+        }, 
+        "motion_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+          "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+        }, 
+        "motion_tracker": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+          "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+        }, 
+        "obstacle_config": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+          "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+        }, 
+        "obstacle_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+          "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+        }, 
+        "parallel_parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+          "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+        }, 
+        "parallel_parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+          "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+        }, 
+        "parallel_parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+          "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+        }, 
+        "parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+          "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+        }, 
+        "parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+          "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+        }, 
+        "parking_detection": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+          "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+        }, 
+        "parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+          "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+        }, 
+        "parking_scene": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+          "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+        }, 
+        "shared_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+          "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+        }, 
+        "simulator": {
+          "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+          "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+        }, 
+        "turn_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+          "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+        }, 
+        "turn_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+          "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+        }, 
+        "vehicle_launch_script": {
+          "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+          "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+        }
+      }, 
+      "before": {
+        "camera_observations": {
+          "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+          "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+        }, 
+        "competition_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+          "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+        }, 
+        "config_loader": {
+          "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+          "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+        }, 
+        "contracts": {
+          "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+          "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+        }, 
+        "course": {
+          "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+          "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+        }, 
+        "geometry": {
+          "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+          "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+        }, 
+        "lane_config": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+          "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+        }, 
+        "lane_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+          "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+        }, 
+        "lane_preview": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+          "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+        }, 
+        "lidar_scan": {
+          "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+          "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+        }, 
+        "maneuvers_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+          "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+        }, 
+        "master_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+          "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+        }, 
+        "master_state_machine": {
+          "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+          "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+        }, 
+        "motion_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+          "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+        }, 
+        "motion_tracker": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+          "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+        }, 
+        "obstacle_config": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+          "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+        }, 
+        "obstacle_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+          "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+        }, 
+        "parallel_parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+          "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+        }, 
+        "parallel_parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+          "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+        }, 
+        "parallel_parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+          "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+        }, 
+        "parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+          "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+        }, 
+        "parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+          "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+        }, 
+        "parking_detection": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+          "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+        }, 
+        "parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+          "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+        }, 
+        "parking_scene": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+          "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+        }, 
+        "shared_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+          "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+        }, 
+        "simulator": {
+          "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+          "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+        }, 
+        "turn_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+          "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+        }, 
+        "turn_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+          "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+        }, 
+        "vehicle_launch_script": {
+          "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+          "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+        }
+      }, 
+      "stable": true
+    }, 
+    "status": "failed", 
+    "svg": "docs/competition_implementation_20260929/image1_left.svg"
+  }, 
+  {
+    "failure": {
+      "controller_reason": "straight_wait_exit_lane", 
+      "event": "A", 
+      "path_index": 118, 
+      "pose": [
+        -2.073169065, 
+        2.007794224, 
+        1.555446219
+      ], 
+      "reason": "stalled:straight_wait_exit_lane", 
+      "route_error_m": 0.292299, 
+      "route_progress_m": 2.902286, 
+      "state": "MANEUVER", 
+      "time_s": 28.05
+    }, 
+    "json": "docs/competition_implementation_20260929/image1_right.json", 
+    "route": "image1_right", 
+    "source_hashes": {
+      "after": {
+        "camera_observations": {
+          "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+          "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+        }, 
+        "competition_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+          "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+        }, 
+        "config_loader": {
+          "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+          "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+        }, 
+        "contracts": {
+          "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+          "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+        }, 
+        "course": {
+          "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+          "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+        }, 
+        "geometry": {
+          "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+          "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+        }, 
+        "lane_config": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+          "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+        }, 
+        "lane_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+          "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+        }, 
+        "lane_preview": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+          "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+        }, 
+        "lidar_scan": {
+          "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+          "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+        }, 
+        "maneuvers_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+          "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+        }, 
+        "master_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+          "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+        }, 
+        "master_state_machine": {
+          "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+          "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+        }, 
+        "motion_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+          "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+        }, 
+        "motion_tracker": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+          "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+        }, 
+        "obstacle_config": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+          "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+        }, 
+        "obstacle_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+          "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+        }, 
+        "parallel_parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+          "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+        }, 
+        "parallel_parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+          "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+        }, 
+        "parallel_parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+          "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+        }, 
+        "parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+          "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+        }, 
+        "parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+          "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+        }, 
+        "parking_detection": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+          "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+        }, 
+        "parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+          "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+        }, 
+        "parking_scene": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+          "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+        }, 
+        "shared_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+          "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+        }, 
+        "simulator": {
+          "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+          "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+        }, 
+        "turn_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+          "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+        }, 
+        "turn_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+          "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+        }, 
+        "vehicle_launch_script": {
+          "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+          "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+        }
+      }, 
+      "before": {
+        "camera_observations": {
+          "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+          "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+        }, 
+        "competition_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+          "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+        }, 
+        "config_loader": {
+          "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+          "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+        }, 
+        "contracts": {
+          "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+          "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+        }, 
+        "course": {
+          "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+          "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+        }, 
+        "geometry": {
+          "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+          "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+        }, 
+        "lane_config": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+          "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+        }, 
+        "lane_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+          "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+        }, 
+        "lane_preview": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+          "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+        }, 
+        "lidar_scan": {
+          "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+          "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+        }, 
+        "maneuvers_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+          "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+        }, 
+        "master_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+          "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+        }, 
+        "master_state_machine": {
+          "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+          "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+        }, 
+        "motion_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+          "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+        }, 
+        "motion_tracker": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+          "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+        }, 
+        "obstacle_config": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+          "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+        }, 
+        "obstacle_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+          "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+        }, 
+        "parallel_parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+          "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+        }, 
+        "parallel_parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+          "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+        }, 
+        "parallel_parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+          "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+        }, 
+        "parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+          "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+        }, 
+        "parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+          "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+        }, 
+        "parking_detection": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+          "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+        }, 
+        "parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+          "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+        }, 
+        "parking_scene": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+          "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+        }, 
+        "shared_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+          "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+        }, 
+        "simulator": {
+          "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+          "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+        }, 
+        "turn_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+          "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+        }, 
+        "turn_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+          "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+        }, 
+        "vehicle_launch_script": {
+          "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+          "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+        }
+      }, 
+      "stable": true
+    }, 
+    "status": "failed", 
+    "svg": "docs/competition_implementation_20260929/image1_right.svg"
+  }, 
+  {
+    "failure": {
+      "boundary_half_width_m": 3.0, 
+      "controller_reason": "straight_continue", 
+      "event": "A", 
+      "offending_point": [
+        2.035656663772075, 
+        -2.795825741231569
+      ], 
+      "path_index": 100, 
+      "pose": [
+        1.703853601, 
+        -2.680905215, 
+        0.015350107
+      ], 
+      "reason": "road_boundary", 
+      "route_error_m": 0.08094, 
+      "route_progress_m": 2.48702, 
+      "state": "MANEUVER", 
+      "time_s": 16.85
+    }, 
+    "json": "docs/competition_implementation_20260929/image2.json", 
+    "route": "image2", 
+    "source_hashes": {
+      "after": {
+        "camera_observations": {
+          "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+          "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+        }, 
+        "competition_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+          "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+        }, 
+        "config_loader": {
+          "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+          "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+        }, 
+        "contracts": {
+          "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+          "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+        }, 
+        "course": {
+          "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+          "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+        }, 
+        "geometry": {
+          "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+          "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+        }, 
+        "lane_config": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+          "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+        }, 
+        "lane_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+          "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+        }, 
+        "lane_preview": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+          "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+        }, 
+        "lidar_scan": {
+          "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+          "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+        }, 
+        "maneuvers_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+          "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+        }, 
+        "master_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+          "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+        }, 
+        "master_state_machine": {
+          "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+          "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+        }, 
+        "motion_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+          "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+        }, 
+        "motion_tracker": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+          "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+        }, 
+        "obstacle_config": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+          "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+        }, 
+        "obstacle_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+          "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+        }, 
+        "parallel_parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+          "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+        }, 
+        "parallel_parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+          "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+        }, 
+        "parallel_parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+          "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+        }, 
+        "parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+          "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+        }, 
+        "parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+          "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+        }, 
+        "parking_detection": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+          "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+        }, 
+        "parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+          "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+        }, 
+        "parking_scene": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+          "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+        }, 
+        "shared_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+          "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+        }, 
+        "simulator": {
+          "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+          "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+        }, 
+        "turn_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+          "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+        }, 
+        "turn_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+          "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+        }, 
+        "vehicle_launch_script": {
+          "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+          "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+        }
+      }, 
+      "before": {
+        "camera_observations": {
+          "path": "/home/nano/robocup_ws/src/robot/camera/observations.py", 
+          "sha256": "5de253d9df6d1a31aeceb11769bfb3d43f7c6aa47d82538bbf95718ab4f16b82"
+        }, 
+        "competition_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/competition.yaml", 
+          "sha256": "363c0a2d06d440547a71c8c3b7f67657a762d1a3bf66a4abc184dcb9d7aa57f3"
+        }, 
+        "config_loader": {
+          "path": "/home/nano/robocup_ws/src/robot/common/config.py", 
+          "sha256": "494ad0943d17add9e2a0d4d5df7179527cd08b89b9d22f7e6e9b69d0949dccb7"
+        }, 
+        "contracts": {
+          "path": "/home/nano/robocup_ws/src/robot/common/contracts.py", 
+          "sha256": "057eca0734b46323c3ec08b46da45aa4de8a842ac30e619739ad413fee70ddfd"
+        }, 
+        "course": {
+          "path": "/home/nano/robocup_ws/src/robot/config/course.yaml", 
+          "sha256": "649db3e8c818d05b447e5f167d4dffca2c64c5f2738082f893c71d07f28bb4ed"
+        }, 
+        "geometry": {
+          "path": "/home/nano/robocup_ws/src/robot/common/geometry.py", 
+          "sha256": "0d98d48dd0d045ac359988902023a3ff276860bf3156ac6fb9e2ebea597814ff"
+        }, 
+        "lane_config": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/config.yaml", 
+          "sha256": "193eef62d1a25e5ea087356a11cc4f13b7eb3bb8e39dbe292b13555a42ef9680"
+        }, 
+        "lane_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/controller.py", 
+          "sha256": "ccf94b542af1248ce17b8c1fad639ee97b43ad1ab1bde8aa3c82538c11a9b276"
+        }, 
+        "lane_preview": {
+          "path": "/home/nano/robocup_ws/src/robot/lane/preview.py", 
+          "sha256": "12bf84d58fabe541642100a01f9e0823c3745f57848c3b60eb6c5b9963d03146"
+        }, 
+        "lidar_scan": {
+          "path": "/home/nano/robocup_ws/src/robot/lidar/scan.py", 
+          "sha256": "ea46f5ba59be4071f9ec20886ce67eb02d5114aba45c6dca716287099e7d497d"
+        }, 
+        "maneuvers_config": {
+          "path": "/home/nano/robocup_ws/src/robot/config/maneuvers.yaml", 
+          "sha256": "a832a0793a7e882fbd437121e02edfa735a98588b9deef622eb190e983a2f6b4"
+        }, 
+        "master_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/master/controller.py", 
+          "sha256": "e5307170696dcf2135193fc3ff0ca7a4cebf5fdca7439044c732c90573cf6a66"
+        }, 
+        "master_state_machine": {
+          "path": "/home/nano/robocup_ws/src/robot/master/state_machine.py", 
+          "sha256": "cb6bd3a7f29862adbcdebef2ffb99714b31c65a3a66c8a50d96a62a2bc00533a"
+        }, 
+        "motion_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/controller.py", 
+          "sha256": "39eef83bc4e276f23097c25ed8dacdf05f02a43e5ff9c1bf0391134708267e7b"
+        }, 
+        "motion_tracker": {
+          "path": "/home/nano/robocup_ws/src/robot/motion/tracker.py", 
+          "sha256": "6fc427a114afaf72b3e70ff4e5ae9b32ba2c4aa7fa4635b7ac5997b37b2b555a"
+        }, 
+        "obstacle_config": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/config.yaml", 
+          "sha256": "541ef11634a84b7e3cf0ffec4bfa838e0d9dea7ee61ef109aeea2d48affbb05f"
+        }, 
+        "obstacle_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/obstacle/controller.py", 
+          "sha256": "3560c27c76d7a02d90d02335d2421b65e6b3a94b0b5710ad2c26f23665c11316"
+        }, 
+        "parallel_parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/config.yaml", 
+          "sha256": "a59f8cd9f890a3e4711d1a7137c90bba6ce37b84e4ed4391a16b5cf68d6a25fd"
+        }, 
+        "parallel_parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/controller.py", 
+          "sha256": "f186389ec46447d32755be8888ae45abe1b752bcd885cb17bfa017c28d482c0e"
+        }, 
+        "parallel_parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/planner.py", 
+          "sha256": "0ba50df4ed2101ca75564519a3b3ba3b500c4ddc3096dc16cd960160085277de"
+        }, 
+        "parking_config": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/config.yaml", 
+          "sha256": "4db017605842e18496754866c9e42a69a10cedd3ecab0721a65e7b9841184cf3"
+        }, 
+        "parking_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/controller.py", 
+          "sha256": "2239002c06cae086b316ec68c8baf00bd2d402015231d3626b75ba4b0205ad61"
+        }, 
+        "parking_detection": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/detection.py", 
+          "sha256": "072efe133cc99b28b715855a5bf1d055bade7fd38d005a3f9ce2fe87bdd601c4"
+        }, 
+        "parking_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/parking/planner.py", 
+          "sha256": "d73692b8491339af9244d9f2ef9f0fe02338ab7b463e6996c7d78d5713b55b7d"
+        }, 
+        "parking_scene": {
+          "path": "/home/nano/robocup_ws/src/robot/parallel_parking/scene.py", 
+          "sha256": "6d0af541df87b9bd7bde191ac75cf4b6ec6babd3ca0efeb3ed7fe2e5ee7aa8f7"
+        }, 
+        "shared_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/common/planning.py", 
+          "sha256": "7cec81ce09b23ee3fbf5a1761d96dd0680da8705ef64f4cb750fcf009fca2eda"
+        }, 
+        "simulator": {
+          "path": "/home/nano/robocup_ws/tools/competition_sim.py", 
+          "sha256": "1138766725e4860ae3d5fb1c46020f3f8c42609622686190de3e84c6955a9ef8"
+        }, 
+        "turn_controller": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/controller.py", 
+          "sha256": "e4d52814475edf5fe25c602ec35a8077a997817b0884009c775de31dc352a381"
+        }, 
+        "turn_planner": {
+          "path": "/home/nano/robocup_ws/src/robot/turn/planner.py", 
+          "sha256": "c0157bb4e39c51b7bfcdeaa98f1ef82a1aa3935e4ff7ad88ec0a2ef643bb0723"
+        }, 
+        "vehicle_launch_script": {
+          "path": "/home/nano/robocup_ws/tools/sign_detector_20260916/run_yolo_vehicle.sh", 
+          "sha256": "62a2755485dfb238f8dc0cbfed296eb016afac1a641574b4797808ce586fa3f4"
+        }
+      }, 
+      "stable": true
+    }, 
+    "status": "failed", 
+    "svg": "docs/competition_implementation_20260929/image2.svg"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "state": {
+    "estop": true
+  },
+  "operation": "tick",
+  "args": [
+    10.0
+  ],
+  "module": "mission"
+}

@@ -1,0 +1,176 @@
+--- lane_controller.before.py
++++ src/robot/lane/controller.py
+@@ -2,7 +2,7 @@
+ from __future__ import division
+ 
+ import math
+-from robot.common.geometry import distance
++from robot.common.geometry import distance, _isfinite
+ from robot.common.geometry import local
+ from robot.common.contracts import model_to_command_steering
+ from vehicle_control.pure_pursuit import PurePursuit
+@@ -17,7 +17,7 @@
+  'startup_curve_lock', 'lane_target', 'lane_curve_lock', 'lane_preview', 'issued_steer', 'lane_speed_state')
+ CALLS = (('lane', 'lane_valid'), ('lane', 'left_exit_line'), ('lane', 'left_reference_command'),
+  ('lane', 'park_line_command'), ('motion', 'current_steering'), ('motion', 'stop'))
+-OPERATIONS = ('lane_valid', 'forward_lane_ready', 'lane_command', 'park_line_command', 'left_reference_command',
++OPERATIONS = ('lane_valid', 'lane_tracking_ready', 'forward_lane_ready', 'lane_command', 'park_line_command', 'left_reference_command',
+  'left_exit_line')
+ 
+ 
+@@ -30,6 +30,36 @@
+     points = sorted(local(ctx.pose,p) for p in ctx.lane)
+     points = [p for p in points if p[0] > .05]
+     return len(points) >= 2 and points[-1][0]-points[0][0] >= ctx.cfg.get('lane_min_path_span',.15)-1e-9
++
++
++def lane_tracking_ready(ctx, now):
++    """Allow coherent current sparse paint at bend speed, never stale guesses."""
++    if lane_valid(ctx, now):
++        return True
++    if (not ctx.cfg.get('lane_curvature_preview',False) or
++            not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']):
++        return False
++    points = sorted(local(ctx.pose,p) for p in ctx.lane)
++    # Slanted normal offsets shorten forward span; also check the actual
++    # measured segment length instead of applying the full-path 15 cm gate.
++    if (len(points) < 2 or not all(_isfinite(v) for p in points for v in p) or
++            not all(.05 < x <= 1.5 and abs(y) <= .8 for x,y in points) or
++            points[0][0] > 1.2 or points[-1][0]-points[0][0] < .06-1e-9 or
++            distance(points[0],points[-1]) < .08-1e-9):
++        return False
++    # Coverage lowers the published confidence even when the remaining
++    # measured centers are consistent. Three points also support a bend check.
++    floor = .20 if len(points) >= 3 else .7*ctx.cfg['lane_min_confidence']
++    if ctx.lane_confidence < floor:
++        return False
++    angles = []
++    for a,b in zip(points,points[1:]):
++        dx,dy = b[0]-a[0],b[1]-a[1]
++        if not .015 <= dx <= .35:
++            return False
++        angles.append(math.atan2(dy,dx))
++    return (all(abs(a) <= math.radians(65) for a in angles) and
++            all(abs(b-a) <= math.radians(35) for a,b in zip(angles,angles[1:])))
+ 
+ 
+ def forward_lane_ready(ctx, now):
+@@ -152,7 +182,7 @@
+ 
+ 
+ def lane_command(ctx, now, approach=False):
+-    """Steer proportionally to the lateral offset of the topmost lane point."""
++    """Follow measured centers, including coherent sparse paint at bend speed."""
+     ctx.lane_recovery = None
+     if not ctx.call('lane','lane_valid',now):
+         ctx.lane_speed_state = None
+@@ -160,12 +190,17 @@
+         return ctx.call('lane', 'park_line_command', now)
+     ctx.follow_left_boundary = False
+     ctx.lane_source = 'center'
++    partial = False
+     if not 0 <= now-ctx.lane_stamp <= ctx.cfg['sensor_timeout']:
+         ctx.lane_preview = None
+         return ctx.call('motion', 'stop', 'lane_stream_stale')
+     if not ctx.lane:
+         return lane_gap_command(ctx, now)
+     if ctx.cfg.get('lane_curvature_preview',False) and not ctx.call('lane', 'lane_valid', now):
++        partial = lane_tracking_ready(ctx,now)
++        if partial:
++            ctx.lane_source = 'partial_center'
++    if ctx.cfg.get('lane_curvature_preview',False) and not lane_tracking_ready(ctx,now):
+         points = sorted(local(ctx.pose,p) for p in ctx.lane)
+         points = [p for p in points if p[0] > .05]
+         # Bridge a minor confidence dip using only the previous trusted angle.
+@@ -213,7 +248,7 @@
+         path=candidates, target=target, target_index=target_index,
+         intersection=None, line_x=None, lateral_offset_m=offset,
+         angle=steer, desired_angle=desired_steer, valid=True, reason='ok',curvature_preview=ctx.lane_preview,
+-        selection=('center_geometry' if ctx.cfg.get('lane_curvature_preview',False)
++        selection=('partial_center_geometry' if partial else 'center_geometry' if ctx.cfg.get('lane_curvature_preview',False)
+             else 'right_curve_full_lock' if ctx.lane_curve_lock else 'topmost_lateral_offset'))
+     if rejected:
+         ctx.lane_source = 'right_curve_hold'
+@@ -224,6 +259,9 @@
+         return command
+     ctx.state = 'LANE'
+     ctx.gap_origin, ctx.gap_start, ctx.gap_steer = ctx.pose, now, steer
++    if partial:
++        ctx.lane_speed_state = None
++        return min(ctx.cfg['speed_raw']['lane'],ctx.cfg.get('lane_curve_speed_raw',12)),steer
+     return lane_speed(ctx, ctx.cfg['speed_raw']['lane']), steer
+ 
+ 
+--- obstacle_controller.before.py
++++ src/robot/obstacle/controller.py
+@@ -18,7 +18,7 @@
+ FIELDS = ('action', 'cfg', 'follower', 'issued_steer', 'obstacle_check', 'parallel_parking', 'timed_bypass', 'timed_bypass_completed', 'timed_bypass_seen',
+  'parking_entry', 'pose', 'reason', 'relative_uturn', 'retry_at', 'scan', 'state', 'lane_recovery', 'exit_count', 'exit_stamp', 'lane_curve_lock', 'timed_bypass_candidate')
+ CALLS = (('mission', 'start_follow'), ('motion', 'stop'), ('obstacle', 'scan_ready'),
+- ('lane', 'forward_lane_ready'), ('lane', 'lane_valid'), ('lane', 'lane_command'), ('mission','resume_lane'), ('obstacle', 'checked_command'),
++ ('lane', 'forward_lane_ready'), ('lane', 'lane_valid'), ('lane', 'lane_tracking_ready'), ('lane', 'lane_command'), ('mission','resume_lane'), ('obstacle', 'checked_command'),
+  ('obstacle', 'begin_timed_bypass'), ('obstacle', 'timed_bypass_tick'),
+  ('obstacle', 'sweep_clear'))
+ OPERATIONS = ('scan_ready', 'sweep_clear', 'checked_command', 'begin_timed_bypass', 'timed_bypass_tick')
+@@ -117,8 +117,9 @@
+         ctx.lane_recovery=None
+         # At the timed endpoint the visible center may still be off-axis.
+         # Lane control must align to it; waiting to be aligned while stopped
+-        # cannot converge. Keep the same freshness/confidence/geometry gate.
+-        if not ctx.call('lane','lane_valid',now):
++        # cannot converge. A coherent current short path can start aligning
++        # at bend speed; stale or unusable observations still cannot release it.
++        if not ctx.call('lane','lane_tracking_ready',now):
+             return ctx.call('motion','stop','bypass_wait_exit_lane')
+         _remember_trigger(ctx, now)
+         ctx.timed_bypass_completed=True
+--- camera.before.py
++++ src/ros/camera/scripts/camera_yihan_web.py
+@@ -1601,14 +1601,34 @@
+                   if 40 <= stats[i, cv2.CC_STAT_AREA] <= 800
+                   and 4 <= stats[i, cv2.CC_STAT_WIDTH] <= 60
+                   and 8 <= stats[i, cv2.CC_STAT_HEIGHT] <= 45]
+-    if not 5 <= len(candidates) <= 24:
++    if not 4 <= len(candidates) <= 24:
+         return None
+     selected = list(candidates)
+-    while len(selected) >= max(5, int(np.ceil(.75 * len(candidates)))):
++    if len(selected)==5:
++        xy=centroids[selected]
++        quadratic=np.polyfit(xy[:,1],xy[:,0],2)
++        if np.max(np.abs(xy[:,0]-np.polyval(quadratic,xy[:,1]))) > 8.0:
++            # A remote small paint patch must not hide four actual dashes.
++            # Accept only a unique straight chain supported by 4/5 patches.
++            chains=[]
++            for omitted in selected:
++                chain=[i for i in selected if i!=omitted]
++                rows=centroids[chain]
++                gaps=np.diff(np.sort(rows[:,1]))
++                if np.ptp(rows[:,1]) < 90 or np.min(gaps) < 15 or np.max(gaps) > 85:
++                    continue
++                line=np.polyfit(rows[:,1],rows[:,0],1)
++                if np.max(np.abs(rows[:,0]-np.polyval(line,rows[:,1]))) <= 8.0:
++                    chains.append(chain)
++            if len(chains)==1:
++                selected=chains[0]
++    while len(selected) >= max(4, int(np.ceil(.75 * len(candidates)))):
+         xy = centroids[selected]
+         if len(np.unique(xy[:, 1])) < 3:
+             return None
+-        coefficients = np.polyfit(xy[:, 1], xy[:, 0], 2)
++        # Four separated patches in the stopped view still support a short
++        # straight divider. Use a line so a quadratic cannot fit random dots.
++        coefficients = np.polyfit(xy[:, 1], xy[:, 0], 1 if len(selected)==4 else 2)
+         residual = np.abs(xy[:, 0] - np.polyval(coefficients, xy[:, 1]))
+         if np.max(residual) <= 8.0:
+             break
+@@ -1616,7 +1636,8 @@
+     else:
+         return None
+     gaps = np.diff(np.sort(xy[:, 1]))
+-    if np.ptp(xy[:, 1]) < 120 or np.min(gaps) < 15 or np.max(gaps) > 85:
++    minimum_span = 90 if len(selected)==4 else 120
++    if np.ptp(xy[:, 1]) < minimum_span or np.min(gaps) < 15 or np.max(gaps) > 85:
+         return None
+     # Centroid spacing alone also accepts a solid stripe split by tiny cracks.
+     # Require real dark gaps between paint components before asserting LEFT.

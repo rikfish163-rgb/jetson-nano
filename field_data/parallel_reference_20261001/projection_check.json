@@ -1,0 +1,16 @@
+{
+  "image": "current/frame05.png",
+  "user_confirmed_width_m": 0.36,
+  "user_confirmed_camera_unchanged": true,
+  "user_confirmed_front_axle_gap_m": 0.88,
+  "original_projection_front_axle_gap_m": 1.156311876611803,
+  "front_axle_gap_error_m": 0.276311876611803,
+  "front_axle_gap_after_uniform_width_scale_m": 0.721242562984817,
+  "rectified_image_endpoints_px": [[419.4128991331301, 175.9786734407722], [525.9556452104007, 176.0647142351618]],
+  "original_full_resolution_H_width_m": 0.519618996172855,
+  "new_reference_canvas_width_m": 0.519618996172854,
+  "maximum_ground_coordinate_difference_m": 2.220446049250313e-15,
+  "finding": "The current metric projection disagrees with the measured bay width. Scaling and translating the reference canvas preserve the original projection; they do not explain the width error.",
+  "not_verified": "Stopping accuracy, projection across other ground distances, and cause of the original projection error. One transverse line at one measured distance does not uniquely determine a ground-plane homography.",
+  "actuator_commands_sent": false
+}

@@ -1,0 +1,16 @@
+{
+  "wheelbase_m": 0.26, 
+  "stamp": 1.0, 
+  "frame": "p1_floor_1.000000", 
+  "pose": [
+    0.0, 
+    0.0, 
+    0.0
+  ], 
+  "motion_valid": true, 
+  "source": "p1_reference_camera", 
+  "reason": "searching_p1_terminal", 
+  "inliers": 0, 
+  "rejected_lines": [], 
+  "p1_lines": []
+}

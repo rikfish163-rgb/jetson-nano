@@ -1,0 +1,4190 @@
+1
+00:00:00,000 --> 00:00:00,067
+t+0.000s  camera stamp 1790762807.614176
+STARTUP_STRAIGHT   speed=0 steer=0  lidar_obstacle_in_sweep
+
+2
+00:00:00,067 --> 00:00:00,133
+t+0.067s  camera stamp 1790762807.680913
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+3
+00:00:00,133 --> 00:00:00,200
+t+0.133s  camera stamp 1790762807.747419
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+4
+00:00:00,200 --> 00:00:00,267
+t+0.200s  camera stamp 1790762807.814281
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+5
+00:00:00,267 --> 00:00:00,334
+t+0.267s  camera stamp 1790762807.881326
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+6
+00:00:00,334 --> 00:00:00,466
+t+0.334s  camera stamp 1790762807.948555
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+7
+00:00:00,466 --> 00:00:00,533
+t+0.466s  camera stamp 1790762808.080574
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+8
+00:00:00,533 --> 00:00:00,599
+t+0.533s  camera stamp 1790762808.147586
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+9
+00:00:00,599 --> 00:00:00,667
+t+0.599s  camera stamp 1790762808.213599
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+10
+00:00:00,667 --> 00:00:00,736
+t+0.667s  camera stamp 1790762808.281356
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+11
+00:00:00,736 --> 00:00:00,866
+t+0.736s  camera stamp 1790762808.350355
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+12
+00:00:00,866 --> 00:00:00,933
+t+0.866s  camera stamp 1790762808.480309
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+13
+00:00:00,933 --> 00:00:01,004
+t+0.933s  camera stamp 1790762808.546949
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+14
+00:00:01,004 --> 00:00:01,139
+t+1.004s  camera stamp 1790762808.618385
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+15
+00:00:01,139 --> 00:00:01,201
+t+1.139s  camera stamp 1790762808.753272
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+16
+00:00:01,201 --> 00:00:01,268
+t+1.201s  camera stamp 1790762808.814957
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+17
+00:00:01,268 --> 00:00:01,334
+t+1.268s  camera stamp 1790762808.881711
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+18
+00:00:01,334 --> 00:00:01,474
+t+1.334s  camera stamp 1790762808.948579
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+19
+00:00:01,474 --> 00:00:01,534
+t+1.474s  camera stamp 1790762809.087793
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+20
+00:00:01,534 --> 00:00:01,601
+t+1.534s  camera stamp 1790762809.147696
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+21
+00:00:01,601 --> 00:00:01,668
+t+1.601s  camera stamp 1790762809.214937
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+22
+00:00:01,668 --> 00:00:01,802
+t+1.668s  camera stamp 1790762809.282359
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+23
+00:00:01,802 --> 00:00:01,870
+t+1.802s  camera stamp 1790762809.416036
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+24
+00:00:01,870 --> 00:00:01,934
+t+1.870s  camera stamp 1790762809.484180
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+25
+00:00:01,934 --> 00:00:02,003
+t+1.934s  camera stamp 1790762809.547840
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+26
+00:00:02,003 --> 00:00:02,134
+t+2.003s  camera stamp 1790762809.617383
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+27
+00:00:02,134 --> 00:00:02,200
+t+2.134s  camera stamp 1790762809.748111
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+28
+00:00:02,200 --> 00:00:02,271
+t+2.200s  camera stamp 1790762809.814094
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+29
+00:00:02,271 --> 00:00:02,341
+t+2.271s  camera stamp 1790762809.885603
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+30
+00:00:02,341 --> 00:00:02,400
+t+2.341s  camera stamp 1790762809.954763
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+31
+00:00:02,400 --> 00:00:02,533
+t+2.400s  camera stamp 1790762810.013812
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+32
+00:00:02,533 --> 00:00:02,601
+t+2.533s  camera stamp 1790762810.147508
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+33
+00:00:02,601 --> 00:00:02,671
+t+2.601s  camera stamp 1790762810.214775
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+34
+00:00:02,671 --> 00:00:02,800
+t+2.671s  camera stamp 1790762810.285612
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+35
+00:00:02,800 --> 00:00:02,866
+t+2.800s  camera stamp 1790762810.414058
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+36
+00:00:02,866 --> 00:00:02,934
+t+2.866s  camera stamp 1790762810.480385
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+37
+00:00:02,934 --> 00:00:03,005
+t+2.934s  camera stamp 1790762810.548486
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+38
+00:00:03,005 --> 00:00:03,137
+t+3.005s  camera stamp 1790762810.618746
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+39
+00:00:03,137 --> 00:00:03,200
+t+3.137s  camera stamp 1790762810.751555
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+40
+00:00:03,200 --> 00:00:03,267
+t+3.200s  camera stamp 1790762810.814239
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+41
+00:00:03,267 --> 00:00:03,333
+t+3.267s  camera stamp 1790762810.881201
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+42
+00:00:03,333 --> 00:00:03,467
+t+3.333s  camera stamp 1790762810.947574
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+43
+00:00:03,467 --> 00:00:03,535
+t+3.467s  camera stamp 1790762811.081276
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+44
+00:00:03,535 --> 00:00:03,601
+t+3.535s  camera stamp 1790762811.149201
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+45
+00:00:03,601 --> 00:00:03,672
+t+3.601s  camera stamp 1790762811.214686
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+46
+00:00:03,672 --> 00:00:03,801
+t+3.672s  camera stamp 1790762811.286348
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+47
+00:00:03,801 --> 00:00:03,867
+t+3.801s  camera stamp 1790762811.415670
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+48
+00:00:03,867 --> 00:00:03,933
+t+3.867s  camera stamp 1790762811.481052
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+49
+00:00:03,933 --> 00:00:04,000
+t+3.933s  camera stamp 1790762811.547017
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+50
+00:00:04,000 --> 00:00:04,135
+t+4.000s  camera stamp 1790762811.613843
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+51
+00:00:04,135 --> 00:00:04,204
+t+4.135s  camera stamp 1790762811.748833
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+52
+00:00:04,204 --> 00:00:04,284
+t+4.204s  camera stamp 1790762811.817999
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+53
+00:00:04,284 --> 00:00:04,334
+t+4.284s  camera stamp 1790762811.897977
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+54
+00:00:04,334 --> 00:00:04,470
+t+4.334s  camera stamp 1790762811.947770
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+55
+00:00:04,470 --> 00:00:04,533
+t+4.470s  camera stamp 1790762812.083810
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+56
+00:00:04,533 --> 00:00:04,601
+t+4.533s  camera stamp 1790762812.147308
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+57
+00:00:04,601 --> 00:00:04,674
+t+4.601s  camera stamp 1790762812.215189
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+58
+00:00:04,674 --> 00:00:04,805
+t+4.674s  camera stamp 1790762812.287838
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+59
+00:00:04,805 --> 00:00:04,866
+t+4.805s  camera stamp 1790762812.419660
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+60
+00:00:04,866 --> 00:00:04,936
+t+4.866s  camera stamp 1790762812.480420
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+61
+00:00:04,936 --> 00:00:05,001
+t+4.936s  camera stamp 1790762812.549751
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+62
+00:00:05,001 --> 00:00:05,136
+t+5.001s  camera stamp 1790762812.614775
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+63
+00:00:05,136 --> 00:00:05,200
+t+5.136s  camera stamp 1790762812.750424
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+64
+00:00:05,200 --> 00:00:05,274
+t+5.200s  camera stamp 1790762812.814265
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+65
+00:00:05,274 --> 00:00:05,333
+t+5.274s  camera stamp 1790762812.888401
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+66
+00:00:05,333 --> 00:00:05,471
+t+5.333s  camera stamp 1790762812.947498
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+67
+00:00:05,471 --> 00:00:05,534
+t+5.471s  camera stamp 1790762813.085618
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+68
+00:00:05,534 --> 00:00:05,600
+t+5.534s  camera stamp 1790762813.147789
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+69
+00:00:05,600 --> 00:00:05,667
+t+5.600s  camera stamp 1790762813.213731
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+70
+00:00:05,667 --> 00:00:05,800
+t+5.667s  camera stamp 1790762813.281451
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+71
+00:00:05,800 --> 00:00:05,867
+t+5.800s  camera stamp 1790762813.414098
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+72
+00:00:05,867 --> 00:00:05,934
+t+5.867s  camera stamp 1790762813.481188
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+73
+00:00:05,934 --> 00:00:06,000
+t+5.934s  camera stamp 1790762813.548119
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+74
+00:00:06,000 --> 00:00:06,134
+t+6.000s  camera stamp 1790762813.614152
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+75
+00:00:06,134 --> 00:00:06,201
+t+6.134s  camera stamp 1790762813.748146
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+76
+00:00:06,201 --> 00:00:06,268
+t+6.201s  camera stamp 1790762813.815097
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+77
+00:00:06,268 --> 00:00:06,335
+t+6.268s  camera stamp 1790762813.882398
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+78
+00:00:06,335 --> 00:00:06,466
+t+6.335s  camera stamp 1790762813.949367
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+79
+00:00:06,466 --> 00:00:06,533
+t+6.466s  camera stamp 1790762814.080531
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+80
+00:00:06,533 --> 00:00:06,599
+t+6.533s  camera stamp 1790762814.147274
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+81
+00:00:06,599 --> 00:00:06,666
+t+6.599s  camera stamp 1790762814.213660
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+82
+00:00:06,666 --> 00:00:06,733
+t+6.666s  camera stamp 1790762814.280229
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+83
+00:00:06,733 --> 00:00:06,867
+t+6.733s  camera stamp 1790762814.347272
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+84
+00:00:06,867 --> 00:00:06,935
+t+6.867s  camera stamp 1790762814.481136
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+85
+00:00:06,935 --> 00:00:07,000
+t+6.935s  camera stamp 1790762814.549197
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+86
+00:00:07,000 --> 00:00:07,066
+t+7.000s  camera stamp 1790762814.614354
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+87
+00:00:07,066 --> 00:00:07,206
+t+7.066s  camera stamp 1790762814.680392
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+88
+00:00:07,206 --> 00:00:07,269
+t+7.206s  camera stamp 1790762814.819887
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+89
+00:00:07,269 --> 00:00:07,334
+t+7.269s  camera stamp 1790762814.882979
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+90
+00:00:07,334 --> 00:00:07,400
+t+7.334s  camera stamp 1790762814.948244
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+91
+00:00:07,400 --> 00:00:07,533
+t+7.400s  camera stamp 1790762815.014382
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+92
+00:00:07,533 --> 00:00:07,601
+t+7.533s  camera stamp 1790762815.147516
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+93
+00:00:07,601 --> 00:00:07,667
+t+7.601s  camera stamp 1790762815.214710
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+94
+00:00:07,667 --> 00:00:07,802
+t+7.667s  camera stamp 1790762815.281016
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+95
+00:00:07,802 --> 00:00:07,866
+t+7.802s  camera stamp 1790762815.416528
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+96
+00:00:07,866 --> 00:00:07,933
+t+7.866s  camera stamp 1790762815.480413
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+97
+00:00:07,933 --> 00:00:08,000
+t+7.933s  camera stamp 1790762815.547093
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+98
+00:00:08,000 --> 00:00:08,133
+t+8.000s  camera stamp 1790762815.613930
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+99
+00:00:08,133 --> 00:00:08,200
+t+8.133s  camera stamp 1790762815.747441
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+100
+00:00:08,200 --> 00:00:08,270
+t+8.200s  camera stamp 1790762815.813763
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+101
+00:00:08,270 --> 00:00:08,333
+t+8.270s  camera stamp 1790762815.883816
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+102
+00:00:08,333 --> 00:00:08,466
+t+8.333s  camera stamp 1790762815.947067
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+103
+00:00:08,466 --> 00:00:08,537
+t+8.466s  camera stamp 1790762816.080511
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+104
+00:00:08,537 --> 00:00:08,601
+t+8.537s  camera stamp 1790762816.150780
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+105
+00:00:08,601 --> 00:00:08,667
+t+8.601s  camera stamp 1790762816.215384
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+106
+00:00:08,667 --> 00:00:08,800
+t+8.667s  camera stamp 1790762816.281293
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+107
+00:00:08,800 --> 00:00:08,867
+t+8.800s  camera stamp 1790762816.414395
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+108
+00:00:08,867 --> 00:00:08,936
+t+8.867s  camera stamp 1790762816.480699
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+109
+00:00:08,936 --> 00:00:09,000
+t+8.936s  camera stamp 1790762816.549903
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+110
+00:00:09,000 --> 00:00:09,134
+t+9.000s  camera stamp 1790762816.614261
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+111
+00:00:09,134 --> 00:00:09,201
+t+9.134s  camera stamp 1790762816.748431
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+112
+00:00:09,201 --> 00:00:09,277
+t+9.201s  camera stamp 1790762816.814695
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+113
+00:00:09,277 --> 00:00:09,343
+t+9.277s  camera stamp 1790762816.891201
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+114
+00:00:09,343 --> 00:00:09,469
+t+9.343s  camera stamp 1790762816.957040
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+115
+00:00:09,469 --> 00:00:09,537
+t+9.469s  camera stamp 1790762817.083066
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+116
+00:00:09,537 --> 00:00:09,600
+t+9.537s  camera stamp 1790762817.151617
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+117
+00:00:09,600 --> 00:00:09,667
+t+9.600s  camera stamp 1790762817.213964
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+118
+00:00:09,667 --> 00:00:09,800
+t+9.667s  camera stamp 1790762817.281127
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+119
+00:00:09,800 --> 00:00:09,866
+t+9.800s  camera stamp 1790762817.414577
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+120
+00:00:09,866 --> 00:00:09,933
+t+9.866s  camera stamp 1790762817.480212
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+121
+00:00:09,933 --> 00:00:10,001
+t+9.933s  camera stamp 1790762817.547198
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+122
+00:00:10,001 --> 00:00:10,137
+t+10.001s  camera stamp 1790762817.614840
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+123
+00:00:10,137 --> 00:00:10,200
+t+10.137s  camera stamp 1790762817.751001
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+124
+00:00:10,200 --> 00:00:10,278
+t+10.200s  camera stamp 1790762817.813882
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+125
+00:00:10,278 --> 00:00:10,338
+t+10.278s  camera stamp 1790762817.892050
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+126
+00:00:10,338 --> 00:00:10,467
+t+10.338s  camera stamp 1790762817.952634
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+127
+00:00:10,467 --> 00:00:10,533
+t+10.467s  camera stamp 1790762818.080786
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+128
+00:00:10,533 --> 00:00:10,601
+t+10.533s  camera stamp 1790762818.146972
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+129
+00:00:10,601 --> 00:00:10,668
+t+10.601s  camera stamp 1790762818.215654
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+130
+00:00:10,668 --> 00:00:10,808
+t+10.668s  camera stamp 1790762818.282115
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+131
+00:00:10,808 --> 00:00:10,868
+t+10.808s  camera stamp 1790762818.422529
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+132
+00:00:10,868 --> 00:00:10,940
+t+10.868s  camera stamp 1790762818.481871
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+133
+00:00:10,940 --> 00:00:11,066
+t+10.940s  camera stamp 1790762818.554340
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+134
+00:00:11,066 --> 00:00:11,135
+t+11.066s  camera stamp 1790762818.680384
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+135
+00:00:11,135 --> 00:00:11,201
+t+11.135s  camera stamp 1790762818.748794
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+136
+00:00:11,201 --> 00:00:11,273
+t+11.201s  camera stamp 1790762818.814725
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+137
+00:00:11,273 --> 00:00:11,400
+t+11.273s  camera stamp 1790762818.886735
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+138
+00:00:11,400 --> 00:00:11,473
+t+11.400s  camera stamp 1790762819.013706
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+139
+00:00:11,473 --> 00:00:11,535
+t+11.473s  camera stamp 1790762819.086679
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+140
+00:00:11,535 --> 00:00:11,599
+t+11.535s  camera stamp 1790762819.149670
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+141
+00:00:11,599 --> 00:00:11,734
+t+11.599s  camera stamp 1790762819.213614
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+142
+00:00:11,734 --> 00:00:11,810
+t+11.734s  camera stamp 1790762819.348014
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+143
+00:00:11,810 --> 00:00:11,867
+t+11.810s  camera stamp 1790762819.423881
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+144
+00:00:11,867 --> 00:00:12,000
+t+11.867s  camera stamp 1790762819.480875
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+145
+00:00:12,000 --> 00:00:12,067
+t+12.000s  camera stamp 1790762819.614277
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+146
+00:00:12,067 --> 00:00:12,134
+t+12.067s  camera stamp 1790762819.681522
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+147
+00:00:12,134 --> 00:00:12,267
+t+12.134s  camera stamp 1790762819.747876
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+148
+00:00:12,267 --> 00:00:12,333
+t+12.267s  camera stamp 1790762819.881308
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+149
+00:00:12,333 --> 00:00:12,407
+t+12.333s  camera stamp 1790762819.947465
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+150
+00:00:12,407 --> 00:00:12,536
+t+12.407s  camera stamp 1790762820.020774
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+151
+00:00:12,536 --> 00:00:12,600
+t+12.536s  camera stamp 1790762820.150598
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+152
+00:00:12,600 --> 00:00:12,738
+t+12.600s  camera stamp 1790762820.214432
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+153
+00:00:12,738 --> 00:00:12,802
+t+12.738s  camera stamp 1790762820.352397
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+154
+00:00:12,802 --> 00:00:12,866
+t+12.802s  camera stamp 1790762820.415989
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+155
+00:00:12,866 --> 00:00:13,004
+t+12.866s  camera stamp 1790762820.480282
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+156
+00:00:13,004 --> 00:00:13,067
+t+13.004s  camera stamp 1790762820.618317
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+157
+00:00:13,067 --> 00:00:13,133
+t+13.067s  camera stamp 1790762820.681088
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+158
+00:00:13,133 --> 00:00:13,205
+t+13.133s  camera stamp 1790762820.747620
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+159
+00:00:13,205 --> 00:00:13,334
+t+13.205s  camera stamp 1790762820.819409
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+160
+00:00:13,334 --> 00:00:13,400
+t+13.334s  camera stamp 1790762820.947849
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+161
+00:00:13,400 --> 00:00:13,467
+t+13.400s  camera stamp 1790762821.014637
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+162
+00:00:13,467 --> 00:00:13,600
+t+13.467s  camera stamp 1790762821.081447
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+163
+00:00:13,600 --> 00:00:13,667
+t+13.600s  camera stamp 1790762821.214563
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+164
+00:00:13,667 --> 00:00:13,733
+t+13.667s  camera stamp 1790762821.280690
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+165
+00:00:13,733 --> 00:00:13,866
+t+13.733s  camera stamp 1790762821.347184
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+166
+00:00:13,866 --> 00:00:13,933
+t+13.866s  camera stamp 1790762821.480169
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+167
+00:00:13,933 --> 00:00:14,003
+t+13.933s  camera stamp 1790762821.547406
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+168
+00:00:14,003 --> 00:00:14,133
+t+14.003s  camera stamp 1790762821.617261
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+169
+00:00:14,133 --> 00:00:14,200
+t+14.133s  camera stamp 1790762821.747289
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+170
+00:00:14,200 --> 00:00:14,267
+t+14.200s  camera stamp 1790762821.814629
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+171
+00:00:14,267 --> 00:00:14,400
+t+14.267s  camera stamp 1790762821.881042
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+172
+00:00:14,400 --> 00:00:14,471
+t+14.400s  camera stamp 1790762822.014493
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+173
+00:00:14,471 --> 00:00:14,533
+t+14.471s  camera stamp 1790762822.085605
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+174
+00:00:14,533 --> 00:00:14,668
+t+14.533s  camera stamp 1790762822.147363
+STARTUP_STRAIGHT   speed=12 steer=0  startup_straight_distance
+
+175
+00:00:14,668 --> 00:00:14,734
+t+14.668s  camera stamp 1790762822.281689
+LANE   speed=16 steer=-2  tracking_lane
+
+176
+00:00:14,734 --> 00:00:14,800
+t+14.734s  camera stamp 1790762822.348018
+LANE   speed=16 steer=-1  tracking_lane
+
+177
+00:00:14,800 --> 00:00:14,933
+t+14.800s  camera stamp 1790762822.414001
+LANE   speed=16 steer=-1  tracking_lane
+
+178
+00:00:14,933 --> 00:00:15,005
+t+14.933s  camera stamp 1790762822.546976
+LANE   speed=16 steer=-1  tracking_lane
+
+179
+00:00:15,005 --> 00:00:15,066
+t+15.005s  camera stamp 1790762822.619653
+LANE   speed=16 steer=-2  tracking_lane
+
+180
+00:00:15,066 --> 00:00:15,200
+t+15.066s  camera stamp 1790762822.680133
+LANE   speed=16 steer=-2  tracking_lane
+
+181
+00:00:15,200 --> 00:00:15,271
+t+15.200s  camera stamp 1790762822.814424
+LANE   speed=16 steer=-1  tracking_lane
+
+182
+00:00:15,271 --> 00:00:15,339
+t+15.271s  camera stamp 1790762822.885484
+LANE   speed=16 steer=-1  tracking_lane
+
+183
+00:00:15,339 --> 00:00:15,467
+t+15.339s  camera stamp 1790762822.953089
+LANE   speed=16 steer=-1  tracking_lane
+
+184
+00:00:15,467 --> 00:00:15,533
+t+15.467s  camera stamp 1790762823.080695
+LANE   speed=16 steer=-1  tracking_lane
+
+185
+00:00:15,533 --> 00:00:15,600
+t+15.533s  camera stamp 1790762823.147552
+LANE   speed=16 steer=-1  tracking_lane
+
+186
+00:00:15,600 --> 00:00:15,734
+t+15.600s  camera stamp 1790762823.213870
+LANE   speed=16 steer=-1  tracking_lane
+
+187
+00:00:15,734 --> 00:00:15,800
+t+15.734s  camera stamp 1790762823.348158
+LANE   speed=16 steer=-1  tracking_lane
+
+188
+00:00:15,800 --> 00:00:15,867
+t+15.800s  camera stamp 1790762823.414087
+LANE   speed=16 steer=-2  tracking_lane
+
+189
+00:00:15,867 --> 00:00:15,999
+t+15.867s  camera stamp 1790762823.480717
+LANE   speed=16 steer=-2  tracking_lane
+
+190
+00:00:15,999 --> 00:00:16,067
+t+15.999s  camera stamp 1790762823.613579
+LANE   speed=16 steer=0  tracking_lane
+
+191
+00:00:16,067 --> 00:00:16,142
+t+16.067s  camera stamp 1790762823.681638
+LANE   speed=16 steer=-1  tracking_lane
+
+192
+00:00:16,142 --> 00:00:16,268
+t+16.142s  camera stamp 1790762823.755830
+LANE   speed=16 steer=-6  tracking_lane
+
+193
+00:00:16,268 --> 00:00:16,338
+t+16.268s  camera stamp 1790762823.881805
+LANE   speed=16 steer=-9  tracking_lane
+
+194
+00:00:16,338 --> 00:00:16,400
+t+16.338s  camera stamp 1790762823.952391
+LANE   speed=16 steer=-9  tracking_lane
+
+195
+00:00:16,400 --> 00:00:16,470
+t+16.400s  camera stamp 1790762824.014005
+LANE   speed=16 steer=-2  tracking_lane
+
+196
+00:00:16,470 --> 00:00:16,603
+t+16.470s  camera stamp 1790762824.084562
+LANE   speed=16 steer=-2  tracking_lane
+
+197
+00:00:16,603 --> 00:00:16,667
+t+16.603s  camera stamp 1790762824.216927
+LANE   speed=16 steer=-11  tracking_lane
+
+198
+00:00:16,667 --> 00:00:16,736
+t+16.667s  camera stamp 1790762824.281335
+LANE   speed=16 steer=-11  tracking_lane
+
+199
+00:00:16,736 --> 00:00:16,866
+t+16.736s  camera stamp 1790762824.350470
+LANE   speed=16 steer=-11  tracking_lane
+
+200
+00:00:16,866 --> 00:00:17,001
+t+16.866s  camera stamp 1790762824.480288
+LANE   speed=16 steer=-11  tracking_lane
+
+201
+00:00:17,001 --> 00:00:17,067
+t+17.001s  camera stamp 1790762824.615098
+LANE   speed=16 steer=-12  tracking_lane
+
+202
+00:00:17,067 --> 00:00:17,200
+t+17.067s  camera stamp 1790762824.681021
+LANE   speed=16 steer=-8  tracking_lane
+
+203
+00:00:17,200 --> 00:00:17,334
+t+17.200s  camera stamp 1790762824.814288
+LANE   speed=16 steer=1  tracking_lane
+
+204
+00:00:17,334 --> 00:00:17,405
+t+17.334s  camera stamp 1790762824.947696
+LANE   speed=16 steer=1  tracking_lane
+
+205
+00:00:17,405 --> 00:00:17,536
+t+17.405s  camera stamp 1790762825.018705
+LANE   speed=16 steer=1  tracking_lane
+
+206
+00:00:17,536 --> 00:00:17,668
+t+17.536s  camera stamp 1790762825.150256
+LANE   speed=16 steer=1  tracking_lane
+
+207
+00:00:17,668 --> 00:00:17,800
+t+17.668s  camera stamp 1790762825.281780
+LANE   speed=16 steer=2  tracking_lane
+
+208
+00:00:17,800 --> 00:00:17,933
+t+17.800s  camera stamp 1790762825.413708
+LANE   speed=16 steer=-7  tracking_lane
+
+209
+00:00:17,933 --> 00:00:17,999
+t+17.933s  camera stamp 1790762825.546905
+LANE   speed=16 steer=-11  tracking_lane
+
+210
+00:00:17,999 --> 00:00:18,133
+t+17.999s  camera stamp 1790762825.613471
+LANE   speed=16 steer=-11  tracking_lane
+
+211
+00:00:18,133 --> 00:00:18,268
+t+18.133s  camera stamp 1790762825.747030
+LANE   speed=16 steer=-18  tracking_lane
+
+212
+00:00:18,268 --> 00:00:18,401
+t+18.268s  camera stamp 1790762825.881768
+LANE   speed=16 steer=-19  tracking_lane
+
+213
+00:00:18,401 --> 00:00:18,534
+t+18.401s  camera stamp 1790762826.014835
+LANE   speed=16 steer=-20  tracking_lane
+
+214
+00:00:18,534 --> 00:00:18,603
+t+18.534s  camera stamp 1790762826.147963
+LANE   speed=16 steer=-20  tracking_lane
+
+215
+00:00:18,603 --> 00:00:18,737
+t+18.603s  camera stamp 1790762826.216925
+LANE   speed=16 steer=-20  tracking_lane
+
+216
+00:00:18,737 --> 00:00:18,867
+t+18.737s  camera stamp 1790762826.350866
+LANE   speed=16 steer=-22  tracking_lane
+
+217
+00:00:18,867 --> 00:00:18,939
+t+18.867s  camera stamp 1790762826.480687
+LANE   speed=16 steer=-22  tracking_lane
+
+218
+00:00:18,939 --> 00:00:19,066
+t+18.939s  camera stamp 1790762826.552698
+LANE   speed=16 steer=-18  tracking_lane
+
+219
+00:00:19,066 --> 00:00:19,201
+t+19.066s  camera stamp 1790762826.680038
+LANE   speed=16 steer=-21  tracking_lane
+
+220
+00:00:19,201 --> 00:00:19,342
+t+19.201s  camera stamp 1790762826.814896
+LANE   speed=16 steer=-16  tracking_lane
+
+221
+00:00:19,342 --> 00:00:19,399
+t+19.342s  camera stamp 1790762826.955681
+LANE   speed=16 steer=-17  tracking_lane
+
+222
+00:00:19,399 --> 00:00:19,533
+t+19.399s  camera stamp 1790762827.013407
+LANE   speed=16 steer=-22  tracking_lane
+
+223
+00:00:19,533 --> 00:00:19,666
+t+19.533s  camera stamp 1790762827.147053
+LANE   speed=16 steer=-11  tracking_lane
+
+224
+00:00:19,666 --> 00:00:19,801
+t+19.666s  camera stamp 1790762827.280497
+LANE   speed=16 steer=-1  tracking_lane
+
+225
+00:00:19,801 --> 00:00:19,867
+t+19.801s  camera stamp 1790762827.415404
+LANE   speed=16 steer=2  tracking_lane
+
+226
+00:00:19,867 --> 00:00:19,934
+t+19.867s  camera stamp 1790762827.481033
+LANE   speed=16 steer=1  tracking_lane
+
+227
+00:00:19,934 --> 00:00:20,000
+t+19.934s  camera stamp 1790762827.548483
+LANE   speed=16 steer=1  tracking_lane
+
+228
+00:00:20,000 --> 00:00:20,133
+t+20.000s  camera stamp 1790762827.614360
+LANE   speed=16 steer=5  tracking_lane
+
+229
+00:00:20,133 --> 00:00:20,199
+t+20.133s  camera stamp 1790762827.747562
+LANE   speed=16 steer=9  tracking_lane
+
+230
+00:00:20,199 --> 00:00:20,268
+t+20.199s  camera stamp 1790762827.813559
+LANE   speed=16 steer=8  tracking_lane
+
+231
+00:00:20,268 --> 00:00:20,334
+t+20.268s  camera stamp 1790762827.882278
+LANE   speed=16 steer=8  tracking_lane
+
+232
+00:00:20,334 --> 00:00:20,467
+t+20.334s  camera stamp 1790762827.948046
+LANE   speed=16 steer=7  tracking_lane
+
+233
+00:00:20,467 --> 00:00:20,602
+t+20.467s  camera stamp 1790762828.081289
+LANE   speed=16 steer=7  tracking_lane
+
+234
+00:00:20,602 --> 00:00:20,667
+t+20.602s  camera stamp 1790762828.216594
+LANE   speed=16 steer=8  tracking_lane
+
+235
+00:00:20,667 --> 00:00:20,800
+t+20.667s  camera stamp 1790762828.280866
+LANE   speed=16 steer=10  tracking_lane
+
+236
+00:00:20,800 --> 00:00:20,935
+t+20.800s  camera stamp 1790762828.414329
+LANE   speed=16 steer=9  tracking_lane
+
+237
+00:00:20,935 --> 00:00:21,000
+t+20.935s  camera stamp 1790762828.549426
+LANE   speed=16 steer=9  tracking_lane
+
+238
+00:00:21,000 --> 00:00:21,133
+t+21.000s  camera stamp 1790762828.613931
+LANE   speed=16 steer=9  tracking_lane
+
+239
+00:00:21,133 --> 00:00:21,267
+t+21.133s  camera stamp 1790762828.747637
+LANE   speed=16 steer=9  tracking_lane
+
+240
+00:00:21,267 --> 00:00:21,333
+t+21.267s  camera stamp 1790762828.881137
+LANE   speed=16 steer=9  tracking_lane
+
+241
+00:00:21,333 --> 00:00:21,466
+t+21.333s  camera stamp 1790762828.947089
+LANE   speed=16 steer=9  tracking_lane
+
+242
+00:00:21,466 --> 00:00:21,600
+t+21.466s  camera stamp 1790762829.080607
+LANE   speed=16 steer=9  tracking_lane
+
+243
+00:00:21,600 --> 00:00:21,667
+t+21.600s  camera stamp 1790762829.214472
+LANE   speed=16 steer=8  tracking_lane
+
+244
+00:00:21,667 --> 00:00:21,800
+t+21.667s  camera stamp 1790762829.281453
+LANE   speed=16 steer=8  tracking_lane
+
+245
+00:00:21,800 --> 00:00:21,933
+t+21.800s  camera stamp 1790762829.414404
+LANE   speed=16 steer=9  tracking_lane
+
+246
+00:00:21,933 --> 00:00:22,067
+t+21.933s  camera stamp 1790762829.547367
+LANE   speed=16 steer=9  tracking_lane
+
+247
+00:00:22,067 --> 00:00:22,133
+t+22.067s  camera stamp 1790762829.680741
+LANE   speed=16 steer=9  tracking_lane
+
+248
+00:00:22,133 --> 00:00:22,266
+t+22.133s  camera stamp 1790762829.746832
+LANE   speed=16 steer=6  tracking_lane
+
+249
+00:00:22,266 --> 00:00:22,401
+t+22.266s  camera stamp 1790762829.880419
+LANE   speed=16 steer=6  tracking_lane
+
+250
+00:00:22,401 --> 00:00:22,533
+t+22.401s  camera stamp 1790762830.015299
+LANE   speed=16 steer=8  tracking_lane
+
+251
+00:00:22,533 --> 00:00:22,601
+t+22.533s  camera stamp 1790762830.147183
+LANE   speed=16 steer=5  tracking_lane
+
+252
+00:00:22,601 --> 00:00:22,735
+t+22.601s  camera stamp 1790762830.214940
+LANE   speed=16 steer=4  tracking_lane
+
+253
+00:00:22,735 --> 00:00:22,867
+t+22.735s  camera stamp 1790762830.349675
+LANE   speed=16 steer=3  tracking_lane
+
+254
+00:00:22,867 --> 00:00:22,933
+t+22.867s  camera stamp 1790762830.481675
+LANE   speed=16 steer=4  tracking_lane
+
+255
+00:00:22,933 --> 00:00:23,066
+t+22.933s  camera stamp 1790762830.546930
+LANE   speed=16 steer=4  tracking_lane
+
+256
+00:00:23,066 --> 00:00:23,200
+t+23.066s  camera stamp 1790762830.680230
+LANE   speed=16 steer=4  tracking_lane
+
+257
+00:00:23,200 --> 00:00:23,266
+t+23.200s  camera stamp 1790762830.814664
+LANE   speed=16 steer=3  tracking_lane
+
+258
+00:00:23,266 --> 00:00:23,405
+t+23.266s  camera stamp 1790762830.880256
+LANE   speed=16 steer=3  tracking_lane
+
+259
+00:00:23,405 --> 00:00:23,472
+t+23.405s  camera stamp 1790762831.019656
+LANE   speed=16 steer=2  tracking_lane
+
+260
+00:00:23,472 --> 00:00:23,601
+t+23.472s  camera stamp 1790762831.085840
+LANE   speed=16 steer=2  tracking_lane
+
+261
+00:00:23,601 --> 00:00:23,735
+t+23.601s  camera stamp 1790762831.215332
+LANE   speed=16 steer=1  tracking_lane
+
+262
+00:00:23,735 --> 00:00:23,803
+t+23.735s  camera stamp 1790762831.349312
+LANE   speed=16 steer=0  tracking_lane
+
+263
+00:00:23,803 --> 00:00:23,933
+t+23.803s  camera stamp 1790762831.417248
+LANE   speed=16 steer=0  tracking_lane
+
+264
+00:00:23,933 --> 00:00:24,068
+t+23.933s  camera stamp 1790762831.547643
+LANE   speed=16 steer=0  tracking_lane
+
+265
+00:00:24,068 --> 00:00:24,199
+t+24.068s  camera stamp 1790762831.681717
+LANE   speed=16 steer=-2  tracking_lane
+
+266
+00:00:24,199 --> 00:00:24,334
+t+24.199s  camera stamp 1790762831.813617
+LANE   speed=16 steer=-3  tracking_lane
+
+267
+00:00:24,334 --> 00:00:24,401
+t+24.334s  camera stamp 1790762831.947960
+LANE   speed=16 steer=-5  tracking_lane
+
+268
+00:00:24,401 --> 00:00:24,533
+t+24.401s  camera stamp 1790762832.015446
+LANE   speed=16 steer=-5  tracking_lane
+
+269
+00:00:24,533 --> 00:00:24,599
+t+24.533s  camera stamp 1790762832.147038
+LANE   speed=16 steer=-6  tracking_lane
+
+270
+00:00:24,599 --> 00:00:24,733
+t+24.599s  camera stamp 1790762832.213465
+LANE   speed=16 steer=-6  tracking_lane
+
+271
+00:00:24,733 --> 00:00:24,870
+t+24.733s  camera stamp 1790762832.347483
+LANE   speed=16 steer=-8  tracking_lane
+
+272
+00:00:24,870 --> 00:00:25,003
+t+24.870s  camera stamp 1790762832.484094
+LANE   speed=16 steer=-9  tracking_lane
+
+273
+00:00:25,003 --> 00:00:25,133
+t+25.003s  camera stamp 1790762832.617295
+LANE   speed=16 steer=-9  tracking_lane
+
+274
+00:00:25,133 --> 00:00:25,200
+t+25.133s  camera stamp 1790762832.747269
+LANE   speed=16 steer=-13  tracking_lane
+
+275
+00:00:25,200 --> 00:00:25,336
+t+25.200s  camera stamp 1790762832.814144
+LANE   speed=16 steer=-13  tracking_lane
+
+276
+00:00:25,336 --> 00:00:25,474
+t+25.336s  camera stamp 1790762832.950174
+LANE   speed=16 steer=-11  tracking_lane
+
+277
+00:00:25,474 --> 00:00:25,601
+t+25.474s  camera stamp 1790762833.088545
+LANE   speed=16 steer=-14  tracking_lane
+
+278
+00:00:25,601 --> 00:00:25,737
+t+25.601s  camera stamp 1790762833.215178
+LANE   speed=16 steer=-14  tracking_lane
+
+279
+00:00:25,737 --> 00:00:25,868
+t+25.737s  camera stamp 1790762833.351292
+LANE   speed=16 steer=-14  tracking_lane
+
+280
+00:00:25,868 --> 00:00:25,940
+t+25.868s  camera stamp 1790762833.481960
+LANE   speed=16 steer=-15  tracking_lane
+
+281
+00:00:25,940 --> 00:00:26,067
+t+25.940s  camera stamp 1790762833.554449
+LANE   speed=16 steer=-16  tracking_lane
+
+282
+00:00:26,067 --> 00:00:26,200
+t+26.067s  camera stamp 1790762833.681661
+LANE   speed=16 steer=-16  tracking_lane
+
+283
+00:00:26,200 --> 00:00:26,333
+t+26.200s  camera stamp 1790762833.814422
+LANE   speed=16 steer=-17  tracking_lane
+
+284
+00:00:26,333 --> 00:00:26,399
+t+26.333s  camera stamp 1790762833.947544
+LANE   speed=16 steer=-18  tracking_lane
+
+285
+00:00:26,399 --> 00:00:26,473
+t+26.399s  camera stamp 1790762834.013519
+LANE   speed=16 steer=-18  tracking_lane
+
+286
+00:00:26,473 --> 00:00:26,601
+t+26.473s  camera stamp 1790762834.087544
+LANE   speed=16 steer=-17  tracking_lane
+
+287
+00:00:26,601 --> 00:00:26,666
+t+26.601s  camera stamp 1790762834.214863
+LANE   speed=16 steer=-17  tracking_lane
+
+288
+00:00:26,666 --> 00:00:26,801
+t+26.666s  camera stamp 1790762834.280256
+LANE   speed=16 steer=-22  tracking_lane
+
+289
+00:00:26,801 --> 00:00:26,934
+t+26.801s  camera stamp 1790762834.414870
+LANE   speed=0 steer=-21  lane_unreliable
+
+290
+00:00:26,934 --> 00:00:27,000
+t+26.934s  camera stamp 1790762834.547781
+LANE   speed=0 steer=-21  lane_unreliable
+
+291
+00:00:27,000 --> 00:00:27,133
+t+27.000s  camera stamp 1790762834.613796
+LANE   speed=0 steer=-21  lane_unreliable
+
+292
+00:00:27,133 --> 00:00:27,200
+t+27.133s  camera stamp 1790762834.747324
+LANE   speed=16 steer=-12  tracking_lane
+
+293
+00:00:27,200 --> 00:00:27,401
+t+27.200s  camera stamp 1790762834.814209
+LANE   speed=16 steer=-13  tracking_lane
+
+294
+00:00:27,401 --> 00:00:27,536
+t+27.401s  camera stamp 1790762835.015122
+LANE   speed=16 steer=-16  tracking_lane
+
+295
+00:00:27,536 --> 00:00:27,600
+t+27.536s  camera stamp 1790762835.150166
+LANE   speed=16 steer=-22  tracking_lane
+
+296
+00:00:27,600 --> 00:00:27,804
+t+27.600s  camera stamp 1790762835.214348
+LANE   speed=16 steer=-18  tracking_lane
+
+297
+00:00:27,804 --> 00:00:27,933
+t+27.804s  camera stamp 1790762835.418005
+LANE   speed=16 steer=-21  tracking_lane
+
+298
+00:00:27,933 --> 00:00:28,067
+t+27.933s  camera stamp 1790762835.547388
+LANE   speed=16 steer=-22  tracking_lane
+
+299
+00:00:28,067 --> 00:00:28,135
+t+28.067s  camera stamp 1790762835.680764
+LANE   speed=16 steer=-22  tracking_lane
+
+300
+00:00:28,135 --> 00:00:28,337
+t+28.135s  camera stamp 1790762835.748808
+LANE   speed=16 steer=-22  tracking_lane
+
+301
+00:00:28,337 --> 00:00:28,466
+t+28.337s  camera stamp 1790762835.951595
+LANE   speed=16 steer=-13  tracking_lane
+
+302
+00:00:28,466 --> 00:00:28,599
+t+28.466s  camera stamp 1790762836.080328
+LANE   speed=16 steer=-22  tracking_lane
+
+303
+00:00:28,599 --> 00:00:28,733
+t+28.599s  camera stamp 1790762836.213506
+LANE   speed=16 steer=-22  tracking_lane
+
+304
+00:00:28,733 --> 00:00:28,866
+t+28.733s  camera stamp 1790762836.346935
+LANE   speed=16 steer=-22  tracking_lane
+
+305
+00:00:28,866 --> 00:00:28,999
+t+28.866s  camera stamp 1790762836.480606
+LANE   speed=16 steer=-22  tracking_lane
+
+306
+00:00:28,999 --> 00:00:29,133
+t+28.999s  camera stamp 1790762836.613566
+LANE   speed=16 steer=-22  tracking_lane
+
+307
+00:00:29,133 --> 00:00:29,273
+t+29.133s  camera stamp 1790762836.746786
+LANE   speed=16 steer=-22  tracking_lane
+
+308
+00:00:29,273 --> 00:00:29,400
+t+29.273s  camera stamp 1790762836.887152
+LANE   speed=16 steer=-22  tracking_lane
+
+309
+00:00:29,400 --> 00:00:29,533
+t+29.400s  camera stamp 1790762837.014206
+LANE   speed=16 steer=-22  tracking_lane
+
+310
+00:00:29,533 --> 00:00:29,667
+t+29.533s  camera stamp 1790762837.146726
+LANE   speed=16 steer=-22  tracking_lane
+
+311
+00:00:29,667 --> 00:00:29,801
+t+29.667s  camera stamp 1790762837.281455
+LANE   speed=16 steer=-22  tracking_lane
+
+312
+00:00:29,801 --> 00:00:29,937
+t+29.801s  camera stamp 1790762837.415289
+LANE   speed=16 steer=-22  tracking_lane
+
+313
+00:00:29,937 --> 00:00:30,009
+t+29.937s  camera stamp 1790762837.551415
+LANE   speed=16 steer=-22  tracking_lane
+
+314
+00:00:30,009 --> 00:00:30,200
+t+30.009s  camera stamp 1790762837.622806
+LANE   speed=16 steer=-22  tracking_lane
+
+315
+00:00:30,200 --> 00:00:30,333
+t+30.200s  camera stamp 1790762837.813991
+LANE   speed=16 steer=-22  tracking_lane
+
+316
+00:00:30,333 --> 00:00:30,468
+t+30.333s  camera stamp 1790762837.947496
+LANE   speed=16 steer=-22  tracking_lane
+
+317
+00:00:30,468 --> 00:00:30,534
+t+30.468s  camera stamp 1790762838.081721
+LANE   speed=0 steer=-22  lane_unreliable
+
+318
+00:00:30,534 --> 00:00:30,668
+t+30.534s  camera stamp 1790762838.148005
+LANE   speed=16 steer=-22  tracking_lane
+
+319
+00:00:30,668 --> 00:00:30,741
+t+30.668s  camera stamp 1790762838.281901
+LANE   speed=16 steer=-17  tracking_lane
+
+320
+00:00:30,741 --> 00:00:30,867
+t+30.741s  camera stamp 1790762838.354723
+LANE   speed=16 steer=-17  tracking_lane
+
+321
+00:00:30,867 --> 00:00:31,000
+t+30.867s  camera stamp 1790762838.481238
+LANE   speed=16 steer=-6  tracking_lane
+
+322
+00:00:31,000 --> 00:00:31,066
+t+31.000s  camera stamp 1790762838.613688
+GAP   speed=16 steer=-17  tracking_gap
+
+323
+00:00:31,066 --> 00:00:31,208
+t+31.066s  camera stamp 1790762838.680107
+GAP   speed=16 steer=-17  tracking_gap
+
+324
+00:00:31,208 --> 00:00:31,400
+t+31.208s  camera stamp 1790762838.822109
+LANE   speed=16 steer=-22  tracking_lane
+
+325
+00:00:31,400 --> 00:00:31,537
+t+31.400s  camera stamp 1790762839.013844
+LANE   speed=16 steer=-22  tracking_lane
+
+326
+00:00:31,537 --> 00:00:31,600
+t+31.537s  camera stamp 1790762839.151477
+LANE   speed=16 steer=-22  tracking_lane
+
+327
+00:00:31,600 --> 00:00:31,740
+t+31.600s  camera stamp 1790762839.214296
+LANE   speed=16 steer=-22  tracking_lane
+
+328
+00:00:31,740 --> 00:00:31,867
+t+31.740s  camera stamp 1790762839.354467
+LANE   speed=16 steer=-15  tracking_lane
+
+329
+00:00:31,867 --> 00:00:32,012
+t+31.867s  camera stamp 1790762839.481316
+LANE   speed=16 steer=-13  tracking_lane
+
+330
+00:00:32,012 --> 00:00:32,070
+t+32.012s  camera stamp 1790762839.626316
+LANE   speed=16 steer=-22  tracking_lane
+
+331
+00:00:32,070 --> 00:00:32,200
+t+32.070s  camera stamp 1790762839.683882
+LANE   speed=16 steer=-22  tracking_lane
+
+332
+00:00:32,200 --> 00:00:32,334
+t+32.200s  camera stamp 1790762839.814054
+LANE   speed=16 steer=-12  tracking_lane
+
+333
+00:00:32,334 --> 00:00:32,403
+t+32.334s  camera stamp 1790762839.947966
+LANE   speed=16 steer=-15  tracking_lane
+
+334
+00:00:32,403 --> 00:00:32,534
+t+32.403s  camera stamp 1790762840.017050
+LANE   speed=16 steer=-13  tracking_lane
+
+335
+00:00:32,534 --> 00:00:32,601
+t+32.534s  camera stamp 1790762840.148233
+GAP   speed=16 steer=-13  tracking_gap
+
+336
+00:00:32,601 --> 00:00:32,666
+t+32.601s  camera stamp 1790762840.215441
+LANE   speed=16 steer=-4  tracking_lane
+
+337
+00:00:32,666 --> 00:00:32,809
+t+32.666s  camera stamp 1790762840.280201
+LANE   speed=16 steer=-14  tracking_lane
+
+338
+00:00:32,809 --> 00:00:32,933
+t+32.809s  camera stamp 1790762840.423057
+LANE   speed=16 steer=-4  tracking_lane
+
+339
+00:00:32,933 --> 00:00:33,000
+t+32.933s  camera stamp 1790762840.546867
+LANE   speed=16 steer=-7  tracking_lane
+
+340
+00:00:33,000 --> 00:00:33,137
+t+33.000s  camera stamp 1790762840.614050
+LANE   speed=16 steer=-16  tracking_lane
+
+341
+00:00:33,137 --> 00:00:33,272
+t+33.137s  camera stamp 1790762840.750974
+LANE   speed=16 steer=2  tracking_lane
+
+342
+00:00:33,272 --> 00:00:33,403
+t+33.272s  camera stamp 1790762840.885949
+LANE   speed=16 steer=-22  tracking_lane
+
+343
+00:00:33,403 --> 00:00:33,470
+t+33.403s  camera stamp 1790762841.017601
+LANE   speed=16 steer=-22  tracking_lane
+
+344
+00:00:33,470 --> 00:00:33,600
+t+33.470s  camera stamp 1790762841.084583
+LANE   speed=16 steer=-22  tracking_lane
+
+345
+00:00:33,600 --> 00:00:33,734
+t+33.600s  camera stamp 1790762841.213903
+LANE   speed=16 steer=-13  tracking_lane
+
+346
+00:00:33,734 --> 00:00:33,800
+t+33.734s  camera stamp 1790762841.347789
+LANE   speed=16 steer=-22  tracking_lane
+
+347
+00:00:33,800 --> 00:00:33,933
+t+33.800s  camera stamp 1790762841.413772
+LANE   speed=16 steer=-22  tracking_lane
+
+348
+00:00:33,933 --> 00:00:34,067
+t+33.933s  camera stamp 1790762841.547355
+LANE   speed=16 steer=-22  tracking_lane
+
+349
+00:00:34,067 --> 00:00:34,134
+t+34.067s  camera stamp 1790762841.681439
+LANE   speed=16 steer=-22  tracking_lane
+
+350
+00:00:34,134 --> 00:00:34,266
+t+34.134s  camera stamp 1790762841.747693
+LANE   speed=16 steer=-22  tracking_lane
+
+351
+00:00:34,266 --> 00:00:34,403
+t+34.266s  camera stamp 1790762841.880425
+LANE   speed=16 steer=-22  tracking_lane
+
+352
+00:00:34,403 --> 00:00:34,474
+t+34.403s  camera stamp 1790762842.017006
+LANE   speed=16 steer=-22  tracking_lane
+
+353
+00:00:34,474 --> 00:00:34,599
+t+34.474s  camera stamp 1790762842.088108
+LANE   speed=16 steer=-22  tracking_lane
+
+354
+00:00:34,599 --> 00:00:34,739
+t+34.599s  camera stamp 1790762842.213664
+LANE   speed=16 steer=-22  tracking_lane
+
+355
+00:00:34,739 --> 00:00:34,808
+t+34.739s  camera stamp 1790762842.353618
+LANE   speed=16 steer=-22  tracking_lane
+
+356
+00:00:34,808 --> 00:00:34,933
+t+34.808s  camera stamp 1790762842.422203
+LANE   speed=16 steer=-22  tracking_lane
+
+357
+00:00:34,933 --> 00:00:35,066
+t+34.933s  camera stamp 1790762842.547211
+LANE   speed=16 steer=-22  tracking_lane
+
+358
+00:00:35,066 --> 00:00:35,135
+t+35.066s  camera stamp 1790762842.680528
+LANE   speed=16 steer=-22  tracking_lane
+
+359
+00:00:35,135 --> 00:00:35,267
+t+35.135s  camera stamp 1790762842.749247
+LANE   speed=16 steer=-22  tracking_lane
+
+360
+00:00:35,267 --> 00:00:35,333
+t+35.267s  camera stamp 1790762842.881134
+LANE   speed=16 steer=-22  tracking_lane
+
+361
+00:00:35,333 --> 00:00:35,466
+t+35.333s  camera stamp 1790762842.947514
+LANE   speed=16 steer=-22  tracking_lane
+
+362
+00:00:35,466 --> 00:00:35,601
+t+35.466s  camera stamp 1790762843.080422
+LANE   speed=16 steer=-22  tracking_lane
+
+363
+00:00:35,601 --> 00:00:35,671
+t+35.601s  camera stamp 1790762843.215005
+LANE   speed=16 steer=-22  tracking_lane
+
+364
+00:00:35,671 --> 00:00:35,803
+t+35.671s  camera stamp 1790762843.285083
+LANE   speed=16 steer=-22  tracking_lane
+
+365
+00:00:35,803 --> 00:00:35,867
+t+35.803s  camera stamp 1790762843.416800
+LANE   speed=16 steer=-22  tracking_lane
+
+366
+00:00:35,867 --> 00:00:35,999
+t+35.867s  camera stamp 1790762843.480723
+LANE   speed=16 steer=-22  tracking_lane
+
+367
+00:00:35,999 --> 00:00:36,134
+t+35.999s  camera stamp 1790762843.613631
+LANE   speed=16 steer=-22  tracking_lane
+
+368
+00:00:36,134 --> 00:00:36,271
+t+36.134s  camera stamp 1790762843.748603
+LANE   speed=16 steer=-22  tracking_lane
+
+369
+00:00:36,271 --> 00:00:36,333
+t+36.271s  camera stamp 1790762843.885223
+LANE   speed=16 steer=-22  tracking_lane
+
+370
+00:00:36,333 --> 00:00:36,472
+t+36.333s  camera stamp 1790762843.947204
+LANE   speed=16 steer=-22  tracking_lane
+
+371
+00:00:36,472 --> 00:00:36,535
+t+36.472s  camera stamp 1790762844.086208
+LANE   speed=16 steer=-22  tracking_lane
+
+372
+00:00:36,535 --> 00:00:36,666
+t+36.535s  camera stamp 1790762844.148862
+LANE   speed=16 steer=-19  tracking_lane
+
+373
+00:00:36,666 --> 00:00:36,800
+t+36.666s  camera stamp 1790762844.280532
+LANE   speed=16 steer=-20  tracking_lane
+
+374
+00:00:36,800 --> 00:00:36,867
+t+36.800s  camera stamp 1790762844.414607
+LANE   speed=16 steer=-21  tracking_lane
+
+375
+00:00:36,867 --> 00:00:37,000
+t+36.867s  camera stamp 1790762844.481475
+LANE   speed=16 steer=-21  tracking_lane
+
+376
+00:00:37,000 --> 00:00:37,133
+t+37.000s  camera stamp 1790762844.614423
+LANE   speed=16 steer=-20  tracking_lane
+
+377
+00:00:37,133 --> 00:00:37,202
+t+37.133s  camera stamp 1790762844.747432
+LANE   speed=16 steer=-19  tracking_lane
+
+378
+00:00:37,202 --> 00:00:37,333
+t+37.202s  camera stamp 1790762844.816256
+LANE   speed=16 steer=-19  tracking_lane
+
+379
+00:00:37,333 --> 00:00:37,404
+t+37.333s  camera stamp 1790762844.946832
+LANE   speed=16 steer=-14  tracking_lane
+
+380
+00:00:37,404 --> 00:00:37,533
+t+37.404s  camera stamp 1790762845.018598
+LANE   speed=16 steer=-15  tracking_lane
+
+381
+00:00:37,533 --> 00:00:37,600
+t+37.533s  camera stamp 1790762845.147368
+LANE   speed=16 steer=-17  tracking_lane
+
+382
+00:00:37,600 --> 00:00:37,670
+t+37.600s  camera stamp 1790762845.214424
+LANE   speed=16 steer=-17  tracking_lane
+
+383
+00:00:37,670 --> 00:00:37,801
+t+37.670s  camera stamp 1790762845.284375
+LANE   speed=16 steer=-16  tracking_lane
+
+384
+00:00:37,801 --> 00:00:37,867
+t+37.801s  camera stamp 1790762845.415221
+LANE   speed=16 steer=-14  tracking_lane
+
+385
+00:00:37,867 --> 00:00:37,939
+t+37.867s  camera stamp 1790762845.480681
+LANE   speed=16 steer=-14  tracking_lane
+
+386
+00:00:37,939 --> 00:00:38,068
+t+37.939s  camera stamp 1790762845.553580
+LANE   speed=16 steer=-14  tracking_lane
+
+387
+00:00:38,068 --> 00:00:38,137
+t+38.068s  camera stamp 1790762845.682241
+LANE   speed=16 steer=-10  tracking_lane
+
+388
+00:00:38,137 --> 00:00:38,272
+t+38.137s  camera stamp 1790762845.751224
+LANE   speed=16 steer=-10  tracking_lane
+
+389
+00:00:38,272 --> 00:00:38,337
+t+38.272s  camera stamp 1790762845.886539
+LANE   speed=16 steer=-10  tracking_lane
+
+390
+00:00:38,337 --> 00:00:38,466
+t+38.337s  camera stamp 1790762845.951336
+LANE   speed=16 steer=-10  tracking_lane
+
+391
+00:00:38,466 --> 00:00:38,534
+t+38.466s  camera stamp 1790762846.080423
+LANE   speed=16 steer=-8  tracking_lane
+
+392
+00:00:38,534 --> 00:00:38,601
+t+38.534s  camera stamp 1790762846.148190
+LANE   speed=16 steer=-6  tracking_lane
+
+393
+00:00:38,601 --> 00:00:38,733
+t+38.601s  camera stamp 1790762846.214975
+LANE   speed=16 steer=-6  tracking_lane
+
+394
+00:00:38,733 --> 00:00:38,801
+t+38.733s  camera stamp 1790762846.347222
+LANE   speed=16 steer=-6  tracking_lane
+
+395
+00:00:38,801 --> 00:00:38,936
+t+38.801s  camera stamp 1790762846.415125
+LANE   speed=16 steer=-6  tracking_lane
+
+396
+00:00:38,936 --> 00:00:39,005
+t+38.936s  camera stamp 1790762846.549731
+LANE   speed=16 steer=-8  tracking_lane
+
+397
+00:00:39,005 --> 00:00:39,067
+t+39.005s  camera stamp 1790762846.619092
+LANE   speed=16 steer=-8  tracking_lane
+
+398
+00:00:39,067 --> 00:00:39,201
+t+39.067s  camera stamp 1790762846.681338
+LANE   speed=16 steer=-6  tracking_lane
+
+399
+00:00:39,201 --> 00:00:39,268
+t+39.201s  camera stamp 1790762846.815612
+LANE   speed=16 steer=-5  tracking_lane
+
+400
+00:00:39,268 --> 00:00:39,401
+t+39.268s  camera stamp 1790762846.881839
+LANE   speed=16 steer=-5  tracking_lane
+
+401
+00:00:39,401 --> 00:00:39,467
+t+39.401s  camera stamp 1790762847.015117
+LANE   speed=16 steer=-2  tracking_lane
+
+402
+00:00:39,467 --> 00:00:39,533
+t+39.467s  camera stamp 1790762847.080865
+LANE   speed=16 steer=-3  tracking_lane
+
+403
+00:00:39,533 --> 00:00:39,667
+t+39.533s  camera stamp 1790762847.147508
+LANE   speed=16 steer=-3  tracking_lane
+
+404
+00:00:39,667 --> 00:00:39,733
+t+39.667s  camera stamp 1790762847.280767
+LANE   speed=16 steer=-3  tracking_lane
+
+405
+00:00:39,733 --> 00:00:39,867
+t+39.733s  camera stamp 1790762847.347505
+LANE   speed=16 steer=-2  tracking_lane
+
+406
+00:00:39,867 --> 00:00:39,934
+t+39.867s  camera stamp 1790762847.481286
+LANE   speed=16 steer=1  tracking_lane
+
+407
+00:00:39,934 --> 00:00:40,004
+t+39.934s  camera stamp 1790762847.547814
+LANE   speed=16 steer=-1  tracking_lane
+
+408
+00:00:40,004 --> 00:00:40,135
+t+40.004s  camera stamp 1790762847.617715
+LANE   speed=16 steer=-1  tracking_lane
+
+409
+00:00:40,135 --> 00:00:40,206
+t+40.135s  camera stamp 1790762847.748709
+TIMED_BYPASS   speed=0 steer=22  bypass_settle_left
+
+410
+00:00:40,206 --> 00:00:40,333
+t+40.206s  camera stamp 1790762847.819680
+TIMED_BYPASS   speed=0 steer=22  bypass_settle_left
+
+411
+00:00:40,333 --> 00:00:40,404
+t+40.333s  camera stamp 1790762847.947158
+TIMED_BYPASS   speed=0 steer=22  bypass_settle_left
+
+412
+00:00:40,404 --> 00:00:40,533
+t+40.404s  camera stamp 1790762848.018024
+TIMED_BYPASS   speed=0 steer=22  bypass_settle_left
+
+413
+00:00:40,533 --> 00:00:40,601
+t+40.533s  camera stamp 1790762848.147634
+TIMED_BYPASS SETTLE_LEFT  speed=0 steer=22  bypass_settle_left
+
+414
+00:00:40,601 --> 00:00:40,667
+t+40.601s  camera stamp 1790762848.215410
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+415
+00:00:40,667 --> 00:00:40,802
+t+40.667s  camera stamp 1790762848.281634
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+416
+00:00:40,802 --> 00:00:40,867
+t+40.802s  camera stamp 1790762848.416618
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+417
+00:00:40,867 --> 00:00:40,934
+t+40.867s  camera stamp 1790762848.480806
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+418
+00:00:40,934 --> 00:00:41,067
+t+40.934s  camera stamp 1790762848.548398
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+419
+00:00:41,067 --> 00:00:41,133
+t+41.067s  camera stamp 1790762848.681194
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+420
+00:00:41,133 --> 00:00:41,268
+t+41.133s  camera stamp 1790762848.747483
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+421
+00:00:41,268 --> 00:00:41,333
+t+41.268s  camera stamp 1790762848.882438
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+422
+00:00:41,333 --> 00:00:41,399
+t+41.333s  camera stamp 1790762848.947325
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+423
+00:00:41,399 --> 00:00:41,533
+t+41.399s  camera stamp 1790762849.013638
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+424
+00:00:41,533 --> 00:00:41,600
+t+41.533s  camera stamp 1790762849.147357
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+425
+00:00:41,600 --> 00:00:41,675
+t+41.600s  camera stamp 1790762849.214078
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+426
+00:00:41,675 --> 00:00:41,802
+t+41.675s  camera stamp 1790762849.289017
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+427
+00:00:41,802 --> 00:00:41,870
+t+41.802s  camera stamp 1790762849.416072
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+428
+00:00:41,870 --> 00:00:42,001
+t+41.870s  camera stamp 1790762849.484127
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+429
+00:00:42,001 --> 00:00:42,067
+t+42.001s  camera stamp 1790762849.614771
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+430
+00:00:42,067 --> 00:00:42,133
+t+42.067s  camera stamp 1790762849.681190
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+431
+00:00:42,133 --> 00:00:42,278
+t+42.133s  camera stamp 1790762849.747501
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+432
+00:00:42,278 --> 00:00:42,333
+t+42.278s  camera stamp 1790762849.892552
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+433
+00:00:42,333 --> 00:00:42,473
+t+42.333s  camera stamp 1790762849.947131
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+434
+00:00:42,473 --> 00:00:42,533
+t+42.473s  camera stamp 1790762850.087101
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+435
+00:00:42,533 --> 00:00:42,666
+t+42.533s  camera stamp 1790762850.147403
+TIMED_BYPASS   speed=24 steer=22  bypass_left_2s
+
+436
+00:00:42,666 --> 00:00:42,803
+t+42.666s  camera stamp 1790762850.280599
+TIMED_BYPASS   speed=24 steer=22  bypass_extend_left_for_clearance
+
+437
+00:00:42,803 --> 00:00:42,866
+t+42.803s  camera stamp 1790762850.417128
+TIMED_BYPASS   speed=24 steer=22  bypass_extend_left_for_clearance
+
+438
+00:00:42,866 --> 00:00:43,000
+t+42.866s  camera stamp 1790762850.480173
+TIMED_BYPASS   speed=24 steer=22  bypass_extend_left_for_clearance
+
+439
+00:00:43,000 --> 00:00:43,133
+t+43.000s  camera stamp 1790762850.614274
+TIMED_BYPASS   speed=24 steer=22  bypass_extend_left_for_clearance
+
+440
+00:00:43,133 --> 00:00:43,201
+t+43.133s  camera stamp 1790762850.747108
+TIMED_BYPASS   speed=24 steer=22  bypass_extend_left_for_clearance
+
+441
+00:00:43,201 --> 00:00:43,334
+t+43.201s  camera stamp 1790762850.815537
+TIMED_BYPASS   speed=24 steer=22  bypass_extend_left_for_clearance
+
+442
+00:00:43,334 --> 00:00:43,481
+t+43.334s  camera stamp 1790762850.947757
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+443
+00:00:43,481 --> 00:00:43,601
+t+43.481s  camera stamp 1790762851.094769
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+444
+00:00:43,601 --> 00:00:43,734
+t+43.601s  camera stamp 1790762851.214819
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+445
+00:00:43,734 --> 00:00:43,802
+t+43.734s  camera stamp 1790762851.347772
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+446
+00:00:43,802 --> 00:00:43,934
+t+43.802s  camera stamp 1790762851.416047
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+447
+00:00:43,934 --> 00:00:44,001
+t+43.934s  camera stamp 1790762851.548050
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+448
+00:00:44,001 --> 00:00:44,133
+t+44.001s  camera stamp 1790762851.615641
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+449
+00:00:44,133 --> 00:00:44,201
+t+44.133s  camera stamp 1790762851.747446
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+450
+00:00:44,201 --> 00:00:44,334
+t+44.201s  camera stamp 1790762851.814897
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+451
+00:00:44,334 --> 00:00:44,402
+t+44.334s  camera stamp 1790762851.948466
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+452
+00:00:44,402 --> 00:00:44,533
+t+44.402s  camera stamp 1790762852.015909
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+453
+00:00:44,533 --> 00:00:44,602
+t+44.533s  camera stamp 1790762852.147541
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+454
+00:00:44,602 --> 00:00:44,733
+t+44.602s  camera stamp 1790762852.216665
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+455
+00:00:44,733 --> 00:00:44,867
+t+44.733s  camera stamp 1790762852.347500
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+456
+00:00:44,867 --> 00:00:45,000
+t+44.867s  camera stamp 1790762852.481336
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+457
+00:00:45,000 --> 00:00:45,067
+t+45.000s  camera stamp 1790762852.614057
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+458
+00:00:45,067 --> 00:00:45,201
+t+45.067s  camera stamp 1790762852.681170
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+459
+00:00:45,201 --> 00:00:45,333
+t+45.201s  camera stamp 1790762852.814949
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+460
+00:00:45,333 --> 00:00:45,400
+t+45.333s  camera stamp 1790762852.947002
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+461
+00:00:45,400 --> 00:00:45,533
+t+45.400s  camera stamp 1790762853.014649
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+462
+00:00:45,533 --> 00:00:45,601
+t+45.533s  camera stamp 1790762853.146810
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+463
+00:00:45,601 --> 00:00:45,733
+t+45.601s  camera stamp 1790762853.214857
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+464
+00:00:45,733 --> 00:00:45,801
+t+45.733s  camera stamp 1790762853.347292
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+465
+00:00:45,801 --> 00:00:45,934
+t+45.801s  camera stamp 1790762853.415187
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+466
+00:00:45,934 --> 00:00:46,068
+t+45.934s  camera stamp 1790762853.548241
+TIMED_BYPASS   speed=24 steer=-22  bypass_right_6s
+
+467
+00:00:46,068 --> 00:00:46,145
+t+46.068s  camera stamp 1790762853.682156
+LANE   speed=16 steer=-22  bypass_heading_lane_handoff
+
+468
+00:00:46,145 --> 00:00:46,281
+t+46.145s  camera stamp 1790762853.759408
+LANE   speed=16 steer=-22  tracking_lane
+
+469
+00:00:46,281 --> 00:00:46,400
+t+46.281s  camera stamp 1790762853.894832
+LANE   speed=16 steer=-22  tracking_lane
+
+470
+00:00:46,400 --> 00:00:46,467
+t+46.400s  camera stamp 1790762854.014030
+LANE   speed=16 steer=-22  tracking_lane
+
+471
+00:00:46,467 --> 00:00:46,599
+t+46.467s  camera stamp 1790762854.081535
+LANE   speed=16 steer=-22  tracking_lane
+
+472
+00:00:46,599 --> 00:00:46,733
+t+46.599s  camera stamp 1790762854.213622
+LANE   speed=16 steer=-22  tracking_lane
+
+473
+00:00:46,733 --> 00:00:46,809
+t+46.733s  camera stamp 1790762854.347369
+LANE   speed=16 steer=-22  tracking_lane
+
+474
+00:00:46,809 --> 00:00:46,933
+t+46.809s  camera stamp 1790762854.423027
+LANE   speed=16 steer=-21  tracking_lane
+
+475
+00:00:46,933 --> 00:00:47,068
+t+46.933s  camera stamp 1790762854.547524
+LANE   speed=16 steer=-14  tracking_lane
+
+476
+00:00:47,068 --> 00:00:47,133
+t+47.068s  camera stamp 1790762854.681822
+LANE   speed=16 steer=-16  tracking_lane
+
+477
+00:00:47,133 --> 00:00:47,268
+t+47.133s  camera stamp 1790762854.747350
+LANE   speed=16 steer=-16  tracking_lane
+
+478
+00:00:47,268 --> 00:00:47,400
+t+47.268s  camera stamp 1790762854.882546
+LANE   speed=16 steer=-15  tracking_lane
+
+479
+00:00:47,400 --> 00:00:47,468
+t+47.400s  camera stamp 1790762855.014444
+LANE   speed=16 steer=-15  tracking_lane
+
+480
+00:00:47,468 --> 00:00:47,537
+t+47.468s  camera stamp 1790762855.082618
+LANE   speed=16 steer=-18  tracking_lane
+
+481
+00:00:47,537 --> 00:00:47,667
+t+47.537s  camera stamp 1790762855.151222
+LANE   speed=16 steer=-18  tracking_lane
+
+482
+00:00:47,667 --> 00:00:47,800
+t+47.667s  camera stamp 1790762855.281482
+LANE   speed=16 steer=-21  tracking_lane
+
+483
+00:00:47,800 --> 00:00:47,867
+t+47.800s  camera stamp 1790762855.414664
+LANE   speed=16 steer=-21  tracking_lane
+
+484
+00:00:47,867 --> 00:00:48,003
+t+47.867s  camera stamp 1790762855.480709
+LANE   speed=16 steer=-21  tracking_lane
+
+485
+00:00:48,003 --> 00:00:48,133
+t+48.003s  camera stamp 1790762855.617066
+LANE   speed=16 steer=-20  tracking_lane
+
+486
+00:00:48,133 --> 00:00:48,205
+t+48.133s  camera stamp 1790762855.747129
+LANE   speed=16 steer=-20  tracking_lane
+
+487
+00:00:48,205 --> 00:00:48,336
+t+48.205s  camera stamp 1790762855.819506
+LANE   speed=16 steer=-19  tracking_lane
+
+488
+00:00:48,336 --> 00:00:48,401
+t+48.336s  camera stamp 1790762855.950403
+LANE   speed=16 steer=-19  tracking_lane
+
+489
+00:00:48,401 --> 00:00:48,534
+t+48.401s  camera stamp 1790762856.014947
+LANE   speed=16 steer=-19  tracking_lane
+
+490
+00:00:48,534 --> 00:00:48,667
+t+48.534s  camera stamp 1790762856.147738
+LANE   speed=16 steer=-21  tracking_lane
+
+491
+00:00:48,667 --> 00:00:48,804
+t+48.667s  camera stamp 1790762856.281022
+LANE   speed=16 steer=-19  tracking_lane
+
+492
+00:00:48,804 --> 00:00:48,933
+t+48.804s  camera stamp 1790762856.417715
+LANE   speed=16 steer=-19  tracking_lane
+
+493
+00:00:48,933 --> 00:00:48,999
+t+48.933s  camera stamp 1790762856.547238
+LANE   speed=16 steer=-20  tracking_lane
+
+494
+00:00:48,999 --> 00:00:49,133
+t+48.999s  camera stamp 1790762856.613606
+LANE   speed=16 steer=-21  tracking_lane
+
+495
+00:00:49,133 --> 00:00:49,278
+t+49.133s  camera stamp 1790762856.747358
+LANE   speed=16 steer=-17  tracking_lane
+
+496
+00:00:49,278 --> 00:00:49,400
+t+49.278s  camera stamp 1790762856.891888
+LANE   speed=16 steer=-19  tracking_lane
+
+497
+00:00:49,400 --> 00:00:49,476
+t+49.400s  camera stamp 1790762857.014235
+LANE   speed=16 steer=-20  tracking_lane
+
+498
+00:00:49,476 --> 00:00:49,602
+t+49.476s  camera stamp 1790762857.089915
+LANE   speed=16 steer=-16  tracking_lane
+
+499
+00:00:49,602 --> 00:00:49,733
+t+49.602s  camera stamp 1790762857.216168
+LANE   speed=16 steer=-18  tracking_lane
+
+500
+00:00:49,733 --> 00:00:49,870
+t+49.733s  camera stamp 1790762857.347199
+LANE   speed=16 steer=-9  tracking_lane
+
+501
+00:00:49,870 --> 00:00:49,933
+t+49.870s  camera stamp 1790762857.483972
+LANE   speed=16 steer=-7  tracking_lane
+
+502
+00:00:49,933 --> 00:00:50,003
+t+49.933s  camera stamp 1790762857.547294
+LANE   speed=16 steer=-12  tracking_lane
+
+503
+00:00:50,003 --> 00:00:50,067
+t+50.003s  camera stamp 1790762857.617637
+LANE   speed=16 steer=-12  tracking_lane
+
+504
+00:00:50,067 --> 00:00:50,141
+t+50.067s  camera stamp 1790762857.681040
+LANE   speed=16 steer=-7  tracking_lane
+
+505
+00:00:50,141 --> 00:00:50,267
+t+50.141s  camera stamp 1790762857.755010
+LANE   speed=16 steer=-7  tracking_lane
+
+506
+00:00:50,267 --> 00:00:50,333
+t+50.267s  camera stamp 1790762857.881418
+LANE   speed=16 steer=-1  tracking_lane
+
+507
+00:00:50,333 --> 00:00:50,401
+t+50.333s  camera stamp 1790762857.947124
+LANE   speed=16 steer=-1  tracking_lane
+
+508
+00:00:50,401 --> 00:00:50,467
+t+50.401s  camera stamp 1790762858.015601
+LANE   speed=16 steer=8  tracking_lane
+
+509
+00:00:50,467 --> 00:00:50,601
+t+50.467s  camera stamp 1790762858.080972
+LANE   speed=16 steer=6  tracking_lane
+
+510
+00:00:50,601 --> 00:00:50,668
+t+50.601s  camera stamp 1790762858.215333
+LANE   speed=16 steer=8  tracking_lane
+
+511
+00:00:50,668 --> 00:00:50,737
+t+50.668s  camera stamp 1790762858.281921
+LANE   speed=16 steer=8  tracking_lane
+
+512
+00:00:50,737 --> 00:00:50,800
+t+50.737s  camera stamp 1790762858.351526
+LANE   speed=16 steer=3  tracking_lane
+
+513
+00:00:50,800 --> 00:00:50,871
+t+50.800s  camera stamp 1790762858.414154
+LANE   speed=16 steer=3  tracking_lane
+
+514
+00:00:50,871 --> 00:00:51,002
+t+50.871s  camera stamp 1790762858.485043
+LANE   speed=16 steer=-5  tracking_lane
+
+515
+00:00:51,002 --> 00:00:51,066
+t+51.002s  camera stamp 1790762858.615987
+LANE   speed=16 steer=-6  tracking_lane
+
+516
+00:00:51,066 --> 00:00:51,133
+t+51.066s  camera stamp 1790762858.680536
+LANE   speed=16 steer=-1  tracking_lane
+
+517
+00:00:51,133 --> 00:00:51,201
+t+51.133s  camera stamp 1790762858.747144
+LANE   speed=16 steer=-10  tracking_lane
+
+518
+00:00:51,201 --> 00:00:51,269
+t+51.201s  camera stamp 1790762858.815663
+LANE   speed=16 steer=-10  tracking_lane
+
+519
+00:00:51,269 --> 00:00:51,402
+t+51.269s  camera stamp 1790762858.883267
+LANE   speed=16 steer=-10  tracking_lane
+
+520
+00:00:51,402 --> 00:00:51,467
+t+51.402s  camera stamp 1790762859.015738
+LANE   speed=16 steer=-18  tracking_lane
+
+521
+00:00:51,467 --> 00:00:51,535
+t+51.467s  camera stamp 1790762859.080841
+LANE   speed=16 steer=-18  tracking_lane
+
+522
+00:00:51,535 --> 00:00:51,667
+t+51.535s  camera stamp 1790762859.148874
+LANE   speed=16 steer=-18  tracking_lane
+
+523
+00:00:51,667 --> 00:00:51,735
+t+51.667s  camera stamp 1790762859.280780
+LANE   speed=16 steer=-17  tracking_lane
+
+524
+00:00:51,735 --> 00:00:51,802
+t+51.735s  camera stamp 1790762859.349669
+LANE   speed=16 steer=-16  tracking_lane
+
+525
+00:00:51,802 --> 00:00:51,933
+t+51.802s  camera stamp 1790762859.415838
+LANE   speed=16 steer=-16  tracking_lane
+
+526
+00:00:51,933 --> 00:00:52,002
+t+51.933s  camera stamp 1790762859.547623
+LANE   speed=16 steer=-15  tracking_lane
+
+527
+00:00:52,002 --> 00:00:52,067
+t+52.002s  camera stamp 1790762859.615829
+LANE   speed=16 steer=-15  tracking_lane
+
+528
+00:00:52,067 --> 00:00:52,134
+t+52.067s  camera stamp 1790762859.680965
+LANE   speed=16 steer=-15  tracking_lane
+
+529
+00:00:52,134 --> 00:00:52,201
+t+52.134s  camera stamp 1790762859.747874
+LANE   speed=16 steer=-15  tracking_lane
+
+530
+00:00:52,201 --> 00:00:52,336
+t+52.201s  camera stamp 1790762859.814931
+LANE   speed=16 steer=-14  tracking_lane
+
+531
+00:00:52,336 --> 00:00:52,400
+t+52.336s  camera stamp 1790762859.949978
+LANE   speed=16 steer=-14  tracking_lane
+
+532
+00:00:52,400 --> 00:00:52,473
+t+52.400s  camera stamp 1790762860.014159
+LANE   speed=16 steer=-14  tracking_lane
+
+533
+00:00:52,473 --> 00:00:52,539
+t+52.473s  camera stamp 1790762860.087488
+LANE   speed=16 steer=-12  tracking_lane
+
+534
+00:00:52,539 --> 00:00:52,602
+t+52.539s  camera stamp 1790762860.153090
+LANE   speed=16 steer=-12  tracking_lane
+
+535
+00:00:52,602 --> 00:00:52,667
+t+52.602s  camera stamp 1790762860.215944
+LANE   speed=16 steer=-12  tracking_lane
+
+536
+00:00:52,667 --> 00:00:52,743
+t+52.667s  camera stamp 1790762860.280863
+LANE   speed=16 steer=-12  tracking_lane
+
+537
+00:00:52,743 --> 00:00:52,801
+t+52.743s  camera stamp 1790762860.357156
+GAP   speed=16 steer=-12  tracking_gap
+
+538
+00:00:52,801 --> 00:00:52,867
+t+52.801s  camera stamp 1790762860.415356
+GAP   speed=16 steer=-12  tracking_gap
+
+539
+00:00:52,867 --> 00:00:52,937
+t+52.867s  camera stamp 1790762860.480795
+GAP   speed=16 steer=-12  tracking_gap
+
+540
+00:00:52,937 --> 00:00:53,001
+t+52.937s  camera stamp 1790762860.551294
+GAP   speed=16 steer=-12  tracking_gap
+
+541
+00:00:53,001 --> 00:00:53,133
+t+53.001s  camera stamp 1790762860.614847
+GAP   speed=16 steer=-12  tracking_gap
+
+542
+00:00:53,133 --> 00:00:53,204
+t+53.133s  camera stamp 1790762860.747335
+GAP   speed=16 steer=-12  tracking_gap
+
+543
+00:00:53,204 --> 00:00:53,267
+t+53.204s  camera stamp 1790762860.818009
+GAP   speed=16 steer=-12  tracking_gap
+
+544
+00:00:53,267 --> 00:00:53,333
+t+53.267s  camera stamp 1790762860.881068
+GAP   speed=16 steer=-12  tracking_gap
+
+545
+00:00:53,333 --> 00:00:53,467
+t+53.333s  camera stamp 1790762860.947163
+GAP   speed=16 steer=-12  tracking_gap
+
+546
+00:00:53,467 --> 00:00:53,537
+t+53.467s  camera stamp 1790762861.081620
+GAP   speed=16 steer=-12  tracking_gap
+
+547
+00:00:53,537 --> 00:00:53,600
+t+53.537s  camera stamp 1790762861.150795
+GAP   speed=16 steer=-12  tracking_gap
+
+548
+00:00:53,600 --> 00:00:53,667
+t+53.600s  camera stamp 1790762861.214544
+GAP   speed=16 steer=-12  tracking_gap
+
+549
+00:00:53,667 --> 00:00:53,807
+t+53.667s  camera stamp 1790762861.280693
+LANE   speed=16 steer=-21  tracking_lane
+
+550
+00:00:53,807 --> 00:00:53,866
+t+53.807s  camera stamp 1790762861.420898
+LANE   speed=16 steer=-21  tracking_lane
+
+551
+00:00:53,866 --> 00:00:53,935
+t+53.866s  camera stamp 1790762861.480423
+LANE   speed=16 steer=-21  tracking_lane
+
+552
+00:00:53,935 --> 00:00:54,066
+t+53.935s  camera stamp 1790762861.549541
+LANE   speed=16 steer=-22  tracking_lane
+
+553
+00:00:54,066 --> 00:00:54,133
+t+54.066s  camera stamp 1790762861.680671
+LANE   speed=16 steer=-22  tracking_lane
+
+554
+00:00:54,133 --> 00:00:54,202
+t+54.133s  camera stamp 1790762861.747562
+LANE   speed=16 steer=-22  tracking_lane
+
+555
+00:00:54,202 --> 00:00:54,279
+t+54.202s  camera stamp 1790762861.815729
+LANE   speed=16 steer=-22  tracking_lane
+
+556
+00:00:54,279 --> 00:00:54,340
+t+54.279s  camera stamp 1790762861.892754
+LANE   speed=16 steer=-22  tracking_lane
+
+557
+00:00:54,340 --> 00:00:54,475
+t+54.340s  camera stamp 1790762861.953725
+LANE   speed=16 steer=-22  tracking_lane
+
+558
+00:00:54,475 --> 00:00:54,534
+t+54.475s  camera stamp 1790762862.089172
+LANE   speed=16 steer=-22  tracking_lane
+
+559
+00:00:54,534 --> 00:00:54,600
+t+54.534s  camera stamp 1790762862.147762
+LANE   speed=16 steer=-22  tracking_lane
+
+560
+00:00:54,600 --> 00:00:54,668
+t+54.600s  camera stamp 1790762862.214134
+LANE   speed=16 steer=-22  tracking_lane
+
+561
+00:00:54,668 --> 00:00:54,800
+t+54.668s  camera stamp 1790762862.282294
+LANE   speed=16 steer=-22  tracking_lane
+
+562
+00:00:54,800 --> 00:00:54,867
+t+54.800s  camera stamp 1790762862.414467
+LANE   speed=16 steer=-22  tracking_lane
+
+563
+00:00:54,867 --> 00:00:54,933
+t+54.867s  camera stamp 1790762862.480765
+LANE   speed=16 steer=-22  tracking_lane
+
+564
+00:00:54,933 --> 00:00:55,001
+t+54.933s  camera stamp 1790762862.547464
+LANE   speed=16 steer=-22  tracking_lane
+
+565
+00:00:55,001 --> 00:00:55,137
+t+55.001s  camera stamp 1790762862.614806
+LANE   speed=16 steer=-22  tracking_lane
+
+566
+00:00:55,137 --> 00:00:55,202
+t+55.137s  camera stamp 1790762862.750938
+LANE   speed=16 steer=-22  tracking_lane
+
+567
+00:00:55,202 --> 00:00:55,267
+t+55.202s  camera stamp 1790762862.815730
+LANE   speed=16 steer=-22  tracking_lane
+
+568
+00:00:55,267 --> 00:00:55,335
+t+55.267s  camera stamp 1790762862.881013
+LANE   speed=16 steer=-22  tracking_lane
+
+569
+00:00:55,335 --> 00:00:55,466
+t+55.335s  camera stamp 1790762862.949479
+LANE   speed=16 steer=-22  tracking_lane
+
+570
+00:00:55,466 --> 00:00:55,533
+t+55.466s  camera stamp 1790762863.080369
+LANE   speed=16 steer=-22  tracking_lane
+
+571
+00:00:55,533 --> 00:00:55,601
+t+55.533s  camera stamp 1790762863.147411
+LANE   speed=16 steer=-22  tracking_lane
+
+572
+00:00:55,601 --> 00:00:55,667
+t+55.601s  camera stamp 1790762863.214798
+LANE   speed=16 steer=-22  tracking_lane
+
+573
+00:00:55,667 --> 00:00:55,804
+t+55.667s  camera stamp 1790762863.280735
+LANE   speed=16 steer=-22  tracking_lane
+
+574
+00:00:55,804 --> 00:00:55,866
+t+55.804s  camera stamp 1790762863.417960
+LANE   speed=16 steer=-22  tracking_lane
+
+575
+00:00:55,866 --> 00:00:55,944
+t+55.866s  camera stamp 1790762863.480446
+LANE   speed=16 steer=-22  tracking_lane
+
+576
+00:00:55,944 --> 00:00:56,006
+t+55.944s  camera stamp 1790762863.558095
+LANE   speed=16 steer=-22  tracking_lane
+
+577
+00:00:56,006 --> 00:00:56,133
+t+56.006s  camera stamp 1790762863.620003
+LANE   speed=16 steer=-22  tracking_lane
+
+578
+00:00:56,133 --> 00:00:56,200
+t+56.133s  camera stamp 1790762863.747070
+LANE   speed=16 steer=-22  tracking_lane
+
+579
+00:00:56,200 --> 00:00:56,271
+t+56.200s  camera stamp 1790762863.814189
+LANE   speed=16 steer=-22  tracking_lane
+
+580
+00:00:56,271 --> 00:00:56,333
+t+56.271s  camera stamp 1790762863.885000
+LANE   speed=16 steer=-22  tracking_lane
+
+581
+00:00:56,333 --> 00:00:56,473
+t+56.333s  camera stamp 1790762863.947282
+LANE   speed=16 steer=-22  tracking_lane
+
+582
+00:00:56,473 --> 00:00:56,533
+t+56.473s  camera stamp 1790762864.086882
+LANE   speed=16 steer=-19  tracking_lane
+
+583
+00:00:56,533 --> 00:00:56,600
+t+56.533s  camera stamp 1790762864.147337
+LANE   speed=16 steer=-17  tracking_lane
+
+584
+00:00:56,600 --> 00:00:56,667
+t+56.600s  camera stamp 1790762864.214214
+LANE   speed=16 steer=-19  tracking_lane
+
+585
+00:00:56,667 --> 00:00:56,801
+t+56.667s  camera stamp 1790762864.280945
+LANE   speed=16 steer=-22  tracking_lane
+
+586
+00:00:56,801 --> 00:00:56,871
+t+56.801s  camera stamp 1790762864.415453
+LANE   speed=16 steer=-16  tracking_lane
+
+587
+00:00:56,871 --> 00:00:56,933
+t+56.871s  camera stamp 1790762864.485023
+LANE   speed=16 steer=-16  tracking_lane
+
+588
+00:00:56,933 --> 00:00:57,002
+t+56.933s  camera stamp 1790762864.547335
+GAP   speed=16 steer=-8  tracking_gap
+
+589
+00:00:57,002 --> 00:00:57,070
+t+57.002s  camera stamp 1790762864.616592
+GAP   speed=0 steer=-8  lane_unreliable
+
+590
+00:00:57,070 --> 00:00:57,200
+t+57.070s  camera stamp 1790762864.683956
+LANE   speed=16 steer=1  tracking_lane
+
+591
+00:00:57,200 --> 00:00:57,274
+t+57.200s  camera stamp 1790762864.814100
+LANE   speed=16 steer=1  tracking_lane
+
+592
+00:00:57,274 --> 00:00:57,334
+t+57.274s  camera stamp 1790762864.887748
+LANE   speed=16 steer=6  tracking_lane
+
+593
+00:00:57,334 --> 00:00:57,404
+t+57.334s  camera stamp 1790762864.947780
+LANE   speed=16 steer=6  tracking_lane
+
+594
+00:00:57,404 --> 00:00:57,533
+t+57.404s  camera stamp 1790762865.018308
+LANE   speed=16 steer=10  tracking_lane
+
+595
+00:00:57,533 --> 00:00:57,600
+t+57.533s  camera stamp 1790762865.147096
+LANE   speed=16 steer=10  tracking_lane
+
+596
+00:00:57,600 --> 00:00:57,667
+t+57.600s  camera stamp 1790762865.213713
+LANE   speed=16 steer=1  tracking_lane
+
+597
+00:00:57,667 --> 00:00:57,803
+t+57.667s  camera stamp 1790762865.280709
+LANE   speed=16 steer=7  tracking_lane
+
+598
+00:00:57,803 --> 00:00:57,867
+t+57.803s  camera stamp 1790762865.417455
+LANE   speed=16 steer=-8  tracking_lane
+
+599
+00:00:57,867 --> 00:00:57,935
+t+57.867s  camera stamp 1790762865.480870
+LANE   speed=16 steer=9  tracking_lane
+
+600
+00:00:57,935 --> 00:00:58,066
+t+57.935s  camera stamp 1790762865.549091
+LANE   speed=16 steer=9  tracking_lane
+
+601
+00:00:58,066 --> 00:00:58,133
+t+58.066s  camera stamp 1790762865.680321
+LANE   speed=16 steer=4  tracking_lane
+
+602
+00:00:58,133 --> 00:00:58,200
+t+58.133s  camera stamp 1790762865.747546
+LANE   speed=16 steer=4  tracking_lane
+
+603
+00:00:58,200 --> 00:00:58,334
+t+58.200s  camera stamp 1790762865.813962
+LANE   speed=16 steer=12  tracking_lane
+
+604
+00:00:58,334 --> 00:00:58,401
+t+58.334s  camera stamp 1790762865.948455
+LANE   speed=16 steer=2  tracking_lane
+
+605
+00:00:58,401 --> 00:00:58,479
+t+58.401s  camera stamp 1790762866.015576
+LANE   speed=16 steer=10  tracking_lane
+
+606
+00:00:58,479 --> 00:00:58,534
+t+58.479s  camera stamp 1790762866.093635
+LANE   speed=16 steer=10  tracking_lane
+
+607
+00:00:58,534 --> 00:00:58,667
+t+58.534s  camera stamp 1790762866.148419
+LANE   speed=16 steer=8  tracking_lane
+
+608
+00:00:58,667 --> 00:00:58,733
+t+58.667s  camera stamp 1790762866.280895
+LANE   speed=16 steer=9  tracking_lane
+
+609
+00:00:58,733 --> 00:00:58,801
+t+58.733s  camera stamp 1790762866.347532
+LANE   speed=16 steer=8  tracking_lane
+
+610
+00:00:58,801 --> 00:00:58,936
+t+58.801s  camera stamp 1790762866.415272
+LANE   speed=16 steer=8  tracking_lane
+
+611
+00:00:58,936 --> 00:00:59,001
+t+58.936s  camera stamp 1790762866.550114
+LANE   speed=16 steer=7  tracking_lane
+
+612
+00:00:59,001 --> 00:00:59,067
+t+59.001s  camera stamp 1790762866.615453
+LANE   speed=16 steer=7  tracking_lane
+
+613
+00:00:59,067 --> 00:00:59,204
+t+59.067s  camera stamp 1790762866.680738
+LANE   speed=16 steer=6  tracking_lane
+
+614
+00:00:59,204 --> 00:00:59,267
+t+59.204s  camera stamp 1790762866.818070
+LANE   speed=16 steer=8  tracking_lane
+
+615
+00:00:59,267 --> 00:00:59,335
+t+59.267s  camera stamp 1790762866.881351
+LANE   speed=16 steer=6  tracking_lane
+
+616
+00:00:59,335 --> 00:00:59,468
+t+59.335s  camera stamp 1790762866.949006
+LANE   speed=16 steer=6  tracking_lane
+
+617
+00:00:59,468 --> 00:00:59,537
+t+59.468s  camera stamp 1790762867.082540
+LANE   speed=0 steer=6  lane_unreliable
+
+618
+00:00:59,537 --> 00:00:59,600
+t+59.537s  camera stamp 1790762867.150872
+LANE   speed=0 steer=6  lane_unreliable
+
+619
+00:00:59,600 --> 00:00:59,666
+t+59.600s  camera stamp 1790762867.213692
+GAP   speed=16 steer=6  tracking_gap
+
+620
+00:00:59,666 --> 00:00:59,733
+t+59.666s  camera stamp 1790762867.280407
+GAP   speed=16 steer=6  tracking_gap
+
+621
+00:00:59,733 --> 00:00:59,866
+t+59.733s  camera stamp 1790762867.347166
+GAP   speed=16 steer=6  tracking_gap
+
+622
+00:00:59,866 --> 00:01:00,003
+t+59.866s  camera stamp 1790762867.480530
+LANE   speed=16 steer=-3  tracking_lane
+
+623
+00:01:00,003 --> 00:01:00,072
+t+60.003s  camera stamp 1790762867.617065
+LANE   speed=16 steer=-12  tracking_lane
+
+624
+00:01:00,072 --> 00:01:00,201
+t+60.072s  camera stamp 1790762867.686270
+LANE   speed=0 steer=-12  lane_unreliable
+
+625
+00:01:00,201 --> 00:01:00,273
+t+60.201s  camera stamp 1790762867.815363
+LANE   speed=0 steer=-12  lane_unreliable
+
+626
+00:01:00,273 --> 00:01:00,401
+t+60.273s  camera stamp 1790762867.886988
+LANE   speed=0 steer=-12  lane_unreliable
+
+627
+00:01:00,401 --> 00:01:00,471
+t+60.401s  camera stamp 1790762868.015372
+LANE   speed=0 steer=-12  lane_unreliable
+
+628
+00:01:00,471 --> 00:01:00,603
+t+60.471s  camera stamp 1790762868.085236
+LANE   speed=0 steer=-12  lane_unreliable
+
+629
+00:01:00,603 --> 00:01:00,666
+t+60.603s  camera stamp 1790762868.216879
+GAP   speed=16 steer=-12  tracking_gap
+
+630
+00:01:00,666 --> 00:01:00,800
+t+60.666s  camera stamp 1790762868.280421
+GAP   speed=16 steer=-12  tracking_gap
+
+631
+00:01:00,800 --> 00:01:00,869
+t+60.800s  camera stamp 1790762868.413965
+GAP   speed=0 steer=-12  lane_unreliable
+
+632
+00:01:00,869 --> 00:01:01,000
+t+60.869s  camera stamp 1790762868.482827
+GAP   speed=0 steer=-12  lane_unreliable
+
+633
+00:01:01,000 --> 00:01:01,068
+t+61.000s  camera stamp 1790762868.613743
+GAP   speed=0 steer=-12  lane_unreliable
+
+634
+00:01:01,068 --> 00:01:01,133
+t+61.068s  camera stamp 1790762868.681699
+GAP   speed=0 steer=-12  lane_unreliable
+
+635
+00:01:01,133 --> 00:01:01,267
+t+61.133s  camera stamp 1790762868.747639
+GAP   speed=0 steer=-12  lane_unreliable
+
+636
+00:01:01,267 --> 00:01:01,333
+t+61.267s  camera stamp 1790762868.881333
+GAP   speed=0 steer=-12  lane_unreliable
+
+637
+00:01:01,333 --> 00:01:01,466
+t+61.333s  camera stamp 1790762868.947390
+GAP   speed=0 steer=-12  lane_unreliable
+
+638
+00:01:01,466 --> 00:01:01,533
+t+61.466s  camera stamp 1790762869.080535
+GAP   speed=0 steer=-12  lane_unreliable
+
+639
+00:01:01,533 --> 00:01:01,668
+t+61.533s  camera stamp 1790762869.147126
+GAP   speed=0 steer=-12  lane_unreliable
+
+640
+00:01:01,668 --> 00:01:01,733
+t+61.668s  camera stamp 1790762869.282567
+GAP   speed=0 steer=-12  lane_unreliable
+
+641
+00:01:01,733 --> 00:01:01,868
+t+61.733s  camera stamp 1790762869.347282
+GAP   speed=0 steer=-12  lane_unreliable
+
+642
+00:01:01,868 --> 00:01:01,934
+t+61.868s  camera stamp 1790762869.482229
+GAP   speed=0 steer=-12  lane_unreliable
+
+643
+00:01:01,934 --> 00:01:02,067
+t+61.934s  camera stamp 1790762869.548139
+GAP   speed=0 steer=-12  lane_unreliable
+
+644
+00:01:02,067 --> 00:01:02,135
+t+62.067s  camera stamp 1790762869.681135
+GAP   speed=0 steer=-12  lane_unreliable
+
+645
+00:01:02,135 --> 00:01:02,200
+t+62.135s  camera stamp 1790762869.749066
+GAP   speed=0 steer=-12  lane_unreliable
+
+646
+00:01:02,200 --> 00:01:02,333
+t+62.200s  camera stamp 1790762869.813910
+GAP   speed=0 steer=-12  lane_unreliable
+
+647
+00:01:02,333 --> 00:01:02,400
+t+62.333s  camera stamp 1790762869.947173
+GAP   speed=0 steer=-12  lane_unreliable
+
+648
+00:01:02,400 --> 00:01:02,533
+t+62.400s  camera stamp 1790762870.013749
+GAP   speed=0 steer=-12  lane_unreliable
+
+649
+00:01:02,533 --> 00:01:02,599
+t+62.533s  camera stamp 1790762870.146974
+GAP   speed=0 steer=-12  lane_unreliable
+
+650
+00:01:02,599 --> 00:01:02,733
+t+62.599s  camera stamp 1790762870.213674
+GAP   speed=0 steer=-12  lane_unreliable
+
+651
+00:01:02,733 --> 00:01:02,808
+t+62.733s  camera stamp 1790762870.347213
+GAP   speed=0 steer=-12  lane_unreliable
+
+652
+00:01:02,808 --> 00:01:02,933
+t+62.808s  camera stamp 1790762870.421995
+GAP   speed=0 steer=-12  lane_unreliable
+
+653
+00:01:02,933 --> 00:01:03,005
+t+62.933s  camera stamp 1790762870.547112
+GAP   speed=0 steer=-12  lane_unreliable
+
+654
+00:01:03,005 --> 00:01:03,133
+t+63.005s  camera stamp 1790762870.619385
+GAP   speed=0 steer=-12  lane_unreliable
+
+655
+00:01:03,133 --> 00:01:03,203
+t+63.133s  camera stamp 1790762870.747597
+GAP   speed=0 steer=-12  lane_unreliable
+
+656
+00:01:03,203 --> 00:01:03,333
+t+63.203s  camera stamp 1790762870.817291
+GAP   speed=0 steer=-12  lane_unreliable
+
+657
+00:01:03,333 --> 00:01:03,401
+t+63.333s  camera stamp 1790762870.947450
+GAP   speed=0 steer=-12  lane_unreliable
+
+658
+00:01:03,401 --> 00:01:03,536
+t+63.401s  camera stamp 1790762871.014881
+GAP   speed=0 steer=-12  lane_unreliable
+
+659
+00:01:03,536 --> 00:01:03,600
+t+63.536s  camera stamp 1790762871.150593
+GAP   speed=0 steer=-12  lane_unreliable
+
+660
+00:01:03,600 --> 00:01:03,735
+t+63.600s  camera stamp 1790762871.213700
+GAP   speed=0 steer=-12  lane_unreliable
+
+661
+00:01:03,735 --> 00:01:03,803
+t+63.735s  camera stamp 1790762871.349128
+GAP   speed=0 steer=-12  lane_unreliable
+
+662
+00:01:03,803 --> 00:01:03,933
+t+63.803s  camera stamp 1790762871.417528
+GAP   speed=0 steer=-12  lane_unreliable
+
+663
+00:01:03,933 --> 00:01:04,002
+t+63.933s  camera stamp 1790762871.547397
+GAP   speed=0 steer=-12  lane_unreliable
+
+664
+00:01:04,002 --> 00:01:04,068
+t+64.002s  camera stamp 1790762871.616106
+GAP   speed=0 steer=-12  lane_unreliable
+
+665
+00:01:04,068 --> 00:01:04,202
+t+64.068s  camera stamp 1790762871.682309
+GAP   speed=0 steer=-12  lane_unreliable
+
+666
+00:01:04,202 --> 00:01:04,334
+t+64.202s  camera stamp 1790762871.816187
+GAP   speed=0 steer=-12  lane_unreliable
+
+667
+00:01:04,334 --> 00:01:04,400
+t+64.334s  camera stamp 1790762871.947998
+GAP   speed=0 steer=-12  lane_unreliable
+
+668
+00:01:04,400 --> 00:01:04,470
+t+64.400s  camera stamp 1790762872.014297
+GAP   speed=0 steer=-12  lane_unreliable
+
+669
+00:01:04,470 --> 00:01:04,601
+t+64.470s  camera stamp 1790762872.084656
+GAP   speed=0 steer=-12  lane_unreliable
+
+670
+00:01:04,601 --> 00:01:04,668
+t+64.601s  camera stamp 1790762872.215068
+GAP   speed=0 steer=-12  lane_unreliable
+
+671
+00:01:04,668 --> 00:01:05,006
+t+64.668s  camera stamp 1790762872.282272
+GAP   speed=0 steer=-12  lane_unreliable
+
+672
+00:01:05,006 --> 00:01:05,077
+t+65.006s  camera stamp 1790762872.620135
+GAP   speed=0 steer=-12  lane_unreliable
+
+673
+00:01:05,077 --> 00:01:05,200
+t+65.077s  camera stamp 1790762872.690761
+GAP   speed=0 steer=-12  lane_unreliable
+
+674
+00:01:05,200 --> 00:01:05,343
+t+65.200s  camera stamp 1790762872.813887
+GAP   speed=0 steer=-12  lane_unreliable
+
+675
+00:01:05,343 --> 00:01:05,400
+t+65.343s  camera stamp 1790762872.956884
+GAP   speed=0 steer=-12  lane_unreliable
+
+676
+00:01:05,400 --> 00:01:05,537
+t+65.400s  camera stamp 1790762873.013943
+GAP   speed=0 steer=-12  lane_unreliable
+
+677
+00:01:05,537 --> 00:01:05,666
+t+65.537s  camera stamp 1790762873.151073
+GAP   speed=0 steer=-12  lane_unreliable
+
+678
+00:01:05,666 --> 00:01:05,735
+t+65.666s  camera stamp 1790762873.280559
+GAP   speed=0 steer=-12  lane_unreliable
+
+679
+00:01:05,735 --> 00:01:05,868
+t+65.735s  camera stamp 1790762873.349103
+GAP   speed=0 steer=-12  lane_unreliable
+
+680
+00:01:05,868 --> 00:01:05,935
+t+65.868s  camera stamp 1790762873.481987
+GAP   speed=0 steer=-12  lane_unreliable
+
+681
+00:01:05,935 --> 00:01:06,068
+t+65.935s  camera stamp 1790762873.548792
+GAP   speed=0 steer=-12  lane_unreliable
+
+682
+00:01:06,068 --> 00:01:06,136
+t+66.068s  camera stamp 1790762873.681807
+GAP   speed=0 steer=-12  lane_unreliable
+
+683
+00:01:06,136 --> 00:01:06,270
+t+66.136s  camera stamp 1790762873.750620
+GAP   speed=0 steer=-12  lane_unreliable
+
+684
+00:01:06,270 --> 00:01:06,333
+t+66.270s  camera stamp 1790762873.883759
+GAP   speed=0 steer=-12  lane_unreliable
+
+685
+00:01:06,333 --> 00:01:06,400
+t+66.333s  camera stamp 1790762873.947045
+GAP   speed=0 steer=-12  lane_unreliable
+
+686
+00:01:06,400 --> 00:01:06,537
+t+66.400s  camera stamp 1790762874.014603
+GAP   speed=0 steer=-12  lane_unreliable
+
+687
+00:01:06,537 --> 00:01:06,606
+t+66.537s  camera stamp 1790762874.151485
+GAP   speed=0 steer=-12  lane_unreliable
+
+688
+00:01:06,606 --> 00:01:06,741
+t+66.606s  camera stamp 1790762874.220178
+GAP   speed=0 steer=-12  lane_unreliable
+
+689
+00:01:06,741 --> 00:01:06,801
+t+66.741s  camera stamp 1790762874.354680
+GAP   speed=0 steer=-12  lane_unreliable
+
+690
+00:01:06,801 --> 00:01:06,936
+t+66.801s  camera stamp 1790762874.414702
+GAP   speed=0 steer=-12  lane_unreliable
+
+691
+00:01:06,936 --> 00:01:07,006
+t+66.936s  camera stamp 1790762874.549806
+GAP   speed=0 steer=-12  lane_unreliable
+
+692
+00:01:07,006 --> 00:01:07,137
+t+67.006s  camera stamp 1790762874.619796
+GAP   speed=0 steer=-12  lane_unreliable
+
+693
+00:01:07,137 --> 00:01:07,201
+t+67.137s  camera stamp 1790762874.750872
+GAP   speed=0 steer=-12  lane_unreliable
+
+694
+00:01:07,201 --> 00:01:07,334
+t+67.201s  camera stamp 1790762874.815545
+GAP   speed=0 steer=-12  lane_unreliable
+
+695
+00:01:07,334 --> 00:01:07,401
+t+67.334s  camera stamp 1790762874.948626
+GAP   speed=0 steer=-12  lane_unreliable
+
+696
+00:01:07,401 --> 00:01:07,535
+t+67.401s  camera stamp 1790762875.014769
+GAP   speed=0 steer=-12  lane_unreliable
+
+697
+00:01:07,535 --> 00:01:07,608
+t+67.535s  camera stamp 1790762875.149345
+GAP   speed=0 steer=-12  lane_unreliable
+
+698
+00:01:07,608 --> 00:01:07,669
+t+67.608s  camera stamp 1790762875.222474
+GAP   speed=0 steer=-12  lane_unreliable
+
+699
+00:01:07,669 --> 00:01:07,812
+t+67.669s  camera stamp 1790762875.283185
+GAP   speed=0 steer=-12  lane_unreliable
+
+700
+00:01:07,812 --> 00:01:07,934
+t+67.812s  camera stamp 1790762875.425779
+GAP   speed=0 steer=-12  lane_unreliable
+
+701
+00:01:07,934 --> 00:01:08,000
+t+67.934s  camera stamp 1790762875.547703
+GAP   speed=0 steer=-12  lane_unreliable
+
+702
+00:01:08,000 --> 00:01:08,069
+t+68.000s  camera stamp 1790762875.614256
+GAP   speed=0 steer=-12  lane_unreliable
+
+703
+00:01:08,069 --> 00:01:08,202
+t+68.069s  camera stamp 1790762875.683664
+GAP   speed=0 steer=-12  lane_unreliable
+
+704
+00:01:08,202 --> 00:01:08,271
+t+68.202s  camera stamp 1790762875.816504
+GAP   speed=0 steer=-12  lane_unreliable
+
+705
+00:01:08,271 --> 00:01:08,403
+t+68.271s  camera stamp 1790762875.885360
+GAP   speed=0 steer=-12  lane_unreliable
+
+706
+00:01:08,403 --> 00:01:08,479
+t+68.403s  camera stamp 1790762876.017576
+GAP   speed=0 steer=-12  lane_unreliable
+
+707
+00:01:08,479 --> 00:01:08,601
+t+68.479s  camera stamp 1790762876.092818
+GAP   speed=0 steer=-12  lane_unreliable
+
+708
+00:01:08,601 --> 00:01:08,667
+t+68.601s  camera stamp 1790762876.214987
+GAP   speed=0 steer=-12  lane_unreliable
+
+709
+00:01:08,667 --> 00:01:08,801
+t+68.667s  camera stamp 1790762876.280755
+GAP   speed=0 steer=-12  lane_unreliable
+
+710
+00:01:08,801 --> 00:01:08,867
+t+68.801s  camera stamp 1790762876.414750
+GAP   speed=0 steer=-12  lane_unreliable
+
+711
+00:01:08,867 --> 00:01:08,934
+t+68.867s  camera stamp 1790762876.480838
+GAP   speed=0 steer=-12  lane_unreliable
+
+712
+00:01:08,934 --> 00:01:09,069
+t+68.934s  camera stamp 1790762876.548541
+GAP   speed=0 steer=-12  lane_unreliable
+
+713
+00:01:09,069 --> 00:01:09,134
+t+69.069s  camera stamp 1790762876.682856
+GAP   speed=0 steer=-12  lane_unreliable
+
+714
+00:01:09,134 --> 00:01:09,268
+t+69.134s  camera stamp 1790762876.747936
+GAP   speed=0 steer=-12  lane_unreliable
+
+715
+00:01:09,268 --> 00:01:09,336
+t+69.268s  camera stamp 1790762876.882227
+GAP   speed=0 steer=-12  lane_unreliable
+
+716
+00:01:09,336 --> 00:01:09,471
+t+69.336s  camera stamp 1790762876.950398
+GAP   speed=0 steer=-12  lane_unreliable
+
+717
+00:01:09,471 --> 00:01:09,539
+t+69.471s  camera stamp 1790762877.085161
+GAP   speed=0 steer=-12  lane_unreliable
+
+718
+00:01:09,539 --> 00:01:09,667
+t+69.539s  camera stamp 1790762877.152767
+GAP   speed=0 steer=-12  lane_unreliable
+
+719
+00:01:09,667 --> 00:01:09,733
+t+69.667s  camera stamp 1790762877.280754
+GAP   speed=0 steer=-12  lane_unreliable
+
+720
+00:01:09,733 --> 00:01:09,867
+t+69.733s  camera stamp 1790762877.347596
+GAP   speed=0 steer=-12  lane_unreliable
+
+721
+00:01:09,867 --> 00:01:09,940
+t+69.867s  camera stamp 1790762877.480889
+GAP   speed=0 steer=-12  lane_unreliable
+
+722
+00:01:09,940 --> 00:01:10,068
+t+69.940s  camera stamp 1790762877.553997
+GAP   speed=0 steer=-12  lane_unreliable
+
+723
+00:01:10,068 --> 00:01:10,134
+t+70.068s  camera stamp 1790762877.682108
+GAP   speed=0 steer=-12  lane_unreliable
+
+724
+00:01:10,134 --> 00:01:10,267
+t+70.134s  camera stamp 1790762877.748106
+GAP   speed=0 steer=-12  lane_unreliable
+
+725
+00:01:10,267 --> 00:01:10,333
+t+70.267s  camera stamp 1790762877.880907
+GAP   speed=0 steer=-12  lane_unreliable
+
+726
+00:01:10,333 --> 00:01:10,470
+t+70.333s  camera stamp 1790762877.947438
+GAP   speed=0 steer=-12  lane_unreliable
+
+727
+00:01:10,470 --> 00:01:10,534
+t+70.470s  camera stamp 1790762878.084454
+GAP   speed=0 steer=-12  lane_unreliable
+
+728
+00:01:10,534 --> 00:01:10,600
+t+70.534s  camera stamp 1790762878.147806
+GAP   speed=0 steer=-12  lane_unreliable
+
+729
+00:01:10,600 --> 00:01:10,734
+t+70.600s  camera stamp 1790762878.214339
+GAP   speed=0 steer=-12  lane_unreliable
+
+730
+00:01:10,734 --> 00:01:10,867
+t+70.734s  camera stamp 1790762878.347930
+GAP   speed=0 steer=-12  lane_unreliable
+
+731
+00:01:10,867 --> 00:01:10,935
+t+70.867s  camera stamp 1790762878.480859
+GAP   speed=0 steer=-12  lane_unreliable
+
+732
+00:01:10,935 --> 00:01:11,000
+t+70.935s  camera stamp 1790762878.548682
+GAP   speed=0 steer=-12  lane_unreliable
+
+733
+00:01:11,000 --> 00:01:11,136
+t+71.000s  camera stamp 1790762878.613842
+GAP   speed=0 steer=-12  lane_unreliable
+
+734
+00:01:11,136 --> 00:01:11,207
+t+71.136s  camera stamp 1790762878.750664
+GAP   speed=0 steer=-12  lane_unreliable
+
+735
+00:01:11,207 --> 00:01:11,333
+t+71.207s  camera stamp 1790762878.820719
+GAP   speed=0 steer=-12  lane_unreliable
+
+736
+00:01:11,333 --> 00:01:11,401
+t+71.333s  camera stamp 1790762878.947624
+GAP   speed=0 steer=-12  lane_unreliable
+
+737
+00:01:11,401 --> 00:01:11,543
+t+71.401s  camera stamp 1790762879.015060
+GAP   speed=0 steer=-12  lane_unreliable
+
+738
+00:01:11,543 --> 00:01:11,601
+t+71.543s  camera stamp 1790762879.157225
+GAP   speed=0 steer=-12  lane_unreliable
+
+739
+00:01:11,601 --> 00:01:11,736
+t+71.601s  camera stamp 1790762879.214965
+GAP   speed=0 steer=-12  lane_unreliable
+
+740
+00:01:11,736 --> 00:01:11,806
+t+71.736s  camera stamp 1790762879.350321
+GAP   speed=0 steer=-12  lane_unreliable
+
+741
+00:01:11,806 --> 00:01:11,933
+t+71.806s  camera stamp 1790762879.419963
+GAP   speed=0 steer=-12  lane_unreliable
+
+742
+00:01:11,933 --> 00:01:12,006
+t+71.933s  camera stamp 1790762879.547064
+GAP   speed=0 steer=-12  lane_unreliable
+
+743
+00:01:12,006 --> 00:01:12,067
+t+72.006s  camera stamp 1790762879.620062
+GAP   speed=0 steer=-12  lane_unreliable
+
+744
+00:01:12,067 --> 00:01:12,201
+t+72.067s  camera stamp 1790762879.681090
+GAP   speed=0 steer=-12  lane_unreliable
+
+745
+00:01:12,201 --> 00:01:12,333
+t+72.201s  camera stamp 1790762879.815119
+GAP   speed=0 steer=-12  lane_unreliable
+
+746
+00:01:12,333 --> 00:01:12,401
+t+72.333s  camera stamp 1790762879.947488
+GAP   speed=0 steer=-12  lane_unreliable
+
+747
+00:01:12,401 --> 00:01:12,475
+t+72.401s  camera stamp 1790762880.015259
+GAP   speed=0 steer=-12  lane_unreliable
+
+748
+00:01:12,475 --> 00:01:12,601
+t+72.475s  camera stamp 1790762880.089204
+GAP   speed=0 steer=-12  lane_unreliable
+
+749
+00:01:12,601 --> 00:01:12,733
+t+72.601s  camera stamp 1790762880.214964
+GAP   speed=0 steer=-12  lane_unreliable
+
+750
+00:01:12,733 --> 00:01:12,804
+t+72.733s  camera stamp 1790762880.347010
+GAP   speed=0 steer=-12  lane_unreliable
+
+751
+00:01:12,804 --> 00:01:12,935
+t+72.804s  camera stamp 1790762880.418659
+GAP   speed=0 steer=-12  lane_unreliable
+
+752
+00:01:12,935 --> 00:01:13,008
+t+72.935s  camera stamp 1790762880.549351
+GAP   speed=0 steer=-12  lane_unreliable
+
+753
+00:01:13,008 --> 00:01:13,133
+t+73.008s  camera stamp 1790762880.621933
+GAP   speed=0 steer=-12  lane_unreliable
+
+754
+00:01:13,133 --> 00:01:13,200
+t+73.133s  camera stamp 1790762880.747550
+GAP   speed=0 steer=-12  lane_unreliable
+
+755
+00:01:13,200 --> 00:01:13,334
+t+73.200s  camera stamp 1790762880.814164
+GAP   speed=0 steer=-12  lane_unreliable
+
+756
+00:01:13,334 --> 00:01:13,402
+t+73.334s  camera stamp 1790762880.947914
+GAP   speed=0 steer=-12  lane_unreliable
+
+757
+00:01:13,402 --> 00:01:13,536
+t+73.402s  camera stamp 1790762881.015880
+GAP   speed=0 steer=-12  lane_unreliable
+
+758
+00:01:13,536 --> 00:01:13,601
+t+73.536s  camera stamp 1790762881.149697
+GAP   speed=0 steer=-12  lane_unreliable
+
+759
+00:01:13,601 --> 00:01:13,734
+t+73.601s  camera stamp 1790762881.215482
+GAP   speed=0 steer=-12  lane_unreliable
+
+760
+00:01:13,734 --> 00:01:13,810
+t+73.734s  camera stamp 1790762881.347881
+GAP   speed=0 steer=-12  lane_unreliable
+
+761
+00:01:13,810 --> 00:01:13,933
+t+73.810s  camera stamp 1790762881.424524
+GAP   speed=0 steer=-12  lane_unreliable
+
+762
+00:01:13,933 --> 00:01:14,005
+t+73.933s  camera stamp 1790762881.547426
+GAP   speed=0 steer=-12  lane_unreliable
+
+763
+00:01:14,005 --> 00:01:14,133
+t+74.005s  camera stamp 1790762881.619060
+GAP   speed=0 steer=-12  lane_unreliable
+
+764
+00:01:14,133 --> 00:01:14,206
+t+74.133s  camera stamp 1790762881.747420
+GAP   speed=0 steer=-12  lane_unreliable
+
+765
+00:01:14,206 --> 00:01:14,333
+t+74.206s  camera stamp 1790762881.820314
+GAP   speed=0 steer=-12  lane_unreliable
+
+766
+00:01:14,333 --> 00:01:14,404
+t+74.333s  camera stamp 1790762881.947646
+GAP   speed=0 steer=-12  lane_unreliable
+
+767
+00:01:14,404 --> 00:01:14,537
+t+74.404s  camera stamp 1790762882.017982
+GAP   speed=0 steer=-12  lane_unreliable
+
+768
+00:01:14,537 --> 00:01:14,600
+t+74.537s  camera stamp 1790762882.151453
+GAP   speed=0 steer=-12  lane_unreliable
+
+769
+00:01:14,600 --> 00:01:14,734
+t+74.600s  camera stamp 1790762882.214234
+GAP   speed=0 steer=-12  lane_unreliable
+
+770
+00:01:14,734 --> 00:01:14,805
+t+74.734s  camera stamp 1790762882.347701
+GAP   speed=0 steer=-12  lane_unreliable
+
+771
+00:01:14,805 --> 00:01:14,936
+t+74.805s  camera stamp 1790762882.419616
+GAP   speed=0 steer=-12  lane_unreliable
+
+772
+00:01:14,936 --> 00:01:15,000
+t+74.936s  camera stamp 1790762882.549997
+GAP   speed=0 steer=-12  lane_unreliable
+
+773
+00:01:15,000 --> 00:01:15,072
+t+75.000s  camera stamp 1790762882.614517
+GAP   speed=0 steer=-12  lane_unreliable
+
+774
+00:01:15,072 --> 00:01:15,201
+t+75.072s  camera stamp 1790762882.685739
+GAP   speed=0 steer=-12  lane_unreliable
+
+775
+00:01:15,201 --> 00:01:15,334
+t+75.201s  camera stamp 1790762882.815346
+GAP   speed=0 steer=-12  lane_unreliable
+
+776
+00:01:15,334 --> 00:01:15,400
+t+75.334s  camera stamp 1790762882.947747
+GAP   speed=0 steer=-12  lane_unreliable
+
+777
+00:01:15,400 --> 00:01:15,533
+t+75.400s  camera stamp 1790762883.014540
+GAP   speed=0 steer=-12  lane_unreliable
+
+778
+00:01:15,533 --> 00:01:15,600
+t+75.533s  camera stamp 1790762883.147259
+GAP   speed=0 steer=-12  lane_unreliable
+
+779
+00:01:15,600 --> 00:01:15,668
+t+75.600s  camera stamp 1790762883.214271
+GAP   speed=0 steer=-12  lane_unreliable
+
+780
+00:01:15,668 --> 00:01:15,800
+t+75.668s  camera stamp 1790762883.282005
+GAP   speed=0 steer=-12  lane_unreliable
+
+781
+00:01:15,800 --> 00:01:15,933
+t+75.800s  camera stamp 1790762883.414063
+GAP   speed=0 steer=-12  lane_unreliable
+
+782
+00:01:15,933 --> 00:01:16,003
+t+75.933s  camera stamp 1790762883.547400
+GAP   speed=0 steer=-12  lane_unreliable
+
+783
+00:01:16,003 --> 00:01:16,067
+t+76.003s  camera stamp 1790762883.616711
+GAP   speed=0 steer=-12  lane_unreliable
+
+784
+00:01:16,067 --> 00:01:16,200
+t+76.067s  camera stamp 1790762883.681312
+GAP   speed=0 steer=-12  lane_unreliable
+
+785
+00:01:16,200 --> 00:01:16,333
+t+76.200s  camera stamp 1790762883.813950
+GAP   speed=0 steer=-12  lane_unreliable
+
+786
+00:01:16,333 --> 00:01:16,401
+t+76.333s  camera stamp 1790762883.947195
+GAP   speed=0 steer=-12  lane_unreliable
+
+787
+00:01:16,401 --> 00:01:16,467
+t+76.401s  camera stamp 1790762884.014842
+GAP   speed=0 steer=-12  lane_unreliable
+
+788
+00:01:16,467 --> 00:01:16,601
+t+76.467s  camera stamp 1790762884.080921
+GAP   speed=0 steer=-12  lane_unreliable
+
+789
+00:01:16,601 --> 00:01:16,733
+t+76.601s  camera stamp 1790762884.215012
+GAP   speed=0 steer=-12  lane_unreliable
+
+790
+00:01:16,733 --> 00:01:16,807
+t+76.733s  camera stamp 1790762884.347368
+GAP   speed=0 steer=-12  lane_unreliable
+
+791
+00:01:16,807 --> 00:01:16,937
+t+76.807s  camera stamp 1790762884.421414
+GAP   speed=0 steer=-12  lane_unreliable
+
+792
+00:01:16,937 --> 00:01:17,001
+t+76.937s  camera stamp 1790762884.551196
+GAP   speed=0 steer=-12  lane_unreliable
+
+793
+00:01:17,001 --> 00:01:17,136
+t+77.001s  camera stamp 1790762884.615650
+GAP   speed=0 steer=-12  lane_unreliable
+
+794
+00:01:17,136 --> 00:01:17,201
+t+77.136s  camera stamp 1790762884.750333
+GAP   speed=0 steer=-12  lane_unreliable
+
+795
+00:01:17,201 --> 00:01:17,340
+t+77.201s  camera stamp 1790762884.814757
+GAP   speed=0 steer=-12  lane_unreliable
+
+796
+00:01:17,340 --> 00:01:17,400
+t+77.340s  camera stamp 1790762884.953843
+GAP   speed=0 steer=-12  lane_unreliable
+
+797
+00:01:17,400 --> 00:01:17,539
+t+77.400s  camera stamp 1790762885.013982
+GAP   speed=0 steer=-12  lane_unreliable
+
+798
+00:01:17,539 --> 00:01:17,600
+t+77.539s  camera stamp 1790762885.153435
+GAP   speed=0 steer=-12  lane_unreliable
+
+799
+00:01:17,600 --> 00:01:17,735
+t+77.600s  camera stamp 1790762885.214033
+GAP   speed=0 steer=-12  lane_unreliable
+
+800
+00:01:17,735 --> 00:01:17,801
+t+77.735s  camera stamp 1790762885.349222
+GAP   speed=0 steer=-12  lane_unreliable
+
+801
+00:01:17,801 --> 00:01:17,934
+t+77.801s  camera stamp 1790762885.415246
+GAP   speed=0 steer=-12  lane_unreliable
+
+802
+00:01:17,934 --> 00:01:18,000
+t+77.934s  camera stamp 1790762885.547745
+GAP   speed=0 steer=-12  lane_unreliable
+
+803
+00:01:18,000 --> 00:01:18,135
+t+78.000s  camera stamp 1790762885.614347
+GAP   speed=0 steer=-12  lane_unreliable
+
+804
+00:01:18,135 --> 00:01:18,269
+t+78.135s  camera stamp 1790762885.749482
+GAP   speed=0 steer=-12  lane_unreliable
+
+805
+00:01:18,269 --> 00:01:18,334
+t+78.269s  camera stamp 1790762885.883059
+GAP   speed=0 steer=-12  lane_unreliable
+
+806
+00:01:18,334 --> 00:01:18,402
+t+78.334s  camera stamp 1790762885.947796
+GAP   speed=0 steer=-12  lane_unreliable
+
+807
+00:01:18,402 --> 00:01:18,534
+t+78.402s  camera stamp 1790762886.015715
+GAP   speed=0 steer=-12  lane_unreliable
+
+808
+00:01:18,534 --> 00:01:18,667
+t+78.534s  camera stamp 1790762886.147755
+GAP   speed=0 steer=-12  lane_unreliable
+
+809
+00:01:18,667 --> 00:01:18,736
+t+78.667s  camera stamp 1790762886.281032
+GAP   speed=0 steer=-12  lane_unreliable
+
+810
+00:01:18,736 --> 00:01:18,866
+t+78.736s  camera stamp 1790762886.350150
+GAP   speed=0 steer=-12  lane_unreliable
+
+811
+00:01:18,866 --> 00:01:18,933
+t+78.866s  camera stamp 1790762886.480532
+GAP   speed=0 steer=-12  lane_unreliable
+
+812
+00:01:18,933 --> 00:01:19,068
+t+78.933s  camera stamp 1790762886.547668
+GAP   speed=0 steer=-12  lane_unreliable
+
+813
+00:01:19,068 --> 00:01:19,201
+t+79.068s  camera stamp 1790762886.682055
+GAP   speed=0 steer=-12  lane_unreliable
+
+814
+00:01:19,201 --> 00:01:19,271
+t+79.201s  camera stamp 1790762886.814754
+GAP   speed=0 steer=-12  lane_unreliable
+
+815
+00:01:19,271 --> 00:01:19,400
+t+79.271s  camera stamp 1790762886.885567
+GAP   speed=0 steer=-12  lane_unreliable
+
+816
+00:01:19,400 --> 00:01:19,470
+t+79.400s  camera stamp 1790762887.014015
+GAP   speed=0 steer=-12  lane_unreliable
+
+817
+00:01:19,470 --> 00:01:19,600
+t+79.470s  camera stamp 1790762887.084044
+GAP   speed=0 steer=-12  lane_unreliable
+
+818
+00:01:19,600 --> 00:01:19,666
+t+79.600s  camera stamp 1790762887.213840
+GAP   speed=0 steer=-12  lane_unreliable
+
+819
+00:01:19,666 --> 00:01:19,810
+t+79.666s  camera stamp 1790762887.280647
+GAP   speed=0 steer=-12  lane_unreliable
+
+820
+00:01:19,810 --> 00:01:19,867
+t+79.810s  camera stamp 1790762887.424085
+GAP   speed=0 steer=-12  lane_unreliable
+
+821
+00:01:19,867 --> 00:01:20,000
+t+79.867s  camera stamp 1790762887.480925
+GAP   speed=0 steer=-12  lane_unreliable
+
+822
+00:01:20,000 --> 00:01:20,133
+t+80.000s  camera stamp 1790762887.613863
+GAP   speed=0 steer=-12  lane_unreliable
+
+823
+00:01:20,133 --> 00:01:20,200
+t+80.133s  camera stamp 1790762887.747265
+GAP   speed=0 steer=-12  lane_unreliable
+
+824
+00:01:20,200 --> 00:01:20,334
+t+80.200s  camera stamp 1790762887.814199
+GAP   speed=0 steer=-12  lane_unreliable
+
+825
+00:01:20,334 --> 00:01:20,402
+t+80.334s  camera stamp 1790762887.947821
+GAP   speed=0 steer=-12  lane_unreliable
+
+826
+00:01:20,402 --> 00:01:20,541
+t+80.402s  camera stamp 1790762888.015860
+GAP   speed=0 steer=-12  lane_unreliable
+
+827
+00:01:20,541 --> 00:01:20,602
+t+80.541s  camera stamp 1790762888.155109
+GAP   speed=0 steer=-12  lane_unreliable
+
+828
+00:01:20,602 --> 00:01:20,741
+t+80.602s  camera stamp 1790762888.215678
+GAP   speed=0 steer=-12  lane_unreliable
+
+829
+00:01:20,741 --> 00:01:20,868
+t+80.741s  camera stamp 1790762888.355167
+GAP   speed=0 steer=-12  lane_unreliable
+
+830
+00:01:20,868 --> 00:01:20,933
+t+80.868s  camera stamp 1790762888.481883
+GAP   speed=0 steer=-12  lane_unreliable
+
+831
+00:01:20,933 --> 00:01:21,066
+t+80.933s  camera stamp 1790762888.547403
+GAP   speed=0 steer=-12  lane_unreliable
+
+832
+00:01:21,066 --> 00:01:21,133
+t+81.066s  camera stamp 1790762888.680479
+GAP   speed=0 steer=-12  lane_unreliable
+
+833
+00:01:21,133 --> 00:01:21,268
+t+81.133s  camera stamp 1790762888.747593
+GAP   speed=0 steer=-12  lane_unreliable
+
+834
+00:01:21,268 --> 00:01:21,335
+t+81.268s  camera stamp 1790762888.881877
+GAP   speed=0 steer=-12  lane_unreliable
+
+835
+00:01:21,335 --> 00:01:21,470
+t+81.335s  camera stamp 1790762888.949267
+GAP   speed=0 steer=-12  lane_unreliable
+
+836
+00:01:21,470 --> 00:01:21,534
+t+81.470s  camera stamp 1790762889.084021
+GAP   speed=0 steer=-12  lane_unreliable
+
+837
+00:01:21,534 --> 00:01:21,667
+t+81.534s  camera stamp 1790762889.148284
+GAP   speed=0 steer=-12  lane_unreliable
+
+838
+00:01:21,667 --> 00:01:21,739
+t+81.667s  camera stamp 1790762889.281365
+GAP   speed=0 steer=-12  lane_unreliable
+

@@ -1,0 +1,42 @@
+test_detected_uturn_is_queued_before_075_and_survives_blank_frames (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_green_startup_still_requires_125_even_with_uturn_and_blue (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_mixed_direction_votes_cannot_confirm_the_wrong_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_queued_uturn_survives_completed_straight_lane_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_red_blocks_uturn_blue_handoff (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_uturn_without_confirmed_new_transverse_blue_cannot_interrupt_straight (test_straight_uturn_handoff.StraightUturnHandoffTests) ... ok
+test_125_returns_to_lane_before_dispatching_confirmed_next_blue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_late_second_straight_is_queued_without_interrupting_current_action (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_next_straight_survives_white_handoff_until_its_blue_line (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_old_blue_or_longitudinal_paint_cannot_dispatch_queued_straight (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_red_overrides_queued_blue_handoff (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_same_early_board_duplicate_or_interrupted_votes_do_not_queue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_does_not_start_with_front_axle_heading_misaligned (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_visual_updates_move_target_plane_and_stale_stream_stops (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_active_action_ignores_votes_and_requires_new_votes_after_exit (test_action_sign_lock.ActionSignLockTests) ... ok
+test_parking_and_active_actions_ignore_route_signs (test_action_sign_lock.ActionSignLockTests) ... ok
+test_pending_direction_can_be_corrected_before_blue (test_action_sign_lock.ActionSignLockTests) ... ok
+test_red_stop_and_green_release_remain_available (test_action_sign_lock.ActionSignLockTests) ... ok
+test_bypass_does_not_enable_parking_but_keeps_completed_route_permission (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_green_clears_a_preexisting_parking_pending (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_new_green_start_resets_previous_route_permission (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_only_completed_junction_actions_enable_fresh_parking_votes (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_recorded_parking_votes_cannot_replace_startup_or_center_handoff (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_startup_route_sign_and_red_green_priority_are_preserved (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_waiting_parking_sign_keeps_center_lane_until_blue_trigger (test_startup_parking_gate.StartupParkingGateTests) ... ok
+test_aligned_target_survives_near_blind_region (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_confirmed_aligned_target_advances_after_leaving_image (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_continuously_visible_line_has_only_one_chance (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_far_confirmed_line_approaches_and_ignores_old_map_position (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_lane_gap_holds_previous_turn_until_blue_takes_heading_control (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_line_during_action_is_not_queued (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_line_without_pending_does_not_wait_for_later_sign (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_rear_updates_do_not_rearm_front_line (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_short_ticks_and_sign_alone_do_not_trigger (test_blue_edge_trigger.BlueEdgeTests) ... ok
+test_single_frame_does_not_arm_projection (test_blue_edge_trigger.BlueEdgeTests) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 19.670s
+
+OK

@@ -1,0 +1,134 @@
+"""P3-only yaw-aware bay observation and guarded end trigger."""
+from __future__ import division
+import math
+import cv2
+import numpy as np
+from parking_line_stop_core import LineVision, StopRun
+from robot.parallel_parking.reference_vision import paint_mask
+from p3_lane_follow import near_lane_geometry
+
+
+class P3LineVision(LineVision):
+    def __init__(self, cfg, args):
+        LineVision.__init__(self,cfg,args.side,args.min_line_m,args.angle_deg,
+                            args.acquire_line_m,args.white_v_min)
+        self.heading = 0.
+        self.last_heading_stamp = None
+
+    def set_lane_observation(self, observation):
+        geometry = near_lane_geometry(observation)
+        if geometry['valid']:
+            self.heading = math.radians(geometry['heading_deg'])
+            self.last_heading_stamp = observation['stamp']
+        elif (observation and self.last_heading_stamp is not None and
+              observation['stamp']-self.last_heading_stamp > .5):
+            self.heading = 0.
+
+    def road_axes(self, points):
+        c,s = math.cos(self.heading),math.sin(self.heading)
+        return np.dot(np.asarray(points),np.array([[c,-s],[s,c]]))
+
+    def accepts(self, a, b):
+        road = self.road_axes([a,b])
+        dx,dy = road[1]-road[0]
+        if np.linalg.norm(road[1]-road[0]) < self.min_length:
+            return False
+        if abs(dx) > abs(dy)*math.tan(math.radians(self.angle_deg)):
+            return False
+        middle = np.mean(road,axis=0)
+        lateral = -middle[1] if self.side == 'right' else middle[1]
+        return 0 < middle[0] <= 3. and .08 <= lateral <= 1.30
+
+    def segments(self, mask):
+        camera = self.camera
+        ppm = camera['pixels_per_m']
+        rows = cv2.HoughLinesP(mask,1,np.pi/180,max(8,int(ppm*.045)),
+                              minLineLength=max(5,int(ppm*self.min_length)),
+                              maxLineGap=max(2,int(ppm*.025)))
+        accepted = []
+        if rows is None:
+            return accepted
+        for u,v,w,z in rows[:,0]:
+            a = np.array([(camera['origin_v']-v)/ppm,(camera['origin_u']-u)/ppm])
+            b = np.array([(camera['origin_v']-z)/ppm,(camera['origin_u']-w)/ppm])
+            if not self.accepts(a,b):
+                continue
+            middle = np.mean([a,b],axis=0)
+            if any(abs(middle[0]-np.mean(line,axis=0)[0]) < .04 and
+                   abs(middle[1]-np.mean(line,axis=0)[1]) < .20 for line in accepted):
+                continue
+            accepted.append([a,b])
+        return accepted
+
+    def paint_roi(self, bev):
+        # Apply costly HSV/contrast operations only to the rotated bay strip.
+        # Metric coordinates, scale, camera calibration and support checks stay unchanged.
+        side = -1. if self.side == 'right' else 1.
+        corners = np.array([[x,side*y] for x in (0.,3.) for y in (.08,1.30)])
+        c,s = math.cos(self.heading),math.sin(self.heading)
+        corners = np.dot(corners,np.array([[c,s],[-s,c]]))
+        ppm = self.camera['pixels_per_m']
+        uv = np.column_stack((self.camera['origin_u']-corners[:,1]*ppm,
+                              self.camera['origin_v']-corners[:,0]*ppm))
+        lo = np.maximum(0,np.floor(uv.min(axis=0)-.10*ppm).astype(int))
+        hi = np.minimum([bev.shape[1],bev.shape[0]],np.ceil(uv.max(axis=0)+.10*ppm).astype(int))
+        mask = np.zeros(bev.shape[:2],dtype=np.uint8)
+        if np.all(hi > lo):
+            mask[lo[1]:hi[1],lo[0]:hi[0]] = paint_mask(
+                bev[lo[1]:hi[1],lo[0]:hi[0]],self.white_cfg,ppm)
+        mask[self.detector.parking_valid == 0] = 0
+        return mask
+
+    def observe(self, frame):
+        bev = self.detector.bev(frame,parking=True)
+        mask = self.paint_roi(bev)
+        candidates = [line for line in self.segments(mask) if self.paint_supported(line,mask)]
+        lines = self.filter_lines(candidates)
+        for line in lines:
+            pts = [(int(self.camera['origin_u']-p[1]*self.camera['pixels_per_m']),
+                    int(self.camera['origin_v']-p[0]*self.camera['pixels_per_m'])) for p in line]
+            cv2.line(bev,pts[0],pts[1],(0,0,255),3)
+        cv2.putText(bev,'P3 BAY LINES: %d; road yaw %.1f deg' %
+                    (len(lines),math.degrees(self.heading)),(15,28),
+                    cv2.FONT_HERSHEY_SIMPLEX,.55,(0,255,255),2)
+        return len(lines),bev
+
+
+class P3ApproachRun(StopRun):
+    requires_end_confirmation = True
+
+    def __init__(self, base, end_frames=2, end_seconds=.1):
+        self.__dict__.update(base.__dict__)
+        self.end_frames,self.end_seconds = end_frames,end_seconds
+        self.scene = {}
+        self.bay_armed = False
+        self.straight_votes = 0
+        self.end_votes,self.end_since = 0,None
+        # Confirmation is stationary. It must never postpone the first brake.
+        self.lost_frames,self.lost_seconds = end_frames,end_seconds
+
+    def observe_scene(self, curve):
+        self.scene = curve
+
+    def observe(self, count, stamp, received, both_curved=False):
+        if self.finished or (self.stamp is not None and stamp <= self.stamp):
+            return
+        observation = self.scene.get('lane_observation')
+        geometry = near_lane_geometry(observation)
+        straight = (geometry['valid'] and abs(geometry['heading_deg']) <= 10. and
+                    abs(geometry['curvature']) <= .35 and abs(geometry['lateral_m']) <= .15)
+        matching = observation is not None and observation['stamp'] == stamp
+        self.straight_votes = self.straight_votes+1 if count > 0 and straight and matching else 0
+        # Road alignment is diagnostic only. The lane controller accepts paths
+        # outside that ideal geometry, including short paths through a bend.
+        # Use the saved visibility history and same-frame boundary bend event.
+        StopRun.observe(self,count,stamp,received,both_curved)
+        self.bay_armed = self.seen
+        self.end_votes,self.end_since = self.missing_count,self.missing_since
+
+    def tick(self, now, ros_now):
+        command = StopRun.tick(self,now,ros_now)
+        if command[0] > 0:
+            if not self.bay_armed:
+                self.reason = 'FORWARD_SEEK_LINES'
+        return command

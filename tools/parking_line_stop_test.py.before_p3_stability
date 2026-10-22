@@ -1,0 +1,304 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""Drive straight once; stop after all front-camera transverse bay lines vanish."""
+from __future__ import print_function
+import argparse
+import json
+import os
+import sys
+import time
+
+ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, 'src'))
+sys.path.insert(0, os.path.join(ROOT, 'src', 'robot', 'parallel_parking'))
+from open_loop_core import finite, require_ownership, require_base
+from parallel_open_loop_test import monotonic_clock
+from parking_line_stop_core import LineVision, StopRun
+from parking_lane_curve import LaneCurveVision
+from robot.parallel_parking.reference_vision import load_reference_config
+
+COMMAND = '/parking_line_stop/cmd'
+BRIDGE = '/parking_line_stop_bridge'
+
+
+def arguments(argv=None, parser=None):
+    p = parser if parser is not None else argparse.ArgumentParser(description=__doc__)
+    modes = p.add_mutually_exclusive_group()
+    modes.add_argument('--execute', action='store_true')
+    modes.add_argument('--observe', action='store_true', help='camera diagnostics only; never publishes commands')
+    p.add_argument('--speed', type=int, default=30)
+    p.add_argument('--steering', type=int, default=-3, help='saved raw straight-line trim, default -3')
+    p.add_argument('--side', choices=('right', 'left'), default='right')
+    p.add_argument('--lost-seconds', type=float, default=.3,
+                   help='stationary confirmation of zero bay lines AND both boundaries curved')
+    p.add_argument('--seen-frames', type=int, default=2)
+    p.add_argument('--lost-frames', type=int, default=3, help='fresh frames jointly confirming bay end')
+    p.add_argument('--end-verify-seconds', type=float, default=2.,
+                   help='stopped verification timeout; ambiguous end exits without moving again')
+    p.add_argument('--curve-min-curvature', type=float, default=.45, help='minimum boundary curvature, 1/m')
+    p.add_argument('--curve-min-turn-deg', type=float, default=10., help='minimum observed boundary tangent change')
+    p.add_argument('--seek-seconds', type=float, default=5.)
+    p.add_argument('--max-seconds', type=float, default=20.)
+    p.add_argument('--camera-timeout', type=float, default=.8,
+                   help='capture/result freshness limit for combined bay and boundary processing')
+    p.add_argument('--countdown', type=float, default=3.)
+    p.add_argument('--min-line-m', type=float, default=.08)
+    p.add_argument('--acquire-line-m', type=float, default=.12)
+    p.add_argument('--angle-deg', type=float, default=25.)
+    p.add_argument('--white-v-min', type=int, default=190)
+    p.add_argument('--image-topic', default='/front/usb_cam/image_raw')
+    args = p.parse_args(argv)
+    for key, lo, hi, integer in (
+            ('speed', 1, 30, True), ('steering', -22, 22, True), ('lost_seconds', 0., 2., False),
+            ('seen_frames', 1, 20, True), ('lost_frames', 2, 20, True),
+            ('end_verify_seconds', .5, 5., False),
+            ('curve_min_curvature', .1, 3., False), ('curve_min_turn_deg', 3., 45., False),
+            ('seek_seconds', .5, 15., False), ('max_seconds', 1., 60., False),
+            ('camera_timeout', .1, 1., False), ('countdown', 2., 10., False),
+            ('min_line_m', .04, .30, False), ('acquire_line_m', .10, .50, False),
+            ('angle_deg', 5., 40., False), ('white_v_min', 100, 250, True)):
+        finite(getattr(args, key), key, lo, hi, integer)
+    if args.max_seconds < args.seek_seconds:
+        raise ValueError('max-seconds must be >= seek-seconds')
+    if args.acquire_line_m < args.min_line_m:
+        raise ValueError('acquire-line-m must be >= min-line-m')
+    if args.end_verify_seconds <= args.lost_seconds:
+        raise ValueError('end-verify-seconds must be greater than lost-seconds')
+    return args
+
+
+def run(args, task_factory=None, node_name='parking_line_stop_test',
+        status_topic='/parking_line_stop/status', lane_vision_factory=None):
+    import select
+    import signal
+    import threading
+    import termios
+    import tty
+    import cv2
+    import rospy
+    import rosgraph
+    from cv_bridge import CvBridge
+    from sensor_msgs.msg import Image
+    from std_msgs.msg import String, Bool
+
+    if args.execute and not sys.stdin.isatty():
+        raise ValueError('--execute requires an interactive foreground terminal')
+    clock = monotonic_clock()
+    rospy.init_node(node_name, anonymous=True, disable_signals=True)
+    if rospy.get_param('/use_sim_time', False):
+        raise ValueError('real-camera test rejects /use_sim_time')
+    master = rosgraph.Master(rospy.get_name())
+    def ownership():
+        pubs, subs, unused = master.getSystemState()
+        require_ownership(dict(pubs), dict(subs), rospy.get_name(), command=COMMAND, bridge=BRIDGE)
+    if args.execute:
+        if rospy.get_param(BRIDGE+'/control_topic', '') != COMMAND:
+            raise ValueError('start parking_line_stop_test.launch first')
+        ownership()
+    cv2.setNumThreads(1)
+    cfg = load_reference_config(os.path.join(ROOT, 'src/robot/config/competition.yaml'),
+                                os.path.join(ROOT, 'src/robot/parallel_parking/reference_camera.yaml'))
+    vision = LineVision(cfg, args.side, args.min_line_m, args.angle_deg,
+                        args.acquire_line_m, args.white_v_min)
+    lane_vision = (lane_vision_factory or LaneCurveVision)(
+        ROOT, args.curve_min_curvature, args.curve_min_turn_deg)
+    bridge = CvBridge()
+    task = StopRun(speed=args.speed, lost_seconds=args.lost_seconds, seen_frames=args.seen_frames,
+                   seek_seconds=args.seek_seconds, max_seconds=args.max_seconds,
+                   camera_timeout=args.camera_timeout, steering=args.steering,
+                   lost_frames=args.lost_frames, end_verify_seconds=args.end_verify_seconds)
+    if task_factory is not None:
+        task = task_factory(task)
+    stop = threading.Event()
+    lock = threading.Lock()
+    latest, result, base, error = [None], [None], [None, -1.], ['interrupted']
+    pub = rospy.Publisher(COMMAND, String, queue_size=1) if args.execute else None
+    status = rospy.Publisher(status_topic, String, queue_size=1)
+    debug = rospy.Publisher('/parking_line_stop/debug', Image, queue_size=1)
+    lane_debug = rospy.Publisher('/parking_line_stop/lanes', Image, queue_size=1)
+    seq = [0]
+    def publish(speed=0, steering=0):
+        if pub is not None:
+            pub.publish(String(data=json.dumps(dict(version=1, seq=seq[0],
+                stamp=rospy.Time.now().to_sec(), speed_raw=speed, steering_raw=steering))))
+            seq[0] = (seq[0]+1) % 256
+    def on_image(msg):
+        with lock:
+            latest[0] = msg
+    def on_base(msg):
+        try:
+            data = json.loads(msg.data)
+            if not isinstance(data, dict):
+                raise ValueError('invalid base status')
+            with lock:
+                base[:] = [data, clock()]
+        except (ValueError, TypeError):
+            error[0] = 'invalid base status'
+            stop.set()
+    def on_estop(msg):
+        if msg.data:
+            error[0] = 'emergency stop'
+            stop.set()
+    def interrupt(signum, frame):
+        error[0] = 'operator/signal stop'
+        stop.set()
+    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        signal.signal(sig, interrupt)
+    rospy.Subscriber(args.image_topic, Image, on_image, queue_size=1, buff_size=2**22)
+    if args.execute:
+        rospy.Subscriber('/base_controller/status', String, on_base, queue_size=1)
+        rospy.Subscriber('/competition/estop', Bool, on_estop, queue_size=1)
+    def process_images():
+        previous = -1.
+        while not stop.is_set() and not rospy.is_shutdown():
+            with lock:
+                msg = latest[0]
+            if msg is not None:
+                stamp = msg.header.stamp.to_sec()
+                if stamp > previous and 0 <= rospy.Time.now().to_sec()-stamp <= args.camera_timeout:
+                    previous = stamp
+                    try:
+                        frame = bridge.imgmsg_to_cv2(msg, 'bgr8')
+                        count, bev = vision.observe(frame)
+                        curve, lane_bev = lane_vision.observe(frame, stamp)
+                        with lock:
+                            result[0] = (count, stamp, clock(), curve)
+                        if debug.get_num_connections():
+                            out = bridge.cv2_to_imgmsg(bev, 'bgr8')
+                            out.header = msg.header
+                            debug.publish(out)
+                        if lane_bev is not None and lane_debug.get_num_connections():
+                            out = bridge.cv2_to_imgmsg(lane_bev, 'bgr8')
+                            out.header = msg.header
+                            lane_debug.publish(out)
+                    except Exception as exc:
+                        error[0] = 'vision error: '+str(exc)
+                        stop.set()
+            time.sleep(.05)
+    worker = threading.Thread(target=process_images)
+    worker.daemon = True
+    worker.start()
+    settings = None
+    last_log, last_graph, ready_at = -1., clock(), None
+    last_phase = None
+    deadline = clock()+10.
+    try:
+        if args.execute:
+            settings = termios.tcgetattr(sys.stdin)
+            tty.setcbreak(sys.stdin.fileno())
+        print('SPACE / x / q / Ctrl+C = STOP. Waiting for fresh camera%s.' %
+              (' and base handshake' if args.execute else ' (OBSERVE ONLY)'))
+        while not rospy.is_shutdown():
+            now = clock()
+            if stop.is_set():
+                raise ValueError(error[0])
+            if args.execute and select.select([sys.stdin], [], [], 0)[0]:
+                if os.read(sys.stdin.fileno(), 1) in (b'', b' ', b'x', b'X', b'q', b'Q', b'\x03', b'\x1b'):
+                    raise ValueError('operator stop')
+            if args.execute and now-last_graph >= .5:
+                ownership()
+                last_graph = clock()
+            with lock:
+                observation, base_snapshot = result[0], tuple(base)
+            # Callbacks can update their receive times while the ROS master
+            # query above blocks. Sample 'now' AFTER taking both snapshots.
+            # An earlier loop time would give fresh data a negative age.
+            now = clock()
+            ros_now = rospy.Time.now().to_sec()
+            fresh = observation is not None and 0 <= now-observation[2] <= args.camera_timeout and 0 <= ros_now-observation[1] <= args.camera_timeout
+            command, phase = (0, 0), 'WAIT_CAMERA_BASE'
+            if ready_at is None:
+                publish()
+                if args.execute:
+                    try:
+                        require_base(base_snapshot[0], base_snapshot[1], now)
+                        base_ok = pub.get_num_connections() == 1
+                    except ValueError:
+                        base_ok = False
+                else:
+                    base_ok = True
+                if fresh and base_ok:
+                    ready_at = now
+                elif now >= deadline:
+                    raise ValueError('camera/base not ready within 10 seconds')
+            else:
+                if not fresh:
+                    raise ValueError('CAMERA_TIMEOUT: no new valid image')
+                lane_observer = getattr(task, 'observe_lane', None)
+                if lane_observer is not None:
+                    lane_observer(observation[3].get('lane_observation'), ros_now)
+                if args.execute:
+                    require_base(base_snapshot[0], base_snapshot[1], now)
+                    if pub.get_num_connections() != 1:
+                        raise ValueError('bridge disconnected or unexpected subscriber')
+                    if now-ready_at < args.countdown:
+                        task.observe(observation[0], observation[1], observation[2], observation[3]['both_curved'])
+                        phase = 'COUNTDOWN %.1f' % (args.countdown-(now-ready_at))
+                    else:
+                        if task.started is None:
+                            task.start(now)
+                        task.observe(observation[0], observation[1], observation[2], observation[3]['both_curved'])
+                        command = task.tick(now, ros_now)
+                        phase = task.reason
+                else:
+                    phase = 'OBSERVE_ONLY'
+            publish(*command)
+            count = observation[0] if observation is not None else None
+            curve = observation[3] if observation is not None else {}
+            status.publish(String(data=json.dumps(dict(phase=phase, lines=count,
+                speed_raw=command[0], steering_raw=command[1], seen=task.seen,
+                missing_frames=task.missing_count, lane_curve=curve,
+                stop_latched=task.stop_candidate_since is not None,
+                remaining_s=max(0., getattr(task, 'deadline', now)-now)))))
+            phase_key = phase.split()[0]
+            if now-last_log >= .5 or task.finished or phase_key != last_phase:
+                print('%s lines=%s left=%s right=%s both_curved=%s confirm=%d/%d speed=%d steering=%d' %
+                      (phase, count, curve.get('left', {}).get('kind', 'UNKNOWN'),
+                       curve.get('right', {}).get('kind', 'UNKNOWN'), curve.get('both_curved', False),
+                       task.missing_count, args.lost_frames, command[0], command[1]))
+                sys.stdout.flush()
+                last_log = now
+                last_phase = phase_key
+            if task.finished:
+                if task.reason not in ('BAY_END_CONFIRMED', 'P3_COMPLETE'):
+                    raise ValueError(task.reason)
+                return 0
+            time.sleep(.05)
+        raise ValueError('ROS shutdown')
+    finally:
+        stop.set()
+        try:
+            if args.execute:
+                for unused in range(10):
+                    try:
+                        publish()
+                    except Exception:
+                        break
+                    time.sleep(.05)
+        finally:
+            if settings is not None:
+                termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+
+
+def main(argv=None):
+    try:
+        args = arguments(argv)
+        print('One shot: speed=%d, steering=%d, bay side=%s; confirm visible in %d frames,' %
+              (args.speed, args.steering, args.side, args.seen_frames))
+        print('BRAKE on FIRST ZERO bay-lines frame with BOTH lane boundaries curved.')
+        print('Verify while STOPPED for >=%.2fs AND >=%d fresh frames; NEVER resume automatically.' %
+              (args.lost_seconds, args.lost_frames))
+        print('If end stays ambiguous for %.1fs, exit STOPPED with END_UNCONFIRMED_STOPPED.' %
+              args.end_verify_seconds)
+        print('Ground ROI: forward 0..3m, parking side 0.08..1.30m. No lane following or lidar.')
+        if not args.execute and not args.observe:
+            print('PREVIEW ONLY. Use --observe for camera diagnostics, --execute for motion.')
+            return 0
+        return run(args)
+    except (ValueError, RuntimeError, IOError, KeyboardInterrupt) as exc:
+        print('STOP / NOT STARTED: %s' % exc, file=sys.stderr)
+        return 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

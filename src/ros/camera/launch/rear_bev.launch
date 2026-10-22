@@ -1,0 +1,14 @@
+<launch>
+  <arg name="image_topic" default="/rear/usb_cam/image_raw" />
+  <arg name="output_topic" default="/debug/rear_bev" />
+  <arg name="calibration_file" default="$(find yihan_ros_pkg)/calibration/rear_bev.yaml" />
+
+  <node pkg="yihan_ros_pkg"
+        type="rear_bev_node.py"
+        name="rear_bev"
+        output="screen">
+    <param name="image_topic" value="$(arg image_topic)" />
+    <param name="output_topic" value="$(arg output_topic)" />
+    <param name="calibration_file" value="$(arg calibration_file)" />
+  </node>
+</launch>

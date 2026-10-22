@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- 启动雷达 -->
+  <include file="$(find ls01b_v2)/launch/ls01b_v2.launch" />
+
+  <!-- 启动你的点云可视化节点 -->
+  <node name="lidar_show" pkg="lidar_broadcast" type="pointcloud.py" output="screen" />
+
+</launch>

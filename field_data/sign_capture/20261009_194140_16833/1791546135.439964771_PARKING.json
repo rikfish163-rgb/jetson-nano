@@ -1,0 +1,100 @@
+{
+  "confidence": 0.9500547051429749, 
+  "detections": [
+    {
+      "bounds": [
+        306, 
+        99, 
+        37, 
+        36
+      ], 
+      "confidence": 0.9500547051429749, 
+      "label": "park", 
+      "scores": {
+        "green": 8.363039341929834e-06, 
+        "left": 6.947347719687968e-05, 
+        "park": 0.9500547051429749, 
+        "red": 0.00016534459427930415, 
+        "right": 7.056744652800262e-05, 
+        "straight": 0.00016534459427930415, 
+        "uturn": 3.2818217732710764e-05
+      }
+    }
+  ], 
+  "inference_ms": 96.64678573608398, 
+  "input_mode": "full_frame_yolo", 
+  "label": "PARKING", 
+  "range_reason": "route_confirmed", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          306, 
+          99, 
+          37, 
+          36
+        ], 
+        "reason": "#1 park 0.95"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        306, 
+        99, 
+        37, 
+        36
+      ], 
+      "confidence": 0.9500547051429749, 
+      "label": "park", 
+      "scores": {
+        "green": 8.363039341929834e-06, 
+        "left": 6.947347719687968e-05, 
+        "park": 0.9500547051429749, 
+        "red": 0.00016534459427930415, 
+        "right": 7.056744652800262e-05, 
+        "straight": 0.00016534459427930415, 
+        "uturn": 3.2818217732710764e-05
+      }
+    }
+  ], 
+  "route_gate": {
+    "center_ratio": 0.50703125, 
+    "confidence_threshold": 0.9, 
+    "enabled": true, 
+    "frames": 14, 
+    "left_center_ratio": 0.3, 
+    "min_height_ratio": 0.04, 
+    "required_frames": 3, 
+    "small_target": true, 
+    "track_id": 4
+  }, 
+  "scores": {
+    "GREEN": 8.363039341929834e-06, 
+    "LEFT": 6.947347719687968e-05, 
+    "PARKING": 0.9500547051429749, 
+    "RED": 0.00016534459427930415, 
+    "RIGHT": 7.056744652800262e-05, 
+    "STRAIGHT": 0.00016534459427930415, 
+    "UTURN": 3.2818217732710764e-05
+  }, 
+  "sign_bounds": [
+    306, 
+    99, 
+    37, 
+    36
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.1, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.11049318313598633, 
+  "stamp": 1791546135.4399648, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "PARKING"
+}

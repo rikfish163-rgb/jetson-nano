@@ -1,0 +1,15 @@
+test_extended_left_arc_hands_off_without_turning_past_road_heading (test_bypass_heading_geometry.BypassHeadingGeometryTests) ... FAIL
+
+======================================================================
+FAIL: test_extended_left_arc_hands_off_without_turning_past_road_heading (test_bypass_heading_geometry.BypassHeadingGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_heading_geometry.py", line 42, in test_extended_left_arc_hands_off_without_turning_past_road_heading
+    self.assertEqual(c.reason,'bypass_heading_lane_handoff')
+AssertionError: 'bypass_visual_lane_handoff' != 'bypass_heading_lane_handoff'
+
+----------------------------------------------------------------------
+Ran 1 test in 1.291s
+
+FAILED (failures=1)
+('Original obstacle controller successful:', False)

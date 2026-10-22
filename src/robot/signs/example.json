@@ -1,0 +1,32 @@
+{
+  "steps": [
+    {
+      "operation": "observe_sign",
+      "args": [
+        "GREEN",
+        0.99,
+        10.0,
+        10.0
+      ]
+    },
+    {
+      "operation": "observe_sign",
+      "args": [
+        "GREEN",
+        0.99,
+        10.1,
+        10.1
+      ]
+    },
+    {
+      "operation": "observe_sign",
+      "args": [
+        "GREEN",
+        0.99,
+        10.2,
+        10.2
+      ]
+    }
+  ],
+  "module": "signs"
+}

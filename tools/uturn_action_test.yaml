@@ -1,0 +1,13 @@
+# Independent one-shot U-turn tuning; reloaded every invocation.
+# Start with front axle aligned to blue line. No extra entry movement.
+# speed: positive forward / negative reverse, RAW integer +/-1..30.
+# steering: positive left / negative right, RAW integer -22..22.
+# seconds: movement duration. These changes do not alter vehicle_tuning.yaml.
+countdown_s: 3.0
+uturn_trial_pause_s: 0.3
+uturn_trial_sequence:
+- {speed: 30, steering: -3, seconds: 1.3} # Segment 1
+- {speed: 30, steering: 22, seconds: 2.9} # Segment 2
+- {speed: -30, steering: -22, seconds: 2.2} # Segment 3
+- {speed: 30, steering: 22, seconds: 3.6} # Segment 4
+- {speed: -30, steering: -3, seconds: 2.0} # Segment 5

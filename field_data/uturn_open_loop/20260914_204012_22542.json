@@ -1,0 +1,43 @@
+{
+  "motion_seconds": 5.214937765638714, 
+  "feedback": false, 
+  "calibration": {
+    "reverse_left_radius": 0.6845372549, 
+    "reverse_right_radius": 1.4808228346, 
+    "forward_mps_per_raw": 0.0096153846, 
+    "reverse_mps_per_raw": 0.0092692308, 
+    "reverse_steering_sign": -1, 
+    "forward_left_radius": 0.3819837476, 
+    "forward_right_radius": 0.5444047619
+  }, 
+  "shift": "left", 
+  "segments": [
+    {
+      "seconds": 2.8000000044800006, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.4149377579587128, 
+      "speed": -26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 1.6000000025599999, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.40000000063999996, 
+      "speed": 26, 
+      "steering": 0
+    }
+  ], 
+  "pause_seconds": 0.7, 
+  "version": 2, 
+  "predicted_endpoint": [
+    -0.004047845911746437, 
+    0.6259426260536808, 
+    3.0257877575549372
+  ]
+}

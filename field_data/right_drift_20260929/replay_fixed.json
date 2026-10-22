@@ -1,0 +1,90 @@
+[
+  {
+    "raw": -22, 
+    "confidence": 0.601, 
+    "t": 61.2, 
+    "dashed": false, 
+    "mode": "LEFT_ONLY", 
+    "n": 6
+  }, 
+  {
+    "raw": -22, 
+    "confidence": 0.454, 
+    "t": 63.21, 
+    "dashed": false, 
+    "mode": "BOTH_SIDES", 
+    "n": 7
+  }, 
+  {
+    "raw": 5.0, 
+    "confidence": 0.879, 
+    "t": 65.54, 
+    "dashed": true, 
+    "mode": "BOTH_SIDES", 
+    "n": 6
+  }, 
+  {
+    "raw": 2.0, 
+    "confidence": 0.875, 
+    "t": 67.54, 
+    "dashed": true, 
+    "mode": "BOTH_SIDES", 
+    "n": 6
+  }, 
+  {
+    "raw": -21.0, 
+    "confidence": 0.673, 
+    "t": 69.87, 
+    "dashed": true, 
+    "mode": "LEFT_ONLY", 
+    "n": 7
+  }, 
+  {
+    "raw": -22, 
+    "confidence": 0.605, 
+    "t": 71.87, 
+    "dashed": true, 
+    "mode": "LEFT_ONLY", 
+    "n": 6
+  }, 
+  {
+    "raw": -22, 
+    "confidence": 0.541, 
+    "t": 74.2, 
+    "dashed": true, 
+    "mode": "LEFT_ONLY", 
+    "n": 5
+  }, 
+  {
+    "raw": -22, 
+    "confidence": 0.537, 
+    "t": 76.21, 
+    "dashed": true, 
+    "mode": "LEFT_ONLY", 
+    "n": 5
+  }, 
+  {
+    "raw": -22, 
+    "confidence": 0.573, 
+    "t": 78.21, 
+    "dashed": false, 
+    "mode": "LEFT_ONLY", 
+    "n": 6
+  }, 
+  {
+    "raw": null, 
+    "confidence": 0.126, 
+    "t": 80.54, 
+    "dashed": false, 
+    "mode": "NO_LANE", 
+    "n": 0
+  }, 
+  {
+    "raw": null, 
+    "confidence": 0.126, 
+    "t": 82.87, 
+    "dashed": false, 
+    "mode": "NO_LANE", 
+    "n": 0
+  }
+]

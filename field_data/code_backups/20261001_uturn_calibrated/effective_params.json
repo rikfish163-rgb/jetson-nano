@@ -1,0 +1,49 @@
+{
+  "max_steer": 0.2, 
+  "steering_command_scale_rad": 0.03, 
+  "uturn_trial_forward_raw": 26, 
+  "uturn_calibration/reverse_right_radius": 1.3608228346, 
+  "uturn_calibration/forward_left_radius": 0.6784646272, 
+  "uturn_trial_sequence": [
+    {
+      "seconds": 3.6000000058, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 1.2448132739, 
+      "speed": -26, 
+      "steering": 0
+    }, 
+    {
+      "seconds": 0.8298755159, 
+      "speed": -26, 
+      "steering": -22
+    }, 
+    {
+      "seconds": 0.414937758, 
+      "speed": -26, 
+      "steering": 0
+    }, 
+    {
+      "seconds": 4.0000000064, 
+      "speed": 26, 
+      "steering": 22
+    }, 
+    {
+      "seconds": 0.8298755159, 
+      "speed": -26, 
+      "steering": -22
+    }, 
+    {
+      "seconds": 1.2000000013, 
+      "speed": 26, 
+      "steering": 22
+    }
+  ], 
+  "uturn_trial_reverse_raw": 26, 
+  "speed_raw/action": 20, 
+  "speed_raw/lane": 30, 
+  "uturn_trial_entry_m": 0.4, 
+  "uturn_trial_exit_max_s": 4.0
+}

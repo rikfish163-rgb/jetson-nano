@@ -1,0 +1,35 @@
+test_40cm_entry_finishes_before_seven_segments (test_uturn_production.ProductionUturnTests) ... ok
+test_default_profile_is_normal_seven_stage_mode (test_uturn_production.ProductionUturnTests) ... ok
+test_sign_blue_seven_segments_then_resume_normal_mission (test_uturn_production.ProductionUturnTests) ... ok
+test_blocked_exit_pauses_time_and_keeps_collision_protection (test_uturn_current_model.CurrentModelTests) ... ok
+test_calibration_is_independent_of_lane_limit_and_raw_roundtrips (test_uturn_current_model.CurrentModelTests) ... ok
+test_exit_can_correct_the_other_direction_after_overshoot (test_uturn_current_model.CurrentModelTests) ... ok
+test_exit_correction_is_bounded_and_stale_camera_stops (test_uturn_current_model.CurrentModelTests) ... ok
+test_exit_needs_new_aligned_frames_without_a_stop_pulse (test_uturn_current_model.CurrentModelTests) ... ok
+test_invalid_exit_limits_are_rejected (test_uturn_current_model.CurrentModelTests) ... ok
+test_ninety_degree_turn_cannot_handoff_to_a_crossing_lane (test_uturn_current_model.CurrentModelTests) ... ok
+test_preview_stops_at_reverse_segment_endpoint (test_uturn_current_model.CurrentModelTests) ... ok
+test_clock_gap_rejected (test_timed_uturn.TrialTests) ... ok
+test_finishes_zero (test_timed_uturn.TrialTests) ... ok
+test_invalid_parameters (test_timed_uturn.TrialTests) ... ok
+test_model_endpoint_is_reversed_and_shifted (test_timed_uturn.TrialTests) ... ok
+test_pause_does_not_count_stopped_time (test_timed_uturn.TrialTests) ... ok
+test_raw_commands_and_reversal_pauses (test_timed_uturn.TrialTests) ... ok
+test_red_pause_freezes_trial_progress (test_timed_uturn.TrialTests) ... ok
+test_reduced_raw_steering_keeps_fraction_under_python2 (test_timed_uturn.TrialTests) ... ok
+test_right_is_mirrored (test_timed_uturn.TrialTests) ... ok
+test_sign_blue_dispatch_and_stop_at_finish (test_timed_uturn.TrialTests) ... ok
+test_timed_uturn_feedback_uses_own_radius_and_speed_gain (test_ros_adapter.RosAdapterTests) ... ok
+test_completed_bypass_allows_a_distinct_later_obstacle_to_trigger (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_bypass_does_not_disable_lidar_for_later_near_obstacle (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_completed_entity_is_not_triggered_again_after_protection_reopens (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_lidar_disabled_remains_an_explicit_bypass (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_non_target_raw_obstacle_still_stops_collision_sweep (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_shape_filter_does_not_authorize_unknown_ordinary_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_keeps_near_field_collision_guard (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+test_timed_bypass_stops_on_unknown_near_field_space (test_continuous_obstacles.ContinuousObstacleTests) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 16.125s
+
+OK

@@ -1,0 +1,71 @@
+test_clipped_and_padding_only_boxes (test_yolo_detector.DetectorTests) ... ok
+test_letterbox_rgb_and_coordinates_at_bottom (test_yolo_detector.DetectorTests) ... ok
+test_nearest_candidate_does_not_fall_back_to_distant_high_score (test_yolo_detector.DetectorTests) ... FAIL
+test_nms_and_nonfinite_output (test_yolo_detector.DetectorTests) ... ok
+test_preprocess_matches_original_pixels_for_different_sizes (test_yolo_detector.DetectorTests) ... ok
+test_raw_heads_apply_each_anchors_own_dimensions (test_yolo_detector.DetectorTests) ... ok
+test_sparse_heads_empty_background (test_yolo_detector.DetectorTests) ... ok
+test_sparse_heads_preserve_final_detections (test_yolo_detector.DetectorTests) ... ok
+test_two_separate_boards_of_same_class_survive_nms (test_yolo_detector.DetectorTests) ... ok
+test_background_winner_never_publishes_parking (test_sign_training_roi.TrainingRoiTests) ... ok
+test_board_diagnostics_are_published (test_sign_training_roi.TrainingRoiTests) ... ok
+test_debug_header_does_not_hide_top_of_camera_image (test_sign_training_roi.TrainingRoiTests) ... ok
+test_duplicate_frame_not_republished (test_sign_training_roi.TrainingRoiTests) ... ok
+test_exact_threshold_is_accepted (test_sign_training_roi.TrainingRoiTests) ... ok
+test_low_confidence_still_published (test_sign_training_roi.TrainingRoiTests) ... ok
+test_no_candidate_publishes_unknown_without_classifying_background (test_sign_training_roi.TrainingRoiTests) ... ok
+test_only_training_roi_is_classified_with_all_scores (test_sign_training_roi.TrainingRoiTests) ... ok
+test_real_collection_extractor_matches_model_input (test_sign_training_roi.TrainingRoiTests) ... ok
+test_rejected_evidence_is_rate_and_count_limited (test_sign_training_roi.TrainingRoiTests) ... ok
+test_stale_frame_not_published (test_sign_training_roi.TrainingRoiTests) ... ok
+test_background_winner_never_publishes_parking (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_board_diagnostics_are_published (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_debug_header_does_not_hide_top_of_camera_image (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_duplicate_frame_not_republished (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_exact_threshold_is_accepted (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_low_confidence_still_published (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_no_candidate_publishes_unknown_without_classifying_background (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_only_training_roi_is_classified_with_all_scores (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_real_collection_extractor_matches_model_input (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_rejected_evidence_is_rate_and_count_limited (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_stale_frame_not_published (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_unwatched_debug_topics_do_not_render_images (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_yolo_empty_frame_publishes_unknown (test_yolo_sign_node.YoloSignNodeTests) ... ok
+test_yolo_full_frame_preserves_stamp_and_selects_larger_board (test_yolo_sign_node.YoloSignNodeTests) ... FAIL
+test_yolo_nearest_low_confidence_withholds_label_without_far_fallback (test_yolo_sign_node.YoloSignNodeTests) ... FAIL
+
+======================================================================
+FAIL: test_nearest_candidate_does_not_fall_back_to_distant_high_score (test_yolo_detector.DetectorTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_yolo_detector.py", line 83, in test_nearest_candidate_does_not_fall_back_to_distant_high_score
+    self.assertIs(select_detection([a,b],.8),b)
+AssertionError: {'confidence': 0.99, 'bounds': [10, 10, 20, 20], 'label': 'park'} is not {'confidence': 0.7, 'bounds': [10, 200, 100, 100], 'label': 'right'}
+
+======================================================================
+FAIL: test_yolo_full_frame_preserves_stamp_and_selects_larger_board (test_yolo_sign_node.YoloSignNodeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_yolo_sign_node.py", line 31, in test_yolo_full_frame_preserves_stamp_and_selects_larger_board
+    self.assertEqual(info['detections'][0]['bounds'],[200,220,80,80])
+AssertionError: Lists differ: [10, 10, 20, 20] != [200, 220, 80, 80]
+
+First differing element 0:
+10
+200
+
+- [10, 10, 20, 20]
++ [200, 220, 80, 80]
+
+======================================================================
+FAIL: test_yolo_nearest_low_confidence_withholds_label_without_far_fallback (test_yolo_sign_node.YoloSignNodeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_yolo_sign_node.py", line 41, in test_yolo_nearest_low_confidence_withholds_label_without_far_fallback
+    self.assertEqual(info['label'],'')
+AssertionError: u'PARKING' != ''
+
+----------------------------------------------------------------------
+Ran 35 tests in 5.531s
+
+FAILED (failures=3)

@@ -1,0 +1,5 @@
+Nano Python2 test_lane_recorder: 5 tests passed.
+Exporter syntax and launch XML parsed.
+Nano ffmpeg exports front/bev/comparison from 3 paired synthetic frames.
+ffprobe timestamps equal: [0.0, 0.12, 0.72], source: [0.0, 0.1, 0.7].
+No vehicle nodes started. No new road recording yet.

@@ -1,0 +1,21 @@
+{
+  "dropped_queue": 0, 
+  "stopped_reason": "disk_reserve_or_recording_limit", 
+  "bytes": 16551605, 
+  "missing_front": 0, 
+  "matching": "front/bev filename is source_stamp_ns; target log has source_stamp", 
+  "started_receive_stamp": 1790849827.177023, 
+  "missing_bev": 1, 
+  "closed": true, 
+  "scope": "all received processed frames; not all USB-camera exposures", 
+  "counts": {
+    "status": 10, 
+    "observation": 274, 
+    "calibration": 1, 
+    "chassis": 480, 
+    "front": 274, 
+    "bev": 273, 
+    "target": 374
+  }, 
+  "duration_limit_s": 0.0
+}

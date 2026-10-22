@@ -1,0 +1,18 @@
+{
+  "dropped_queue": 0, 
+  "stopped_reason": null, 
+  "bytes": 92677288, 
+  "missing_front": 1, 
+  "missing_bev": 0, 
+  "closed": true, 
+  "scope": "all received processed frames; not all USB-camera exposures", 
+  "counts": {
+    "observation": 882, 
+    "calibration": 1, 
+    "chassis": 1788, 
+    "front": 881, 
+    "bev": 882, 
+    "target": 1766
+  }, 
+  "matching": "front/bev filename is source_stamp_ns; target log has source_stamp"
+}

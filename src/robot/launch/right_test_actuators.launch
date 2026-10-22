@@ -1,0 +1,18 @@
+<launch>
+  <!-- Dedicated one-shot right-turn test; no autonomous/perception nodes. -->
+  <node pkg="ackermann_drive_teleop" type="testloop.py"
+        name="right_test_bridge" output="screen" required="true">
+    <param name="control_topic" value="/right/two_stage_cmd"/>
+    <param name="command_topic" value="/ackermann_cmd"/>
+    <param name="command_timeout" value="0.25"/>
+    <param name="require_stamp" value="true"/>
+    <param name="max_speed_raw" value="30"/>
+    <param name="max_steering_raw" value="22"/>
+  </node>
+  <node pkg="base_controller" type="base_controller" name="base_controller"
+        output="screen" required="true">
+    <param name="command_topic" value="/ackermann_cmd"/>
+    <param name="status_topic" value="/base_controller/status"/>
+    <param name="command_timeout" value="0.25"/>
+  </node>
+</launch>

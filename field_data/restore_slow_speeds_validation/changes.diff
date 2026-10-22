@@ -1,0 +1,87 @@
+--- before/src/robot/config/competition.yaml
++++ after/src/robot/config/competition.yaml
+@@ -10,7 +10,7 @@
+ steering_sign: 1
+ speed_sign: 1
+ speed_raw_limit: 60
+-speed_raw: {lane: 18, action: 18, parking: 18, gap: 18}
++speed_raw: {lane: 18, action: 18, parking: 16, gap: 16}
+ # Placeholder empirical mapping. Measure separately forward/reverse on YOUR chassis.
+ raw_to_mps: {forward: 0.008, reverse: 0.007}
+ lookahead: 0.30
+@@ -26,7 +26,7 @@
+ left_reference_heading_deg: 8
+ left_reference_lateral_m: 0.08
+ left_reference_stable_s: 0.5
+-left_reference_speed_raw: 18
++left_reference_speed_raw: 12
+ left_reference_raw_rate: 40.0
+ right_lock_command_rad: 0.10
+ right_turn_entry: 0.0
+@@ -102,8 +102,8 @@
+ uturn_alignment_max_distance: 0.50
+ uturn_blue_blind_entry_m: 0.60
+ uturn_blue_blind_max_m: 0.35
+-uturn_align_speed_raw: 18
+-uturn_reverse_speed_raw: 18
++uturn_align_speed_raw: 12
++uturn_reverse_speed_raw: 12
+ uturn_reverse_max_distance: 1.0
+ uturn_reverse_yaw_rad: 0.15
+ uturn_rear_blind_entry_m: 0.20
+@@ -127,8 +127,8 @@
+ parking_blue_required: true
+ # Explicit opt-in for forward P4/P5 white-line entry; existing parking is retained.
+ parking_mode: reverse_plan
+-parking_entry_speed_raw: 18
+-parking_final_speed_raw: 18
++parking_entry_speed_raw: 12
++parking_final_speed_raw: 8
+ parking_bottom_clearance_m: 0.04 # measured line to front bumper, not rear axle
+ parking_divider_trigger_x: 0.33 # divider aligned with front bumper (0.26 + 0.07)
+ parking_align_heading_deg: 6
+--- before/src/robot/config/maneuvers.yaml
++++ after/src/robot/config/maneuvers.yaml
+@@ -4,8 +4,8 @@
+ # This is NOT course-test mode: other signs still work and completion resumes lane.
+ # Vehicle motion still requires the normal live/enabled/actuator gates.
+ parking_mode: forward_center
+-parking_entry_speed_raw: 18
+-parking_final_speed_raw: 18
++parking_entry_speed_raw: 16
++parking_final_speed_raw: 16
+ parking_sign_association: true
+ left_turn_full_lock: true
+ timed_bypass_enabled: true
+@@ -47,7 +47,7 @@
+ # Separate side-parking settings, without changing ordinary parking or lane.
+ parallel_parking_turn_radius_m: 0.65
+ parallel_parking_max_setup_m: 2.0
+-parallel_parking_speed_raw: 18
++parallel_parking_speed_raw: 12
+ parallel_parking_sample_step_m: 0.025
+ parallel_parking_double_arc_yaw_tolerance_deg: 3.0
+ parallel_parking_goal_position_tolerance_m: 0.03
+--- before/src/robot/lane/config.yaml
++++ after/src/robot/lane/config.yaml
+@@ -2,7 +2,7 @@
+ # 仅丢线重新接入时限制突然反打；同方向加大、减小、回正立即放行。
+ # 用 python2 tools/module_workspace.py check 检查参数归属。
+ lane_recovery_raw_rate: 88.0
+-# 弯道与当前直线速度统一为 18；转角控制不变。
+-lane_curve_speed_raw: 18
++# 普通循线只降弯道速度，不减小转角；直线仍采用启动命令中的速度。
++lane_curve_speed_raw: 16
+ # 弯道近点仅用于同向增强；不能替代可靠边线或突破硬件满舵。
+ lane_curve_lookahead_m: 0.45
+--- before/src/robot/test/test_lane_loss_transition.py
++++ after/src/robot/test/test_lane_loss_transition.py
+@@ -187,7 +187,7 @@
+         self.c.timed_bypass=dict(phase='RIGHT',elapsed_s=0.,last=2.)
+         for i in range(120):
+             t=2.+i*.05
+-            self.assertEqual(self.observe(t,.3),(26,-22))
++            self.assertEqual(self.observe(t,.3),(self.c.cfg['speed_raw']['action'],-22))
+         self.assertEqual(self.observe(8.,.3),(0,0))
+         self.assertEqual(self.c.reason,'bypass_wait_exit_lane')
+         for t in (8.1,8.2,8.3):

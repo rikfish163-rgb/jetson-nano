@@ -1,0 +1,37 @@
+.....................E.........FFF
+======================================================================
+ERROR: test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action (test_straight_uturn_handoff.StraightUturnHandoffTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_uturn_handoff.py", line 70, in test_uturn_blue_cannot_interrupt_125_then_normal_lane_dispatches_next_action
+    self.assertEqual(core.blue_approach['stop_reference'], 'front_axle')
+KeyError: 'stop_reference'
+
+======================================================================
+FAIL: test_uturn_does_not_start_with_front_axle_heading_misaligned (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 165, in test_uturn_does_not_start_with_front_axle_heading_misaligned
+    self.assertEqual(core.reason, 'uturn_blue_heading_not_aligned')
+AssertionError: 'blue_timed_blue_lost_before_trigger' != 'uturn_blue_heading_not_aligned'
+
+======================================================================
+FAIL: test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 144, in test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper
+    self.assertGreater(core.tick(1.5)[0], 0)
+AssertionError: 0 not greater than 0
+
+======================================================================
+FAIL: test_uturn_visual_updates_move_target_plane_and_stale_stream_stops (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 176, in test_uturn_visual_updates_move_target_plane_and_stale_stream_stops
+    self.assertEqual(core.tick(1.6)[0], 20)
+AssertionError: 0 != 20
+
+----------------------------------------------------------------------
+Ran 34 tests in 14.793s
+
+FAILED (failures=3, errors=1)

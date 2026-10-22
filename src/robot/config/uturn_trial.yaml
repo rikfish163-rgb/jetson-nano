@@ -1,0 +1,19 @@
+# Explicit opt-in calibration mode; not measured visual closed-loop control.
+uturn_trial_enabled: true
+uturn_relative_enabled: false
+uturn_trial_side: left
+uturn_trial_spacing_m: 0.60
+uturn_trial_radius_m: 0.65
+uturn_trial_entry_m: 0.12
+uturn_trial_forward_raw: 26
+uturn_trial_reverse_raw: 26
+uturn_trial_steering_raw: 22
+# Estimated speeds at the RAW values above. Replace with measured values.
+uturn_trial_forward_mps: 0.208
+uturn_trial_reverse_mps: 0.182
+uturn_trial_pause_s: 0.60
+uturn_trial_first_gain: 1.0
+uturn_trial_reverse_gain: 1.0
+uturn_trial_last_gain: 1.0
+# First trials stop at completion to inspect heading and offset.
+uturn_trial_resume_lane: false

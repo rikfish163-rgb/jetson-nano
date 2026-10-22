@@ -1,0 +1,29 @@
+E.F...F.
+======================================================================
+ERROR: test_centered_circle_uses_ackermann_radius_and_smooth_reference (test_curve_exit_geometry.CurveExitGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_curve_exit_geometry.py", line 44, in test_centered_circle_uses_ackermann_radius_and_smooth_reference
+    curve=c.lane_preview['reference_curve']
+KeyError: 'reference_curve'
+
+======================================================================
+FAIL: test_recorded_exit_does_not_cancel_measured_right_bend (test_curve_exit_geometry.CurveExitGeometryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_curve_exit_geometry.py", line 30, in test_recorded_exit_does_not_cancel_measured_right_bend
+    self.assertLessEqual(self.raw(c,self.EXIT),-8)
+AssertionError: -3 not less than or equal to -8
+
+======================================================================
+FAIL: test_recorded_side_return_uses_safe_sweep_at_action_speed (test_bypass_side_clearance.BypassSideClearanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_bypass_side_clearance.py", line 25, in test_recorded_side_return_uses_safe_sweep_at_action_speed
+    self.assertEqual(speed,24)
+AssertionError: 0 != 24
+
+----------------------------------------------------------------------
+Ran 8 tests in 4.142s
+
+FAILED (failures=2, errors=1)

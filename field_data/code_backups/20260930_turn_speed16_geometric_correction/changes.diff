@@ -1,0 +1,33 @@
+--- src/robot/lane/preview.py.before
++++ src/robot/lane/preview.py
+@@ -64,8 +64,11 @@
+         # straight line. A centered model circle therefore has zero error.
+         error = near_y-expected_y
+         if abs(near_y) >= .04 and near_y*error > 0:
+-            fraction = max(-1.,min(1.,error/ctx.cfg.get('lane_lateral_full_scale_m',.10)))
+-            physical += ctx.cfg['max_steer']*fraction
++            # Convert the measured offset to a near-target arc angle. The
++            # previous full-lock-per-10cm gain could cancel an approaching
++            # bend, or reverse it, even with only 6cm of lateral offset.
++            correction_curvature = 2*error/(near_x*near_x+error*error)
++            physical += 1.25*math.atan(ctx.cfg['wheelbase']*correction_curvature)
+     physical = max(-ctx.cfg['max_steer'], min(ctx.cfg['max_steer'], physical))
+     return physical/ctx.cfg['max_steer']*scale
+ 
+--- tools/sign_detector_20260916/run_lane_green_obstacle.sh.before
++++ tools/sign_detector_20260916/run_lane_green_obstacle.sh
+@@ -3,11 +3,11 @@
+ cd /home/nano/robocup_ws
+ # The shared entry validates the engine and prevents duplicate vehicle nodes.
+ # Retain green release and collision/unknown-space protection with no parking.
+-# Mandatory 1.25 m straight at 12; bends and uncertain exits stay at 12.
++# Mandatory 1.25 m straight at 12; lane bends and uncertain exits use 16.
+ # Lane control admits 24 only after sustained centered straight observations.
+ exec bash tools/sign_detector_20260916/run_yolo_vehicle.sh \
+   parking_enabled:=false start_rear:=false wait_green:=true lidar_enabled:=true \
+   startup_follow_lane:=false straight_distance:=1.25 \
+-  lane_speed_raw:=24 action_speed_raw:=12 straight_speed_raw:=12 \
+-  lane_curvature_preview:=true lookahead:=0.8 lane_curve_speed_raw:=12 \
++  lane_speed_raw:=24 action_speed_raw:=24 straight_speed_raw:=12 \
++  lane_curvature_preview:=true lookahead:=0.8 lane_curve_speed_raw:=16 \
+   debug_view:=false record_lane:=false sign_hz:=2.0 ground_hz:=4.0 "$@"

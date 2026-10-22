@@ -1,0 +1,24 @@
+test_short_optional_boundary_does_not_discard_fresh_center_path (test_ros_adapter.RosAdapterTests) ... FAIL
+test_repeated_short_paths_refresh_stream_but_true_timeout_still_stops (test_ros_adapter.RosAdapterTests) ... FAIL
+
+======================================================================
+FAIL: test_short_optional_boundary_does_not_discard_fresh_center_path (test_ros_adapter.RosAdapterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_ros_adapter.py", line 437, in test_short_optional_boundary_does_not_discard_fresh_center_path
+    self.assertGreater(speed,0)
+AssertionError: 0 not greater than 0
+
+======================================================================
+FAIL: test_repeated_short_paths_refresh_stream_but_true_timeout_still_stops (test_ros_adapter.RosAdapterTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_ros_adapter.py", line 445, in test_repeated_short_paths_refresh_stream_but_true_timeout_still_stops
+    self.assertGreater(self.node.core.lane_command(stamp)[0],0)
+AssertionError: 0 not greater than 0
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.410s
+
+FAILED (failures=2)
+EXPECTED BASELINE FAILURE COUNT: 2

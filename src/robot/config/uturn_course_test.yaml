@@ -1,0 +1,25 @@
+# Full supervised course test using the current open-loop sequence.
+uturn_course_test: true
+uturn_trial_enabled: true
+uturn_trial_resume_lane: true
+uturn_relative_enabled: false
+uturn_vision_enabled: false
+uturn_blue_landmarks_enabled: false
+uturn_trial_side: left
+uturn_trial_entry_m: 0.20
+uturn_trial_forward_mps: 0.250
+uturn_trial_forward_raw: 26
+uturn_trial_pause_s: 0.7
+uturn_trial_sequence:
+  - {speed: 26, steering: 22, seconds: 3.6000000058}
+  - {speed: -26, steering: 0, seconds: 1.2448132739}
+  - {speed: -26, steering: -22, seconds: 0.8298755159}
+  - {speed: -26, steering: 0, seconds: 0.4149377580}
+  - {speed: 26, steering: 22, seconds: 4.0000000064}
+  - {speed: -26, steering: -22, seconds: 0.8298755159}
+  - {speed: 26, steering: 22, seconds: 1.2000000013}
+blue_default_straight: false
+parking_enabled: false
+sign_ttl: 0
+sign_confidence: 0.6
+red_sign_confidence: 0.8

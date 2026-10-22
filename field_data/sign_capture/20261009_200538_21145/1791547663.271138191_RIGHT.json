@@ -1,0 +1,100 @@
+{
+  "confidence": 0.9387227892875671, 
+  "detections": [
+    {
+      "bounds": [
+        604, 
+        92, 
+        35, 
+        59
+      ], 
+      "confidence": 0.9387227892875671, 
+      "label": "right", 
+      "scores": {
+        "green": 9.44053226703545e-06, 
+        "left": 0.0001971323072211817, 
+        "park": 2.2823955077910796e-05, 
+        "red": 2.3548445824417286e-05, 
+        "right": 0.9387227892875671, 
+        "straight": 0.0005191962700337172, 
+        "uturn": 7.601107063237578e-05
+      }
+    }
+  ], 
+  "inference_ms": 97.12696075439453, 
+  "input_mode": "full_frame_yolo", 
+  "label": "RIGHT", 
+  "range_reason": "route_confirmed", 
+  "roi_diagnostics": {
+    "candidate_count": 1, 
+    "regions": [
+      {
+        "bounds": [
+          604, 
+          92, 
+          35, 
+          59
+        ], 
+        "reason": "#1 right 0.94"
+      }
+    ], 
+    "selection": "largest_detected_area"
+  }, 
+  "roi_ms": 0.0, 
+  "route_detections": [
+    {
+      "bounds": [
+        604, 
+        92, 
+        35, 
+        59
+      ], 
+      "confidence": 0.9387227892875671, 
+      "label": "right", 
+      "scores": {
+        "green": 9.44053226703545e-06, 
+        "left": 0.0001971323072211817, 
+        "park": 2.2823955077910796e-05, 
+        "red": 2.3548445824417286e-05, 
+        "right": 0.9387227892875671, 
+        "straight": 0.0005191962700337172, 
+        "uturn": 7.601107063237578e-05
+      }
+    }
+  ], 
+  "route_gate": {
+    "center_ratio": 0.97109375, 
+    "confidence_threshold": 0.8, 
+    "enabled": true, 
+    "frames": 2, 
+    "left_center_ratio": 0.3, 
+    "min_height_ratio": 0.04, 
+    "required_frames": 2, 
+    "small_target": false, 
+    "track_id": 10
+  }, 
+  "scores": {
+    "GREEN": 9.44053226703545e-06, 
+    "LEFT": 0.0001971323072211817, 
+    "PARKING": 2.2823955077910796e-05, 
+    "RED": 2.3548445824417286e-05, 
+    "RIGHT": 0.9387227892875671, 
+    "STRAIGHT": 0.0005191962700337172, 
+    "UTURN": 7.601107063237578e-05
+  }, 
+  "sign_bounds": [
+    604, 
+    92, 
+    35, 
+    59
+  ], 
+  "sign_depth_m": null, 
+  "sign_height_ratio": 0.1638888888888889, 
+  "sign_min_height_ratio": 0.125, 
+  "source": "yolov5s", 
+  "source_age_s": 0.11925292015075684, 
+  "stamp": 1791547663.2711382, 
+  "startup_only": false, 
+  "threshold": 0.8, 
+  "top_label": "RIGHT"
+}

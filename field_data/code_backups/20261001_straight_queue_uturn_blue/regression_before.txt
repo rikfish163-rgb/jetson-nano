@@ -1,0 +1,48 @@
+test_confirmed_next_blue_hands_over_at_125_without_waiting_for_white (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... FAIL
+test_late_second_straight_is_queued_without_interrupting_current_action (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... FAIL
+test_old_blue_or_longitudinal_paint_cannot_dispatch_queued_straight (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_red_overrides_queued_blue_handoff (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_same_early_board_duplicate_or_interrupted_votes_do_not_queue (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... ok
+test_uturn_does_not_start_with_front_axle_heading_misaligned (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... FAIL
+test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests) ... FAIL
+
+======================================================================
+FAIL: test_confirmed_next_blue_hands_over_at_125_without_waiting_for_white (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 68, in test_confirmed_next_blue_hands_over_at_125_without_waiting_for_white
+    self.assertIsNotNone(core.marker)
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_late_second_straight_is_queued_without_interrupting_current_action (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 41, in test_late_second_straight_is_queued_without_interrupting_current_action
+    self.assertEqual(core.next_direction, 'STRAIGHT')
+AssertionError: None != 'STRAIGHT'
+
+======================================================================
+FAIL: test_uturn_does_not_start_with_front_axle_heading_misaligned (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 121, in test_uturn_does_not_start_with_front_axle_heading_misaligned
+    core = self.arm_uturn(.9, math.radians(15))
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 98, in arm_uturn
+    self.assertEqual(core.blue_approach['phase'], 'STOP_LINE')
+AssertionError: 'ALIGN' != 'STOP_LINE'
+
+======================================================================
+FAIL: test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper (test_straight_queue_uturn_blue.StraightQueueUturnBlueTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 103, in test_uturn_stop_depends_on_line_range_and_front_axle_not_bumper
+    core = self.arm_uturn(x)
+  File "/home/nano/robocup_ws/src/robot/test/test_straight_queue_uturn_blue.py", line 98, in arm_uturn
+    self.assertEqual(core.blue_approach['phase'], 'STOP_LINE')
+AssertionError: 'ALIGN' != 'STOP_LINE'
+
+----------------------------------------------------------------------
+Ran 7 tests in 3.307s
+
+FAILED (failures=4)

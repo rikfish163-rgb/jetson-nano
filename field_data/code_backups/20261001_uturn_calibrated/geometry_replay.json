@@ -1,0 +1,13 @@
+{
+  "recorded_segment5_hit": {
+    "remaining_travel_m": 0.09500000144799989, 
+    "point_local": [
+      0.7360787353418583, 
+      -0.0021877889367227232
+    ], 
+    "calibrated_remaining_segment_hits": false, 
+    "old_shared_model_hits": true
+  }, 
+  "warning": "Command model only; reverse radii provisional; not measured vehicle pose.", 
+  "original_profile_estimated_net_yaw_deg": 202.62970009897708
+}

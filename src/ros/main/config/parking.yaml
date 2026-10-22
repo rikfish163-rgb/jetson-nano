@@ -1,0 +1,160 @@
+# Reverse-parking configuration for the control-side FSM.
+#
+# Coordinate and observation contract:
+#   frame_id: base_link
+#   x: vehicle-forward, y: vehicle-left
+#   vehicle_yaw_error_rad: vehicle yaw relative to the slot centreline;
+#       positive means the vehicle points left of the slot.
+#   lateral_error_m: rear-axle lateral error; positive means left of centre.
+#   turn_distance_m: remaining distance to the forward turn trigger.
+#   rear_distance_m: remaining distance to the rear stop/switch line.
+#   exit_distance_m: remaining distance to the exit straighten line.
+#   stamp: Unix time in seconds, refreshed every observation.
+#
+# The default is deliberately locked.  Set calibration_complete to true only
+# after the raw speed/steering signs, scales, camera frame, and map points are
+# measured on the actual vehicle.
+
+calibration_complete: false
+require_lidar_clear: true
+auto_exit: true
+
+default_slot_id: P4
+# This controller is intentionally limited to the two reverse-parking bays.
+# P1/P2/P3 are side-parking bays and must never enter this FSM by accident.
+supported_slot_ids: [P4, P5]
+# Do not hard-code the entry direction.  The selected front target supplies
+# left/right in base_link; the FSM mirrors its nominal steering/heading from
+# that value and stops if the side is ambiguous.
+parking_side: auto
+
+# Vehicle/map measurements.  The 450 mm and 380 mm values are read from the
+# P4/P5 labels in Figure 1; confirm the tape/paint on the actual field because
+# the rules explicitly say the final field setup controls.
+wheelbase_m: 0.29
+vehicle_length_m: 0.45
+vehicle_width_m: 0.30
+front_overhang_m: 0.08
+rear_overhang_m: 0.08
+slot_length_m: 0.45
+slot_width_m: 0.38
+safety_margin_m: 0.05
+
+# Existing byte-oriented chassis command range.  The 2026-09-05 live probe
+# established the actual convention: positive speed is forward and negative
+# speed is reverse.  Keep all semantic forward/reverse fields consistent with
+# this measured chassis sign.
+#
+# Measured steering scale: raw +/-22 = +/-26.515 deg = +/-0.46275 rad.
+# One raw step is 1.205227273 deg = 0.021034091 rad.  If a future planner
+# computes a physical angle, convert it with sign(angle) * ceil(abs(angle) /
+# 1.205227273), then clamp to [-22, 22].  The fields below are already raw
+# integers; do not apply that conversion to them a second time.
+# Direction check completed on the vehicle: positive steering raw is left;
+# negative steering raw is right.  The nominal values below are the historical
+# right-side profile; the reform launch mirrors them from the selected target's
+# parking_side, so a left-side bay is not forced through this route.
+# 2026-09-05 P5 field trial: raw 12 was accepted by the STM32 but produced no
+# measurable blue-line motion.  Raw 20 is the bounded keyboard-verified value
+# for the supervised front setup trials.
+forward_speed_raw: 20
+reverse_speed_raw: -10
+exit_speed_raw: 10
+entry_steering_raw: -22
+straighten_steering_raw: 8
+exit_steering_raw: 10
+exit_straighten_steering_raw: -6
+max_speed_raw: 100
+max_steering_raw: 22
+
+# Input quality and transition filtering.
+observation_timeout_s: 0.50
+# The front lane tracker marks frames below 0.45 as unreliable.  Keep a small
+# margin above that source gate.  The 2026-09-05 P5 turn log measured a valid
+# front pose at confidence 0.5207; 0.50 accepts that bounded degraded frame
+# while the controller still requires valid frame/slot/freshness contracts.
+min_confidence: 0.50
+# A short loss of the front line during the forward turn/straighten phase is
+# bridged with the last valid pose.  It is not used during reverse or exit;
+# persistent loss still produces a safe stop.
+visual_dropout_hold_s: 0.35
+condition_debounce_frames: 3
+settle_time_s: 0.50
+parked_hold_s: 1.00
+
+# Forward setup: turn_distance_m is the distance from the independent blue
+# start-line detector and decreases while approaching the start line.  Seeing
+# white bay geometry never enters the FSM by itself.  The line threshold is
+# still a field-tuning value.
+turn_start_distance_m: 0.73
+forward_turn_target_yaw_error_rad: -0.55
+setup_yaw_tolerance_rad: 0.10
+
+# Reverse insertion: rear_distance_m decreases while backing in.
+reverse_steer_switch_distance_m: 0.55
+reverse_yaw_tolerance_rad: 0.10
+park_stop_distance_m: 0.15
+park_lateral_tolerance_m: 0.08
+park_yaw_tolerance_rad: 0.08
+
+# Exit: exit_distance_m decreases toward the lane; exit_complete may also be
+# set true by the perception node after the car is safely back on the lane.
+exit_straighten_distance_m: 0.45
+exit_complete_distance_m: 0.12
+exit_yaw_tolerance_rad: 0.12
+exit_lateral_tolerance_m: 0.15
+# Switch from the forward turn to final straightening only after the live
+# white-line pose says the car is parallel (yaw error within tolerance).  The
+# turn direction is selected per mission from parking_side.
+exit_turn_require_yaw_alignment: true
+# After the rear stop, move forward until the rear BEV distance has increased
+# to this value.  This is an initial field-tuning point, not a final map
+# calibration: measure the actual P5/P4 rear-axle clearance and override it in
+# each slot profile before declaring calibration_complete=true.
+exit_forward_clearance_distance_m: 0.40
+exit_forward_clearance_timeout_s: 8.0
+exit_forward_yaw_tolerance_rad: 0.12
+exit_forward_lateral_tolerance_m: 0.15
+exit_forward_steering_raw: 0
+
+# Reverse feedback output = lateral_gain*lateral_error + yaw_gain*yaw_error.
+steering_lateral_gain_raw_per_m: 18.0
+steering_yaw_gain_raw_per_rad: 8.0
+
+# Optional visual feedback around the nominal steering values.  Keep these at
+# zero until the sign/scale test is completed; then tune only these gains and
+# the map thresholds below.  Positive/negative signs are vehicle-specific.
+forward_turn_lateral_gain_raw_per_m: 0.0
+forward_turn_yaw_gain_raw_per_rad: 0.0
+forward_straighten_lateral_gain_raw_per_m: 0.0
+forward_straighten_yaw_gain_raw_per_rad: 0.0
+reverse_entry_lateral_gain_raw_per_m: 0.0
+reverse_entry_yaw_gain_raw_per_rad: 0.0
+reverse_straighten_lateral_gain_raw_per_m: 0.0
+reverse_straighten_yaw_gain_raw_per_rad: 0.0
+exit_turn_lateral_gain_raw_per_m: 0.0
+exit_turn_yaw_gain_raw_per_rad: 0.0
+exit_straighten_lateral_gain_raw_per_m: 0.0
+exit_straighten_yaw_gain_raw_per_rad: 0.0
+
+# Each motion state has a hard upper bound.  A lost or inconsistent visual
+# source therefore ends in a latched fault instead of leaving a command alive.
+approach_timeout_s: 10.0
+forward_turn_timeout_s: 10.0
+forward_straighten_timeout_s: 8.0
+settle_timeout_s: 4.0
+reverse_steer_in_timeout_s: 10.0
+reverse_straighten_timeout_s: 8.0
+reverse_align_timeout_s: 12.0
+parked_timeout_s: 120.0
+exit_turn_timeout_s: 10.0
+exit_straighten_timeout_s: 8.0
+
+# Per-slot overrides.  When calibration_complete is true, every supported
+# slot must explicitly contain the measured geometry/route fields and nominal
+# steering values listed in ParkingConfig.CALIBRATED_SLOT_FIELDS; an empty
+# profile cannot inherit the generic placeholders and unlock motion.  Only
+# map/route thresholds, nominal steering values, slot dimensions, parking_side
+# and feedback gains belong here.  Vehicle/chassis limits, lidar policy and
+# calibration lock remain global and are rejected if placed in a profile.
+slot_profiles: {}

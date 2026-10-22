@@ -1,0 +1,23 @@
+command: python2 tools/parking_line_stop_test.py --execute
+parameters:
+  acquire_line_m: 0.12
+  angle_deg: 25.0
+  camera_timeout: 0.8
+  countdown: 3.0
+  curve_min_curvature: 0.45
+  curve_min_turn_deg: 10.0
+  end_verify_seconds: 2.0
+  image_topic: /front/usb_cam/image_raw
+  lost_frames: 3
+  lost_seconds: 0.3
+  max_seconds: 20.0
+  min_line_m: 0.08
+  seek_seconds: 5.0
+  seen_frames: 2
+  side: right
+  speed: 30
+  steering: -3
+  white_v_min: 190
+stop_behavior: Brake on first zero bay-lines frame with both boundaries curved; verify
+  while stopped; never automatically resume.
+verified_by: user

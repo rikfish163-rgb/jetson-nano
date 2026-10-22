@@ -1,0 +1,42 @@
+[
+  {
+    "path": "src/robot/lane/controller.py",
+    "before": "94431adeae949104e1861abc53bf49780be7a960bfff9adab95e96a9fad52576",
+    "after": "37b86620b5387fe20f4571a563f754f5a417af3854766a34298544b2336a0542"
+  },
+  {
+    "path": "src/robot/master/controller_node.py",
+    "before": "b69b1ce85b6eac09f9a7f08d0f3b99ab4becc2b09d8739dd31ec4555e1ba1df3",
+    "after": "38f72ed09aa1e919cd7a4c32e61cc21048edfdd740851d49daedfe19b66f3040"
+  },
+  {
+    "path": "src/ros/camera/scripts/camera_yihan_web.py",
+    "before": "62d167c3fecb4cf158d61613f02540763ea0faf39411ea92bba66ed4203f77de",
+    "after": "16dd3809126485005b2814e24e0286e7cc8598ee99fc9ac45d77fcca93166fa3"
+  },
+  {
+    "path": "src/robot/test/test_ros_adapter.py",
+    "before": "e73a3b1490ddea34b385827c268971abffd82abfa9710f391846d0b89fa062c4",
+    "after": "226fe8868442f170a16f1607822a336a1b494f5bc6f3201d5c3ed03687d8a72d"
+  },
+  {
+    "path": "src/robot/test/test_curve_entry_control.py",
+    "before": "6fc847c66b7f9e9ec0ebb7cd64427700cbef181d9b32d086f407ee5d58be781b",
+    "after": "b6f11c2e0a86d2c5284e4bb1d724124ce0a8a4332c2f88bc1090d86d4ec0b45a"
+  },
+  {
+    "path": "src/robot/test/test_curve_steering_hold.py",
+    "before": "1bda9de37c3edc683ba6c847f715b6092d60065f2eb2b9940614ac5d50c75774",
+    "after": "8db8a0fe9006a3057a11c7c3fe0dabef2579b85720161ea7bb450df24d9ad49e"
+  },
+  {
+    "path": "src/robot/test/test_curve_unknown_exit.py",
+    "before": null,
+    "after": "bec2317a21037818215cc164242c026114f1d5b44dd92f933ac5729b4b6a4478"
+  },
+  {
+    "path": "src/ros/camera/test/test_curve_entry.py",
+    "before": "19f6347af04706d0254eaecae47991e17daea340decad81470fc374dbc81997b",
+    "after": "1e3de52380e432cbf53b20daa95c89652770c27071d47cb5db26073b938881c2"
+  }
+]

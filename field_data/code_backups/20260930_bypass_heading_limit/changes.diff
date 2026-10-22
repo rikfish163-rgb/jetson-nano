@@ -1,0 +1,131 @@
+--- before/controller.py
++++ src/robot/obstacle/controller.py
+@@ -10,6 +10,7 @@
+ from robot.common.geometry import in_box
+ from robot.common.geometry import local
+ from robot.common.geometry import world
++from robot.common.geometry import wrap
+ from robot.obstacle.planner import bypass_path
+ from robot.common.contracts import command_to_model_steering
+ 
+@@ -87,6 +88,7 @@
+     ctx.lane_curve_lock = None
+     phase='SETTLE_LEFT' if ctx.cfg.get('timed_bypass_settle_s',0.)>0 else 'LEFT'
+     ctx.timed_bypass=dict(phase=phase,elapsed_s=0.,last=None,
++                          entry_heading_rad=ctx.pose[2],
+                           trigger_point=trigger_point,trigger_world=trigger_world)
+     ctx.exit_count,ctx.exit_stamp=0,-1.
+     ctx.state='TIMED_BYPASS';ctx.action='BYPASS'
+@@ -105,7 +107,7 @@
+         ctx.call('lane','lane_tracking_ready',now) and
+         ctx.lane_confidence>=ctx.cfg['lane_min_confidence'] and len(points)>=3 and
+         .05<points[0][0]<=1. and points[-1][0]-points[0][0]>=.20 and
+-        abs(points[0][1])<=.18 and all(.05<x<=1.5 and abs(y)<=.45 for x,y in points) and
++        all(.05<x<=1.5 and abs(y)<=.45 for x,y in points) and
+         all(b[0]-a[0]>.015 for a,b in zip(points,points[1:])) and
+         all(abs(a)<=math.radians(30) for a in angles) and
+         all(abs(b-a)<=math.radians(20) for a,b in zip(angles,angles[1:])))
+@@ -121,6 +123,21 @@
+             near_lateral_m=points[0][1],heading_deg=math.degrees(angles[0]),
+             right_elapsed_s=task['elapsed_s'])
+     return evidence['frames']>=3 and ctx.lane_stamp-evidence['since']>=.15-1e-9
++
++
++def _right_heading_exit(ctx,task):
++    """End full-lock counterturn before rotating past the incoming heading."""
++    angle=task.get('left_turn_angle_rad',0.)
++    origin=task.get('right_origin_heading_rad')
++    if origin is None or angle<=math.radians(5):
++        return False
++    returned=wrap(origin-ctx.pose[2])
++    task['right_geometry']=dict(left_angle_deg=math.degrees(angle),
++        returned_angle_deg=math.degrees(returned),
++        remaining_angle_deg=math.degrees(angle-returned))
++    # Leave a small margin for the following control tick and wheel response.
++    # The lane controller handles lateral recentering at bend speed.
++    return returned>=angle-math.radians(3)
+ 
+ 
+ def timed_bypass_tick(ctx,now):
+@@ -142,6 +159,9 @@
+         if task['phase']=='RIGHT' and _right_lane_exit(ctx,task,now):
+             task['phase']='REACQUIRE'
+             task['visual_exit']=True
++        elif task['phase']=='RIGHT' and _right_heading_exit(ctx,task):
++            task['phase']='REACQUIRE'
++            task['heading_exit']=True
+         elif task['elapsed_s']>=duration_s-1e-9:
+             if task['phase']=='LEFT':
+                 if not ctx.call('obstacle','scan_ready',now):
+@@ -169,6 +189,10 @@
+                     if result==command:
+                         ctx.reason='bypass_extend_left_for_clearance'
+                     return result
++            if task['phase']=='LEFT':
++                task['right_origin_heading_rad']=ctx.pose[2]
++                task['left_turn_angle_rad']=max(0.,wrap(ctx.pose[2]-
++                    task.get('entry_heading_rad',ctx.pose[2])))
+             task['phase']=('LEFT' if task['phase']=='SETTLE_LEFT' else
+                            'RIGHT' if task['phase']=='LEFT' else 'REACQUIRE')
+             task['elapsed_s']=0.
+@@ -187,6 +211,8 @@
+         result=ctx.call('obstacle','checked_command',ctx.call('lane','lane_command',now),now,False)
+         if task.get('visual_exit') and result[0]>0:
+             ctx.reason='bypass_visual_lane_handoff'
++        elif task.get('heading_exit') and result[0]>0:
++            ctx.reason='bypass_heading_lane_handoff'
+         return result
+     steer=ctx.cfg.get('steering_command_scale_rad',ctx.cfg['max_steer'])
+     if task['phase']=='SETTLE_LEFT':
+--- before/test_bypass_visual_exit.py
++++ src/robot/test/test_bypass_visual_exit.py
+@@ -10,6 +10,9 @@
+     CENTER=[(.55,.03),(.70,.03),(.85,.03),(1.,.03)]
+     RECORDED=[(.654871,-.161688),(.760287,-.129812),(.858497,-.101381),
+               (.937567,-.079377),(.999604,-.062668),(1.103328,-.035819)]
++    EARLY_RECORDED=[(.593853,-.372091),(.667736,-.369795),(.744772,-.368152),
++                    (.825189,-.367255),(.935726,-.367387),(1.057123,-.369351),
++                    (1.166772,-.372763)]
+ 
+     def core(self):
+         cfg=load_config(os.path.join(os.path.dirname(__file__),'../config'))
+@@ -48,6 +51,30 @@
+         self.assertIsNone(c.timed_bypass)
+         self.assertEqual(speed,16)
+ 
++    def test_recorded_aligned_lane_can_take_over_before_lateral_recentering(self):
++        c=self.core()
++        speed,steer=self.confirm(c,self.EARLY_RECORDED)
++        self.assertIsNone(c.timed_bypass)
++        self.assertEqual(speed,16)
++
++    def test_right_arc_stops_when_left_heading_has_been_cancelled(self):
++        c=self.core()
++        c.timed_bypass.update(entry_heading_rad=0.,right_origin_heading_rad=1.,
++                             left_turn_angle_rad=1.,elapsed_s=2.65)
++        c.set_pose((0.,0.,.02),1.05)
++        speed,steer=self.tick(c,[(x,-.3) for x,y in self.CENTER],1.1)
++        self.assertIsNone(c.timed_bypass)
++        self.assertEqual(speed,16)
++
++    def test_heading_endpoint_with_missing_lane_does_not_continue_full_right(self):
++        c=self.core()
++        c.timed_bypass.update(entry_heading_rad=0.,right_origin_heading_rad=1.,
++                             left_turn_angle_rad=1.,elapsed_s=2.65)
++        c.set_pose((0.,0.,.02),1.05)
++        speed,steer=self.tick(c,[],1.1,0.)
++        self.assertEqual(c.timed_bypass['phase'],'REACQUIRE')
++        self.assertEqual(speed,0)
++
+     def test_repeated_source_image_does_not_confirm_exit(self):
+         c=self.core()
+         c.observe_lane(self.CENTER,.8,1.1)
+@@ -63,7 +90,7 @@
+             self.assertEqual(c.timed_bypass['phase'],'RIGHT')
+ 
+     def test_off_axis_or_low_confidence_lane_cannot_end_turn(self):
+-        for path,confidence in [([(x,.3) for x,y in self.CENTER],.8),
++        for path,confidence in [([(x,.5) for x,y in self.CENTER],.8),
+                                 ([(.5,0),(.6,.12),(.7,.24),(.8,.36)],.8),
+                                 (self.CENTER,.2)]:
+             c=self.core()
