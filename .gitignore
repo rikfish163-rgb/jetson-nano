@@ -1,44 +1,12 @@
-# ROS and build products
 /build/
 /devel/
-**/build/
-**/devel/
+/install/
 **/__pycache__/
 *.py[cod]
-
-# Editor and local-machine state
-.DS_Store
-**/.vscode/
-.omx/
-*.swp
-*.swo
-
-# Historical source snapshots belong in Git history, not the active tree.
-/backups/
-/field_data/code_backups/
-/tools/p2_before_p1_*/
-/tools/p3_before_p2_*/
-*.before_*
-*.backup.*
-
-# ROS runtime artifacts
 *.bag
 *.bag.active
 *.log
-
-# Local browser diagnostics and accidental roslaunch argument files
-/.playwright-cli/
-/*:=*
-
-# Empty command-line artifacts accidentally created at the workspace root
-/--hz
-/--image-topic
-/--debug
-/--confidence-threshold
-/--publish-topic
-/--model
-
-# Credentials and private key material
+/field_data/
 .env
 .env.*
 *.pem
