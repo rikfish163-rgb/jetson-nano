@@ -13,6 +13,14 @@
 *.swp
 *.swo
 
+# Historical source snapshots belong in Git history, not the active tree.
+/backups/
+/field_data/code_backups/
+/tools/p2_before_p1_*/
+/tools/p3_before_p2_*/
+*.before_*
+*.backup.*
+
 # ROS runtime artifacts
 *.bag
 *.bag.active

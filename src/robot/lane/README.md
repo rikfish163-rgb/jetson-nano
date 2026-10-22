@@ -43,7 +43,7 @@ Nano 完整入口：`bash tools/sign_detector_20260916/run_lane_green_obstacle.s
 已恢复加绿牌、避障之前的最远点横偏控制、卡尔曼曲率预判、右弯锁舵和
 原 GAP 时间/距离预算。普通巡线再次使用最远实测中心点；右弯按原判据进入
 满右舵，按原连续出口帧判据解除。具体实现恢复自
-`field_data/code_backups/20260930_lane_green_obstacle/src/robot/lane/`。
+[原分支中的历史快照](https://github.com/rikfish163-rgb/jetson-nano/tree/2ee4908/field_data/code_backups/20260930_lane_green_obstacle/src/robot/lane)。
 轻微置信度波动的 0.25 秒可信角度过渡继续保留。
 消息参数缓存、独立遥测计时器和发布时释放控制锁的修复继续保留。
 绿牌后仍先零舵直行 1.25 m，再交给巡线；雷达避障继续开启。

@@ -1,5 +1,10 @@
 # 小车项目
 
+本分支 `refactor/minimal-equivalent-20261022` 从 `main` 的 `2ee4908` 精简：
+历史代码副本保留在原分支和 Git 历史，停车工具复用正式模块的相同算法。
+入口、参数、模型和现有测试保留。改动范围与验证限制见
+[精简验证记录](docs/refactor_20261022.md)。
+
 开发从 `src/robot` 进入。每个功能目录包含自己的实现、`config.yaml` 和 `example.json`。
 ROS 包名保留 `robocup_competition`；Python 导入统一使用 `robot`。
 

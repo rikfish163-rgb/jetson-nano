@@ -2,32 +2,10 @@
 from __future__ import division
 import json
 import os
-import math
-import numpy as np
+from robot.parking.timed_core import near_lane_geometry
 from parking_lane_curve import LaneCurveVision, both_boundary_curves
 from robot.common.config import load_config
 from robot.parallel_parking.lane_follow import LaneFollower
-
-
-def near_lane_geometry(observation):
-    result = dict(valid=False, heading_deg=None, curvature=None)
-    if not observation or observation.get('confidence', 0.) < .35:
-        return result
-    points = np.asarray(observation.get('points', []), dtype=float)
-    if points.ndim != 2 or points.shape[1] != 2 or not np.all(np.isfinite(points)):
-        return result
-    points = points[(points[:,0] >= .15) & (points[:,0] <= 1.1)]
-    if len(points) < 3 or np.ptp(points[:,0]) < .20:
-        return result
-    x = points[:,0]-np.mean(points[:,0])
-    a,b,c = np.polyfit(x,points[:,1],2)
-    if np.max(abs(points[:,1]-(a*x*x+b*x+c))) > .035:
-        return result
-    heading = math.degrees(math.atan(b))
-    curvature = 2*a/(1+b*b)**1.5
-    result.update(valid=abs(heading) <= 60., heading_deg=float(heading),
-                  curvature=float(curvature), lateral_m=float(c))
-    return result
 
 
 class P3LaneVision(LaneCurveVision):

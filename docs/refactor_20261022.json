@@ -1,0 +1,184 @@
+{
+  "base_commit": "2ee4908de391b65c7379d7de477dba53b39558e0",
+  "branch": "refactor/minimal-equivalent-20261022",
+  "removed_historical_files": 575,
+  "tools_before_lines": 360,
+  "tools_after_lines": 102,
+  "production_sources_unchanged": true,
+  "environment": {
+    "python": "3.11.14",
+    "numpy": "1.26.4",
+    "opencv": "4.11.0",
+    "pyyaml": "6.0.3"
+  },
+  "suites": [
+    {
+      "suite": "src/robot/test",
+      "tests": 1970,
+      "failures": 448,
+      "errors": 155,
+      "skipped": 70,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "a9b67a024e05c0f032b53e6f5081b83e234756a2a2034e3e7acae0cd5c18358f"
+    },
+    {
+      "suite": "src/ros/camera/test",
+      "tests": 83,
+      "failures": 0,
+      "errors": 32,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "b55890ac1b98be26346732958a5e5162cede470854cb95ad92d894a8ab728b21"
+    },
+    {
+      "suite": "src/ros/lane/test",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "b58a296ee7442d8452eb5105db334aeda13d656b78589f2e20ecedff247389a4"
+    },
+    {
+      "suite": "src/ros/lidar/test",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "0f329010b5c5ffea82dae6fdef439b9c736d427db287d6b7ec75cf37621d5a17"
+    },
+    {
+      "suite": "src/ros/main/test",
+      "tests": 115,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "e99779f63d0dbcfaaa6e90e8a8716950c79b450efb175fad67b6701643815dd0"
+    },
+    {
+      "suite": "src/ros/manual/test",
+      "tests": 13,
+      "failures": 0,
+      "errors": 4,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "794d41f60420bcf56fc3d936b90d59b4b8ae3c103698f09e04a5b63c93fc009b"
+    },
+    {
+      "suite": "src/ros/signs/scripts",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "3d5bf56e4815717d96c578ec7a830f4088471955eebe45d3e4b17c9daf61be8f"
+    },
+    {
+      "suite": "tools/sign_retrain_20260907",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "96243f0c70b0b698e85c8beb8f6c209ca22a4a1205be5f7fbf70db78efaeb38d"
+    },
+    {
+      "suite": "tools",
+      "tests": 212,
+      "failures": 8,
+      "errors": 5,
+      "skipped": 0,
+      "same_outcomes": true,
+      "baseline_and_final_outcome_sha256": "f5f033a08e19efc789d1c2840476758795f8aa59cfd6535e8c336582c8aa8b1a"
+    }
+  ],
+  "totals": {
+    "tests": 2473,
+    "failures": 456,
+    "errors": 196,
+    "skipped": 70
+  },
+  "new_failures": [],
+  "new_errors": [],
+  "new_skips": [],
+  "missing_tests": [],
+  "targeted_tests": {
+    "tests": 93,
+    "passed": true
+  },
+  "algorithm_parity": {
+    "passed": true,
+    "comparisons": {
+      "stop_steps": 20000,
+      "boundary_cases": 600,
+      "lane_cases": 600,
+      "vision_frames": 40
+    }
+  },
+  "replays": [
+    {
+      "fixture": "src/robot/camera/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/lane/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/lidar/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/master/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/motion/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/obstacle/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/parallel_parking/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/parking/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/signs/example.json",
+      "exit_code": 0,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/turn/example.json",
+      "exit_code": 1,
+      "identical": true
+    },
+    {
+      "fixture": "src/robot/uturn/example.json",
+      "exit_code": 0,
+      "identical": true
+    }
+  ],
+  "release_gate_passed": false,
+  "nano_verified": false,
+  "limits": [
+    "Baseline has existing assertion failures and environment-dependent errors.",
+    "ROS Melodic, Python 2 and catkin verification unavailable locally.",
+    "Two SSH attempts to Nano timed out. No vehicle deployment or motion performed."
+  ]
+}
