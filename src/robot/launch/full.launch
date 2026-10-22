@@ -1,8 +1,6 @@
 <launch>
   <arg name="vehicle_tuning" default="$(find robocup_competition)/config/vehicle_tuning.yaml"/>
   <arg name="live" default="false"/>
-  <arg name="debug_view" default="false"/>
-  <arg name="debug_port" default="8080"/>
   <arg name="enabled" default="false"/>
   <arg name="start_actuators" default="false"/>
   <!-- Lidar stays running for category-specific checks after straight bypass. -->
@@ -43,11 +41,7 @@
   <arg name="ground_hz" default=""/>
   <arg name="ground_timeout" default=""/>
   <arg name="sign_hz" default=""/>
-  <arg name="sign_backend" default="yolo_trt"/>
   <arg name="sign_model" default="/home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine"/>
-  <arg name="sign_labels" default="/home/nano/robodata/models/20260915_10000/labels.json"/>
-  <arg name="sign_roi_mode" default="board"/>
-  <arg name="sign_capture" default="false"/>
   <arg name="sign_ttl" default="0"/>
   <arg name="wait_green" default="true"/>
   <arg name="blue_default_straight" default="false"/>
@@ -94,11 +88,7 @@
   <arg name="exit_lateral_tolerance" default=""/>
   <include file="$(find robocup_competition)/launch/stack.launch">
     <arg name="vehicle_tuning" value="$(arg vehicle_tuning)"/>
-    <arg name="sign_backend" value="$(arg sign_backend)"/>
     <arg name="sign_model" value="$(arg sign_model)"/>
-    <arg name="sign_labels" value="$(arg sign_labels)"/>
-    <arg name="sign_roi_mode" value="$(arg sign_roi_mode)"/>
-    <arg name="sign_capture" value="$(arg sign_capture)"/>
     <arg name="start_rear" value="$(arg start_rear)"/>
     <arg name="front_fps" value="$(arg front_fps)"/>
     <arg name="rear_fps" value="$(arg rear_fps)"/>
@@ -184,17 +174,4 @@
     <arg name="timed_bypass_enabled" value="$(arg timed_bypass_enabled)"/>
     <arg name="lidar_shape_filter" value="$(arg lidar_shape_filter)"/>
   </include>
-  <include if="$(arg debug_view)" file="$(find robocup_competition)/launch/debug_view.launch">
-    <arg name="port" value="$(arg debug_port)"/>
-  </include>
-  <arg name="record_lane" default="false"/>
-  <arg name="record_max_mb" default="512"/>
-  <arg name="record_duration_s" default="0"/>
-  <arg name="record_start_on_motion" default="false"/>
-  <node if="$(arg record_lane)" pkg="robocup_competition" type="record_run.py"
-        name="lane_run_recorder" output="screen">
-    <param name="max_mb" value="$(arg record_max_mb)"/>
-    <param name="duration_s" value="$(arg record_duration_s)"/>
-    <param name="start_on_motion" value="$(arg record_start_on_motion)"/>
-  </node>
 </launch>

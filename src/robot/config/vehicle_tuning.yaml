@@ -12,14 +12,7 @@ launch:
   rear_fps: 8
   lane_hz: 12
   lane_window_height: 40
-  sign_backend: yolo_trt
   sign_model: /home/nano/robodata/models/20260916_yolov5s/yolov5s_640_fp16.engine
-  sign_labels: /home/nano/robodata/models/20260915_10000/labels.json
-  sign_roi_mode: board
-  sign_capture: true
-  record_lane: false
-  debug_view: false
-  debug_port: 8080
 
 sign_min_height_ratio: 0.125 # 前摄路牌框高至少45px（360px图高）；后摄不受此门槛影响。
 sign_confidence: 0.85 # 路牌识别置信度门槛。
